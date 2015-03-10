@@ -1,0 +1,6 @@
+TestResults/*
+Test/Generated/*
+Test/obj/
+*.FileListAbsolute.txt
+Services/bin/
+packages/

@@ -1,0 +1,966 @@
+<report version="5">
+<Data>
+<XmlFileReader name="Metadata" Left="12" Top="15" Width="162" Height="77">
+      <FileName type="filename">yieldprophet.xml</FileName>
+    </XmlFileReader>
+<ApsimFileReader name="Scenario1" Left="12" Top="110" Width="162" Height="77">
+      <FileName type="filenames">*Yearly.out</FileName>
+      <ParseTitle type="yesno">no</ParseTitle>
+    </ApsimFileReader>
+<DataGrid Left="79" Top="455" Width="797" Height="190"/>
+<Stats Left="370" Top="3" Width="207" Height="197">
+      <IncludeZeros>Yes</IncludeZeros>
+      <FieldName>wetyield</FieldName>
+      <Stat>50</Stat>
+      <source>SeriesSplitter</source>
+      <FieldName>ModerateHeatShockCount</FieldName>
+      <FieldName>ModerateFrostCount</FieldName>
+    </Stats>
+<SeriesSplitter Left="195" Top="120" Width="158" Height="186">
+      <source>Scenario1</source>
+      <FieldName>SowDate</FieldName>
+    </SeriesSplitter>
+<Frequency Left="370" Top="291" Width="242" Height="67" name="ModerateFrostRisk">
+      <Percent type="yesno">yes</Percent>
+      <Label>ModerateFrostCount</Label>
+      <FilterString><![CDATA[ModerateFrostAdditiveCount > 0]]></FilterString>
+      <source>SeriesSplitter</source>
+    </Frequency>
+<Frequency name="ModerateHeatShock" Left="634" Top="291" Width="242" Height="67">
+      <source>SeriesSplitter</source>
+      <Percent type="yesno">yes</Percent>
+      <Label>ModerateHeatShock</Label>
+      <FilterString><![CDATA[ModerateHeatShockAdditiveCount > 0]]></FilterString>
+    </Frequency>
+<Frequency name="MildFrostRisk" Left="370" Top="217" Width="240" Height="68">
+      <Label>MildFrostCount</Label>
+      <Percent type="yesno">yes</Percent>
+      <FilterString><![CDATA[MildFrostAdditiveCount > 0]]></FilterString>
+      <source>SeriesSplitter</source>
+    </Frequency>
+<Frequency Left="370" Top="364" Width="240" Height="70" name="SevereFrostRisk">
+      <Label>SevereFrostCount</Label>
+      <FilterString><![CDATA[SevereFrostCount > 0]]></FilterString>
+      <source>SeriesSplitter</source>
+      <Percent type="yesno">yes</Percent>
+    </Frequency>
+<Frequency Left="634" Top="364" Width="242" Height="70" name="SevereHeatShock">
+      <Label>SevereHeatShock</Label>
+      <FilterString><![CDATA[SevereHeatShockCount > 0]]></FilterString>
+      <source>SeriesSplitter</source>
+      <Percent type="yesno">yes</Percent>
+    </Frequency>
+<Frequency name="MildHeatShock" Left="634" Top="221" Width="238" Height="64">
+      <Label>MildHeatShock</Label>
+      <FilterString><![CDATA[MildHeatShockAdditiveCount > 0]]></FilterString>
+      <source>SeriesSplitter</source>
+      <Percent type="yesno">yes</Percent>
+    </Frequency>
+<Stats name="FloweringStats" Left="30" Top="302" Width="207" Height="197">
+      <IncludeZeros>Yes</IncludeZeros>
+      <source>SeriesSplitter</source>
+      <Stat>50</Stat>
+      <FieldName>flowering_das</FieldName>
+    </Stats>
+</Data>
+   <page> <![CDATA[
+object Page3: TQuickRep
+  Left = 17
+  Top = 0
+  Width = 1020
+  Height = 1320
+  Frame.Color = clBlack
+  Frame.DrawTop = False
+  Frame.DrawBottom = False
+  Frame.DrawLeft = False
+  Frame.DrawRight = False
+  Frame.Style = psClear
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -13
+  Font.Name = 'Arial'
+  Font.Style = []
+  Functions.Strings = (
+    'PAGENUMBER'
+    'COLUMNNUMBER'
+    'REPORTTITLE')
+  Functions.DATA = (
+    '0'
+    '0'
+    #39#39)
+  Options = [FirstPageHeader, LastPageFooter]
+  Page.Columns = 1
+  Page.Orientation = poPortrait
+  Page.PaperSize = Letter
+  Page.Ruler = False
+  Page.Values = (
+    0
+    2794
+    0
+    2159
+    0
+    0
+    0)
+  PrinterSettings.Copies = 1
+  PrinterSettings.Duplex = False
+  PrinterSettings.FirstPage = 0
+  PrinterSettings.LastPage = 0
+  PrinterSettings.OutputBin = Auto
+  PrintIfEmpty = True
+  SnapToGrid = True
+  Units = MM
+  Zoom = 100
+  object TitleBand2: TQRBand
+    Left = 0
+    Top = 0
+    Width = 1020
+    Height = 1320
+    Frame.Color = clBlack
+    Frame.DrawTop = False
+    Frame.DrawBottom = False
+    Frame.DrawLeft = False
+    Frame.DrawRight = False
+    AlignToBottom = False
+    Color = clWhite
+    ForceNewColumn = False
+    ForceNewPage = False
+    Size.Values = (
+      2794
+      2159)
+    BandType = rbTitle
+    object Graph1: TGraph
+      Left = 20
+      Top = 258
+      Width = 731
+      Height = 680
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        1439.33333333333
+        42.3333333333333
+        545.041666666667
+        1547.8125)
+      title = #13#10
+      subTitle = ' '
+      leftAxisTitle = 'Median Yield (t/ha)'
+      topAxisTitle = ' '
+      rightAxisTitle = 'Frost and Heat Shock Risk (%)'
+      bottomAxisTitle = 'Sowing date'
+      footTitle = ' '
+      seriesTitle1 = 'Mild Heat Shock'
+      seriesTitle2 = 'Moderate Heat Shock'
+      seriesTitle3 = 'Severe Heat Shock'
+      seriesTitle4 = 'Mild Frost Risk'
+      seriesTitle5 = 'Moderate Frost Risk'
+      SavedLeftAxisVisible = False
+      SavedTopAxisVisible = False
+      SavedRightAxisVisible = False
+      SavedBottomAxisVisible = False
+      SavedLegendVisible = False
+      XAxisMinimum = ' '
+      XAxisMaximum = ' '
+      YAxisMinimum = ' '
+      YAxisMaximum = ' '
+      object QRDBChart1: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginBottom = 15
+        Title.Alignment = taLeftJustify
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          '')
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.DateTimeFormat = 'd-MMM'
+        BottomAxis.Increment = 15
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.MaximumOffset = 1
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Sowing date'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.LabelsSize = 30
+        LeftAxis.MaximumOffset = 1
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Median Yield (t/ha)'
+        LeftAxis.Title.Font.Height = -16
+        LeftAxis.TitleSize = 1
+        Legend.Alignment = laBottom
+        Legend.Brush.Color = 16762566
+        Legend.Color = 14671839
+        Legend.ColorWidth = 30
+        Legend.Frame.Visible = False
+        Legend.Inverted = True
+        Legend.LegendStyle = lsSeries
+        Legend.Shadow.Color = clWhite
+        Legend.Symbol.Pen.Color = clGray
+        Legend.Symbol.Pen.Visible = False
+        Legend.Symbol.Width = 30
+        Legend.TopPos = 0
+        Legend.VertMargin = 1
+        Legend.VertSpacing = 4
+        RightAxis.Automatic = False
+        RightAxis.AutomaticMaximum = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsFont.Height = -16
+        RightAxis.LabelsSeparation = 100
+        RightAxis.Maximum = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        RightAxis.Title.Caption = 'Frost and Heat Shock Risk (%)'
+        RightAxis.Title.Font.Height = -16
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series9: TAreaSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = MildHeatShock
+          SeriesColor = 14811135
+          Title = 'Mild Heat Shock'
+          VertAxis = aRightAxis
+          AreaLinesPen.Visible = False
+          DrawArea = True
+          LinePen.Color = clRed
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+          object TeeFunction3: TAddTeeFunction
+          end
+        end
+        object Series10: TAreaSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ModerateHeatShock
+          SeriesColor = 12582910
+          Title = 'Moderate Heat Shock'
+          VertAxis = aRightAxis
+          AreaLinesPen.Visible = False
+          DrawArea = True
+          LinePen.Color = clRed
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+          object TeeFunction4: TAddTeeFunction
+          end
+        end
+        object Series11: TAreaSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = SevereHeatShock
+          SeriesColor = 7124735
+          Title = 'Severe Heat Shock'
+          VertAxis = aRightAxis
+          AreaLinesPen.Visible = False
+          DrawArea = True
+          LinePen.Color = clRed
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+        end
+        object Series5: TAreaSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = MildFrostRisk
+          SeriesColor = 16763594
+          Title = 'Mild Frost Risk'
+          VertAxis = aRightAxis
+          AreaLinesPen.Visible = False
+          DrawArea = True
+          LinePen.Color = clBlue
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          Transparency = 100
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+          object TeeFunction1: TAddTeeFunction
+          end
+        end
+        object Series7: TAreaSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ModerateFrostRisk
+          SeriesColor = 16750487
+          Title = 'Moderate Frost Risk'
+          VertAxis = aRightAxis
+          AreaLinesPen.Visible = False
+          DrawArea = True
+          LinePen.Color = clBlue
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+          object TeeFunction2: TAddTeeFunction
+          end
+        end
+        object Series6: TAreaSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = SevereFrostRisk
+          SeriesColor = clBlue
+          Title = 'Severe Frost Risk'
+          VertAxis = aRightAxis
+          AreaLinesPen.Visible = False
+          DrawArea = True
+          LinePen.Color = clBlue
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+        end
+        object Series1: TLineSeries
+          Active = False
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Stats
+          Title = 'Yield'
+          LinePen.Color = 20736
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'wetyield-50'
+          object TeeFunction5: TSmoothingFunction
+            Period = 1
+          end
+        end
+        object Series12: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = Series1
+          Title = 'Yield'
+          Brush.Color = clWhite
+          LinePen.Color = clGreen
+          LinePen.Width = 4
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Y'
+          object TeeFunction6: TCurveFittingFunction
+            Period = 1
+          end
+        end
+        object Series2: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = MildHeatShock
+          SeriesColor = 4227327
+          ShowInLegend = False
+          Title = 'Mild Heat Shock'
+          VertAxis = aRightAxis
+          LinePen.Color = 4227327
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+          object TeeFunction7: TAddTeeFunction
+          end
+        end
+        object Series3: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = ModerateHeatShock
+          SeriesColor = clRed
+          ShowInLegend = False
+          Title = 'Moderate Heat Shock'
+          VertAxis = aRightAxis
+          LinePen.Color = clRed
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+          object TeeFunction8: TAddTeeFunction
+          end
+        end
+        object Series4: TLineSeries
+          Depth = 0
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = SevereHeatShock
+          SeriesColor = 198
+          ShowInLegend = False
+          Title = 'Severe Heat Shock'
+          VertAxis = aRightAxis
+          LinePen.Color = 198
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Percent'
+        end
+      end
+    end
+    object Graph2: TGraph
+      Left = 0
+      Top = 846
+      Width = 681
+      Height = 360
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        762
+        0
+        1791.22916666667
+        1441.97916666667)
+      title = #13#10
+      subTitle = ' '
+      leftAxisTitle = 'Number of days to flowering'
+      topAxisTitle = ' '
+      rightAxisTitle = 'Frost Risk and Heat Shock (%)'
+      bottomAxisTitle = 'Sowing date'
+      footTitle = ' '
+      seriesTitle1 = ' '
+      seriesTitle2 = ' '
+      seriesTitle3 = 'Severe Heat Shock'
+      seriesTitle4 = 'Mild Frost Risk'
+      seriesTitle5 = 'Moderate Frost Risk'
+      SavedLeftAxisVisible = False
+      SavedTopAxisVisible = False
+      SavedRightAxisVisible = False
+      SavedBottomAxisVisible = False
+      SavedLegendVisible = False
+      XAxisMinimum = ' '
+      XAxisMaximum = ' '
+      YAxisMinimum = ' '
+      YAxisMaximum = ' '
+      object QRDBChart2: TQRDBChart
+        Left = -1
+        Top = -1
+        Width = 1
+        Height = 1
+        BackWall.Visible = False
+        MarginBottom = 15
+        Title.Alignment = taLeftJustify
+        Title.Font.Height = -16
+        Title.Text.Strings = (
+          '')
+        BottomAxis.AxisValuesFormat = '###0.###'
+        BottomAxis.DateTimeFormat = 'd-MMM'
+        BottomAxis.Increment = 15
+        BottomAxis.LabelsFont.Height = -16
+        BottomAxis.MaximumOffset = 1
+        BottomAxis.MinorTicks.Visible = False
+        BottomAxis.TickLength = 7
+        BottomAxis.Title.Caption = 'Sowing date'
+        BottomAxis.Title.Font.Height = -16
+        LeftAxis.Automatic = False
+        LeftAxis.AutomaticMinimum = False
+        LeftAxis.AxisValuesFormat = '###0.###'
+        LeftAxis.LabelsFont.Height = -16
+        LeftAxis.LabelsSeparation = 100
+        LeftAxis.MaximumOffset = 1
+        LeftAxis.MinorTicks.Visible = False
+        LeftAxis.TickLength = 7
+        LeftAxis.Title.Caption = 'Number of days to flowering'
+        LeftAxis.Title.Font.Height = -16
+        Legend.Alignment = laBottom
+        Legend.Brush.Color = 16762566
+        Legend.Color = 14671839
+        Legend.ColorWidth = 30
+        Legend.CustomPosition = True
+        Legend.Frame.Visible = False
+        Legend.Inverted = True
+        Legend.Left = 95
+        Legend.LegendStyle = lsSeries
+        Legend.ResizeChart = False
+        Legend.Shadow.Color = clWhite
+        Legend.Symbol.Pen.Color = clGray
+        Legend.Symbol.Pen.Visible = False
+        Legend.Symbol.Width = 30
+        Legend.Top = 585
+        Legend.VertSpacing = 4
+        RightAxis.Automatic = False
+        RightAxis.AutomaticMaximum = False
+        RightAxis.AxisValuesFormat = '###0.###'
+        RightAxis.Grid.Visible = False
+        RightAxis.LabelsFont.Height = -16
+        RightAxis.LabelsSeparation = 100
+        RightAxis.Maximum = 100
+        RightAxis.MinorTicks.Visible = False
+        RightAxis.TickLength = 7
+        RightAxis.Title.Caption = 'Frost Risk and Heat Shock (%)'
+        RightAxis.Title.Font.Height = -16
+        TopAxis.AxisValuesFormat = '###0.###'
+        TopAxis.Grid.Visible = False
+        TopAxis.LabelsSeparation = 100
+        TopAxis.MinorTicks.Visible = False
+        TopAxis.TickLength = 7
+        View3D = False
+        object Series8: TLineSeries
+          Marks.Callout.Brush.Color = clBlack
+          Marks.Visible = False
+          DataSource = FloweringStats
+          SeriesColor = clGreen
+          LinePen.Color = clGreen
+          LinePen.Width = 2
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = False
+          XValues.DateTime = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'SeriesName'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'flowering_das-50'
+        end
+      end
+    end
+    object Image4: TImage
+      Left = 792
+      Top = 8
+      Width = 191
+      Height = 240
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        508
+        1677.45833333333
+        15.875
+        404.8125)
+      ImageAsLink = True
+    end
+    object Text15: TText
+      Left = 1039
+      Top = 2259
+      Width = 0
+      Height = 21
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        44.45
+        2199.21666666667
+        4781.55
+        0)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = True
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      FontSize = 10
+    end
+    object Text1: TText
+      Left = 16
+      Top = 74
+      Width = 380
+      Height = 234
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        494.770833333333
+        34.3958333333333
+        156.104166666667
+        804.333333333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        
+          'Report name: 2014 BCG Horsham Aero (TOS 1 Scout Wheat) Sowing Op' +
+          'portunity Report'
+        'Report date:  9 Mar 2015'
+        'Last climate date available: ?'
+        'Client name: Visitor'
+        
+          'Paddock name: 2014;Visitor;2014 BCG Horsham Aero (TOS 1 Scout Wh' +
+          'eat)-1'
+        'Report generated by: claire'
+        'Crop type: Wheat'
+        'Variety sown: Mace'
+        'Sowing density: 150 plants/m2')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Report name: $property(Metadata.ReportName)'#13#10'Report date:  $form' +
+        'atlongdate($today())'#13#10'Last climate date available: $formatlongda' +
+        'te($property(Metadata.Paddock.LastClimateDate))'#13#10'Client name: $p' +
+        'roperty(Metadata.ClientName)'#13#10'Paddock name: $property(Metadata.P' +
+        'addock.Name)'#13#10'Report generated by: $property(Metadata.ReportGene' +
+        'ratedBy)'#13#10'Crop type: $property(Metadata.Paddock.Management.Sow.C' +
+        'rop)'#13#10'Variety sown: $property(Metadata.Paddock.Management.Sow.Cu' +
+        'ltivar)'#13#10'Sowing density: $property(Metadata.Paddock.Management.S' +
+        'ow.SowingDensity) plants/m2'#13#10
+      FontSize = 10
+    end
+    object Text6: TText
+      Left = 421
+      Top = 74
+      Width = 356
+      Height = 228
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        482.6
+        891.116666666667
+        156.633333333333
+        753.533333333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        'Weather station used: Horsham (Polkemmet Rd)'
+        'Rainfall records used: Live station'
+        'Soil type: Black Vertosol (Kalkee No569-YP)'
+        'Maximum rooting depth:  cm'
+        'Stubble type: Barley'
+        'Stubble amount: 4000 kg/ha'
+        'Number of tillage operations: 0'
+        'Stubble % incorporated into the top 10cm: 0 %'
+        'Initial conditions date: 1 Jan 2015'
+        'Rainfall since 1 Jan 2015: 0 mm'
+        'Date of last rainfall entry: '
+        ''
+        ''
+        '')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Weather station used: $property(MetaData.Paddock.StationName)'#13#10'R' +
+        'ainfall records used: $property(MetaData.Paddock.RainfallSource)' +
+        #13#10'Soil type: $rightmost($property(MetaData.Paddock.SoilPath),/)'#13 +
+        #10'Maximum rooting depth: $property(MetaData.MaxRootingDepth) cm'#13#10 +
+        'Stubble type: $property(MetaData.Paddock.StubbleType)'#13#10'Stubble a' +
+        'mount: $property(MetaData.Paddock.StubbleMass) kg/ha'#13#10'Number of ' +
+        'tillage operations: $count(MetaData.Paddock.Management.Tillage*.' +
+        'Date)'#13#10'Stubble % incorporated into the top 10cm: $property(MetaD' +
+        'ata.Paddock.StubbleIncorporatedPercent) %'#13#10'Initial conditions da' +
+        'te: $formatlongdate($property(MetaData.Paddock.SoilWaterSampleDa' +
+        'te))'#13#10'Rainfall since $formatlongdate($property(MetaData.Paddock.' +
+        'SoilWaterSampleDate)): $decplaces($property(MetaData.Paddock.Rai' +
+        'nfallSinceSoilWaterSampleDate), 0) mm'#13#10'Date of last rainfall ent' +
+        'ry: $formatlongdate($property(MetaData.paddock.DateOfLastRainfal' +
+        'lEntry))'#13#10#13#10#13#10#13#10
+      FontSize = 10
+    end
+    object Text3: TText
+      Left = 29
+      Top = 1
+      Width = 969
+      Height = 76
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        161.395833333333
+        60.8541666666667
+        2.64583333333333
+        2050.52083333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlue
+      Font.Height = -43
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      Lines.Strings = (
+        'Sowing Opportunity Report')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 'Sowing Opportunity Report'#13#10
+      FontSize = 26
+    end
+    object Shape3: TShape
+      Left = 36
+      Top = 1188
+      Width = 915
+      Height = 1
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Frame.Style = psClear
+      Size.Values = (
+        2.64583333333333
+        76.7291666666667
+        2513.54166666667
+        1936.75)
+      Shape = qrsRectangle
+    end
+    object Text46: TText
+      Left = 39
+      Top = 1205
+      Width = 910
+      Height = 102
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        216.958333333333
+        82.0208333333333
+        2550.58333333333
+        1926.16666666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        
+          'Disclaimer: Yield Prophet information is used entirely at your o' +
+          'wn risk. You accept all risks and responsibility for losses, dam' +
+          'ages, costs and other consequences of using Yield Prophet inform' +
+          'ation and reports. To the maximum extent permitted by law, Agric' +
+          'ultural Production Systems Research Unit and Birchip Cropping Gr' +
+          'oup excludes all responsibility and liability to any person aris' +
+          'ing directly or indirectly from using the information generated ' +
+          'by Yield Prophet." ')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'Disclaimer: Yield Prophet information is used entirely at your o' +
+        'wn risk. You accept all risks and responsibility for losses, dam' +
+        'ages, costs and other consequences of using Yield Prophet inform' +
+        'ation and reports. To the maximum extent permitted by law, Agric' +
+        'ultural Production Systems Research Unit and Birchip Cropping Gr' +
+        'oup excludes all responsibility and liability to any person aris' +
+        'ing directly or indirectly from using the information generated ' +
+        'by Yield Prophet." '#13#10
+      FontSize = 10
+    end
+    object Text2: TText
+      Left = 771
+      Top = 311
+      Width = 241
+      Height = 350
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        740.833333333333
+        1632.47916666667
+        658.8125
+        510.645833333333)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        
+          'This chart demonstrates the sowing date that will maximize crop ' +
+          'yield potential this season and the associated frost and heat sh' +
+          'ock risk.   It takes into account the variety, the specific soil' +
+          ' type, pre-season soil moisture, the weather conditions so far a' +
+          'nd unlimited nitrogen. The long term record from you nominated w' +
+          'eather station is then used to simulate the median yield potenti' +
+          'al and the risk of frost and heat shock for each sowing date in ' +
+          'the sowing window. ')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'This chart demonstrates the sowing date that will maximize crop ' +
+        'yield potential this season and the associated frost and heat sh' +
+        'ock risk.   It takes into account the variety, the specific soil' +
+        ' type, pre-season soil moisture, the weather conditions so far a' +
+        'nd unlimited nitrogen. The long term record from you nominated w' +
+        'eather station is then used to simulate the median yield potenti' +
+        'al and the risk of frost and heat shock for each sowing date in ' +
+        'the sowing window. '#13#10
+      FontSize = 10
+    end
+    object Text4: TText
+      Left = 731
+      Top = 886
+      Width = 261
+      Height = 275
+      Frame.Color = clBlack
+      Frame.DrawTop = False
+      Frame.DrawBottom = False
+      Frame.DrawLeft = False
+      Frame.DrawRight = False
+      Size.Values = (
+        582.083333333333
+        1547.8125
+        1875.89583333333
+        552.979166666667)
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -17
+      Font.Name = 'Arial'
+      Font.Style = []
+      Lines.Strings = (
+        
+          'This chart demonstrates the number of days to flowering of a cro' +
+          'p sown on each day of the sowing window.   It takes into account' +
+          ' the variety, pre-season soil moisture, the weather conditions s' +
+          'o far and unlimited nitrogen. The long term record from you nomi' +
+          'nated weather station is then used to simulate the median number' +
+          ' of days to flowering for each sowing data in the sowing window.' +
+          ' ')
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      text = 
+        'This chart demonstrates the number of days to flowering of a cro' +
+        'p sown on each day of the sowing window.   It takes into account' +
+        ' the variety, pre-season soil moisture, the weather conditions s' +
+        'o far and unlimited nitrogen. The long term record from you nomi' +
+        'nated weather station is then used to simulate the median number' +
+        ' of days to flowering for each sowing data in the sowing window.' +
+        ' '#13#10
+      FontSize = 10
+    end
+  end
+end
+]]>
+   </page>
+</report>

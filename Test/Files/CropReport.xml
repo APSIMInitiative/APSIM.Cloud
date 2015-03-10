@@ -1,0 +1,533 @@
+<?xml version="1.0"?>
+<YieldProphet version="8">
+  <Paddock Name="2014^visitor^TestPaddock">
+    <PaddockName>TestPaddock</PaddockName>
+    <StartSeasonDate>01-Apr</StartSeasonDate>
+    <StartSeasonDateFull>01/04/2014</StartSeasonDateFull>
+    <ResetDate>25-Mar</ResetDate>
+    <ResetDateFull>25/03/2014</ResetDateFull>
+    <SoilNitrogenSampleDate>25-Mar</SoilNitrogenSampleDate>
+    <SoilNitrogenSampleDateFull>25/03/2014</SoilNitrogenSampleDateFull>
+    <StationNumber>77056</StationNumber>
+    <StationName>Quambatook</StationName>
+    <RainfallSource>SILO</RainfallSource>
+    <LastRainfallDate />
+    <MaxRootDepth>180</MaxRootDepth>
+    <UseEC>yes</UseEC>
+    <Crop>Wheat</Crop>
+    <Cultivar>Lancer</Cultivar>
+    <SowingDensity>150</SowingDensity>
+    <SowDate>01-Apr</SowDate>
+    <SowDateFull>01/04/2014</SowDateFull>
+    <StubbleMass>200</StubbleMass>
+    <StubbleType>Fieldpea</StubbleType>
+    <Fertilise>
+      <FertAmount>5</FertAmount>
+      <Fertdate>01-Apr</Fertdate>
+      <FertdateFull>01/04/2014</FertdateFull>
+      <Scenario>no</Scenario>
+    </Fertilise>
+    <Fertilise>
+      <FertAmount>4</FertAmount>
+      <Fertdate>10-Jun</Fertdate>
+      <FertdateFull>10/06/2014</FertdateFull>
+      <Scenario>no</Scenario>
+    </Fertilise>
+    <Fertilise>
+      <FertAmount>4</FertAmount>
+      <Fertdate>18-Jul</Fertdate>
+      <FertdateFull>18/07/2014</FertdateFull>
+      <Scenario>no</Scenario>
+    </Fertilise>
+    <Tillage>
+      <Disturbance>Low</Disturbance>
+      <TillageDate>01-Apr</TillageDate>
+      <TillageDateFull>01/04/2014</TillageDateFull>
+      <Scenario>no</Scenario>
+    </Tillage>
+    <SoilName>Soils/Australia/Victoria/Mallee/Sandy Clay Loam (Lalbert No723)</SoilName>
+    <WaterFormat>GravimetricPercent</WaterFormat>
+    <Sample1Thickness>100,300,300,300</Sample1Thickness>
+    <SW>0.139,0.247,0.215,0.191</SW>
+    <NO3>3,3,1.8,0.5</NO3>
+    <NH4>1.1,0.5,0.5,0.5</NH4>
+    <Sample2Thickness>100,300,300,300</Sample2Thickness>
+    <OC>1.2,999999,999999,999999</OC>
+    <EC>0.09,0.19,0.24,0.3</EC>
+    <PH>6,7.9,8.4,8.5</PH>
+    <CL>29,11,10,10</CL>
+    <UseProbeRainfall>no</UseProbeRainfall>
+    <UseProbeSoilMoisture>no</UseProbeSoilMoisture>
+    <UseProbeTemperature>no</UseProbeTemperature>
+    <TemperatureSource>SILO</TemperatureSource>
+    <Soil name="Sandy Clay Loam (Lalbert No723)">
+      <RecordNumber>314</RecordNumber>
+      <ASCOrder />
+      <ASCSubOrder />
+      <SoilType>Sandy clay loam</SoilType>
+      <Site>Lalbert</Site>
+      <NearestTown>Lalbert</NearestTown>
+      <Region>Mallee</Region>
+      <State>Victoria</State>
+      <Country>Australia</Country>
+      <NaturalVegetation />
+      <ApsoilNumber>723</ApsoilNumber>
+      <Latitude>-35.521</Latitude>
+      <Longitude>143.455</Longitude>
+      <LocationAccuracy>+/- 20m</LocationAccuracy>
+      <YearOfSampling>0</YearOfSampling>
+      <DataSource>Based on Soil Characterisation undertaken by Birchip Cropping Group during 2005</DataSource>
+      <Comments>CMA 2005 site, Lalbert, also DPI Barley var trial site; OC estimated below surface layer; CLL field measured; Observed rooting depth 100cm</Comments>
+      <Water>
+        <Thickness>
+          <double>100</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <BD>
+          <double>1.46</double>
+          <double>1.308</double>
+          <double>1.312</double>
+          <double>1.357</double>
+          <double>1.435</double>
+        </BD>
+        <AirDry>
+          <double>0.08</double>
+          <double>0.168</double>
+          <double>0.23</double>
+          <double>0.23</double>
+          <double>0.23</double>
+        </AirDry>
+        <LL15>
+          <double>0.16</double>
+          <double>0.21</double>
+          <double>0.23</double>
+          <double>0.23</double>
+          <double>0.23</double>
+        </LL15>
+        <DUL>
+          <double>0.32</double>
+          <double>0.43</double>
+          <double>0.42</double>
+          <double>0.41</double>
+          <double>0.38</double>
+        </DUL>
+        <SAT>
+          <double>0.42</double>
+          <double>0.48</double>
+          <double>0.47</double>
+          <double>0.46</double>
+          <double>0.43</double>
+        </SAT>
+        <BDMetadata>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+        </BDMetadata>
+        <AirDryMetadata>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+        </AirDryMetadata>
+        <LL15Metadata>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+        </LL15Metadata>
+        <DULMetadata>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+          <string>Field measured and checked for sensibility</string>
+        </DULMetadata>
+        <SATMetadata>
+          <string>Calculated from measured, estimated or calculated BD</string>
+          <string>Calculated from measured, estimated or calculated BD</string>
+          <string>Calculated from measured, estimated or calculated BD</string>
+          <string>Calculated from measured, estimated or calculated BD</string>
+          <string>Calculated from measured, estimated or calculated BD</string>
+        </SATMetadata>
+        <SoilCrop name="wheat">
+          <Thickness>
+            <double>100</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.16</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.23</double>
+            <double>0.27</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+            <double>0.04</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
+          <LLMetadata>
+            <string>Field measured and checked for sensibility</string>
+            <string>Field measured and checked for sensibility</string>
+            <string>Field measured and checked for sensibility</string>
+            <string>Field measured and checked for sensibility</string>
+            <string>Field measured and checked for sensibility</string>
+          </LLMetadata>
+        </SoilCrop>
+        <SoilCrop name="barley">
+          <Thickness>
+            <double>100</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.16</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.23</double>
+            <double>0.27</double>
+          </LL>
+          <KL>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.07</double>
+            <double>0.05</double>
+            <double>0.05</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
+          <LLMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </LLMetadata>
+        </SoilCrop>
+        <SoilCrop name="oats">
+          <Thickness>
+            <double>100</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <LL>
+            <double>0.16</double>
+            <double>0.21</double>
+            <double>0.23</double>
+            <double>0.23</double>
+            <double>0.27</double>
+          </LL>
+          <KL>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.04</double>
+            <double>0.04</double>
+            <double>0.04</double>
+          </KL>
+          <XF>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </XF>
+          <LLMetadata>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+            <string>Estimated based on local knowledge</string>
+          </LLMetadata>
+        </SoilCrop>
+      </Water>
+      <SoilWater>
+        <SummerCona>3.5</SummerCona>
+        <SummerU>6</SummerU>
+        <SummerDate>1-Nov</SummerDate>
+        <WinterCona>2</WinterCona>
+        <WinterU>2</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35</DiffusSlope>
+        <Salb>0.13</Salb>
+        <CN2Bare>73</CN2Bare>
+        <CNRed>20</CNRed>
+        <CNCov>0.8</CNCov>
+        <Slope>NaN</Slope>
+        <DischargeWidth>NaN</DischargeWidth>
+        <CatchmentArea>NaN</CatchmentArea>
+        <MaxPond>NaN</MaxPond>
+        <Thickness>
+          <double>100</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <SWCON>
+          <double>0.5</double>
+          <double>0.5</double>
+          <double>0.3</double>
+          <double>0.3</double>
+          <double>0.3</double>
+        </SWCON>
+      </SoilWater>
+      <SoilOrganicMatter>
+        <RootCN>40</RootCN>
+        <RootWt>1000</RootWt>
+        <SoilCN>12</SoilCN>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <Thickness>
+          <double>100</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <OC>
+          <double>1.3</double>
+          <double>1.03846153846154</double>
+          <double>0.653846153846154</double>
+          <double>0.323076923076923</double>
+          <double>0.192307692307692</double>
+        </OC>
+        <OCMetadata>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+          <string>Estimated based on local knowledge</string>
+        </OCMetadata>
+        <FBiom>
+          <double>0.04</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.02</double>
+          <double>0.01</double>
+        </FBiom>
+        <FInert>
+          <double>0.4</double>
+          <double>0.5</double>
+          <double>0.7</double>
+          <double>1</double>
+          <double>1</double>
+        </FInert>
+        <OCUnits>WalkleyBlack</OCUnits>
+      </SoilOrganicMatter>
+      <Analysis>
+        <Thickness>
+          <double>100</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+          <double>300</double>
+        </Thickness>
+        <Texture>
+          <string>Light Sandy clay loam (15%)</string>
+          <string>Clay loam sandy (30%)</string>
+          <string>Light clay (35-40%)</string>
+          <string>Light clay (35-40%)</string>
+          <string>Light clay (35-40%)</string>
+        </Texture>
+        <TextureMetadata>
+          <string>Field Texture</string>
+          <string>Field Texture</string>
+          <string>Field Texture</string>
+          <string>Field Texture</string>
+          <string>Field Texture</string>
+        </TextureMetadata>
+        <EC>
+          <double>0.2</double>
+          <double>0.3</double>
+          <double>0.6</double>
+          <double>1</double>
+          <double>1</double>
+        </EC>
+        <ECMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </ECMetadata>
+        <PH>
+          <double>8.2</double>
+          <double>8.3</double>
+          <double>8.8</double>
+          <double>8.9</double>
+          <double>8.9</double>
+        </PH>
+        <PHMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </PHMetadata>
+        <CL>
+          <double>102</double>
+          <double>533</double>
+          <double>902</double>
+          <double>1052</double>
+          <double>1052</double>
+        </CL>
+        <CLMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </CLMetadata>
+        <Boron>
+          <double>2.9</double>
+          <double>16.3</double>
+          <double>21</double>
+          <double>22</double>
+          <double>22</double>
+        </Boron>
+        <BoronMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </BoronMetadata>
+        <CEC>
+          <double>27.3</double>
+          <double>30.1</double>
+          <double>28.1</double>
+          <double>33.7</double>
+          <double>33.7</double>
+        </CEC>
+        <CECMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </CECMetadata>
+        <Ca>
+          <double>19.9</double>
+          <double>15.6</double>
+          <double>8.7</double>
+          <double>7.3</double>
+          <double>7.3</double>
+        </Ca>
+        <CaMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </CaMetadata>
+        <Mg>
+          <double>5</double>
+          <double>10</double>
+          <double>11.3</double>
+          <double>12.6</double>
+          <double>12.6</double>
+        </Mg>
+        <MgMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </MgMetadata>
+        <Na>
+          <double>0.7</double>
+          <double>3.7</double>
+          <double>7.3</double>
+          <double>12.7</double>
+          <double>12.7</double>
+        </Na>
+        <NaMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </NaMetadata>
+        <K>
+          <double>1.7</double>
+          <double>0.8</double>
+          <double>0.8</double>
+          <double>1.1</double>
+          <double>1.1</double>
+        </K>
+        <KMetadata>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Measured</string>
+          <string>Estimated based on local knowledge</string>
+        </KMetadata>
+        <ESP>
+          <double>2.6</double>
+          <double>12.4</double>
+          <double>26</double>
+          <double>37.7</double>
+          <double>37.7</double>
+        </ESP>
+        <ESPMetadata>
+          <string>C</string>
+          <string>C</string>
+          <string>C</string>
+          <string>C</string>
+          <string>C</string>
+        </ESPMetadata>
+        <PHUnits>Water</PHUnits>
+        <BoronUnits>HotWater</BoronUnits>
+      </Analysis>
+    </Soil>
+  </Paddock>
+  <TodayDate>22-Dec</TodayDate>
+  <TodayDateFull>22/12/2014</TodayDateFull>
+  <ReportDescription>Test Crop Report (Complete)</ReportDescription>
+  <ReportType>Crop Report (Complete)</ReportType>
+  <GrowerName>Visitor</GrowerName>
+  <GrowerType>grower</GrowerType>
+  <LoginName>timcclel</LoginName>
+  <LoginType>administrator</LoginType>
+  <SOIPhase>Zero</SOIPhase>
+  <SOIMonth>September</SOIMonth>
+  <SOIDescription>The 31 day mean SOI for October was -8.2. In September it was -6.6. </SOIDescription>
+  <DavidsYear1>2010</DavidsYear1>
+  <DavidsYear2>2010</DavidsYear2>
+  <DavidsYear3>2010</DavidsYear3>
+  <DavidsYear4>2010</DavidsYear4>
+  <DavidsYear5>2010</DavidsYear5>
+  <EmailAddress>yieldprophet@bcg.org.au</EmailAddress>
+  <EmailBody>The report for grower: Visitor has been generated and is attached to this email. It has also been stored on www.yieldprophet.com.au</EmailBody>
+  <EmailWithPDFAttached>yes</EmailWithPDFAttached>
+  <MaximumYieldScale>10</MaximumYieldScale>
+</YieldProphet>
