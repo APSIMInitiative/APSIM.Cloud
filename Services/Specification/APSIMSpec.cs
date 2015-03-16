@@ -15,7 +15,7 @@ namespace APSIM.Cloud.Services.Specification
     /// <summary>
     /// A specification for an APSIM simulation.
     /// </summary>
-    public class APSIM
+    public class APSIMSpec
     {
         /// <summary>Gets or sets the name of the simulation</summary>
         public string Name { get; set; }

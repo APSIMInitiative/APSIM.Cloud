@@ -25,7 +25,7 @@ namespace APSIM.Cloud.Services
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="filterFileName">The name of a file containing paddocks to include. Can be null.</param>
         /// <returns>The name of the created .apsim file.</returns>
-        public static string Create(IEnumerable<Specification.APSIM> simulations, string workingFolder)
+        public static string Create(IEnumerable<Specification.APSIMSpec> simulations, string workingFolder)
         {
             // Create the .apsim XML
             XmlNode apsimNode = CreateApsimFile(simulations);
@@ -45,7 +45,7 @@ namespace APSIM.Cloud.Services
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
-        private static void CreateWeatherFilesForSimulations(IEnumerable<Specification.APSIM> simulations, string workingFolder, XmlNode apsimNode)
+        private static void CreateWeatherFilesForSimulations(IEnumerable<Specification.APSIMSpec> simulations, string workingFolder, XmlNode apsimNode)
         {
             // Assume that all simulations are related i.e. use the same observed data.
             // If there are 10 simulations then go find the smallest and largest start 
@@ -60,7 +60,7 @@ namespace APSIM.Cloud.Services
             DateTime nowDate = DateTime.MaxValue;
             DataTable observedData = null;
             int stationNumber = 0;
-            foreach (Specification.APSIM simulation in simulations)
+            foreach (Specification.APSIMSpec simulation in simulations)
             {
                 stationNumber = simulation.StationNumber;
                 nowDate = simulation.NowDate;
@@ -84,7 +84,7 @@ namespace APSIM.Cloud.Services
                                             observedData);
 
             // Now modify the simulations to create a met factorial.
-            foreach (Specification.APSIM simulation in simulations)
+            foreach (Specification.APSIMSpec simulation in simulations)
                 APSIMFileWriter.CreateMetFactorial(apsimNode, simulation.Name, rainFileName, weatherData.FilesCreated);
         }
 
@@ -93,7 +93,7 @@ namespace APSIM.Cloud.Services
         /// <param name="filterFileName">Name of the filter file.</param>
         /// <returns>The root XML node for the file</returns>
         /// <exception cref="System.Exception"></exception>
-        private static XmlNode CreateApsimFile(IEnumerable<Specification.APSIM> simulations)
+        private static XmlNode CreateApsimFile(IEnumerable<Specification.APSIMSpec> simulations)
         {
             APSOIL.Service apsoilService = null;
             XmlDocument doc = new XmlDocument();
@@ -101,7 +101,7 @@ namespace APSIM.Cloud.Services
             Utility.Xml.SetNameAttr(doc.DocumentElement, "Simulations");
             Utility.Xml.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
 
-            foreach (Specification.APSIM simulation in simulations)
+            foreach (Specification.APSIMSpec simulation in simulations)
             {
                 try
                 {
@@ -126,7 +126,7 @@ namespace APSIM.Cloud.Services
         /// <param name="todayDate">The today date.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(Specification.APSIM simulation, APSOIL.Service apsoilService)
+        private static XmlNode CreateSimulationXML(Specification.APSIMSpec simulation, APSOIL.Service apsoilService)
         {
             APSIMFileWriter apsimWriter = new APSIMFileWriter();
 
@@ -203,7 +203,7 @@ namespace APSIM.Cloud.Services
         /// <param name="paddock">The paddock.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <exception cref="System.Exception">Cannot find soil:  + paddock.SoilName</exception>
-        public static void DoSoil(Specification.APSIM simulation, APSOIL.Service apsoilService)
+        public static void DoSoil(Specification.APSIMSpec simulation, APSOIL.Service apsoilService)
         {
             if (simulation.Soil == null)
             {

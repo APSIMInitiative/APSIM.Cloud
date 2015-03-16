@@ -5,6 +5,7 @@ using System.IO;
 using APSIM.Cloud.Services;
 using APSIM.Cloud.Services.Specification;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Xml;
 
 namespace Test
 {
@@ -63,7 +64,7 @@ namespace Test
             string fileName = Path.Combine(filesDirectory, "TestConverter.xml");
             
             // Create a YieldProphet object from our file.
-            YieldProphet spec = YieldProphetServices.Create(GetFileContents(fileName));
+            YieldProphetSpec spec = YieldProphetServices.Create(GetFileContents(fileName));
 
             Assert.AreEqual(spec.PaddockList.Length, 1);
             Assert.AreEqual(spec.PaddockList[0].Name, "2011;mcvp;Grain Filling Baudin");
@@ -91,9 +92,11 @@ namespace Test
             string rainFileName = Path.Combine(filesDirectory, "TestValidation.rain");
 
             // Run the files.
-            YieldProphetServices.Run(GetFileContents(validationFileName), 
-                                     Utility.ApsimTextFile.ToTable(rainFileName), 
-                                     new DateTime(2014, 12, 1), workingDirectory);
+            Utility.JobManager.IRunnable job = YieldProphetServices.Run(GetFileContents(validationFileName), 
+                                     Utility.ApsimTextFile.ToTable(rainFileName));
+            Utility.JobManager runner = new Utility.JobManager();
+            runner.AddJob(job);
+            runner.Start(waitUntilFinished: true);
 
             // Make sure we got an output file.
             string outputFileName = Path.Combine(workingDirectory, "2004;A and R Weidemann;Wep 1 Yearly.out");
@@ -116,7 +119,7 @@ namespace Test
             string fileName = Path.Combine(filesDirectory, "TestValidation.xml");
 
             // Create a YieldProphet object from our YP xml file
-            YieldProphet spec = YieldProphetServices.Create(GetFileContents(fileName));
+            YieldProphetSpec spec = YieldProphetServices.Create(GetFileContents(fileName));
 
             // Read in the rainfall data
             Utility.ApsimTextFile observedDataFile = new Utility.ApsimTextFile();
@@ -147,7 +150,7 @@ namespace Test
         }
 
         /// <summary>Tests the ability to generate a crop report</summary>
-        //[TestMethod]
+        [TestMethod]
         public void TestCropReport()
         {
             // NB: This is a real YP validation XML file from 2004.
@@ -163,7 +166,11 @@ namespace Test
             // Get the YP job XML
             string xml = GetFileContents(sourceApsimFileName);
 
-            YieldProphetServices.Run(xml, rainData, new DateTime(2014, 6, 1), workingDirectory);
+            Utility.JobManager.IRunnable job = YieldProphetServices.Run(xml, rainData);
+
+            Utility.JobManager runner = new Utility.JobManager();
+            runner.AddJob(job);
+            runner.Start(waitUntilFinished: true);
 
             // Make sure we got an output file.
             string outputFileName = Path.Combine(workingDirectory, "Base Yearly.out");
@@ -177,7 +184,7 @@ namespace Test
             Assert.IsTrue(Convert.ToDouble(outputData.Rows[0]["Biomass"]) > 6000);
         }
         
-        [TestMethod]
+        //[TestMethod]
         public void TestSowingOpportunityReport()
         {
             // NB: This is a real YP validation XML file from 2004.
@@ -193,7 +200,10 @@ namespace Test
             // Get the YP job XML
             string xml = GetFileContents(sourceApsimFileName);
 
-            YieldProphetServices.Run(xml, rainData, new DateTime(2014, 1, 1), workingDirectory);
+            Utility.JobManager.IRunnable job = YieldProphetServices.Run(xml, rainData);
+            Utility.JobManager runner = new Utility.JobManager();
+            runner.AddJob(job);
+            runner.Start(waitUntilFinished: true);
         }
     }
 }

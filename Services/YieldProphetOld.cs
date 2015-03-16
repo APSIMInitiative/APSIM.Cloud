@@ -41,7 +41,7 @@ namespace APSIM.Cloud.Services
                 }
             }
 
-            Specification.YieldProphet simulationsSpec = new Specification.YieldProphet();
+            Specification.YieldProphetSpec simulationsSpec = new Specification.YieldProphetSpec();
             simulationsSpec.PaddockList = simulations.ToArray();
 
             // Some top level simulation metadata.
@@ -50,14 +50,14 @@ namespace APSIM.Cloud.Services
                 simulationsSpec.ReportName = reportDescription;    
             string reportType = Utility.Xml.Value(doc.DocumentElement, "ReportType");
             if (reportType == "Crop Report (Complete)")
-                simulationsSpec.ReportType = Specification.YieldProphet.ReportTypeEnum.Crop;
+                simulationsSpec.ReportType = Specification.YieldProphetSpec.ReportTypeEnum.Crop;
             else if (reportType == "Sowing Opportunity Report")
-                simulationsSpec.ReportType = Specification.YieldProphet.ReportTypeEnum.SowingOpportunity;
+                simulationsSpec.ReportType = Specification.YieldProphetSpec.ReportTypeEnum.SowingOpportunity;
             simulationsSpec.ClientName = Utility.Xml.Value(doc.DocumentElement, "GrowerName");
             simulationsSpec.ReportGeneratedBy = Utility.Xml.Value(doc.DocumentElement, "LoginName");
 
             // Now try deserialisation / serialisation.
-            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphet));
+            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphetSpec));
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
             StringWriter writer = new StringWriter();
@@ -103,6 +103,11 @@ namespace APSIM.Cloud.Services
             // Give the paddock a name.
             string fullName = string.Format("{0};{1};{2}", simulation.StartSeasonDate.Year, growerName, paddockName);
             simulation.Name = fullName;
+
+            // Set the report date.
+            simulation.NowDate = GetDate(paddock.ParentNode, "TodayDateFull");
+            if (simulation.NowDate == DateTime.MinValue)
+                simulation.NowDate = DateTime.Now;
 
             // Set the reset dates
             simulation.SoilWaterSampleDate = GetDate(paddock, "ResetDateFull");
@@ -348,7 +353,7 @@ namespace APSIM.Cloud.Services
                 dateNode = Utility.Xml.ChangeType(dateNode, newName);
                 DateTime d;
                 if (dateNode.InnerText.Contains('/'))
-                    d = DateTime.ParseExact(dateNode.InnerText, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    d = DateTime.ParseExact(dateNode.InnerText, "d/M/yyyy", CultureInfo.InvariantCulture);
                 else
                     d = DateTime.ParseExact(dateNode.InnerText, "d-MMM-yyyy", CultureInfo.InvariantCulture);
                 return d;

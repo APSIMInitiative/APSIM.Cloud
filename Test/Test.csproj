@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\ApsimX\Bin\Utility.dll</HintPath>
+      <HintPath>..\..\ApsimX\Bin\Utility.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

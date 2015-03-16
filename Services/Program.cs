@@ -30,7 +30,7 @@ namespace APSIM.Cloud.Services
                     ConvertFile(arguments["FileName"]);
                 else if (command == "CreateAPSIMFiles" && arguments.ContainsKey("FileName"))
                 {
-                    Specification.YieldProphet yieldProphet = YieldProphetServices.Create(GetFileContents(arguments["FileName"]));
+                    Specification.YieldProphetSpec yieldProphet = YieldProphetServices.Create(GetFileContents(arguments["FileName"]));
 //                    if (arguments.ContainsKey("FilterFileName"))
 //                        YieldProphetServices.CreateFiles(yieldProphet, Directory.GetCurrentDirectory(), arguments["FilterFileName"]);
 //                    else

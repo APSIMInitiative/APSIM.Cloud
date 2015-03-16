@@ -30,7 +30,7 @@ namespace APSIM.Cloud.JobRunner
         private void OnLoad(object sender, EventArgs e)
         {
             jobManager = new Utility.JobManager();
-            jobManager.AddJob(new CheckDBForJobs());
+            jobManager.AddJob(new RunJobsInDB());
             jobManager.Start(waitUntilFinished: false);
         }
 

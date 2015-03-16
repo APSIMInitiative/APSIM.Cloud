@@ -14,7 +14,7 @@ namespace APSIM.Cloud.Services.Specification
     /// <summary>
     /// A specification for a Yield Prophet job
     /// </summary>
-    public class YieldProphet
+    public class YieldProphetSpec
     {
         /// <summary>The version of the specification</summary>
         public int Version = 9;

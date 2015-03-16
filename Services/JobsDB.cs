@@ -22,7 +22,7 @@ namespace APSIM.Cloud.Services
         /// An enumeration containing the valid values for the status field
         /// in the DB
         /// </summary>
-        public enum StatusEnum { PendingAdd, Added, Running, Completed, Error, PendingDelete };
+        public enum StatusEnum { Added, Running, Completed, Error, Deleting };
 
         /// <summary>Open the DB ready for use.</summary>
         public void Open()
@@ -67,7 +67,7 @@ namespace APSIM.Cloud.Services
 
             Cmd.Parameters.Add(new SqlParameter("@Name", Name));
             Cmd.Parameters.Add(new SqlParameter("@XML", jobXML));
-            Cmd.Parameters.Add(new SqlParameter("@Status", StatusEnum.PendingAdd));
+            Cmd.Parameters.Add(new SqlParameter("@Status", StatusEnum.Added));
             Cmd.ExecuteNonQuery();
         }
 
@@ -85,7 +85,7 @@ namespace APSIM.Cloud.Services
         /// <returns>The array of matching jobs</returns>
         public JobDB GetJob(string name)
         {
-            string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "'";
+            string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "' ORDER BY name DESC";
 
             SqlCommand Command = new SqlCommand(SQL, Connection);
             SqlDataReader Reader = Command.ExecuteReader();
@@ -95,7 +95,8 @@ namespace APSIM.Cloud.Services
                     return new JobDB(Reader["Name"].ToString(),
                                      Reader["XML"].ToString(),
                                      (StatusEnum)Reader["Status"],
-                                     Reader["XML"].ToString());
+                                     Reader["URL"].ToString(),
+                                     Reader["ErrorText"].ToString());
             }
             finally
             {
@@ -107,12 +108,13 @@ namespace APSIM.Cloud.Services
 
         /// <summary>Gets all jobs with the specified status.</summary>
         /// <param name="status">The status to match</param>
+        /// <param name="maxNum">The maximum number of jobs to return.</param>
         /// <returns>The array of matching jobs</returns>
         public JobDB[] Get(StatusEnum status)
         {
             List<JobDB> jobs = new List<JobDB>();
 
-            string SQL = "SELECT * FROM Jobs WHERE Status = " + ((int)status).ToString();
+            string SQL = "SELECT * FROM Jobs WHERE Status = " + ((int)status).ToString() + " ORDER BY name DESC";
 
             SqlCommand Command = new SqlCommand(SQL, Connection);
             SqlDataReader Reader = Command.ExecuteReader();
@@ -122,7 +124,8 @@ namespace APSIM.Cloud.Services
                     jobs.Add(new JobDB(Reader["Name"].ToString(), 
                                        Reader["XML"].ToString(),
                                        (StatusEnum) Reader["Status"],
-                                       Reader["XML"].ToString()));
+                                       Reader["URL"].ToString(),
+                                       Reader["ErrorText"].ToString()));
             }
             finally
             {
@@ -133,13 +136,13 @@ namespace APSIM.Cloud.Services
         }
 
         /// <summary>Gets all jobs</summary>
-        /// <param name="status">The status to match</param>
+        /// <param name="maxNum">The maximum number of jobs to return.</param>
         /// <returns>The array of matching jobs</returns>
-        public JobDB[] Get()
+        public JobDB[] Get(int maxNum)
         {
             List<JobDB> jobs = new List<JobDB>();
 
-            string SQL = "SELECT * FROM Jobs";
+            string SQL = "SELECT TOP(" + maxNum.ToString() + ") * FROM Jobs ORDER BY name DESC";
 
             SqlCommand Command = new SqlCommand(SQL, Connection);
             SqlDataReader Reader = Command.ExecuteReader();
@@ -149,7 +152,8 @@ namespace APSIM.Cloud.Services
                     jobs.Add(new JobDB(Reader["Name"].ToString(), 
                                        Reader["XML"].ToString(),
                                        (StatusEnum)Reader["Status"],
-                                       Reader["URL"].ToString()));
+                                       Reader["URL"].ToString(),
+                                       Reader["ErrorText"].ToString()));
             }
             finally
             {
@@ -199,24 +203,37 @@ namespace APSIM.Cloud.Services
             Cmd.ExecuteNonQuery();
         }
 
+        /// <summary>Sets the job error message for the specified job</summary>
+        /// <param name="jobName">Name of the job.</param>
+        /// <param name="newStatus">The URL</param>
+        public void SetJobErrorText(string jobName, string errorMessage)
+        {
+            string SQL = "UPDATE Jobs SET ErrorText = '" + errorMessage + "'" +
+                         " WHERE Name = '" + jobName + "'";
+
+            SqlCommand Cmd = new SqlCommand(SQL, Connection);
+            Cmd.ExecuteNonQuery();
+        }
 
         /// <summary>
         /// A class for holding details about a job.
         /// </summary>
         public class JobDB
         {
-            public JobDB(string name, string xml, StatusEnum status, string url)
+            public JobDB(string name, string xml, StatusEnum status, string url, string errorText)
             {
                 this.Name = name;
                 this.XML = xml;
                 this.Status = status;
                 this.URL = url;
+                this.ErrorText = errorText;
             }
 
             public string Name { get; private set; }
             public string XML { get; private set; }
             public StatusEnum Status { get; private set; }
             public string URL { get; private set; }
+            public string ErrorText { get; private set; }
         }
 
     }

@@ -55,6 +55,8 @@
     <None Include="Resources\delete2.png" />
     <None Include="Resources\media_play_green.png" />
     <None Include="Resources\Rerun.png" />
+    <Content Include="ShowJobDetail.aspx" />
+    <Content Include="AddJob.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -77,6 +79,20 @@
     </Compile>
     <Compile Include="Main.aspx.designer.cs">
       <DependentUpon>Main.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ShowJobDetail.aspx.cs">
+      <DependentUpon>ShowJobDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShowJobDetail.aspx.designer.cs">
+      <DependentUpon>ShowJobDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AddJob.aspx.cs">
+      <DependentUpon>AddJob.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AddJob.aspx.designer.cs">
+      <DependentUpon>AddJob.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

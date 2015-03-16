@@ -27,7 +27,7 @@ namespace APSIM.Cloud.Services
         /// <summary>Factory method for creating a YieldProphet object.</summary>
         /// <param name="xml">The XML to use to create the object</param>
         /// <returns>The newly created object.</returns>
-        public static Specification.YieldProphet Create(string xml)
+        public static Specification.YieldProphetSpec Create(string xml)
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
@@ -36,15 +36,15 @@ namespace APSIM.Cloud.Services
             
             XmlReader reader = new XmlNodeReader(doc.DocumentElement);
             reader.Read();
-            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphet));
-            return (Specification.YieldProphet)serial.Deserialize(reader);
+            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphetSpec));
+            return (Specification.YieldProphetSpec)serial.Deserialize(reader);
         }
 
         /// <summary>Convert the YieldProphet spec to XML.</summary>
         /// <returns>The XML string.</returns>
-        public static string ToXML(Specification.YieldProphet yieldProphet)
+        public static string ToXML(Specification.YieldProphetSpec yieldProphet)
         {
-            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphet));
+            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphetSpec));
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
             StringWriter writer = new StringWriter();
@@ -65,32 +65,112 @@ namespace APSIM.Cloud.Services
         /// <param name="observedData">Observed data. Can be null.</param>
         /// <param name="nowDate">The now date.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        public static void Run(string yieldProphetXML, DataTable observedData, DateTime nowDate, string workingDirectory)
+        public static Utility.JobManager.IRunnable Run(string yieldProphetXML, DataTable observedData)
         {
+            string workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(workingDirectory);
+            
             // Create a YieldProphet object from our YP xml file
-            Specification.YieldProphet spec = YieldProphetServices.Create(yieldProphetXML);
-
-            // Specify the now date.
-            spec.PaddockList[0].NowDate = nowDate;
+            Specification.YieldProphetSpec spec = YieldProphetServices.Create(yieldProphetXML);
 
             // Specify the observed data.
             spec.PaddockList[0].ObservedData = observedData;
 
             // Convert YieldProphet spec into a simulation set.
-            List<APSIM.Cloud.Services.Specification.APSIM> simulations = YieldProphetServices.ToAPSIM(spec, workingDirectory);
+            List<APSIM.Cloud.Services.Specification.APSIMSpec> simulations = YieldProphetServices.ToAPSIM(spec, workingDirectory);
 
-            // Make sure the simulation runs.
-            APSIMRun.Locally(simulations, workingDirectory);
+            // Create a sequential job.
+            Utility.JobSequence job = new Utility.JobSequence();
+            job.Jobs = new List<Utility.JobManager.IRunnable>();
+            job.Jobs.Add(CreateRunnableJob(simulations, workingDirectory));
+            job.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
+            job.Jobs.Add(new RunnableJobs.YPPostSimulationJob(spec.PaddockList[0].NowDate, workingDirectory));
 
-            // Perform all post simulation tasks.
-            PostSimulation(spec, nowDate, workingDirectory);
+            // Fill in calculated fields.
+            foreach (Specification.Paddock paddock in spec.PaddockList)
+                FillInCalculatedFields(paddock, observedData, workingDirectory);
 
+            // Save YieldProphet.xml to working folder.
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(YieldProphetServices.ToXML(spec));
+            doc.Save(Path.Combine(workingDirectory, "YieldProphet.xml"));
+
+            return job;
         }
+
+        /// <summary>Create a runnable job for the APSIM simulations</summary>
+        /// <param name="FilesToRun">The files to run.</param>
+        /// <returns>A runnable job for all simulations</returns>
+        private static Utility.JobManager.IRunnable CreateRunnableJob(List<APSIM.Cloud.Services.Specification.APSIMSpec> simulations, string workingDirectory)
+        {
+            string apsimFileName = APSIMFiles.Create(simulations, workingDirectory);
+
+            string apsimHomeDirectory = Path.GetDirectoryName(RunnableJobs.APSIMJob.localAPSIMExe);
+            apsimHomeDirectory = Path.GetDirectoryName(apsimHomeDirectory); // parent.
+            Configuration.SetApsimDir(apsimHomeDirectory);
+            PlugIns.LoadAll();
+
+            List<Utility.JobManager.IRunnable> jobs = new List<Utility.JobManager.IRunnable>();
+            XmlDocument Doc = new XmlDocument();
+            Doc.Load(apsimFileName);
+
+            List<XmlNode> simulationNodes = new List<XmlNode>();
+            Utility.Xml.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref simulationNodes);
+
+            foreach (XmlNode simulation in simulationNodes)
+            {
+                if (Utility.Xml.Attribute(simulation, "enabled") != "no")
+                {
+                    XmlNode factorialNode = Utility.Xml.FindByType(Doc.DocumentElement, "factorial");
+                    if (factorialNode == null)
+                    {
+                        RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(
+                           fileName: apsimFileName,
+                           arguments: "Simulation=" + Utility.Xml.FullPath(simulation));
+                        jobs.Add(job);
+                    }
+                    else
+                    {
+                        ApsimFile F = new ApsimFile();
+
+                        // The OpenFile method below changes the current directory: We don't want
+                        // this. Restore the current directory after calling it.
+                        string cwd = Directory.GetCurrentDirectory();
+                        F.OpenFile(apsimFileName);
+                        Directory.SetCurrentDirectory(cwd);
+
+                        FactorBuilder builder = new FactorBuilder();
+                        string path = "/" + Utility.Xml.FullPath(simulation);
+                        path = path.Remove(path.LastIndexOf('/'));
+                        List<string> simsToRun = new List<string>();
+                        foreach (FactorItem item in builder.BuildFactorItems(F.FactorComponent, path))
+                        {
+                            List<String> factorials = new List<string>();
+                            item.CalcFactorialList(factorials);
+                            foreach (string factorial in factorials)
+                                simsToRun.Add(path + "@factorial='" + factorial + "'");
+                        }
+                        List<SimFactorItem> simFactorItems = Factor.CreateSimFiles(F, simsToRun.ToArray(), workingDirectory);
+
+                        foreach (SimFactorItem simFactorItem in simFactorItems)
+                        {
+
+                            RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(
+                                fileName: simFactorItem.SimFileName);
+                            jobs.Add(job);
+                        }                    
+                    }
+                }
+            }
+
+            return new Utility.JobParallel() { Jobs = jobs };
+        }
+
 
         /// <summary>Perform all post simulation actions</summary>
         /// <param name="yieldProphet">The yield prophet specification.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        private static void PostSimulation(Specification.YieldProphet yieldProphet, DateTime nowDate, string workingDirectory)
+        private static void PostSimulation(Specification.YieldProphetSpec yieldProphet, DateTime nowDate, string workingDirectory)
         {
             // Create an XML file for the YieldProphet spec so that ApsimReport can find it.
             XmlDocument doc = new XmlDocument();
@@ -119,11 +199,11 @@ namespace APSIM.Cloud.Services
         /// <param name="endDate">The end date for using any observed data.</param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <returns>The name of the created .apsim file.</returns>
-        public static List<Specification.APSIM> ToAPSIM(Specification.YieldProphet yieldProphet, string workingFolder)
+        public static List<Specification.APSIMSpec> ToAPSIM(Specification.YieldProphetSpec yieldProphet, string workingFolder)
         {
-            if (yieldProphet.ReportType == Specification.YieldProphet.ReportTypeEnum.Crop)
+            if (yieldProphet.ReportType == Specification.YieldProphetSpec.ReportTypeEnum.Crop)
                 return CropReport(yieldProphet, workingFolder);
-            else if (yieldProphet.ReportType == Specification.YieldProphet.ReportTypeEnum.SowingOpportunity)
+            else if (yieldProphet.ReportType == Specification.YieldProphetSpec.ReportTypeEnum.SowingOpportunity)
                 return SowingOpportunityReport(yieldProphet, workingFolder);
 
             return null;
@@ -132,12 +212,12 @@ namespace APSIM.Cloud.Services
         /// <summary>Convert the yieldProphet specification into a series of APSIM simulation specifications.</summary>
         /// <param name="yieldProphet">The yield prophet specification.</param>
         /// <param name="workingFolder">The working folder.</param>
-        private static Specification.APSIM CreateBaseSimulation(Specification.Paddock paddock, string workingFolder)
+        private static Specification.APSIMSpec CreateBaseSimulation(Specification.Paddock paddock, string workingFolder)
         {
             Specification.Paddock copyOfPaddock = Utility.Xml.Clone(paddock) as Specification.Paddock;
             copyOfPaddock.ObservedData = paddock.ObservedData;
 
-            Specification.APSIM shortSimulation = new Specification.APSIM();
+            Specification.APSIMSpec shortSimulation = new Specification.APSIMSpec();
             shortSimulation.Name = "Base";
 
             shortSimulation.StartDate = new DateTime(copyOfPaddock.StartSeasonDate.Year, 4, 1);
@@ -162,24 +242,24 @@ namespace APSIM.Cloud.Services
         /// <summary>Convert the yieldProphet specification into a series of APSIM simulation specifications.</summary>
         /// <param name="yieldProphet">The yield prophet specification.</param>
         /// <param name="workingFolder">The working folder.</param>
-        private static List<Specification.APSIM> CropReport(Specification.YieldProphet yieldProphet, string workingFolder)
+        private static List<Specification.APSIMSpec> CropReport(Specification.YieldProphetSpec yieldProphet, string workingFolder)
         {
-            List<Specification.APSIM> simulations = new List<Specification.APSIM>();
+            List<Specification.APSIMSpec> simulations = new List<Specification.APSIMSpec>();
             Specification.Paddock paddock = yieldProphet.PaddockList[0];
 
-            Specification.APSIM thisYear = CreateBaseSimulation(paddock, workingFolder);
+            Specification.APSIMSpec thisYear = CreateBaseSimulation(paddock, workingFolder);
             thisYear.Name = "ThisYear";
             thisYear.WriteDepthFile = true;
             simulations.Add(thisYear);
 
-            Specification.APSIM seasonSimulation = CreateBaseSimulation(paddock, workingFolder);
+            Specification.APSIMSpec seasonSimulation = CreateBaseSimulation(paddock, workingFolder);
             seasonSimulation.Name = "Base";
             seasonSimulation.DailyOutput = false;
             seasonSimulation.YearlyOutput = true;
             seasonSimulation.EndDate = seasonSimulation.StartDate.AddDays(300);
             simulations.Add(seasonSimulation);
 
-            Specification.APSIM NUnlimitedSimulation = CreateBaseSimulation(paddock, workingFolder);
+            Specification.APSIMSpec NUnlimitedSimulation = CreateBaseSimulation(paddock, workingFolder);
             NUnlimitedSimulation.Name = "NUnlimited";
             NUnlimitedSimulation.DailyOutput = false;
             NUnlimitedSimulation.YearlyOutput = true;
@@ -187,7 +267,7 @@ namespace APSIM.Cloud.Services
             NUnlimitedSimulation.NUnlimited = true;
             simulations.Add(NUnlimitedSimulation);
 
-            Specification.APSIM NUnlimitedFromTodaySimulation = CreateBaseSimulation(paddock, workingFolder);
+            Specification.APSIMSpec NUnlimitedFromTodaySimulation = CreateBaseSimulation(paddock, workingFolder);
             NUnlimitedFromTodaySimulation.Name = "NUnlimitedFromToday";
             NUnlimitedFromTodaySimulation.DailyOutput = false;
             NUnlimitedFromTodaySimulation.YearlyOutput = true;
@@ -195,7 +275,7 @@ namespace APSIM.Cloud.Services
             NUnlimitedFromTodaySimulation.NUnlimitedFromToday = true;
             simulations.Add(NUnlimitedFromTodaySimulation);
 
-            Specification.APSIM Next10DaysDry = CreateBaseSimulation(paddock, workingFolder);
+            Specification.APSIMSpec Next10DaysDry = CreateBaseSimulation(paddock, workingFolder);
             Next10DaysDry.Name = "Next10DaysDry";
             Next10DaysDry.DailyOutput = false;
             Next10DaysDry.YearlyOutput = true;
@@ -208,16 +288,16 @@ namespace APSIM.Cloud.Services
         /// <summary>Convert the yieldProphet specification into a series of APSIM simulation specifications.</summary>
         /// <param name="yieldProphet">The yield prophet specification.</param>
         /// <param name="workingFolder">The working folder.</param>
-        private static List<Specification.APSIM> SowingOpportunityReport(Specification.YieldProphet yieldProphet, string workingFolder)
+        private static List<Specification.APSIMSpec> SowingOpportunityReport(Specification.YieldProphetSpec yieldProphet, string workingFolder)
         {
-            List<Specification.APSIM> simulations = new List<Specification.APSIM>();
+            List<Specification.APSIMSpec> simulations = new List<Specification.APSIMSpec>();
             Specification.Paddock paddock = yieldProphet.PaddockList[0];
 
             DateTime sowingDate = new DateTime(paddock.StartSeasonDate.Year, 3, 15);
             DateTime lastSowingDate = new DateTime(paddock.StartSeasonDate.Year, 7, 5);
             while (sowingDate <= lastSowingDate)
             {
-                Specification.APSIM sim = CreateBaseSimulation(paddock, workingFolder);
+                Specification.APSIMSpec sim = CreateBaseSimulation(paddock, workingFolder);
                 sim.Name = sowingDate.ToString("ddMMM");
                 sim.DailyOutput = false;
                 sim.YearlyOutput = true;
@@ -240,7 +320,7 @@ namespace APSIM.Cloud.Services
         /// <param name="simulation">The simulation to add the management operations to.</param>
         /// <exception cref="System.Exception">Cannot find soil water reset date</exception>
         /// <exception cref="Exception">Cannot find soil water reset date</exception>
-        private static void AddResetDatesToManagement(Specification.Paddock paddock, Specification.APSIM simulation)
+        private static void AddResetDatesToManagement(Specification.Paddock paddock, Specification.APSIMSpec simulation)
         {
             // Reset
             if (paddock.SoilWaterSampleDate == DateTime.MinValue)
@@ -298,10 +378,8 @@ namespace APSIM.Cloud.Services
         /// <param name="paddock">The paddock.</param>
         /// <param name="observedData">The observed data.</param>
         /// <param name="weatherData">The weather data.</param>
-        private static void FillInCalculatedFields(Specification.Paddock paddock, DataTable observedData, WeatherFile weatherData, string workingFolder)
+        private static void FillInCalculatedFields(Specification.Paddock paddock, DataTable observedData, string workingFolder)
         {
-            paddock.LastClimateDate = weatherData.LastSILODateFound;
-
             IEnumerable<Specification.Tillage> tillages = paddock.Management.OfType<Specification.Tillage>();
             if (tillages.Count() > 0)
                 paddock.StubbleIncorporatedPercent = Specification.Utils.CalculateAverageTillagePercent(tillages);
@@ -310,14 +388,20 @@ namespace APSIM.Cloud.Services
             if (lastRainfallDate != DateTime.MinValue)
                 paddock.DateOfLastRainfallEntry = lastRainfallDate.ToString("dd/MM/yyyy");
 
-            if (weatherData.FilesCreated.Count() > 0)
+            string[] metFiles = Directory.GetFiles(workingFolder, "*.met");
+            if (metFiles.Length > 0)
             {
-                string firstMetFile = Path.Combine(workingFolder, weatherData.FilesCreated[0]);
+                string firstMetFile = Path.Combine(workingFolder, metFiles[0]);
                 Utility.ApsimTextFile textFile = new Utility.ApsimTextFile();
                 textFile.Open(firstMetFile);
                 DataTable data = textFile.ToTable();
                 textFile.Close();
                 paddock.RainfallSinceSoilWaterSampleDate = SumTableAfterDate(data, "Rain", paddock.SoilWaterSampleDate);
+                if (data.Rows.Count > 0)
+                {
+                    DataRow lastweatherRow = data.Rows[data.Rows.Count - 1];
+                    paddock.LastClimateDate = Utility.DataTable.GetDateFromRow(lastweatherRow);
+                }
             }
         }
 
@@ -326,7 +410,7 @@ namespace APSIM.Cloud.Services
         /// <returns>The date of the last rainfall row or DateTime.MinValue if no data.</returns>
         private static DateTime GetLastRainfallDate(DataTable observedData)
         {
-            if (observedData.Rows.Count == 0)
+            if (observedData == null || observedData.Rows.Count == 0)
                 return DateTime.MinValue;
 
             int lastRowIndex = observedData.Rows.Count - 1;

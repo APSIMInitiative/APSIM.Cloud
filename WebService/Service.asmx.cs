@@ -63,16 +63,16 @@ namespace WebService
         /// <summary>Gets the yield prophet structure.</summary>
         /// <param name="paddockXML">The paddock XML.</param>
         /// <returns>The yield prophet strucure</returns>
-        private static YieldProphet GetYieldProphetStructure(string paddockXML)
+        private static YieldProphetSpec GetYieldProphetStructure(string paddockXML)
         {
             // Deserialise paddockXML to a YieldProphet instance.
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(paddockXML);
             XmlNodeReader reader = new XmlNodeReader(doc);
 
-            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
+            XmlSerializer serial = new XmlSerializer(typeof(YieldProphetSpec));
             object y = serial.Deserialize(reader);
-            YieldProphet yieldProphetSpec = y as YieldProphet;
+            YieldProphetSpec yieldProphetSpec = y as YieldProphetSpec;
             return yieldProphetSpec;
         }
 

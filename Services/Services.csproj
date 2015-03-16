@@ -48,16 +48,19 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Utility">
-      <HintPath>..\..\..\ApsimX\Bin\Utility.dll</HintPath>
+    <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ApsimX\Bin\Utility.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APSIMFileWriter.cs" />
-    <Compile Include="Specification\APSIM.cs" />
+    <Compile Include="RunnableJobs\APSIMJob.cs" />
+    <Compile Include="RunnableJobs\APSIMPostSimulationJob.cs" />
+    <Compile Include="RunnableJobs\YPPostSimulationJob.cs" />
+    <Compile Include="Specification\APSIMSpec.cs" />
     <Compile Include="Specification\Utils.cs" />
     <Compile Include="WeatherFile.cs" />
-    <Compile Include="APSIMRun.cs" />
     <Compile Include="YieldProphetOld.cs" />
     <Compile Include="APSIMFiles.cs" />
     <Compile Include="JobsDB.cs" />
@@ -74,7 +77,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <Compile Include="Specification\YieldProphet.cs" />
+    <Compile Include="Specification\YieldProphetSpec.cs" />
     <Compile Include="YieldProphetServices.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +129,6 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

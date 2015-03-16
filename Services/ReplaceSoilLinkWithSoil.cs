@@ -25,8 +25,8 @@ namespace APSIM.Cloud.Services
         public static void Go(string fileName)
         {
             StreamReader reader = new StreamReader(fileName);
-            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphet));
-            Specification.YieldProphet yieldProphet = serial.Deserialize(reader) as Specification.YieldProphet;
+            XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphetSpec));
+            Specification.YieldProphetSpec yieldProphet = serial.Deserialize(reader) as Specification.YieldProphetSpec;
             reader.Close();
 
             APSOIL.Service apsoilService = new APSOIL.Service();
