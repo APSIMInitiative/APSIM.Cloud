@@ -7,8 +7,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BobWeb {
-    
+namespace APSIM.Cloud.WebPortal 
+{
+   
     
     public partial class Upload {
         

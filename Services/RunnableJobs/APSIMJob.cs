@@ -23,7 +23,7 @@ namespace APSIM.Cloud.Services.RunnableJobs
         public bool IsCompleted { get; set; }
 
         /// <summary>The local apsim executable to run.</summary>
-        public static string localAPSIMExe = @"C:\Users\hol353\APSIM\Model\ApsimModel.exe";
+        public static string localAPSIMExe = @"D:\APSIM\Model\ApsimModel.exe";
 
         /// <summary>Gets or sets the name of the APSIM file.</summary>
         private string fileName;

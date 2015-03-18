@@ -1,1 +1,1 @@
-﻿<%@ WebService Language="C#" CodeBehind="Service.asmx.cs" Class="WebService.Service1" %>
+﻿<%@ WebService Language="C#" CodeBehind="Service.asmx.cs" Class="APSIM.Cloud.WebService.APSIMCloud" %>

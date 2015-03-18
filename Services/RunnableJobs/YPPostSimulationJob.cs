@@ -30,7 +30,7 @@ namespace APSIM.Cloud.Services.RunnableJobs
         public bool IsCompleted { get; set; }
 
         /// <summary>The apsim report executable path.</summary>
-        private static string apsimReport = @"C:\Users\hol353\ApsimReport\ApsimReport.exe";
+        private static string apsimReport = @"D:\ApsimReport\ApsimReport.exe";
 
         /// <summary>The apsim report executable path.</summary>
         private static string archiveLocation = @"ftp://www.apsim.info/YP/Archive";

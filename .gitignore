@@ -4,3 +4,12 @@ Test/obj/
 *.FileListAbsolute.txt
 Services/bin/
 packages/
+*.suo
+WebPortal/obj/
+*.user
+*.exe
+*.dll
+*.pdb
+*.cache
+WebService/obj/
+CallReportingWebService/bin/

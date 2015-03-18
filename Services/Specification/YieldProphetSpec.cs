@@ -73,7 +73,6 @@ namespace APSIM.Cloud.Services.Specification
         public string RainfallFilename { get; set; }
 
         /// <summary>Gets or sets the observed data. Can be null if no data.</summary>
-        [XmlIgnore]
         public DataTable ObservedData { get; set; }
 
         /// <summary>Gets or sets the rainfall source name that appears on Crop Report</summary>

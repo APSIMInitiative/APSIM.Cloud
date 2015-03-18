@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddJob.aspx.cs" Inherits="BobWeb.Upload" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddJob.aspx.cs" Inherits="APSIM.Cloud.WebPortal.Upload" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -16,7 +16,7 @@
 <body>
     <form id="form1" runat="server">
     <p>
-        XML file to add to job queue:&nbsp;&nbsp;
+        Select .xml or .zip file to add to job queue:&nbsp;&nbsp;
        <asp:FileUpload ID="FileUpload" runat="server" Width="313px" Height="20px" />
     </p>
     <asp:Panel ID="Panel1" runat="server">

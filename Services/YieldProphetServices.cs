@@ -22,7 +22,7 @@ namespace APSIM.Cloud.Services
     /// </summary>
     public class YieldProphetServices
     {
-        private static string ApsimReport = @"C:\Users\hol353\Work\ApsimReport\ApsimReport.exe";
+        private static string ApsimReport = @"D:\ApsimReport\ApsimReport.exe";
 
         /// <summary>Factory method for creating a YieldProphet object.</summary>
         /// <param name="xml">The XML to use to create the object</param>
@@ -38,6 +38,16 @@ namespace APSIM.Cloud.Services
             reader.Read();
             XmlSerializer serial = new XmlSerializer(typeof(Specification.YieldProphetSpec));
             return (Specification.YieldProphetSpec)serial.Deserialize(reader);
+        }
+
+        /// <summary>Factory method for creating a YieldProphet object from a file.</summary>
+        /// <param name="xml">The filename containing the XML</param>
+        /// <returns>The newly created object.</returns>
+        public static Specification.YieldProphetSpec CreateFromFile(string fileName)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(fileName);
+            return Create(doc.OuterXml);
         }
 
         /// <summary>Convert the YieldProphet spec to XML.</summary>
