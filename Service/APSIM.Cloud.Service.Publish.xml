@@ -1,0 +1,17 @@
+<publishData>
+  <publishTarget publishUrl="ftp://www.apsim.info/APSIM.Cloud.Service">
+    <file relUrl="Web.config" publishTime="03/25/2015 11:10:40" />
+    <file relUrl="bin/ApsimFile.dll" publishTime="03/26/2015 09:56:22" />
+    <file relUrl="APSIM.Cloud.Service.Jobs.svc" publishTime="03/26/2015 10:12:33" />
+    <file relUrl="bin/Utility.dll" publishTime="03/25/2015 12:02:18" />
+    <file relUrl="bin/APSIM.Cloud.Service.pdb" publishTime="03/26/2015 10:12:27" />
+    <file relUrl="Jobs.svc" publishTime="03/25/2015 10:18:53" />
+    <file relUrl="bin/APSIM.Cloud.Service.dll" publishTime="03/26/2015 10:12:27" />
+    <file relUrl="bin/CMPServices.dll" publishTime="03/26/2015 09:56:20" />
+    <file relUrl="bin/CSGeneral.dll" publishTime="03/26/2015 09:55:56" />
+    <file relUrl="bin/APSIM.Cloud.Service.dll.config" publishTime="03/25/2015 11:10:40" />
+    <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="12/12/2014 09:08:59" />
+    <file relUrl="bin/Utility.pdb" publishTime="03/25/2015 12:02:18" />
+    <file relUrl="bin/System.Data.SQLite.dll" publishTime="12/12/2014 09:09:16" />
+  </publishTarget>
+</publishData>

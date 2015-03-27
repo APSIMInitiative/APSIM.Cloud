@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="bd2aceb2-0746-422f-a71f-1f01305809e6" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://www.yieldprophet.com.au/YPService/Reporting.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Reporting.xsd" MetadataType="Schema" ID="f91fdaef-7d9e-460e-871a-a783a1af8f4c" SourceId="1" SourceUrl="http://www.yieldprophet.com.au/YPService/Reporting.svc?xsd=xsd0" />
+    <MetadataFile FileName="Reporting1.xsd" MetadataType="Schema" ID="301ad946-08b9-4a8b-89f6-65719fb8d6ab" SourceId="1" SourceUrl="http://www.yieldprophet.com.au/YPService/Reporting.svc?xsd=xsd2" />
+    <MetadataFile FileName="Reporting.disco" MetadataType="Disco" ID="ad516e52-30ea-417a-ac83-ff741b683720" SourceId="1" SourceUrl="http://www.yieldprophet.com.au/YPService/Reporting.svc?disco" />
+    <MetadataFile FileName="Reporting.wsdl" MetadataType="Wsdl" ID="89b3ce9f-4e19-4e06-b0e4-3086ef03fe33" SourceId="1" SourceUrl="http://www.yieldprophet.com.au/YPService/Reporting.svc?wsdl" />
+    <MetadataFile FileName="Reporting2.xsd" MetadataType="Schema" ID="afe2b73b-e599-43ff-aa1e-b93bc2d4be8a" SourceId="1" SourceUrl="http://www.yieldprophet.com.au/YPService/Reporting.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

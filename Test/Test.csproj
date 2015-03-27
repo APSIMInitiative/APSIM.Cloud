@@ -69,11 +69,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="UnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Files\CropReport.rain" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -84,12 +82,6 @@
     <EmbeddedResource Include="Files\TestConverter.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Services\Services.csproj">
-      <Project>{DF8D2315-7238-4615-835B-8E11FC3D8D33}</Project>
-      <Name>Services</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Files\TestValidation.xml">

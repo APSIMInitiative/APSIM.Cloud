@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="ftp://www.apsim.info/APSIMCloud/WebPortal" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FTP" replaceMatchingFiles="False" userName="administrator" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="Web.config" publishTime="03/20/2015 12:55:30" />
+    <file relUrl="AddJob.aspx" publishTime="03/18/2015 15:17:39" />
+    <file relUrl="bin/Utility.pdb" publishTime="03/18/2015 14:35:14" />
+    <file relUrl="ShowJobDetail.aspx" publishTime="03/10/2015 17:09:31" />
+    <file relUrl="bin/ApsimFile.dll" publishTime="03/10/2015 12:51:18" />
+    <file relUrl="bin/Utility.dll" publishTime="03/18/2015 14:35:14" />
+    <file relUrl="Main.aspx" publishTime="03/16/2015 11:32:15" />
+    <file relUrl="bin/APSIM.Cloud.WebPortal.pdb" publishTime="03/18/2015 15:26:48" />
+    <file relUrl="bin/APSIM.Cloud.Services.exe" publishTime="03/18/2015 15:26:47" />
+    <file relUrl="bin/CMPServices.dll" publishTime="02/02/2015 15:15:42" />
+    <file relUrl="bin/CSGeneral.dll" publishTime="02/02/2015 15:15:19" />
+    <file relUrl="bin/APSIM.Cloud.WebPortal.dll" publishTime="03/18/2015 15:26:48" />
+    <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="02/06/2015 12:28:37" />
+    <file relUrl="bin/APSIM.Cloud.Services.pdb" publishTime="03/18/2015 15:26:47" />
+    <file relUrl="bin/ApsimFile.pdb" publishTime="03/10/2015 12:51:18" />
+    <file relUrl="bin/System.Data.SQLite.dll" publishTime="12/12/2014 09:09:16" />
+  </publishProfile>
+</publishData>

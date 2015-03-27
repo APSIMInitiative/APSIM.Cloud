@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="cb4c8e7a-0fbf-4382-96c2-9f8c0e6f995f" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="309c2a5a-ed1d-4aec-95a3-bb893af473df" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="02e33c0a-b9ee-4caa-9b6b-364cda461ad6" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="9c4086eb-672a-4660-81fa-3a325baf3357" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="APSIM.Cloud.Service1.xsd" MetadataType="Schema" ID="6ecbdf43-5310-4f66-b681-18ff50607b3b" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="System.Data1.xsd" MetadataType="Schema" ID="db452c83-00f6-4a77-a00e-3ff3a2e98049" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="APSIM.Cloud.Service.Soils1.xsd" MetadataType="Schema" ID="831c35de-6157-45f4-86c2-bc1cf36870ff" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="2e33beac-8e2a-4ccd-9465-dff1bada91bd" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

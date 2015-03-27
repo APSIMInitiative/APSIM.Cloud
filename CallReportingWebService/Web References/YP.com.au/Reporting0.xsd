@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/YPService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/YPService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="ReportType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ClimateAdaptationReport" />
+      <xs:enumeration value="ClimateChangeReport" />
+      <xs:enumeration value="BasicCropReport" />
+      <xs:enumeration value="CropReport" />
+      <xs:enumeration value="SoilProbeCropReport" />
+      <xs:enumeration value="FallowMonitoringReport" />
+      <xs:enumeration value="IrrigationComparisonReport" />
+      <xs:enumeration value="IrrigationProfitReportBarley" />
+      <xs:enumeration value="IrrigationProfitReportWheat" />
+      <xs:enumeration value="NitrogenComparisonReport" />
+      <xs:enumeration value="NitogenProfitReportBarley" />
+      <xs:enumeration value="NitogenProfitReportWheat" />
+      <xs:enumeration value="SowingXVarietyReport" />
+      <xs:enumeration value="SowingOpportunityReport" />
+      <xs:enumeration value="StubbleManagementReport" />
+      <xs:enumeration value="HayProfitReport" />
+      <xs:enumeration value="CurrentGrowthStageReport" />
+      <xs:enumeration value="WeatherStationValidationReport" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ReportType" nillable="true" type="tns:ReportType" />
+</xs:schema>
