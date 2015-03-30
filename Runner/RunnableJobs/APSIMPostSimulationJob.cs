@@ -54,7 +54,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 foreach (XmlNode simNode in simulationNodes)
                 {
                     string simName = Utility.Xml.NameAttr(simNode);
-                    string[] sumFiles = Directory.GetFiles(workingFolder, simName + "*.sum");
+                    string[] sumFiles = Directory.GetFiles(workingFolder, simName + "_*.sum");
                     if (sumFiles.Length > 0)
                         ConcatenateSummaryFiles(sumFiles, simName + ".sum");
                 }
@@ -63,7 +63,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 foreach (XmlNode simNode in simulationNodes)
                 {
                     string simName = Utility.Xml.NameAttr(simNode);
-                    string[] outFiles = Directory.GetFiles(workingFolder, simName + "*Yearly.out");
+                    string[] outFiles = Directory.GetFiles(workingFolder, simName + "_*Yearly.out");
                     if (outFiles.Length > 0)
                         ConcatenateOutputFiles(outFiles, simName + " Yearly.out");
                 }
@@ -72,7 +72,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 foreach (XmlNode simNode in simulationNodes)
                 {
                     string simName = Utility.Xml.NameAttr(simNode);
-                    string[] outFiles = Directory.GetFiles(workingFolder, simName + "*Monthly.out");
+                    string[] outFiles = Directory.GetFiles(workingFolder, simName + "_*Monthly.out");
                     if (outFiles.Length > 0)
                         ConcatenateOutputFiles(outFiles, simName + " Monthly.out");
                 }
@@ -81,7 +81,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 foreach (XmlNode simNode in simulationNodes)
                 {
                     string simName = Utility.Xml.NameAttr(simNode);
-                    string[] outFiles = Directory.GetFiles(workingFolder, simName + "*Daily.out");
+                    string[] outFiles = Directory.GetFiles(workingFolder, simName + "_*Daily.out");
                     if (outFiles.Length > 0)
                         ConcatenateOutputFiles(outFiles, simName + " Daily.out");
                 }
