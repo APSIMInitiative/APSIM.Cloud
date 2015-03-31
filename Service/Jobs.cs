@@ -11,6 +11,7 @@ namespace APSIM.Cloud.Service
     using System.IO;
     using System.Xml;
     using System.Xml.Serialization;
+    using System.Data;
 
     /// <summary>
     /// A class encapsulating a database of jobs that need running.
@@ -54,7 +55,7 @@ namespace APSIM.Cloud.Service
 
             foreach (Paddock paddock in yieldProphet.Paddock)
                 paddock.NowDate = nowDate;
-            string newJobName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
 
             string xml = YieldProphetToXML(yieldProphet);
 
@@ -130,7 +131,7 @@ namespace APSIM.Cloud.Service
                     {
                         Job newJob = CreateJobFromReader(Reader);
                         Reader.Close();
-                  //DEANH - uncomment.      SetStatus(newJob.Name, StatusEnum.Running);
+                        SetStatus(newJob.Name, StatusEnum.Running);
                         return newJob;
                     }
                     else
@@ -203,6 +204,30 @@ namespace APSIM.Cloud.Service
             Cmd.Parameters.Add(new SqlParameter("@Status", isError));
             Cmd.Parameters.Add(new SqlParameter("@Message", message));
             Cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Gets the log messages.
+        /// </summary>
+        /// <returns>The log message: Date, Status, Message</returns>
+        public DataSet GetLogMessages()
+        {
+            string SQL = "SELECT TOP(100) * FROM LOG ORDER BY DATE DESC";
+
+            SqlCommand command = new SqlCommand(SQL, Connection);
+            SqlDataReader reader = command.ExecuteReader();
+            DataSet dataset = new DataSet();
+            try
+            {
+                DataTable table = new DataTable();
+                table.Load(reader);
+                dataset.Tables.Add(table);
+                return dataset;
+            }
+            finally
+            {
+                reader.Close();
+            }
         }
 
         /// <summary>Specifies that the job is completed./summary>
@@ -296,7 +321,8 @@ namespace APSIM.Cloud.Service
         private static Job CreateJobFromReader(SqlDataReader Reader)
         {
             string url = null;
-            if ((StatusEnum)Reader["Status"] == StatusEnum.Completed)
+            if ((StatusEnum)Reader["Status"] == StatusEnum.Completed ||
+                 (StatusEnum)Reader["Status"] == StatusEnum.Error)
                 url = "http://www.apsim.info/YP/Archive/" + Reader["Name"] + ".zip";
 
             return new Job(Reader["Name"].ToString(),

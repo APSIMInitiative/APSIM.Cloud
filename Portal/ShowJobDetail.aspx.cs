@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using APSIM.Cloud;
 using System.IO;
+using System.Data;
 
 namespace APSIM.Cloud.Portal
 {
@@ -43,6 +44,22 @@ namespace APSIM.Cloud.Portal
 
                         Response.End();
                     }
+                }
+            }
+            else
+            {
+                using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
+                {
+                    string text = string.Empty;
+                    DataSet log = jobsService.GetLogMessages();
+                    foreach (DataRow row in log.Tables[0].Rows)
+                    {
+                        text += Convert.ToDateTime(row["DATE"]).ToString("yyyy-MM-dd hh:mm:ss tt") + ": " + row["MESSAGE"] + "\r\n";
+                    }
+                    Response.ContentType = "text/plain";
+                    Response.Output.Write(text);
+
+                    Response.End();
                 }
             }
         }

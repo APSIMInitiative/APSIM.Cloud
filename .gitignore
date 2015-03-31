@@ -13,3 +13,7 @@ WebPortal/obj/
 *.cache
 WebService/obj/
 CallReportingWebService/bin/
+Runner/bin/Debug/Temp/Model/TclLink/lib/tcl8.5/tzdata/PST8PDT
+Runner/bin/
+Portal/obj/
+Portal/bin/

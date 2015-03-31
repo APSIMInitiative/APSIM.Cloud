@@ -73,6 +73,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunnableJobs\APSIMJob.cs" />
     <Compile Include="RunnableJobs\APSIMPostSimulationJob.cs" />
+    <Compile Include="RunnableJobs\ProcessYPJob.cs" />
     <Compile Include="RunnableJobs\YPPostSimulationJob.cs" />
     <Compile Include="Service References\APSOIL\Reference.cs">
       <AutoGen>True</AutoGen>

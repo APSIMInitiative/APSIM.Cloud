@@ -28,13 +28,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
         /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
         public bool IsCompleted { get; set; }
-
-        /// <summary>The apsim report executable path.</summary>
-        private static string apsimReport = @"D:\ApsimReport\ApsimReport.exe";
-
-        /// <summary>The apsim report executable path.</summary>
-        private static string archiveLocation = @"ftp://www.apsim.info/YP/Archive";
-                
+            
         /// <summary>Gets or sets the working directory.</summary>
         private string workingDirectory;
 
@@ -69,24 +63,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 reader.Close();
             }
 
-            // Call the YP reporting webservice.
-            DataSet dataSet = new DataSet("ReportData");
-            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.out"))
-                try
-                {
-                    dataSet.Tables.Add(Utility.ApsimTextFile.ToTable(outFileName));
-                }
-                catch (Exception)
-                {
-
-                }
-
-            // Call StoreReport
-            using (YPReporting.ReportingClient reportingClient = new YPReporting.ReportingClient())
-            {
-                reportingClient.StoreReport(reportName, dataSet);
-            }
-
             // copy in the report file.
             string reportFileName = Path.Combine(workingDirectory, yieldProphet.ReportType + ".report");
             Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Runner.Resources." + yieldProphet.ReportType + ".report");
@@ -95,9 +71,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             doc.Save(reportFileName);
 
             // run ApsimReport to generate .GIF files and a .PDF
+            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
             string archiveBaseFileName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = apsimReport;
+            startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
             startInfo.Arguments = Utility.String.DQuote(reportFileName) + " " +
                                   Utility.String.DQuote(archiveBaseFileName + ".gif");
             startInfo.WorkingDirectory = workingDirectory;
@@ -107,13 +85,30 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             process = Process.Start(startInfo);
             process.WaitForExit();
 
-            // Zip the temporary directory and send to archive.
-            string zipFileName = Path.Combine(workingDirectory, archiveBaseFileName + ".zip");
-            Utility.Zip.ZipFiles(Directory.GetFiles(workingDirectory), zipFileName, null);
-            Utility.FTPClient.Upload(zipFileName, archiveLocation + "/" + archiveBaseFileName + ".zip", "Administrator", "CsiroDMZ!");
+            // Call the YP reporting webservice.
+            DataSet dataSet = new DataSet("ReportData");
+            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.out"))
+                try
+                {
+                    dataSet.Tables.Add(Utility.ApsimTextFile.ToTable(outFileName));
+                }
+                catch (Exception)
+                {
+                    // Sometimes .out files are empty - not an error.
+                }
 
-            // Get rid of our temporary directory.
-            Directory.Delete(workingDirectory, true);
+            // Call StoreReport
+            using (YPReporting.ReportingClient reportingClient = new YPReporting.ReportingClient())
+            {
+                try
+                {
+                    reportingClient.StoreReport(reportName, dataSet);
+                }
+                catch (Exception err)
+                {
+                    throw new Exception("Cannot call YP StoreReport web service method");
+                }
+            }
         }
 
 

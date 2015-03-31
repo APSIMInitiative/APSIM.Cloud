@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" />
+  <xs:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" />
   <xs:complexType name="YieldProphet">
     <xs:sequence>
       <xs:element minOccurs="0" name="ClientName" nillable="true" type="xs:string" />
@@ -38,10 +38,11 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element minOccurs="0" name="RainfallFilename" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RainfallSinceSoilWaterSampleDate" type="xs:double" />
       <xs:element minOccurs="0" name="RainfallSource" nillable="true" type="xs:string" />
       <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" minOccurs="0" name="Samples" nillable="true" type="q1:ArrayOfSample" />
+      <xs:element minOccurs="0" name="Slope" type="xs:double" />
+      <xs:element minOccurs="0" name="SlopeLength" type="xs:double" />
       <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" minOccurs="0" name="Soil" nillable="true" type="q2:Soil" />
       <xs:element minOccurs="0" name="SoilNitrogenSampleDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="SoilPath" nillable="true" type="xs:string" />
@@ -53,9 +54,7 @@
       <xs:element minOccurs="0" name="StubbleMass" type="xs:double" />
       <xs:element minOccurs="0" name="StubbleType" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="TemperatureSource" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="UseProbeRainfall" type="xs:boolean" />
-      <xs:element minOccurs="0" name="UseProbeSoilMoisture" type="xs:boolean" />
-      <xs:element minOccurs="0" name="UseProbeTemperature" type="xs:boolean" />
+      <xs:element minOccurs="0" name="UseEC" type="xs:boolean" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Paddock" nillable="true" type="tns:Paddock" />
@@ -71,6 +70,22 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Management" nillable="true" type="tns:Management" />
+  <xs:complexType name="ResetNitrogen">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetNitrogen" nillable="true" type="tns:ResetNitrogen" />
+  <xs:complexType name="ResetWater">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetWater" nillable="true" type="tns:ResetWater" />
   <xs:complexType name="ResetSurfaceOrganicMatter">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Management">
@@ -98,36 +113,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="Tillage.DisturbanceEnum" nillable="true" type="tns:Tillage.DisturbanceEnum" />
-  <xs:complexType name="ResetNitrogen">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="ResetNitrogen" nillable="true" type="tns:ResetNitrogen" />
-  <xs:complexType name="Fertilise">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Amount" type="xs:double" />
-          <xs:element minOccurs="0" name="Scenario" type="xs:boolean" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="Fertilise" nillable="true" type="tns:Fertilise" />
-  <xs:complexType name="Irrigate">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Amount" type="xs:double" />
-          <xs:element minOccurs="0" name="Scenario" type="xs:boolean" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="Irrigate" nillable="true" type="tns:Irrigate" />
   <xs:complexType name="Sow">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Management">
@@ -147,6 +132,29 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="Sow" nillable="true" type="tns:Sow" />
+  <xs:complexType name="Fertilise">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Amount" type="xs:double" />
+          <xs:element minOccurs="0" name="Scenario" type="xs:boolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Fertilise" nillable="true" type="tns:Fertilise" />
+  <xs:complexType name="Irrigate">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Amount" type="xs:double" />
+          <xs:element minOccurs="0" name="Efficiency" type="xs:double" />
+          <xs:element minOccurs="0" name="Scenario" type="xs:boolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Irrigate" nillable="true" type="tns:Irrigate" />
   <xs:complexType name="StubbleRemoved">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Management">
@@ -157,14 +165,6 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="StubbleRemoved" nillable="true" type="tns:StubbleRemoved" />
-  <xs:complexType name="ResetWater">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="ResetWater" nillable="true" type="tns:ResetWater" />
   <xs:simpleType name="YieldProphet.ReportTypeEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="None" />

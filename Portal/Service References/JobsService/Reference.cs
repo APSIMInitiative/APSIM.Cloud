@@ -180,9 +180,6 @@ namespace APSIM.Cloud.Portal.JobsService {
         private System.Data.DataTable ObservedDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string RainfallFilenameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private double RainfallSinceSoilWaterSampleDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -190,6 +187,12 @@ namespace APSIM.Cloud.Portal.JobsService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private APSIM.Cloud.Portal.JobsService.Sample[] SamplesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double SlopeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double SlopeLengthField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private APSIM.Cloud.Portal.JobsService.Soil SoilField;
@@ -225,13 +228,7 @@ namespace APSIM.Cloud.Portal.JobsService {
         private string TemperatureSourceField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool UseProbeRainfallField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool UseProbeSoilMoistureField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool UseProbeTemperatureField;
+        private bool UseECField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -322,19 +319,6 @@ namespace APSIM.Cloud.Portal.JobsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string RainfallFilename {
-            get {
-                return this.RainfallFilenameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.RainfallFilenameField, value) != true)) {
-                    this.RainfallFilenameField = value;
-                    this.RaisePropertyChanged("RainfallFilename");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public double RainfallSinceSoilWaterSampleDate {
             get {
                 return this.RainfallSinceSoilWaterSampleDateField;
@@ -369,6 +353,32 @@ namespace APSIM.Cloud.Portal.JobsService {
                 if ((object.ReferenceEquals(this.SamplesField, value) != true)) {
                     this.SamplesField = value;
                     this.RaisePropertyChanged("Samples");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Slope {
+            get {
+                return this.SlopeField;
+            }
+            set {
+                if ((this.SlopeField.Equals(value) != true)) {
+                    this.SlopeField = value;
+                    this.RaisePropertyChanged("Slope");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double SlopeLength {
+            get {
+                return this.SlopeLengthField;
+            }
+            set {
+                if ((this.SlopeLengthField.Equals(value) != true)) {
+                    this.SlopeLengthField = value;
+                    this.RaisePropertyChanged("SlopeLength");
                 }
             }
         }
@@ -517,40 +527,14 @@ namespace APSIM.Cloud.Portal.JobsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool UseProbeRainfall {
+        public bool UseEC {
             get {
-                return this.UseProbeRainfallField;
+                return this.UseECField;
             }
             set {
-                if ((this.UseProbeRainfallField.Equals(value) != true)) {
-                    this.UseProbeRainfallField = value;
-                    this.RaisePropertyChanged("UseProbeRainfall");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool UseProbeSoilMoisture {
-            get {
-                return this.UseProbeSoilMoistureField;
-            }
-            set {
-                if ((this.UseProbeSoilMoistureField.Equals(value) != true)) {
-                    this.UseProbeSoilMoistureField = value;
-                    this.RaisePropertyChanged("UseProbeSoilMoisture");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool UseProbeTemperature {
-            get {
-                return this.UseProbeTemperatureField;
-            }
-            set {
-                if ((this.UseProbeTemperatureField.Equals(value) != true)) {
-                    this.UseProbeTemperatureField = value;
-                    this.RaisePropertyChanged("UseProbeTemperature");
+                if ((this.UseECField.Equals(value) != true)) {
+                    this.UseECField = value;
+                    this.RaisePropertyChanged("UseEC");
                 }
             }
         }
@@ -998,14 +982,14 @@ namespace APSIM.Cloud.Portal.JobsService {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Management", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
     [System.SerializableAttribute()]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.ResetNitrogen))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.ResetWater))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.ResetSurfaceOrganicMatter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.Tillage))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.ResetNitrogen))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.Sow))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.Fertilise))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.Irrigate))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.Sow))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.StubbleRemoved))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Portal.JobsService.ResetWater))]
     public partial class Management : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
@@ -1381,6 +1365,20 @@ namespace APSIM.Cloud.Portal.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResetNitrogen", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
+    [System.SerializableAttribute()]
+    public partial class ResetNitrogen : APSIM.Cloud.Portal.JobsService.Management {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ResetWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
+    [System.SerializableAttribute()]
+    public partial class ResetWater : APSIM.Cloud.Portal.JobsService.Management {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ResetSurfaceOrganicMatter", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
     [System.SerializableAttribute()]
     public partial class ResetSurfaceOrganicMatter : APSIM.Cloud.Portal.JobsService.Management {
@@ -1436,91 +1434,6 @@ namespace APSIM.Cloud.Portal.JobsService {
             
             [System.Runtime.Serialization.EnumMemberAttribute()]
             High = 2,
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResetNitrogen", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class ResetNitrogen : APSIM.Cloud.Portal.JobsService.Management {
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Fertilise", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Fertilise : APSIM.Cloud.Portal.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double AmountField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ScenarioField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Amount {
-            get {
-                return this.AmountField;
-            }
-            set {
-                if ((this.AmountField.Equals(value) != true)) {
-                    this.AmountField = value;
-                    this.RaisePropertyChanged("Amount");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Scenario {
-            get {
-                return this.ScenarioField;
-            }
-            set {
-                if ((this.ScenarioField.Equals(value) != true)) {
-                    this.ScenarioField = value;
-                    this.RaisePropertyChanged("Scenario");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Irrigate", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Irrigate : APSIM.Cloud.Portal.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double AmountField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ScenarioField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Amount {
-            get {
-                return this.AmountField;
-            }
-            set {
-                if ((this.AmountField.Equals(value) != true)) {
-                    this.AmountField = value;
-                    this.RaisePropertyChanged("Amount");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Scenario {
-            get {
-                return this.ScenarioField;
-            }
-            set {
-                if ((this.ScenarioField.Equals(value) != true)) {
-                    this.ScenarioField = value;
-                    this.RaisePropertyChanged("Scenario");
-                }
-            }
         }
     }
     
@@ -1693,6 +1606,100 @@ namespace APSIM.Cloud.Portal.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Fertilise", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
+    [System.SerializableAttribute()]
+    public partial class Fertilise : APSIM.Cloud.Portal.JobsService.Management {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double AmountField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool ScenarioField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Amount {
+            get {
+                return this.AmountField;
+            }
+            set {
+                if ((this.AmountField.Equals(value) != true)) {
+                    this.AmountField = value;
+                    this.RaisePropertyChanged("Amount");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Scenario {
+            get {
+                return this.ScenarioField;
+            }
+            set {
+                if ((this.ScenarioField.Equals(value) != true)) {
+                    this.ScenarioField = value;
+                    this.RaisePropertyChanged("Scenario");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Irrigate", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
+    [System.SerializableAttribute()]
+    public partial class Irrigate : APSIM.Cloud.Portal.JobsService.Management {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double AmountField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private double EfficiencyField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool ScenarioField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Amount {
+            get {
+                return this.AmountField;
+            }
+            set {
+                if ((this.AmountField.Equals(value) != true)) {
+                    this.AmountField = value;
+                    this.RaisePropertyChanged("Amount");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Efficiency {
+            get {
+                return this.EfficiencyField;
+            }
+            set {
+                if ((this.EfficiencyField.Equals(value) != true)) {
+                    this.EfficiencyField = value;
+                    this.RaisePropertyChanged("Efficiency");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Scenario {
+            get {
+                return this.ScenarioField;
+            }
+            set {
+                if ((this.ScenarioField.Equals(value) != true)) {
+                    this.ScenarioField = value;
+                    this.RaisePropertyChanged("Scenario");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="StubbleRemoved", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
     [System.SerializableAttribute()]
     public partial class StubbleRemoved : APSIM.Cloud.Portal.JobsService.Management {
@@ -1712,13 +1719,6 @@ namespace APSIM.Cloud.Portal.JobsService {
                 }
             }
         }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResetWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class ResetWater : APSIM.Cloud.Portal.JobsService.Management {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -3629,6 +3629,9 @@ namespace APSIM.Cloud.Portal.JobsService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddLogMessage", ReplyAction="http://tempuri.org/IJobs/AddLogMessageResponse")]
         void AddLogMessage(string message, bool isError);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetLogMessages", ReplyAction="http://tempuri.org/IJobs/GetLogMessagesResponse")]
+        System.Data.DataSet GetLogMessages();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/SetCompleted", ReplyAction="http://tempuri.org/IJobs/SetCompletedResponse")]
         void SetCompleted(string jobName, string errorMessage);
         
@@ -3699,6 +3702,10 @@ namespace APSIM.Cloud.Portal.JobsService {
         
         public void AddLogMessage(string message, bool isError) {
             base.Channel.AddLogMessage(message, isError);
+        }
+        
+        public System.Data.DataSet GetLogMessages() {
+            return base.Channel.GetLogMessages();
         }
         
         public void SetCompleted(string jobName, string errorMessage) {

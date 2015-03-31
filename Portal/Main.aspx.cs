@@ -119,5 +119,10 @@ namespace APSIM.Cloud.Portal
             Response.Redirect("AddJob.aspx");
         }
 
+        protected void OnShowLogClick(object sender, EventArgs e)
+        {
+            Response.Redirect("ShowJobDetail.aspx");
+        }
+
     }
 }

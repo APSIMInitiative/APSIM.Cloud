@@ -26,6 +26,8 @@
        </p>
     <asp:Panel ID="Panel1" runat="server">
         <asp:Button ID="Button1" runat="server" Text="Add" onclick="OnAddButtonClick" />
+        <asp:Button ID="Button2" runat="server" Text="Show log" 
+            onclick="OnShowLogClick" />
     </asp:Panel>
     <p>
        <asp:GridView ID="GridView" runat="server" 

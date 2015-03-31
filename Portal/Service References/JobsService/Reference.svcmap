@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="cd5f0bab-c99f-4924-a02f-4e39a2aee13b" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="36141f07-bb48-452d-894f-0e6b78158535" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -18,16 +18,18 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="c71a981d-2158-4063-9d09-63207ff80eef" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
-    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="8d371a17-0353-404f-a4ef-77ad0386f96d" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
-    <MetadataFile FileName="service21.xsd" MetadataType="Schema" ID="425895ad-cc54-4d16-968d-f60c2ec89b9d" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
-    <MetadataFile FileName="APSIM.Cloud.Service1.xsd" MetadataType="Schema" ID="58ebc5a8-7d02-4f8b-af6d-dd44dcd43d3e" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
-    <MetadataFile FileName="System.Data1.xsd" MetadataType="Schema" ID="f53ff96b-8558-4198-9425-cc07936d3efd" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
-    <MetadataFile FileName="APSIM.Cloud.Service.Soils1.xsd" MetadataType="Schema" ID="7e10a65f-001b-40f5-a073-86d6ba32aab7" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
-    <MetadataFile FileName="Arrays1.xsd" MetadataType="Schema" ID="8b11d5b1-d0e3-44e9-aa2f-5e3d9ceb5924" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc/mex" />
+    <MetadataFile FileName="Jobs.xsd" MetadataType="Schema" ID="02dc2c2d-b758-4389-919d-1289b2efc7c9" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" />
+    <MetadataFile FileName="Jobs1.xsd" MetadataType="Schema" ID="e1041796-446f-4fe4-9c53-23d2984265e5" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" />
+    <MetadataFile FileName="Jobs2.xsd" MetadataType="Schema" ID="8611bbb4-3e1a-4520-9694-b3fe980bb69a" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" />
+    <MetadataFile FileName="Jobs.disco" MetadataType="Disco" ID="89664829-865f-41eb-98f2-8fa576be89ba" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?disco" />
+    <MetadataFile FileName="Jobs3.xsd" MetadataType="Schema" ID="8d330a5b-4497-4d15-a88a-5a11a80873c3" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" />
+    <MetadataFile FileName="Jobs4.xsd" MetadataType="Schema" ID="0a089bbe-688f-4168-8eaf-40910918d6cb" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" />
+    <MetadataFile FileName="Jobs5.xsd" MetadataType="Schema" ID="13d16d14-37ae-4e68-89f5-82e427e30ff4" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" />
+    <MetadataFile FileName="Jobs.wsdl" MetadataType="Wsdl" ID="8d8e0b32-c6b3-4f15-a791-a2426d4b9c23" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?wsdl" />
+    <MetadataFile FileName="Jobs6.xsd" MetadataType="Schema" ID="b3ae22cf-2db2-47f3-9a30-2ffcdbce70f9" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

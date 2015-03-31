@@ -7,6 +7,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 {
     using System.Diagnostics;
     using System.IO;
+    using System.Reflection;
 
     /// <summary>
     /// A runnable class for a single APSIM simulation run.
@@ -21,9 +22,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
         /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
         public bool IsCompleted { get; set; }
-
-        /// <summary>The local apsim executable to run.</summary>
-        public static string localAPSIMExe = @"D:\APSIM\Model\ApsimModel.exe";
 
         /// <summary>Gets or sets the name of the APSIM file.</summary>
         private string fileName;
@@ -60,12 +58,14 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Open the summary file for writing.
             summaryFile = new StreamWriter(Path.ChangeExtension(fileName, ".sum"));
 
+            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
             // Start the external process to run APSIM and wait for it to finish.
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardError = true;
-            p.StartInfo.FileName = localAPSIMExe;
+            p.StartInfo.FileName = Path.Combine(binDirectory, @"Temp\Model\ApsimModel.exe");
             p.StartInfo.Arguments = args;
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;

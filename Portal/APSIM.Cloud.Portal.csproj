@@ -58,28 +58,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\delete2.png" />
-    <None Include="Resources\media_play_green.png" />
-    <None Include="Resources\Rerun.png" />
+    <None Include="Resources\delete2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\media_play_green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Rerun.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Service References\JobsService\APSIM.Cloud.Portal.JobsService.Job.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\JobsService\APSIM.Cloud.Portal.JobsService.YieldProphet.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Service.Soils1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Service1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Arrays1.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Service References\JobsService\Jobs.disco" />
     <None Include="Service References\JobsService\configuration91.svcinfo" />
     <None Include="Service References\JobsService\configuration.svcinfo" />
     <None Include="Service References\JobsService\Reference.svcmap">
@@ -96,14 +96,26 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Main.aspx" />
-    <None Include="Service References\JobsService\service1.wsdl" />
-    <None Include="Service References\JobsService\service2.xsd">
+    <None Include="Service References\JobsService\Jobs.wsdl" />
+    <None Include="Service References\JobsService\Jobs.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\service21.xsd">
+    <None Include="Service References\JobsService\Jobs1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\System.Data1.xsd">
+    <None Include="Service References\JobsService\Jobs2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs6.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

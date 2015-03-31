@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
+  <xs:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
   <xs:element name="Add">
     <xs:complexType>
       <xs:sequence>
@@ -105,6 +105,30 @@
   <xs:element name="AddLogMessageResponse">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogMessages">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogMessagesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetLogMessagesResult" nillable="true">
+          <xs:complexType>
+            <xs:annotation>
+              <xs:appinfo>
+                <ActualType Name="DataSet" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+              </xs:appinfo>
+            </xs:annotation>
+            <xs:sequence>
+              <xs:element ref="xs:schema" />
+              <xs:any />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SetCompleted">

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Data;
 
 namespace APSIM.Cloud.Service
 {
@@ -67,6 +68,13 @@ namespace APSIM.Cloud.Service
         /// <param name="isError">Indicates if message is an error message</param>
         [OperationContract]
         void AddLogMessage(string message, bool isError);
+
+        /// <summary>
+        /// Gets the log messages.
+        /// </summary>
+        /// <returns>The log message: Date, Status, Message</returns>
+        [OperationContract]
+        DataSet GetLogMessages();
 
         /// <summary>Specifies that the job is completed./summary>
         /// <param name="jobName">Name of the job.</param>

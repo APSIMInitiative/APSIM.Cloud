@@ -1,13 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Jobs" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Jobs" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import namespace="http://tempuri.org/" />
-      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
-      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System.Data" />
-      <xsd:import namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" />
-      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IJobs_Add_InputMessage">
@@ -57,6 +58,12 @@
   </wsdl:message>
   <wsdl:message name="IJobs_AddLogMessage_OutputMessage">
     <wsdl:part name="parameters" element="tns:AddLogMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetLogMessages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogMessages" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetLogMessages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogMessagesResponse" />
   </wsdl:message>
   <wsdl:message name="IJobs_SetCompleted_InputMessage">
     <wsdl:part name="parameters" element="tns:SetCompleted" />
@@ -114,6 +121,10 @@
     <wsdl:operation name="AddLogMessage">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddLogMessage" message="tns:IJobs_AddLogMessage_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddLogMessageResponse" message="tns:IJobs_AddLogMessage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLogMessages">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetLogMessages" message="tns:IJobs_GetLogMessages_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetLogMessagesResponse" message="tns:IJobs_GetLogMessages_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="SetCompleted">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/SetCompleted" message="tns:IJobs_SetCompleted_InputMessage" />
@@ -199,6 +210,15 @@
     </wsdl:operation>
     <wsdl:operation name="AddLogMessage">
       <soap:operation soapAction="http://tempuri.org/IJobs/AddLogMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogMessages">
+      <soap:operation soapAction="http://tempuri.org/IJobs/GetLogMessages" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
