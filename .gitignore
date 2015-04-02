@@ -21,3 +21,10 @@ Runner/obj/
 Service/bin/
 Shared/bin/
 Test/bin/
+APSIM.Cloud.Portal/bin/
+APSIM.Cloud.Portal/obj/
+APSIM.Cloud.Runner/bin/
+APSIM.Cloud.Runner/obj/
+APSIM.Cloud.Service/bin/
+APSIM.Cloud.Shared/bin/
+APSIM.Cloud.Test/Generated/

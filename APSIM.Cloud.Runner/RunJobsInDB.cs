@@ -12,7 +12,6 @@ namespace APSIM.Cloud.Runner
     using System.Threading;
     using System.Xml;
     using APSIM.Cloud;
-    using APSIM.Cloud.Shared;
     using System.Data;
     using System.IO;
     using System.Reflection;

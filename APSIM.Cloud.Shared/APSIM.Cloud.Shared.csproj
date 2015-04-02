@@ -58,16 +58,6 @@
     <Compile Include="YieldProphetToAPSIM.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\APSIM.Shared\Soils\Soils.csproj">
-      <Project>{431CDE14-7649-4A07-A57D-DBCE389172E2}</Project>
-      <Name>Soils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\APSIM.Shared\Utility\Utility.csproj">
-      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +96,16 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.Soils\APSIM.Shared.Soils.csproj">
+      <Project>{431CDE14-7649-4A07-A57D-DBCE389172E2}</Project>
+      <Name>APSIM.Shared.Soils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.Utility\APSIM.Shared.Utility.csproj">
+      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
+      <Name>APSIM.Shared.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

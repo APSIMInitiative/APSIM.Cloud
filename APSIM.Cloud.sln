@@ -1,28 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Portal", "Portal\APSIM.Cloud.Portal.csproj", "{00DAF19F-0146-4C49-A614-5785D585383D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Portal", "APSIM.Cloud.Portal\APSIM.Cloud.Portal.csproj", "{00DAF19F-0146-4C49-A614-5785D585383D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA75398F-72FF-4A55-8DF9-31DFADF90817} = {DA75398F-72FF-4A55-8DF9-31DFADF90817}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Runner", "Runner\APSIM.Cloud.Runner.csproj", "{C3EC5998-E242-4209-8D48-46772F4629F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Runner", "APSIM.Cloud.Runner\APSIM.Cloud.Runner.csproj", "{C3EC5998-E242-4209-8D48-46772F4629F4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA75398F-72FF-4A55-8DF9-31DFADF90817} = {DA75398F-72FF-4A55-8DF9-31DFADF90817}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "Service\APSIM.Cloud.Service.csproj", "{DA75398F-72FF-4A55-8DF9-31DFADF90817}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{DA75398F-72FF-4A55-8DF9-31DFADF90817}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817} = {DA75398F-72FF-4A55-8DF9-31DFADF90817}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Shared", "APSIM.Cloud.Shared\APSIM.Cloud.Shared.csproj", "{38151154-60D4-47BD-BCC2-679BA8BF144E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "..\APSIM.Shared\Utility\Utility.csproj", "{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Shared.Soils", "..\APSIM.Shared\APSIM.Shared.Soils\APSIM.Shared.Soils.csproj", "{431CDE14-7649-4A07-A57D-DBCE389172E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Shared", "Shared\APSIM.Cloud.Shared.csproj", "{38151154-60D4-47BD-BCC2-679BA8BF144E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soils", "..\APSIM.Shared\Soils\Soils.csproj", "{431CDE14-7649-4A07-A57D-DBCE389172E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Shared.Utility", "..\APSIM.Shared\APSIM.Shared.Utility\APSIM.Shared.Utility.csproj", "{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,26 +59,6 @@ Global
 		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|x86.ActiveCfg = Release|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0D52DCF1-1C68-4733-A91D-94EA475DA2B4}.Release|x86.ActiveCfg = Release|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|x86.ActiveCfg = Release|Any CPU
 		{38151154-60D4-47BD-BCC2-679BA8BF144E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38151154-60D4-47BD-BCC2-679BA8BF144E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38151154-60D4-47BD-BCC2-679BA8BF144E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -104,6 +79,16 @@ Global
 		{431CDE14-7649-4A07-A57D-DBCE389172E2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{431CDE14-7649-4A07-A57D-DBCE389172E2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{431CDE14-7649-4A07-A57D-DBCE389172E2}.Release|x86.ActiveCfg = Release|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\APSIM\Model\ApsimFile.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -59,11 +55,7 @@
     <Content Include="Jobs.svc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\APSIM.Shared\Utility\Utility.csproj">
-      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shared\APSIM.Cloud.Shared.csproj">
+    <ProjectReference Include="..\APSIM.Cloud.Shared\APSIM.Cloud.Shared.csproj">
       <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
       <Name>APSIM.Cloud.Shared</Name>
     </ProjectReference>
