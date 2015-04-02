@@ -5,6 +5,8 @@ using System.IO;
 using System.Text;
 using System.Web.UI.WebControls;
 using System.Xml;
+using APSIM.Cloud.Shared;
+using APSIM.Shared.Soils;
 
 namespace APSIM.Cloud.Portal
 {
@@ -23,19 +25,20 @@ namespace APSIM.Cloud.Portal
 
             using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
             {
-                JobsService.YieldProphet yieldProphet = null;
+                YieldProphet yieldProphet = null;
                 if (Path.GetExtension(FileUpload.FileName) == ".zip")
-                    yieldProphet = GetYieldProphetFromZip(bytes, jobsService);
+                    yieldProphet = GetYieldProphetFromZip(bytes);
                 else
-                    yieldProphet = jobsService.YieldProphetFromXML(Encoding.ASCII.GetString(bytes));
+                    yieldProphet = YieldProphetUtility.YieldProphetFromXML(Encoding.ASCII.GetString(bytes));
 
                 DateTime nowDate = DateTime.Now;
                 if (NowEditBox.Text != "")
                     nowDate = DateTime.ParseExact(NowEditBox.Text, "d/M/yyyy", CultureInfo.InvariantCulture);
 
-                foreach (JobsService.Paddock paddock in yieldProphet.Paddock)
+                foreach (Paddock paddock in yieldProphet.Paddock)
                     paddock.NowDate = nowDate;
 
+                string xml = SoilUtility.ToXML(yieldProphet.Paddock[0].Soil);
                 jobsService.Add(yieldProphet);
             }
             Response.Redirect("Main.aspx");
@@ -46,9 +49,9 @@ namespace APSIM.Cloud.Portal
         /// </summary>
         /// <param name="bytes">The bytes of the .zip file.</param>
         /// <returns></returns>
-        private static JobsService.YieldProphet GetYieldProphetFromZip(byte[] bytes, JobsService.JobsClient jobsClient)
+        private static YieldProphet GetYieldProphetFromZip(byte[] bytes)
         {
-            JobsService.YieldProphet yieldProphet;
+            YieldProphet yieldProphet;
 
             string tempFolder = Path.GetTempFileName();
             File.Delete(tempFolder);
@@ -56,20 +59,9 @@ namespace APSIM.Cloud.Portal
             MemoryStream memStream = new MemoryStream(bytes);
             string[] fileNames = Utility.Zip.UnZipFiles(memStream, tempFolder, null);
 
-            XmlDocument doc = new XmlDocument();
-            doc.Load(Path.Combine(tempFolder, "YieldProphet.xml"));
+            string fileName = Path.Combine(tempFolder, "YieldProphet.xml");
 
-            yieldProphet = jobsClient.YieldProphetFromXML(doc.OuterXml);
-            string[] rainFiles = Directory.GetFiles(tempFolder, "*.rain");
-            if (rainFiles.Length >= 1)
-            {
-                yieldProphet.Paddock[0].ObservedData = Utility.ApsimTextFile.ToTable(rainFiles[0]);
-                foreach (DataColumn column in yieldProphet.Paddock[0].ObservedData.Columns)
-                {
-                    if (column.ColumnName.Contains("patch_"))
-                        column.ColumnName = column.ColumnName.Replace("patch_", "");
-                }
-            }
+            yieldProphet = YieldProphetUtility.YieldProphetFromFile(fileName);
             Directory.Delete(tempFolder, true);
             return yieldProphet;
         }

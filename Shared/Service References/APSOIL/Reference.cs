@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace APSIM.Cloud.Runner.APSOIL {
+namespace APSIM.Cloud.Shared.APSOIL {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -33,11 +33,11 @@ namespace APSIM.Cloud.Runner.APSOIL {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/GetSoilInfo", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilInfo GetSoilInfo(string SoilName);
+        APSIM.Cloud.Shared.APSOIL.SoilInfo GetSoilInfo(string SoilName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/GetSoilAnalysisInfo", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilAnalysisInfo GetSoilAnalysisInfo(string SoilName);
+        APSIM.Cloud.Shared.APSOIL.SoilAnalysisInfo GetSoilAnalysisInfo(string SoilName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SoilTypes", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
@@ -58,16 +58,16 @@ namespace APSIM.Cloud.Runner.APSOIL {
         // CODEGEN: Parameter 'SoilChartPNGResult' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SoilChartPNG", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilChartPNGResponse SoilChartPNG(APSIM.Cloud.Runner.APSOIL.SoilChartPNGRequest request);
+        APSIM.Cloud.Shared.APSOIL.SoilChartPNGResponse SoilChartPNG(APSIM.Cloud.Shared.APSOIL.SoilChartPNGRequest request);
         
         // CODEGEN: Parameter 'SoilChartWithSamplePNGResult' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SoilChartWithSamplePNG", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGResponse SoilChartWithSamplePNG(APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGRequest request);
+        APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGResponse SoilChartWithSamplePNG(APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SearchSoilsReturnInfo", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilInfo[] SearchSoilsReturnInfo(double Latitude, double Longitude, double Radius, string SoilType);
+        APSIM.Cloud.Shared.APSOIL.SoilInfo[] SearchSoilsReturnInfo(double Latitude, double Longitude, double Radius, string SoilType);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SoilAsJson", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
@@ -75,24 +75,24 @@ namespace APSIM.Cloud.Runner.APSOIL {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/UpdateUserSoil", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        bool UpdateUserSoil(APSIM.Cloud.Runner.APSOIL.JsonSoilParam Params);
+        bool UpdateUserSoil(APSIM.Cloud.Shared.APSOIL.JsonSoilParam Params);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/PAWCJson", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.PAWCByCrop[] PAWCJson(APSIM.Cloud.Runner.APSOIL.PAWCJsonParams Params);
+        APSIM.Cloud.Shared.APSOIL.PAWCByCrop[] PAWCJson(APSIM.Cloud.Shared.APSOIL.PAWCJsonParams Params);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SearchSoils", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilInfo[] SearchSoils(APSIM.Cloud.Runner.APSOIL.SearchSoilsParams Params);
+        APSIM.Cloud.Shared.APSOIL.SoilInfo[] SearchSoils(APSIM.Cloud.Shared.APSOIL.SearchSoilsParams Params);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/AllAustralianSoils", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilBasicInfo[] AllAustralianSoils(APSIM.Cloud.Runner.APSOIL.SearchSoilsParams Params);
+        APSIM.Cloud.Shared.APSOIL.SoilBasicInfo[] AllAustralianSoils(APSIM.Cloud.Shared.APSOIL.SearchSoilsParams Params);
         
         // CODEGEN: Parameter 'SoilChartPNGFromXMLResult' requires additional schema information that cannot be captured using the parameter mode. The specific attribute is 'System.Xml.Serialization.XmlElementAttribute'.
         [System.ServiceModel.OperationContractAttribute(Action="http://www.apsim.info/SoilChartPNGFromXML", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLResponse SoilChartPNGFromXML(APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLRequest request);
+        APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLResponse SoilChartPNGFromXML(APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLRequest request);
     }
     
     /// <remarks/>
@@ -857,12 +857,12 @@ namespace APSIM.Cloud.Runner.APSOIL {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface ServiceSoapChannel : APSIM.Cloud.Runner.APSOIL.ServiceSoap, System.ServiceModel.IClientChannel {
+    public interface ServiceSoapChannel : APSIM.Cloud.Shared.APSOIL.ServiceSoap, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class ServiceSoapClient : System.ServiceModel.ClientBase<APSIM.Cloud.Runner.APSOIL.ServiceSoap>, APSIM.Cloud.Runner.APSOIL.ServiceSoap {
+    public partial class ServiceSoapClient : System.ServiceModel.ClientBase<APSIM.Cloud.Shared.APSOIL.ServiceSoap>, APSIM.Cloud.Shared.APSOIL.ServiceSoap {
         
         public ServiceSoapClient() {
         }
@@ -899,11 +899,11 @@ namespace APSIM.Cloud.Runner.APSOIL {
             return base.Channel.SoilXML(Name);
         }
         
-        public APSIM.Cloud.Runner.APSOIL.SoilInfo GetSoilInfo(string SoilName) {
+        public APSIM.Cloud.Shared.APSOIL.SoilInfo GetSoilInfo(string SoilName) {
             return base.Channel.GetSoilInfo(SoilName);
         }
         
-        public APSIM.Cloud.Runner.APSOIL.SoilAnalysisInfo GetSoilAnalysisInfo(string SoilName) {
+        public APSIM.Cloud.Shared.APSOIL.SoilAnalysisInfo GetSoilAnalysisInfo(string SoilName) {
             return base.Channel.GetSoilAnalysisInfo(SoilName);
         }
         
@@ -924,33 +924,33 @@ namespace APSIM.Cloud.Runner.APSOIL {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        APSIM.Cloud.Runner.APSOIL.SoilChartPNGResponse APSIM.Cloud.Runner.APSOIL.ServiceSoap.SoilChartPNG(APSIM.Cloud.Runner.APSOIL.SoilChartPNGRequest request) {
+        APSIM.Cloud.Shared.APSOIL.SoilChartPNGResponse APSIM.Cloud.Shared.APSOIL.ServiceSoap.SoilChartPNG(APSIM.Cloud.Shared.APSOIL.SoilChartPNGRequest request) {
             return base.Channel.SoilChartPNG(request);
         }
         
         public byte[] SoilChartPNG(string SoilName) {
-            APSIM.Cloud.Runner.APSOIL.SoilChartPNGRequest inValue = new APSIM.Cloud.Runner.APSOIL.SoilChartPNGRequest();
+            APSIM.Cloud.Shared.APSOIL.SoilChartPNGRequest inValue = new APSIM.Cloud.Shared.APSOIL.SoilChartPNGRequest();
             inValue.SoilName = SoilName;
-            APSIM.Cloud.Runner.APSOIL.SoilChartPNGResponse retVal = ((APSIM.Cloud.Runner.APSOIL.ServiceSoap)(this)).SoilChartPNG(inValue);
+            APSIM.Cloud.Shared.APSOIL.SoilChartPNGResponse retVal = ((APSIM.Cloud.Shared.APSOIL.ServiceSoap)(this)).SoilChartPNG(inValue);
             return retVal.SoilChartPNGResult;
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGResponse APSIM.Cloud.Runner.APSOIL.ServiceSoap.SoilChartWithSamplePNG(APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGRequest request) {
+        APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGResponse APSIM.Cloud.Shared.APSOIL.ServiceSoap.SoilChartWithSamplePNG(APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGRequest request) {
             return base.Channel.SoilChartWithSamplePNG(request);
         }
         
         public byte[] SoilChartWithSamplePNG(string SoilName, double[] Thickness, double[] SW, bool IsGravimetric) {
-            APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGRequest inValue = new APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGRequest();
+            APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGRequest inValue = new APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGRequest();
             inValue.SoilName = SoilName;
             inValue.Thickness = Thickness;
             inValue.SW = SW;
             inValue.IsGravimetric = IsGravimetric;
-            APSIM.Cloud.Runner.APSOIL.SoilChartWithSamplePNGResponse retVal = ((APSIM.Cloud.Runner.APSOIL.ServiceSoap)(this)).SoilChartWithSamplePNG(inValue);
+            APSIM.Cloud.Shared.APSOIL.SoilChartWithSamplePNGResponse retVal = ((APSIM.Cloud.Shared.APSOIL.ServiceSoap)(this)).SoilChartWithSamplePNG(inValue);
             return retVal.SoilChartWithSamplePNGResult;
         }
         
-        public APSIM.Cloud.Runner.APSOIL.SoilInfo[] SearchSoilsReturnInfo(double Latitude, double Longitude, double Radius, string SoilType) {
+        public APSIM.Cloud.Shared.APSOIL.SoilInfo[] SearchSoilsReturnInfo(double Latitude, double Longitude, double Radius, string SoilType) {
             return base.Channel.SearchSoilsReturnInfo(Latitude, Longitude, Radius, SoilType);
         }
         
@@ -958,31 +958,31 @@ namespace APSIM.Cloud.Runner.APSOIL {
             return base.Channel.SoilAsJson(Name);
         }
         
-        public bool UpdateUserSoil(APSIM.Cloud.Runner.APSOIL.JsonSoilParam Params) {
+        public bool UpdateUserSoil(APSIM.Cloud.Shared.APSOIL.JsonSoilParam Params) {
             return base.Channel.UpdateUserSoil(Params);
         }
         
-        public APSIM.Cloud.Runner.APSOIL.PAWCByCrop[] PAWCJson(APSIM.Cloud.Runner.APSOIL.PAWCJsonParams Params) {
+        public APSIM.Cloud.Shared.APSOIL.PAWCByCrop[] PAWCJson(APSIM.Cloud.Shared.APSOIL.PAWCJsonParams Params) {
             return base.Channel.PAWCJson(Params);
         }
         
-        public APSIM.Cloud.Runner.APSOIL.SoilInfo[] SearchSoils(APSIM.Cloud.Runner.APSOIL.SearchSoilsParams Params) {
+        public APSIM.Cloud.Shared.APSOIL.SoilInfo[] SearchSoils(APSIM.Cloud.Shared.APSOIL.SearchSoilsParams Params) {
             return base.Channel.SearchSoils(Params);
         }
         
-        public APSIM.Cloud.Runner.APSOIL.SoilBasicInfo[] AllAustralianSoils(APSIM.Cloud.Runner.APSOIL.SearchSoilsParams Params) {
+        public APSIM.Cloud.Shared.APSOIL.SoilBasicInfo[] AllAustralianSoils(APSIM.Cloud.Shared.APSOIL.SearchSoilsParams Params) {
             return base.Channel.AllAustralianSoils(Params);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLResponse APSIM.Cloud.Runner.APSOIL.ServiceSoap.SoilChartPNGFromXML(APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLRequest request) {
+        APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLResponse APSIM.Cloud.Shared.APSOIL.ServiceSoap.SoilChartPNGFromXML(APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLRequest request) {
             return base.Channel.SoilChartPNGFromXML(request);
         }
         
         public byte[] SoilChartPNGFromXML(string XML) {
-            APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLRequest inValue = new APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLRequest();
+            APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLRequest inValue = new APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLRequest();
             inValue.XML = XML;
-            APSIM.Cloud.Runner.APSOIL.SoilChartPNGFromXMLResponse retVal = ((APSIM.Cloud.Runner.APSOIL.ServiceSoap)(this)).SoilChartPNGFromXML(inValue);
+            APSIM.Cloud.Shared.APSOIL.SoilChartPNGFromXMLResponse retVal = ((APSIM.Cloud.Shared.APSOIL.ServiceSoap)(this)).SoilChartPNGFromXML(inValue);
             return retVal.SoilChartPNGFromXMLResult;
         }
     }

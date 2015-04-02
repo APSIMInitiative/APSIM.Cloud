@@ -3,7 +3,7 @@
 //     Copyright (c) APSIM Initiative
 // </copyright>
 // -----------------------------------------------------------------------
-namespace APSIM.Cloud.Runner
+namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
@@ -12,20 +12,22 @@ namespace APSIM.Cloud.Runner
     using System.Xml;
     using System.IO;
     using System.Reflection;
-    using ApsimFile;
     using System.Xml.Serialization;
     using System.Data;
+    using APSIM.Shared.Soils;
 
     /// <summary>TODO: Update summary.</summary>
     public class APSIMFiles
     {
+        private static int APSIMVerionNumber = 36;
+
         /// <summary>Create all necessary YP files (.apsim and .met) from a YieldProphet spec.</summary>
         /// <param name="apsim">The yield prophet spec.</param>
         /// <param name="endDate">The end date for using any observed data.</param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="filterFileName">The name of a file containing paddocks to include. Can be null.</param>
         /// <returns>The name of the created .apsim file.</returns>
-        public static string Create(IEnumerable<Specification.APSIMSpec> simulations, string workingFolder)
+        public static string Create(IEnumerable<APSIMSpec> simulations, string workingFolder)
         {
             // Create the .apsim XML
             XmlNode apsimNode = CreateApsimFile(simulations);
@@ -45,7 +47,7 @@ namespace APSIM.Cloud.Runner
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
-        private static void CreateWeatherFilesForSimulations(IEnumerable<Specification.APSIMSpec> simulations, string workingFolder, XmlNode apsimNode)
+        private static void CreateWeatherFilesForSimulations(IEnumerable<APSIMSpec> simulations, string workingFolder, XmlNode apsimNode)
         {
             // Assume that all simulations are related i.e. use the same observed data.
             // If there are 10 simulations then go find the smallest and largest start 
@@ -60,7 +62,7 @@ namespace APSIM.Cloud.Runner
             DateTime nowDate = DateTime.MaxValue;
             DataTable observedData = null;
             int stationNumber = 0;
-            foreach (Specification.APSIMSpec simulation in simulations)
+            foreach (APSIMSpec simulation in simulations)
             {
                 stationNumber = simulation.StationNumber;
                 nowDate = simulation.NowDate;
@@ -86,7 +88,7 @@ namespace APSIM.Cloud.Runner
                                         observedData, 30);
 
             // Now modify the simulations to create a met factorial.
-            foreach (Specification.APSIMSpec simulation in simulations)
+            foreach (APSIMSpec simulation in simulations)
             {
                 if (simulation.EndDate > nowDate)
                 {
@@ -107,15 +109,15 @@ namespace APSIM.Cloud.Runner
         /// <param name="filterFileName">Name of the filter file.</param>
         /// <returns>The root XML node for the file</returns>
         /// <exception cref="System.Exception"></exception>
-        private static XmlNode CreateApsimFile(IEnumerable<Specification.APSIMSpec> simulations)
+        private static XmlNode CreateApsimFile(IEnumerable<APSIMSpec> simulations)
         {
             APSOIL.ServiceSoapClient apsoilService = null;
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateElement("folder"));
             Utility.Xml.SetNameAttr(doc.DocumentElement, "Simulations");
-            Utility.Xml.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
+            Utility.Xml.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
 
-            foreach (Specification.APSIMSpec simulation in simulations)
+            foreach (APSIMSpec simulation in simulations)
             {
                 try
                 {
@@ -140,7 +142,7 @@ namespace APSIM.Cloud.Runner
         /// <param name="todayDate">The today date.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(Specification.APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        private static XmlNode CreateSimulationXML(APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
         {
             APSIMFileWriter apsimWriter = new APSIMFileWriter();
 
@@ -157,7 +159,7 @@ namespace APSIM.Cloud.Runner
             apsimWriter.SetWeatherFile(simulation.Name + ".met");
 
             // Set the stubble
-            apsimWriter.SetStubble(simulation.StubbleType, simulation.StubbleMass, Specification.Utils.GetStubbleCNRatio(simulation.StubbleType));
+            apsimWriter.SetStubble(simulation.StubbleType, simulation.StubbleMass, YieldProphetUtility.GetStubbleCNRatio(simulation.StubbleType));
 
             // Set NUnlimited 
             if (simulation.NUnlimited)
@@ -192,24 +194,24 @@ namespace APSIM.Cloud.Runner
             apsimWriter.SetSoil(soil);
 
             // Loop through all management actions and create an operations list
-            foreach (JobsService.Management management in simulation.Management)
+            foreach (Management management in simulation.Management)
             {
-                if (management is JobsService.Sow)
-                    apsimWriter.AddSowingOperation(management as JobsService.Sow, simulation.UseEC);
-                else if (management is JobsService.Fertilise)
-                    apsimWriter.AddFertilseOperation(management as JobsService.Fertilise);
-                else if (management is JobsService.Irrigate)
-                    apsimWriter.AddIrrigateOperation(management as JobsService.Irrigate);
-                else if (management is JobsService.Tillage)
-                    apsimWriter.AddTillageOperation(management as JobsService.Tillage);
-                else if (management is JobsService.StubbleRemoved)
-                    apsimWriter.AddStubbleRemovedOperation(management as JobsService.StubbleRemoved);
-                else if (management is JobsService.ResetWater)
-                    apsimWriter.AddResetWaterOperation(management as JobsService.ResetWater);
-                else if (management is JobsService.ResetNitrogen)
-                    apsimWriter.AddResetNitrogenOperation(management as JobsService.ResetNitrogen);
-                else if (management is JobsService.ResetSurfaceOrganicMatter)
-                    apsimWriter.AddSurfaceOrganicMatterOperation(management as JobsService.ResetSurfaceOrganicMatter);
+                if (management is Sow)
+                    apsimWriter.AddSowingOperation(management as Sow, simulation.UseEC);
+                else if (management is Fertilise)
+                    apsimWriter.AddFertilseOperation(management as Fertilise);
+                else if (management is Irrigate)
+                    apsimWriter.AddIrrigateOperation(management as Irrigate);
+                else if (management is Tillage)
+                    apsimWriter.AddTillageOperation(management as Tillage);
+                else if (management is StubbleRemoved)
+                    apsimWriter.AddStubbleRemovedOperation(management as StubbleRemoved);
+                else if (management is ResetWater)
+                    apsimWriter.AddResetWaterOperation(management as ResetWater);
+                else if (management is ResetNitrogen)
+                    apsimWriter.AddResetNitrogenOperation(management as ResetNitrogen);
+                else if (management is ResetSurfaceOrganicMatter)
+                    apsimWriter.AddSurfaceOrganicMatterOperation(management as ResetSurfaceOrganicMatter);
             }
 
             return apsimWriter.ToXML();
@@ -219,7 +221,7 @@ namespace APSIM.Cloud.Runner
         /// <param name="paddock">The paddock.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <exception cref="System.Exception">Cannot find soil:  + paddock.SoilName</exception>
-        public static Soil DoSoil(Specification.APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        public static Soil DoSoil(APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
         {
             Soil soil;
             if (simulation.Soil == null)
@@ -231,7 +233,7 @@ namespace APSIM.Cloud.Runner
                 if (soilXml == string.Empty)
                     throw new Exception("Cannot find soil: " + simulation.SoilPath);
 
-                soil = Soil.Create(soilXml);
+                soil = SoilUtility.FromXML(soilXml);
             }
             else
             {
@@ -242,7 +244,7 @@ namespace APSIM.Cloud.Runner
 
                 // The crops aren't being Serialised correctly. They are put under a <Crops> node
                 // which isn't right. Do them manually.
-                foreach (JobsService.SoilCrop oldCrop in simulation.Soil.Water.Crops)
+                foreach (SoilCrop oldCrop in simulation.Soil.Water.Crops)
                 {
                     soil.Water.Crops.Add(new SoilCrop()
                     {
@@ -257,10 +259,10 @@ namespace APSIM.Cloud.Runner
 
             // Make sure we have a soil crop parameterisation. If not then try creating one
             // based on wheat.
-            JobsService.Sow crop = Specification.Utils.GetCropBeingSown(simulation.Management);
-            if (crop != null && !Utility.String.Contains(soil.CropNames, crop.Crop))
+            Sow crop = YieldProphetUtility.GetCropBeingSown(simulation.Management);
+            if (crop != null && !Utility.String.Contains(SoilUtility.GetCropNames(soil), crop.Crop))
             {
-                SoilCrop wheat = soil.Crop("wheat");
+                SoilCrop wheat = SoilUtility.Crop(soil, "wheat");
 
                 SoilCrop newSoilCrop = new SoilCrop();
                 newSoilCrop.Name = crop.Crop;
@@ -304,23 +306,15 @@ namespace APSIM.Cloud.Runner
         {
             if (sample.SW != null)
             {
-                // Convert the units to volumetric temporarily.
-                Sample.SWUnitsEnum savedUnits = sample.SWUnits;
-                sample.SWUnitsSet(Sample.SWUnitsEnum.Volumetric, parentSoil);
-
                 // Make sure the soil water isn't below airdry or above DUL.
-                double[] SWValues = sample.SW;
-                double[] AirDry = parentSoil.AirDryMapped(sample.Thickness);
-                double[] DUL = parentSoil.DULMapped(sample.Thickness);
+                double[] SWValues = SoilUtility.SW(parentSoil, sample, Sample.SWUnitsEnum.Volumetric);
+                double[] AirDry = SoilUtility.AirDryMapped(parentSoil, sample.Thickness);
+                double[] DUL = SoilUtility.DULMapped(parentSoil, sample.Thickness);
                 for (int i = 0; i < sample.SW.Length; i++)
                 {
                     SWValues[i] = Math.Max(SWValues[i], AirDry[i]);
                     SWValues[i] = Math.Min(SWValues[i], DUL[i]);
                 }
-
-                // Convert the units back to what it was
-                sample.SW = SWValues;
-                sample.SWUnitsSet(savedUnits, parentSoil);
             }
 
             // Do some checking of NO3 / NH4

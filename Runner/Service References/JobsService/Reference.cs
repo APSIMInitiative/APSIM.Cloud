@@ -15,220 +15,60 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="YieldProphet", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Sample", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
-    public partial class YieldProphet : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class Sample : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ClientNameField;
+        private double[] CLField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Paddock[] PaddockField;
+        private string DateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ReportGeneratedByField;
+        private double[] ECField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ReportNameField;
+        private double[] ESPField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.YieldProphet.ReportTypeEnum ReportTypeField;
+        private double[] NH4Field;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int VersionField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ClientName {
-            get {
-                return this.ClientNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ClientNameField, value) != true)) {
-                    this.ClientNameField = value;
-                    this.RaisePropertyChanged("ClientName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Paddock[] Paddock {
-            get {
-                return this.PaddockField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.PaddockField, value) != true)) {
-                    this.PaddockField = value;
-                    this.RaisePropertyChanged("Paddock");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ReportGeneratedBy {
-            get {
-                return this.ReportGeneratedByField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ReportGeneratedByField, value) != true)) {
-                    this.ReportGeneratedByField = value;
-                    this.RaisePropertyChanged("ReportGeneratedBy");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ReportName {
-            get {
-                return this.ReportNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ReportNameField, value) != true)) {
-                    this.ReportNameField = value;
-                    this.RaisePropertyChanged("ReportName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.YieldProphet.ReportTypeEnum ReportType {
-            get {
-                return this.ReportTypeField;
-            }
-            set {
-                if ((this.ReportTypeField.Equals(value) != true)) {
-                    this.ReportTypeField = value;
-                    this.RaisePropertyChanged("ReportType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Version {
-            get {
-                return this.VersionField;
-            }
-            set {
-                if ((this.VersionField.Equals(value) != true)) {
-                    this.VersionField = value;
-                    this.RaisePropertyChanged("Version");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="YieldProphet.ReportTypeEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-        public enum ReportTypeEnum : int {
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            None = 0,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Crop = 1,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            SowingOpportunity = 2,
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Paddock", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Paddock : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        private APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NH4UnitsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DateOfLastRainfallEntryField;
+        private double[] NO3Field;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime LastClimateDateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Management[] ManagementField;
+        private APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NO3UnitsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime NowDateField;
+        private double[] OCField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Data.DataTable ObservedDataField;
+        private APSIM.Cloud.Runner.JobsService.Sample.OCSampleUnitsEnum OCUnitsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double RainfallSinceSoilWaterSampleDateField;
+        private double[] PHField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string RainfallSourceField;
+        private APSIM.Cloud.Runner.JobsService.Sample.PHSampleUnitsEnum PHUnitsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Sample[] SamplesField;
+        private double[] SWField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double SlopeField;
+        private APSIM.Cloud.Runner.JobsService.Sample.SWUnitsEnum SWUnitsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double SlopeLengthField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Soil SoilField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime SoilNitrogenSampleDateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string SoilPathField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime SoilWaterSampleDateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime StartSeasonDateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string StationNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int StationNumberField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double StubbleIncorporatedPercentField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double StubbleMassField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string StubbleTypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TemperatureSourceField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool UseECField;
+        private double[] ThicknessField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -241,40 +81,105 @@ namespace APSIM.Cloud.Runner.JobsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string DateOfLastRainfallEntry {
+        public double[] CL {
             get {
-                return this.DateOfLastRainfallEntryField;
+                return this.CLField;
             }
             set {
-                if ((object.ReferenceEquals(this.DateOfLastRainfallEntryField, value) != true)) {
-                    this.DateOfLastRainfallEntryField = value;
-                    this.RaisePropertyChanged("DateOfLastRainfallEntry");
+                if ((object.ReferenceEquals(this.CLField, value) != true)) {
+                    this.CLField = value;
+                    this.RaisePropertyChanged("CL");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime LastClimateDate {
+        public string Date {
             get {
-                return this.LastClimateDateField;
+                return this.DateField;
             }
             set {
-                if ((this.LastClimateDateField.Equals(value) != true)) {
-                    this.LastClimateDateField = value;
-                    this.RaisePropertyChanged("LastClimateDate");
+                if ((object.ReferenceEquals(this.DateField, value) != true)) {
+                    this.DateField = value;
+                    this.RaisePropertyChanged("Date");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Management[] Management {
+        public double[] EC {
             get {
-                return this.ManagementField;
+                return this.ECField;
             }
             set {
-                if ((object.ReferenceEquals(this.ManagementField, value) != true)) {
-                    this.ManagementField = value;
-                    this.RaisePropertyChanged("Management");
+                if ((object.ReferenceEquals(this.ECField, value) != true)) {
+                    this.ECField = value;
+                    this.RaisePropertyChanged("EC");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double[] ESP {
+            get {
+                return this.ESPField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ESPField, value) != true)) {
+                    this.ESPField = value;
+                    this.RaisePropertyChanged("ESP");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double[] NH4 {
+            get {
+                return this.NH4Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NH4Field, value) != true)) {
+                    this.NH4Field = value;
+                    this.RaisePropertyChanged("NH4");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NH4Units {
+            get {
+                return this.NH4UnitsField;
+            }
+            set {
+                if ((this.NH4UnitsField.Equals(value) != true)) {
+                    this.NH4UnitsField = value;
+                    this.RaisePropertyChanged("NH4Units");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double[] NO3 {
+            get {
+                return this.NO3Field;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NO3Field, value) != true)) {
+                    this.NO3Field = value;
+                    this.RaisePropertyChanged("NO3");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NO3Units {
+            get {
+                return this.NO3UnitsField;
+            }
+            set {
+                if ((this.NO3UnitsField.Equals(value) != true)) {
+                    this.NO3UnitsField = value;
+                    this.RaisePropertyChanged("NO3Units");
                 }
             }
         }
@@ -293,248 +198,92 @@ namespace APSIM.Cloud.Runner.JobsService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime NowDate {
+        public double[] OC {
             get {
-                return this.NowDateField;
+                return this.OCField;
             }
             set {
-                if ((this.NowDateField.Equals(value) != true)) {
-                    this.NowDateField = value;
-                    this.RaisePropertyChanged("NowDate");
+                if ((object.ReferenceEquals(this.OCField, value) != true)) {
+                    this.OCField = value;
+                    this.RaisePropertyChanged("OC");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Data.DataTable ObservedData {
+        public APSIM.Cloud.Runner.JobsService.Sample.OCSampleUnitsEnum OCUnits {
             get {
-                return this.ObservedDataField;
+                return this.OCUnitsField;
             }
             set {
-                if ((object.ReferenceEquals(this.ObservedDataField, value) != true)) {
-                    this.ObservedDataField = value;
-                    this.RaisePropertyChanged("ObservedData");
+                if ((this.OCUnitsField.Equals(value) != true)) {
+                    this.OCUnitsField = value;
+                    this.RaisePropertyChanged("OCUnits");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double RainfallSinceSoilWaterSampleDate {
+        public double[] PH {
             get {
-                return this.RainfallSinceSoilWaterSampleDateField;
+                return this.PHField;
             }
             set {
-                if ((this.RainfallSinceSoilWaterSampleDateField.Equals(value) != true)) {
-                    this.RainfallSinceSoilWaterSampleDateField = value;
-                    this.RaisePropertyChanged("RainfallSinceSoilWaterSampleDate");
+                if ((object.ReferenceEquals(this.PHField, value) != true)) {
+                    this.PHField = value;
+                    this.RaisePropertyChanged("PH");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string RainfallSource {
+        public APSIM.Cloud.Runner.JobsService.Sample.PHSampleUnitsEnum PHUnits {
             get {
-                return this.RainfallSourceField;
+                return this.PHUnitsField;
             }
             set {
-                if ((object.ReferenceEquals(this.RainfallSourceField, value) != true)) {
-                    this.RainfallSourceField = value;
-                    this.RaisePropertyChanged("RainfallSource");
+                if ((this.PHUnitsField.Equals(value) != true)) {
+                    this.PHUnitsField = value;
+                    this.RaisePropertyChanged("PHUnits");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Sample[] Samples {
+        public double[] SW {
             get {
-                return this.SamplesField;
+                return this.SWField;
             }
             set {
-                if ((object.ReferenceEquals(this.SamplesField, value) != true)) {
-                    this.SamplesField = value;
-                    this.RaisePropertyChanged("Samples");
+                if ((object.ReferenceEquals(this.SWField, value) != true)) {
+                    this.SWField = value;
+                    this.RaisePropertyChanged("SW");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Slope {
+        public APSIM.Cloud.Runner.JobsService.Sample.SWUnitsEnum SWUnits {
             get {
-                return this.SlopeField;
+                return this.SWUnitsField;
             }
             set {
-                if ((this.SlopeField.Equals(value) != true)) {
-                    this.SlopeField = value;
-                    this.RaisePropertyChanged("Slope");
+                if ((this.SWUnitsField.Equals(value) != true)) {
+                    this.SWUnitsField = value;
+                    this.RaisePropertyChanged("SWUnits");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double SlopeLength {
+        public double[] Thickness {
             get {
-                return this.SlopeLengthField;
+                return this.ThicknessField;
             }
             set {
-                if ((this.SlopeLengthField.Equals(value) != true)) {
-                    this.SlopeLengthField = value;
-                    this.RaisePropertyChanged("SlopeLength");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Soil Soil {
-            get {
-                return this.SoilField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.SoilField, value) != true)) {
-                    this.SoilField = value;
-                    this.RaisePropertyChanged("Soil");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime SoilNitrogenSampleDate {
-            get {
-                return this.SoilNitrogenSampleDateField;
-            }
-            set {
-                if ((this.SoilNitrogenSampleDateField.Equals(value) != true)) {
-                    this.SoilNitrogenSampleDateField = value;
-                    this.RaisePropertyChanged("SoilNitrogenSampleDate");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string SoilPath {
-            get {
-                return this.SoilPathField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.SoilPathField, value) != true)) {
-                    this.SoilPathField = value;
-                    this.RaisePropertyChanged("SoilPath");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime SoilWaterSampleDate {
-            get {
-                return this.SoilWaterSampleDateField;
-            }
-            set {
-                if ((this.SoilWaterSampleDateField.Equals(value) != true)) {
-                    this.SoilWaterSampleDateField = value;
-                    this.RaisePropertyChanged("SoilWaterSampleDate");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime StartSeasonDate {
-            get {
-                return this.StartSeasonDateField;
-            }
-            set {
-                if ((this.StartSeasonDateField.Equals(value) != true)) {
-                    this.StartSeasonDateField = value;
-                    this.RaisePropertyChanged("StartSeasonDate");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string StationName {
-            get {
-                return this.StationNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StationNameField, value) != true)) {
-                    this.StationNameField = value;
-                    this.RaisePropertyChanged("StationName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int StationNumber {
-            get {
-                return this.StationNumberField;
-            }
-            set {
-                if ((this.StationNumberField.Equals(value) != true)) {
-                    this.StationNumberField = value;
-                    this.RaisePropertyChanged("StationNumber");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double StubbleIncorporatedPercent {
-            get {
-                return this.StubbleIncorporatedPercentField;
-            }
-            set {
-                if ((this.StubbleIncorporatedPercentField.Equals(value) != true)) {
-                    this.StubbleIncorporatedPercentField = value;
-                    this.RaisePropertyChanged("StubbleIncorporatedPercent");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double StubbleMass {
-            get {
-                return this.StubbleMassField;
-            }
-            set {
-                if ((this.StubbleMassField.Equals(value) != true)) {
-                    this.StubbleMassField = value;
-                    this.RaisePropertyChanged("StubbleMass");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string StubbleType {
-            get {
-                return this.StubbleTypeField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StubbleTypeField, value) != true)) {
-                    this.StubbleTypeField = value;
-                    this.RaisePropertyChanged("StubbleType");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TemperatureSource {
-            get {
-                return this.TemperatureSourceField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TemperatureSourceField, value) != true)) {
-                    this.TemperatureSourceField = value;
-                    this.RaisePropertyChanged("TemperatureSource");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool UseEC {
-            get {
-                return this.UseECField;
-            }
-            set {
-                if ((this.UseECField.Equals(value) != true)) {
-                    this.UseECField = value;
-                    this.RaisePropertyChanged("UseEC");
+                if ((object.ReferenceEquals(this.ThicknessField, value) != true)) {
+                    this.ThicknessField = value;
+                    this.RaisePropertyChanged("Thickness");
                 }
             }
         }
@@ -547,11 +296,58 @@ namespace APSIM.Cloud.Runner.JobsService {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
+        
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.NUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
+        public enum NUnitsEnum : int {
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            ppm = 0,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            kgha = 1,
+        }
+        
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.OCSampleUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
+        public enum OCSampleUnitsEnum : int {
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Total = 0,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            WalkleyBlack = 1,
+        }
+        
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.PHSampleUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
+        public enum PHSampleUnitsEnum : int {
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Water = 0,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            CaCl2 = 1,
+        }
+        
+        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.SWUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
+        public enum SWUnitsEnum : int {
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Volumetric = 0,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            Gravimetric = 1,
+            
+            [System.Runtime.Serialization.EnumMemberAttribute()]
+            mm = 2,
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Soil", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Soil", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class Soil : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -980,750 +776,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Management", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.ResetNitrogen))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.ResetWater))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.Sow))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.Fertilise))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.StubbleRemoved))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.Irrigate))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.Tillage))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(APSIM.Cloud.Runner.JobsService.ResetSurfaceOrganicMatter))]
-    public partial class Management : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime DateField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime Date {
-            get {
-                return this.DateField;
-            }
-            set {
-                if ((this.DateField.Equals(value) != true)) {
-                    this.DateField = value;
-                    this.RaisePropertyChanged("Date");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Sample", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
-    [System.SerializableAttribute()]
-    public partial class Sample : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] CLField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] ECField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] ESPField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] NH4Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NH4UnitsField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] NO3Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NO3UnitsField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] OCField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Sample.OCSampleUnitsEnum OCUnitsField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] PHField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Sample.PHSampleUnitsEnum PHUnitsField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] SWField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Sample.SWUnitsEnum SWUnitsField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double[] ThicknessField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] CL {
-            get {
-                return this.CLField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CLField, value) != true)) {
-                    this.CLField = value;
-                    this.RaisePropertyChanged("CL");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Date {
-            get {
-                return this.DateField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DateField, value) != true)) {
-                    this.DateField = value;
-                    this.RaisePropertyChanged("Date");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] EC {
-            get {
-                return this.ECField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ECField, value) != true)) {
-                    this.ECField = value;
-                    this.RaisePropertyChanged("EC");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] ESP {
-            get {
-                return this.ESPField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ESPField, value) != true)) {
-                    this.ESPField = value;
-                    this.RaisePropertyChanged("ESP");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] NH4 {
-            get {
-                return this.NH4Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NH4Field, value) != true)) {
-                    this.NH4Field = value;
-                    this.RaisePropertyChanged("NH4");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NH4Units {
-            get {
-                return this.NH4UnitsField;
-            }
-            set {
-                if ((this.NH4UnitsField.Equals(value) != true)) {
-                    this.NH4UnitsField = value;
-                    this.RaisePropertyChanged("NH4Units");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] NO3 {
-            get {
-                return this.NO3Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NO3Field, value) != true)) {
-                    this.NO3Field = value;
-                    this.RaisePropertyChanged("NO3");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Sample.NUnitsEnum NO3Units {
-            get {
-                return this.NO3UnitsField;
-            }
-            set {
-                if ((this.NO3UnitsField.Equals(value) != true)) {
-                    this.NO3UnitsField = value;
-                    this.RaisePropertyChanged("NO3Units");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
-            get {
-                return this.NameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] OC {
-            get {
-                return this.OCField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.OCField, value) != true)) {
-                    this.OCField = value;
-                    this.RaisePropertyChanged("OC");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Sample.OCSampleUnitsEnum OCUnits {
-            get {
-                return this.OCUnitsField;
-            }
-            set {
-                if ((this.OCUnitsField.Equals(value) != true)) {
-                    this.OCUnitsField = value;
-                    this.RaisePropertyChanged("OCUnits");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] PH {
-            get {
-                return this.PHField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.PHField, value) != true)) {
-                    this.PHField = value;
-                    this.RaisePropertyChanged("PH");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Sample.PHSampleUnitsEnum PHUnits {
-            get {
-                return this.PHUnitsField;
-            }
-            set {
-                if ((this.PHUnitsField.Equals(value) != true)) {
-                    this.PHUnitsField = value;
-                    this.RaisePropertyChanged("PHUnits");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] SW {
-            get {
-                return this.SWField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.SWField, value) != true)) {
-                    this.SWField = value;
-                    this.RaisePropertyChanged("SW");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Sample.SWUnitsEnum SWUnits {
-            get {
-                return this.SWUnitsField;
-            }
-            set {
-                if ((this.SWUnitsField.Equals(value) != true)) {
-                    this.SWUnitsField = value;
-                    this.RaisePropertyChanged("SWUnits");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double[] Thickness {
-            get {
-                return this.ThicknessField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ThicknessField, value) != true)) {
-                    this.ThicknessField = value;
-                    this.RaisePropertyChanged("Thickness");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.NUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
-        public enum NUnitsEnum : int {
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            ppm = 0,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            kgha = 1,
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.OCSampleUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
-        public enum OCSampleUnitsEnum : int {
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Total = 0,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            WalkleyBlack = 1,
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.PHSampleUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
-        public enum PHSampleUnitsEnum : int {
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Water = 0,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            CaCl2 = 1,
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Sample.SWUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
-        public enum SWUnitsEnum : int {
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Volumetric = 0,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Gravimetric = 1,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            mm = 2,
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResetNitrogen", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class ResetNitrogen : APSIM.Cloud.Runner.JobsService.Management {
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResetWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class ResetWater : APSIM.Cloud.Runner.JobsService.Management {
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Sow", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Sow : APSIM.Cloud.Runner.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double BedRowSpacingField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int BedWidthField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string CropField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string CultivarField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.DateTime EmergenceDateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double IrrigationAmountField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int MaxRootDepthField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int RowSpacingField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string SkipRowField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int SowingDensityField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double BedRowSpacing {
-            get {
-                return this.BedRowSpacingField;
-            }
-            set {
-                if ((this.BedRowSpacingField.Equals(value) != true)) {
-                    this.BedRowSpacingField = value;
-                    this.RaisePropertyChanged("BedRowSpacing");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int BedWidth {
-            get {
-                return this.BedWidthField;
-            }
-            set {
-                if ((this.BedWidthField.Equals(value) != true)) {
-                    this.BedWidthField = value;
-                    this.RaisePropertyChanged("BedWidth");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Crop {
-            get {
-                return this.CropField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CropField, value) != true)) {
-                    this.CropField = value;
-                    this.RaisePropertyChanged("Crop");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Cultivar {
-            get {
-                return this.CultivarField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.CultivarField, value) != true)) {
-                    this.CultivarField = value;
-                    this.RaisePropertyChanged("Cultivar");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.DateTime EmergenceDate {
-            get {
-                return this.EmergenceDateField;
-            }
-            set {
-                if ((this.EmergenceDateField.Equals(value) != true)) {
-                    this.EmergenceDateField = value;
-                    this.RaisePropertyChanged("EmergenceDate");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double IrrigationAmount {
-            get {
-                return this.IrrigationAmountField;
-            }
-            set {
-                if ((this.IrrigationAmountField.Equals(value) != true)) {
-                    this.IrrigationAmountField = value;
-                    this.RaisePropertyChanged("IrrigationAmount");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int MaxRootDepth {
-            get {
-                return this.MaxRootDepthField;
-            }
-            set {
-                if ((this.MaxRootDepthField.Equals(value) != true)) {
-                    this.MaxRootDepthField = value;
-                    this.RaisePropertyChanged("MaxRootDepth");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int RowSpacing {
-            get {
-                return this.RowSpacingField;
-            }
-            set {
-                if ((this.RowSpacingField.Equals(value) != true)) {
-                    this.RowSpacingField = value;
-                    this.RaisePropertyChanged("RowSpacing");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string SkipRow {
-            get {
-                return this.SkipRowField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.SkipRowField, value) != true)) {
-                    this.SkipRowField = value;
-                    this.RaisePropertyChanged("SkipRow");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int SowingDensity {
-            get {
-                return this.SowingDensityField;
-            }
-            set {
-                if ((this.SowingDensityField.Equals(value) != true)) {
-                    this.SowingDensityField = value;
-                    this.RaisePropertyChanged("SowingDensity");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Fertilise", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Fertilise : APSIM.Cloud.Runner.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double AmountField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ScenarioField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Amount {
-            get {
-                return this.AmountField;
-            }
-            set {
-                if ((this.AmountField.Equals(value) != true)) {
-                    this.AmountField = value;
-                    this.RaisePropertyChanged("Amount");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Scenario {
-            get {
-                return this.ScenarioField;
-            }
-            set {
-                if ((this.ScenarioField.Equals(value) != true)) {
-                    this.ScenarioField = value;
-                    this.RaisePropertyChanged("Scenario");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="StubbleRemoved", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class StubbleRemoved : APSIM.Cloud.Runner.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double PercentField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Percent {
-            get {
-                return this.PercentField;
-            }
-            set {
-                if ((this.PercentField.Equals(value) != true)) {
-                    this.PercentField = value;
-                    this.RaisePropertyChanged("Percent");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Irrigate", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Irrigate : APSIM.Cloud.Runner.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double AmountField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double EfficiencyField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ScenarioField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Amount {
-            get {
-                return this.AmountField;
-            }
-            set {
-                if ((this.AmountField.Equals(value) != true)) {
-                    this.AmountField = value;
-                    this.RaisePropertyChanged("Amount");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Efficiency {
-            get {
-                return this.EfficiencyField;
-            }
-            set {
-                if ((this.EfficiencyField.Equals(value) != true)) {
-                    this.EfficiencyField = value;
-                    this.RaisePropertyChanged("Efficiency");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Scenario {
-            get {
-                return this.ScenarioField;
-            }
-            set {
-                if ((this.ScenarioField.Equals(value) != true)) {
-                    this.ScenarioField = value;
-                    this.RaisePropertyChanged("Scenario");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Tillage", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class Tillage : APSIM.Cloud.Runner.JobsService.Management {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Runner.JobsService.Tillage.DisturbanceEnum DisturbanceField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ScenarioField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Runner.JobsService.Tillage.DisturbanceEnum Disturbance {
-            get {
-                return this.DisturbanceField;
-            }
-            set {
-                if ((this.DisturbanceField.Equals(value) != true)) {
-                    this.DisturbanceField = value;
-                    this.RaisePropertyChanged("Disturbance");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Scenario {
-            get {
-                return this.ScenarioField;
-            }
-            set {
-                if ((this.ScenarioField.Equals(value) != true)) {
-                    this.ScenarioField = value;
-                    this.RaisePropertyChanged("Scenario");
-                }
-            }
-        }
-        
-        [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Tillage.DisturbanceEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-        public enum DisturbanceEnum : int {
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Low = 0,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            Medium = 1,
-            
-            [System.Runtime.Serialization.EnumMemberAttribute()]
-            High = 2,
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResetSurfaceOrganicMatter", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    [System.SerializableAttribute()]
-    public partial class ResetSurfaceOrganicMatter : APSIM.Cloud.Runner.JobsService.Management {
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Analysis", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Analysis", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class Analysis : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -2374,7 +1427,7 @@ namespace APSIM.Cloud.Runner.JobsService {
         }
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Analysis.BoronUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="Analysis.BoronUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
         public enum BoronUnitsEnum : int {
             
             [System.Runtime.Serialization.EnumMemberAttribute()]
@@ -2385,7 +1438,7 @@ namespace APSIM.Cloud.Runner.JobsService {
         }
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="Analysis.PHUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="Analysis.PHUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
         public enum PHUnitsEnum : int {
             
             [System.Runtime.Serialization.EnumMemberAttribute()]
@@ -2398,7 +1451,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="InitialWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="InitialWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class InitialWater : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -2505,7 +1558,7 @@ namespace APSIM.Cloud.Runner.JobsService {
         }
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="InitialWater.PercentMethodEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="InitialWater.PercentMethodEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
         public enum PercentMethodEnum : int {
             
             [System.Runtime.Serialization.EnumMemberAttribute()]
@@ -2518,7 +1571,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="SoilOrganicMatter", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SoilOrganicMatter", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class SoilOrganicMatter : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -2721,7 +1774,7 @@ namespace APSIM.Cloud.Runner.JobsService {
         }
         
         [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-        [System.Runtime.Serialization.DataContractAttribute(Name="SoilOrganicMatter.OCUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+        [System.Runtime.Serialization.DataContractAttribute(Name="SoilOrganicMatter.OCUnitsEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
         public enum OCUnitsEnum : int {
             
             [System.Runtime.Serialization.EnumMemberAttribute()]
@@ -2734,7 +1787,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="SoilWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SoilWater", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class SoilWater : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -3083,7 +2136,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Water", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Water", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class Water : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -3336,7 +2389,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="SoilCrop", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SoilCrop", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils")]
     [System.SerializableAttribute()]
     public partial class SoilCrop : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -3606,7 +2659,7 @@ namespace APSIM.Cloud.Runner.JobsService {
     public interface IJobs {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Add", ReplyAction="http://tempuri.org/IJobs/AddResponse")]
-        string Add(APSIM.Cloud.Runner.JobsService.YieldProphet yieldProphet);
+        string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsXML", ReplyAction="http://tempuri.org/IJobs/AddAsXMLResponse")]
         void AddAsXML(string name, string jobXML);
@@ -3629,17 +2682,14 @@ namespace APSIM.Cloud.Runner.JobsService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddLogMessage", ReplyAction="http://tempuri.org/IJobs/AddLogMessageResponse")]
         void AddLogMessage(string message, bool isError);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetLogMessages", ReplyAction="http://tempuri.org/IJobs/GetLogMessagesResponse")]
+        System.Data.DataSet GetLogMessages();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/SetCompleted", ReplyAction="http://tempuri.org/IJobs/SetCompletedResponse")]
         void SetCompleted(string jobName, string errorMessage);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/ReRun", ReplyAction="http://tempuri.org/IJobs/ReRunResponse")]
         void ReRun(string jobName);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/YieldProphetFromXML", ReplyAction="http://tempuri.org/IJobs/YieldProphetFromXMLResponse")]
-        APSIM.Cloud.Runner.JobsService.YieldProphet YieldProphetFromXML(string xml);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/YieldProphetToXML", ReplyAction="http://tempuri.org/IJobs/YieldProphetToXMLResponse")]
-        string YieldProphetToXML(APSIM.Cloud.Runner.JobsService.YieldProphet yieldProphet);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -3669,7 +2719,7 @@ namespace APSIM.Cloud.Runner.JobsService {
                 base(binding, remoteAddress) {
         }
         
-        public string Add(APSIM.Cloud.Runner.JobsService.YieldProphet yieldProphet) {
+        public string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet) {
             return base.Channel.Add(yieldProphet);
         }
         
@@ -3701,20 +2751,16 @@ namespace APSIM.Cloud.Runner.JobsService {
             base.Channel.AddLogMessage(message, isError);
         }
         
+        public System.Data.DataSet GetLogMessages() {
+            return base.Channel.GetLogMessages();
+        }
+        
         public void SetCompleted(string jobName, string errorMessage) {
             base.Channel.SetCompleted(jobName, errorMessage);
         }
         
         public void ReRun(string jobName) {
             base.Channel.ReRun(jobName);
-        }
-        
-        public APSIM.Cloud.Runner.JobsService.YieldProphet YieldProphetFromXML(string xml) {
-            return base.Channel.YieldProphetFromXML(xml);
-        }
-        
-        public string YieldProphetToXML(APSIM.Cloud.Runner.JobsService.YieldProphet yieldProphet) {
-            return base.Channel.YieldProphetToXML(yieldProphet);
         }
     }
 }

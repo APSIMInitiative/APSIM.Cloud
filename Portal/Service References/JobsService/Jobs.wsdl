@@ -4,11 +4,12 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" />
       <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
-      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service.Soils" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" />
       <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
+      <xsd:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd7" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IJobs_Add_InputMessage">
@@ -77,18 +78,6 @@
   <wsdl:message name="IJobs_ReRun_OutputMessage">
     <wsdl:part name="parameters" element="tns:ReRunResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_YieldProphetFromXML_InputMessage">
-    <wsdl:part name="parameters" element="tns:YieldProphetFromXML" />
-  </wsdl:message>
-  <wsdl:message name="IJobs_YieldProphetFromXML_OutputMessage">
-    <wsdl:part name="parameters" element="tns:YieldProphetFromXMLResponse" />
-  </wsdl:message>
-  <wsdl:message name="IJobs_YieldProphetToXML_InputMessage">
-    <wsdl:part name="parameters" element="tns:YieldProphetToXML" />
-  </wsdl:message>
-  <wsdl:message name="IJobs_YieldProphetToXML_OutputMessage">
-    <wsdl:part name="parameters" element="tns:YieldProphetToXMLResponse" />
-  </wsdl:message>
   <wsdl:portType name="IJobs">
     <wsdl:operation name="Add">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Add" message="tns:IJobs_Add_InputMessage" />
@@ -133,14 +122,6 @@
     <wsdl:operation name="ReRun">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/ReRun" message="tns:IJobs_ReRun_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IJobs/ReRunResponse" message="tns:IJobs_ReRun_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="YieldProphetFromXML">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/YieldProphetFromXML" message="tns:IJobs_YieldProphetFromXML_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/YieldProphetFromXMLResponse" message="tns:IJobs_YieldProphetFromXML_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="YieldProphetToXML">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/YieldProphetToXML" message="tns:IJobs_YieldProphetToXML_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/YieldProphetToXMLResponse" message="tns:IJobs_YieldProphetToXML_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IJobs" type="tns:IJobs">
@@ -237,24 +218,6 @@
     </wsdl:operation>
     <wsdl:operation name="ReRun">
       <soap:operation soapAction="http://tempuri.org/IJobs/ReRun" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="YieldProphetFromXML">
-      <soap:operation soapAction="http://tempuri.org/IJobs/YieldProphetFromXML" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="YieldProphetToXML">
-      <soap:operation soapAction="http://tempuri.org/IJobs/YieldProphetToXML" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

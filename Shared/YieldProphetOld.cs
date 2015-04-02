@@ -3,7 +3,7 @@
 //     Copyright (c) APSIM Initiative
 // </copyright>
 // -----------------------------------------------------------------------
-namespace APSIM.Cloud.Service
+namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
@@ -13,25 +13,23 @@ namespace APSIM.Cloud.Service
     using System.Globalization;
     using System.Xml.Serialization;
     using System.IO;
+    using APSIM.Shared.Soils;
 
     class YieldProphetOld
     {
         /// <summary>Converts the old Yield Prophet XML to new XML format capable of deserialisation</summary>
         /// <param name="yieldProphetXML">The old Yield Prophet XML</param>
         /// <returns>The new Yield Prophet XML</returns>
-        public static string Convert(string yieldProphetXML)
+        public static string Convert(XmlNode node, string baseFolder)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(yieldProphetXML);
-
             List<Paddock> simulations = new List<Paddock>();
 
-            List<XmlNode> paddocks = Utility.Xml.ChildNodes(doc.DocumentElement, "Paddock");
+            List<XmlNode> paddocks = Utility.Xml.ChildNodes(node, "Paddock");
             for (int p = 0; p < paddocks.Count; p++)
             {
                 try
                 {
-                    Paddock paddock = CreateSimulationSpec(paddocks[p]);
+                    Paddock paddock = CreateSimulationSpec(paddocks[p], baseFolder);
                     simulations.Add(paddock);
                 }
                 catch (Exception err)
@@ -45,16 +43,16 @@ namespace APSIM.Cloud.Service
             simulationsSpec.Paddock = simulations;
 
             // Some top level simulation metadata.
-            string reportDescription = Utility.Xml.Value(doc.DocumentElement, "ReportDescription");
+            string reportDescription = Utility.Xml.Value(node, "ReportDescription");
             if (reportDescription != "")
-                simulationsSpec.ReportName = reportDescription;    
-            string reportType = Utility.Xml.Value(doc.DocumentElement, "ReportType");
+                simulationsSpec.ReportName = reportDescription;
+            string reportType = Utility.Xml.Value(node, "ReportType");
             if (reportType == "Crop Report (Complete)")
                 simulationsSpec.ReportType = YieldProphet.ReportTypeEnum.Crop;
             else if (reportType == "Sowing Opportunity Report")
                 simulationsSpec.ReportType = YieldProphet.ReportTypeEnum.SowingOpportunity;
-            simulationsSpec.ClientName = Utility.Xml.Value(doc.DocumentElement, "GrowerName");
-            simulationsSpec.ReportGeneratedBy = Utility.Xml.Value(doc.DocumentElement, "LoginName");
+            simulationsSpec.ClientName = Utility.Xml.Value(node, "GrowerName");
+            simulationsSpec.ReportGeneratedBy = Utility.Xml.Value(node, "LoginName");
 
             // Now try deserialisation / serialisation.
             XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
@@ -76,7 +74,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Converts the paddock XML.</summary>
         /// <param name="paddock">The paddock.</param>
         /// <exception cref="System.Exception">Bad paddock name:  + name</exception>
-        private static Paddock CreateSimulationSpec(XmlNode paddock)
+        private static Paddock CreateSimulationSpec(XmlNode paddock, string baseFolder)
         {
             Paddock simulation = new Paddock();
 
@@ -99,7 +97,6 @@ namespace APSIM.Cloud.Service
 
             simulation.StartSeasonDate = GetDate(paddock, "StartSeasonDateFull");
 
-
             // Give the paddock a name.
             string fullName = string.Format("{0};{1};{2}", simulation.StartSeasonDate.Year, growerName, paddockName);
             simulation.Name = fullName;
@@ -108,6 +105,16 @@ namespace APSIM.Cloud.Service
             simulation.NowDate = GetDate(paddock.ParentNode, "TodayDateFull");
             if (simulation.NowDate == DateTime.MinValue)
                 simulation.NowDate = DateTime.Now;
+
+            // Store any rainfall data in the simulation.
+            string rainFileName = GetString(paddock, "RainfallFilename");
+            if (rainFileName != string.Empty)
+            {
+                string fullFileName = Path.Combine(baseFolder, rainFileName);
+                if (!File.Exists(fullFileName))
+                    throw new Exception("Cannot find file: " + fullFileName);
+                simulation.ObservedData = Utility.ApsimTextFile.ToTable(fullFileName);
+            }
 
             // Set the reset dates
             simulation.SoilWaterSampleDate = GetDate(paddock, "ResetDateFull");
@@ -190,7 +197,7 @@ namespace APSIM.Cloud.Service
 
 
             // Fix up soil sample variables.
-            Soils.Sample sample1 = new Soils.Sample();
+            Sample sample1 = new Sample();
             sample1.Name = "Sample1";
             sample1.Thickness = GetArray(paddock, "Sample1Thickness");
             sample1.SW = GetArray(paddock, "SW");
@@ -198,25 +205,25 @@ namespace APSIM.Cloud.Service
             sample1.NH4 = GetArray(paddock, "NH4");
 
             double[] sample2Thickness = GetArray(paddock, "Sample2Thickness");
-            Soils.Sample sample2 = sample1;
+            Sample sample2 = sample1;
             if (!Utility.Math.AreEqual(sample2Thickness, sample1.Thickness))
             {
-                sample2 = new Soils.Sample();
+                sample2 = new Sample();
                 sample2.Name = "Sample2";
             }
             sample2.OC = GetArray(paddock, "OC");
             sample2.EC = GetArray(paddock, "EC");
             sample2.PH = GetArray(paddock, "PH");
             sample2.CL = GetArray(paddock, "CL");
-            sample2.OCUnits = Soils.Sample.OCSampleUnitsEnum.WalkleyBlack;
-            sample2.PHUnits = Soils.Sample.PHSampleUnitsEnum.CaCl2;
+            sample2.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
+            sample2.PHUnits = Sample.PHSampleUnitsEnum.CaCl2;
 
             // Fix up <WaterFormat>
             string waterFormatString = GetString(paddock, "WaterFormat");
             if (waterFormatString.Contains("Gravimetric"))
-                sample1.SWUnits = Soils.Sample.SWUnitsEnum.Gravimetric;
+                sample1.SWUnits = Sample.SWUnitsEnum.Gravimetric;
             else
-                sample1.SWUnits = Soils.Sample.SWUnitsEnum.Volumetric;
+                sample1.SWUnits = Sample.SWUnitsEnum.Volumetric;
 
             if (Utility.Math.ValuesInArray(sample1.Thickness))
                 simulation.Samples.Add(sample1);
@@ -272,7 +279,9 @@ namespace APSIM.Cloud.Service
                         sampleNumber++;
                     }
                 }
-                simulation.Soil = Utility.Xml.Deserialise(soilNode, typeof(Soils.Soil)) as Soils.Soil;
+                simulation.Soil = SoilUtility.FromXML(soilNode.OuterXml);
+                if (simulation.Samples != null)
+                    simulation.Soil.Samples = simulation.Samples;
             }
             return simulation;
         }

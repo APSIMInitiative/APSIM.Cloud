@@ -17,3 +17,7 @@ Runner/bin/Debug/Temp/Model/TclLink/lib/tcl8.5/tzdata/PST8PDT
 Runner/bin/
 Portal/obj/
 Portal/bin/
+Runner/obj/
+Service/bin/
+Shared/bin/
+Test/bin/

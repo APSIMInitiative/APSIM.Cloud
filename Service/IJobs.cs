@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using System.Data;
+using APSIM.Cloud.Shared;
 
 namespace APSIM.Cloud.Service
 {
@@ -86,17 +87,5 @@ namespace APSIM.Cloud.Service
         /// <param name="jobName">Name of the job.</param>
         [OperationContract]
         void ReRun(string jobName);
-
-        /// <summary>Factory method for creating a YieldProphet object.</summary>
-        /// <param name="xml">The XML to use to create the object</param>
-        /// <returns>The newly created object.</returns>
-        [OperationContract]
-        YieldProphet YieldProphetFromXML(string xml);
-
-        /// <summary>Convert the YieldProphet spec to XML.</summary>
-        /// <returns>The XML string.</returns>
-        [OperationContract]
-        string YieldProphetToXML(YieldProphet yieldProphet);
-
     }
 }

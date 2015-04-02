@@ -12,6 +12,7 @@ namespace APSIM.Cloud.Service
     using System.Xml;
     using System.Xml.Serialization;
     using System.Data;
+    using APSIM.Cloud.Shared;
 
     /// <summary>
     /// A class encapsulating a database of jobs that need running.
@@ -57,7 +58,7 @@ namespace APSIM.Cloud.Service
                 paddock.NowDate = nowDate;
             string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
 
-            string xml = YieldProphetToXML(yieldProphet);
+            string xml = YieldProphetUtility.YieldProphetToXML(yieldProphet);
 
             AddAsXML(newJobName, xml);
             return newJobName;
@@ -257,42 +258,6 @@ namespace APSIM.Cloud.Service
 
             SqlCommand Cmd = new SqlCommand(sql, Connection);
             Cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>Factory method for creating a YieldProphet object.</summary>
-        /// <param name="xml">The XML to use to create the object</param>
-        /// <returns>The newly created object.</returns>
-        public YieldProphet YieldProphetFromXML(string xml)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(xml);
-            if (Utility.Xml.Value(doc.DocumentElement, "Version") != "9")
-                doc.LoadXml(YieldProphetOld.Convert(xml));
-
-            XmlReader reader = new XmlNodeReader(doc.DocumentElement);
-            reader.Read();
-            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
-            return (YieldProphet)serial.Deserialize(reader);
-        }
-
-        /// <summary>Convert the YieldProphet spec to XML.</summary>
-        /// <returns>The XML string.</returns>
-        public string YieldProphetToXML(YieldProphet yieldProphet)
-        {
-            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            StringWriter writer = new StringWriter();
-            serial.Serialize(writer, yieldProphet, ns);
-            string xml = writer.ToString();
-            if (xml.Length > 5 && xml.Substring(0, 5) == "<?xml")
-            {
-                // remove the first line: <?xml version="1.0"?>/n
-                int posEol = xml.IndexOf("\n");
-                if (posEol != -1)
-                    return xml.Substring(posEol + 1);
-            }
-            return xml;
         }
 
         /// <summary>Open the DB ready for use.</summary>

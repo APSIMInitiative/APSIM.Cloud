@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="36141f07-bb48-452d-894f-0e6b78158535" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="18143aa3-c120-436d-9dd7-6d47692d1c4d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -21,15 +21,16 @@
     <MetadataSource Address="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Jobs.xsd" MetadataType="Schema" ID="02dc2c2d-b758-4389-919d-1289b2efc7c9" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" />
-    <MetadataFile FileName="Jobs1.xsd" MetadataType="Schema" ID="e1041796-446f-4fe4-9c53-23d2984265e5" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" />
-    <MetadataFile FileName="Jobs2.xsd" MetadataType="Schema" ID="8611bbb4-3e1a-4520-9694-b3fe980bb69a" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" />
-    <MetadataFile FileName="Jobs.disco" MetadataType="Disco" ID="89664829-865f-41eb-98f2-8fa576be89ba" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?disco" />
-    <MetadataFile FileName="Jobs3.xsd" MetadataType="Schema" ID="8d330a5b-4497-4d15-a88a-5a11a80873c3" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" />
-    <MetadataFile FileName="Jobs4.xsd" MetadataType="Schema" ID="0a089bbe-688f-4168-8eaf-40910918d6cb" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" />
-    <MetadataFile FileName="Jobs5.xsd" MetadataType="Schema" ID="13d16d14-37ae-4e68-89f5-82e427e30ff4" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" />
-    <MetadataFile FileName="Jobs.wsdl" MetadataType="Wsdl" ID="8d8e0b32-c6b3-4f15-a791-a2426d4b9c23" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?wsdl" />
-    <MetadataFile FileName="Jobs6.xsd" MetadataType="Schema" ID="b3ae22cf-2db2-47f3-9a30-2ffcdbce70f9" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" />
+    <MetadataFile FileName="Jobs.xsd" MetadataType="Schema" ID="6e2c6094-3894-4270-bae1-c5c83a59f573" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" />
+    <MetadataFile FileName="Jobs1.xsd" MetadataType="Schema" ID="df0e0718-76a5-48cb-9c30-9934fa01b07d" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" />
+    <MetadataFile FileName="Jobs2.xsd" MetadataType="Schema" ID="e405a1ea-b098-435e-929d-05f17cefd7d4" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd7" />
+    <MetadataFile FileName="Jobs3.xsd" MetadataType="Schema" ID="6cc550e0-74e0-4660-9984-cd6bbf764689" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" />
+    <MetadataFile FileName="Jobs.disco" MetadataType="Disco" ID="9b7af4be-ecd7-4ae1-949d-ec16ec76225d" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?disco" />
+    <MetadataFile FileName="Jobs4.xsd" MetadataType="Schema" ID="e3b60611-6ca8-4502-a526-ce3a1d7ffbcf" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" />
+    <MetadataFile FileName="Jobs5.xsd" MetadataType="Schema" ID="37a59ffa-5064-4f79-8d38-cf94ce4f2d4d" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" />
+    <MetadataFile FileName="Jobs6.xsd" MetadataType="Schema" ID="a95f1d14-6f14-42a3-9e2b-b59fd6b65f83" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" />
+    <MetadataFile FileName="Jobs.wsdl" MetadataType="Wsdl" ID="ecd5c7d0-f1ec-4147-89fc-6d0ce51c7314" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?wsdl" />
+    <MetadataFile FileName="Jobs7.xsd" MetadataType="Schema" ID="55bfbea5-8434-4cc2-a041-6f5031688298" SourceId="1" SourceUrl="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

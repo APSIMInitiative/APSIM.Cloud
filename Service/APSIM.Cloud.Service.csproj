@@ -34,7 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApsimFile">
+    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\APSIM\Model\ApsimFile.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -44,32 +45,28 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Utility">
-      <HintPath>..\..\ApsimX\Bin\Utility.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Soils\Analysis.cs" />
-    <Compile Include="Soils\ApsimAttributes.cs" />
     <Compile Include="IJobs.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Jobs.cs" />
-    <Compile Include="Soils\InitialWater.cs" />
-    <Compile Include="Soils\Sample.cs" />
-    <Compile Include="Soils\Soil.cs" />
-    <Compile Include="Soils\SoilCrop.cs" />
-    <Compile Include="Soils\SoilOrganicMatter.cs" />
-    <Compile Include="Soils\SoilWater.cs" />
-    <Compile Include="Soils\Water.cs" />
-    <Compile Include="YieldProphet.cs" />
-    <Compile Include="YieldProphetOld.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Jobs.svc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\APSIM.Shared\Utility\Utility.csproj">
+      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\APSIM.Cloud.Shared.csproj">
+      <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
+      <Name>APSIM.Cloud.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

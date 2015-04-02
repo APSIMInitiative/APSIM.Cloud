@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="721bfb58-d37b-4ec9-b01e-6501b5796e76" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="45aaf241-6214-4a04-adb1-1c9989e08420" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -21,8 +21,8 @@
     <MetadataSource Address="http://www.apsim.info/ApsoilWebService/Service.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Service.wsdl" MetadataType="Wsdl" ID="c5358f90-5638-4671-bfb4-18437e4a704e" SourceId="1" SourceUrl="http://www.apsim.info/ApsoilWebService/Service.asmx?wsdl" />
-    <MetadataFile FileName="Service.disco" MetadataType="Disco" ID="11f490c7-30a1-400e-80bd-d44a42a55045" SourceId="1" SourceUrl="http://www.apsim.info/ApsoilWebService/Service.asmx?disco" />
+    <MetadataFile FileName="Service.wsdl" MetadataType="Wsdl" ID="7a8125f7-6e14-4f75-bc8a-19ad681ec96f" SourceId="1" SourceUrl="http://www.apsim.info/ApsoilWebService/Service.asmx?wsdl" />
+    <MetadataFile FileName="Service.disco" MetadataType="Disco" ID="c9e13f2f-a5df-49c2-841f-7116cf07ace8" SourceId="1" SourceUrl="http://www.apsim.info/ApsoilWebService/Service.asmx?disco" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

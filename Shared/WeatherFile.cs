@@ -3,7 +3,7 @@
 //     Copyright (c) APSIM Initiative
 // </copyright>
 // -----------------------------------------------------------------------
-namespace APSIM.Cloud.Runner
+namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Data;
@@ -51,9 +51,13 @@ namespace APSIM.Cloud.Runner
 
                 // Add a codes column to weatherdata
                 AddCodesColumn(weatherData, 'S');
-                AddCodesColumn(observedData, 'O');
 
-                OverlayData(observedData, weatherData);
+                if (observedData != null)
+                {
+                    AddCodesColumn(observedData, 'O');
+                    OverlayData(observedData, weatherData);
+                }
+
                 double latitude = Convert.ToDouble(weatherFile.Constant("Latitude").Value);
                 double longitude = Convert.ToDouble(weatherFile.Constant("Longitude").Value);
                 double tav = Convert.ToDouble(weatherFile.Constant("tav").Value);
@@ -101,7 +105,8 @@ namespace APSIM.Cloud.Runner
 
                 // Add a codes and date column to weatherdata
                 AddCodesColumn(weatherData, 'H');
-                AddCodesColumn(observedData, 'O');
+                if (observedData != null)
+                    AddCodesColumn(observedData, 'O');
                 AddDateToTable(weatherData);
 
                 // Need to create a patch data table from the observed data and the SILO data 
@@ -273,7 +278,8 @@ namespace APSIM.Cloud.Runner
 
             table = yearlyDataView.ToTable();
             AddCodesColumn(table, 'S');
-            OverlayData(observedData, table);
+            if (observedData != null)
+                OverlayData(observedData, table);
             return table;
         }
 

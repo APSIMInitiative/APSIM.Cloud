@@ -52,10 +52,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ApsimX\Bin\Utility.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
@@ -76,9 +72,6 @@
     <None Include="Service References\JobsService\APSIM.Cloud.Portal.JobsService.Job.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Portal.JobsService.YieldProphet.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\JobsService\Jobs.disco" />
     <None Include="Service References\JobsService\configuration91.svcinfo" />
     <None Include="Service References\JobsService\configuration.svcinfo" />
@@ -88,7 +81,9 @@
     </None>
     <Content Include="ShowJobDetail.aspx" />
     <Content Include="AddJob.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -116,6 +111,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\JobsService\Jobs6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs7.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -168,6 +166,20 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\APSIM.Shared\Soils\Soils.csproj">
+      <Project>{431CDE14-7649-4A07-A57D-DBCE389172E2}</Project>
+      <Name>Soils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\APSIM.Shared\Utility\Utility.csproj">
+      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\APSIM.Cloud.Shared.csproj">
+      <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
+      <Name>APSIM.Cloud.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadataStorage Include="Service References\JobsService\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -178,7 +190,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>62807</DevelopmentServerPort>
+          <DevelopmentServerPort>49199</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

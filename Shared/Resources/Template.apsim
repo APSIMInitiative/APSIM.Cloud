@@ -54,7 +54,7 @@ public class Script
    [Input] double[] dlt_n_min_tot;
    [Input] double[] no3;
    [Input] double[] nh4;
-   [Input] double[] no3_uptake;
+   [Input(IsOptional=true)] double[] no3_uptake;    // Sorghum doesn't have this
    [Input] double maxt;
    [Input] double mint;
    [Input] double rain;
@@ -191,6 +191,7 @@ public class Script
          double amount = SwToday - CLLToday;
          if (amount &lt; 0)
             amount = 0;
+         
          return amount;
       }
    }
@@ -210,10 +211,14 @@ public class Script
    {
       get
       {
-         double[] cumThickness = Soil.ToCumThickness(dlayer); // mm
-         double[] cumCLL = Soil.ToCumThickness(ll_dep); // mm
-         bool didInterp;
-         return MathUtility.LinearInterpReal(root_depth, cumThickness, cumCLL, out didInterp);
+         if (ll_dep.Length &gt; 0) // Sorghum gives a zero length ll_dep sometimes.
+         {
+            double[] cumThickness = Soil.ToCumThickness(dlayer); // mm
+            double[] cumCLL = Soil.ToCumThickness(ll_dep); // mm
+            bool didInterp;
+            return MathUtility.LinearInterpReal(root_depth, cumThickness, cumCLL, out didInterp);
+         }
+         return 0;
       }
    }
    

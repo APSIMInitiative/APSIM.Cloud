@@ -1,0 +1,9 @@
+[grower.Rainfall.data]
+allow_sparse_data = true ()
+patch_all_years = true ()
+patch_variables_long_term = maxt mint radn ()
+           date           rain
+             ()             ()
+     2004-04-01             50
+     2004-04-02              0
+     2004-04-03             80

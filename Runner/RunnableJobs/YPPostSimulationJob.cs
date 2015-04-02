@@ -14,6 +14,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.Reflection;
     using System.Diagnostics;
     using System.Data;
+    using APSIM.Cloud.Shared;
 
     /// <summary>
     /// A runnable class for Yield Prophet cleanup
@@ -56,12 +57,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         {
             // Read in the yield prophet specification.
             StreamReader reader = new StreamReader(Path.Combine(workingDirectory, "YieldProphet.xml"));
-            JobsService.YieldProphet yieldProphet;
-            using (JobsService.JobsClient jobClient = new JobsService.JobsClient())
-            {
-                yieldProphet = jobClient.YieldProphetFromXML(reader.ReadToEnd());
-                reader.Close();
-            }
+            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromXML(reader.ReadToEnd());
+            reader.Close();
 
             // copy in the report file.
             string reportFileName = Path.Combine(workingDirectory, yieldProphet.ReportType + ".report");

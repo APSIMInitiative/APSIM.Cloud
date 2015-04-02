@@ -12,12 +12,11 @@ namespace APSIM.Cloud.Runner
     using System.Threading;
     using System.Xml;
     using APSIM.Cloud;
-    using APSIM.Cloud.Specification;
+    using APSIM.Cloud.Shared;
     using System.Data;
     using System.IO;
     using System.Reflection;
     using System.Diagnostics;
-    using ApsimFile;
 
     /// <summary>
     /// This runnable job will periodically check the DB for new jobs that

@@ -3,7 +3,7 @@
 //     Copyright (c) APSIM Initiative
 // </copyright>
 // -----------------------------------------------------------------------
-namespace APSIM.Cloud.Service
+namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
@@ -107,20 +107,20 @@ namespace APSIM.Cloud.Service
         public List<Management> Management { get; set; }
 
         /// <summary>Gets or sets the soil samples.</summary>
-        public List<Soils.Sample> Samples { get; set; }
+        public List<APSIM.Shared.Soils.Sample> Samples { get; set; }
 
         /// <summary>Gets or sets the full APSoil path of the soil to use to lookup APSoil.</summary>
         public string SoilPath { get; set; }
 
         /// <summary>Gets or sets the soil. If null, the 'SoilName' property will
         /// be used to lookup the soil from APSoil</summary>
-        public Soils.Soil Soil { get; set; }
+        public APSIM.Shared.Soils.Soil Soil { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="Paddock"/> class.</summary>
         public Paddock()
         {
             Management = new List<Management>();
-            Samples = new List<Soils.Sample>();
+            Samples = new List<APSIM.Shared.Soils.Sample>();
         }
 
         /// <summary>

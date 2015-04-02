@@ -3,7 +3,7 @@
 //     Copyright (c) APSIM Initiative
 // </copyright>
 // -----------------------------------------------------------------------
-namespace APSIM.Cloud.Specification
+namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
@@ -55,25 +55,25 @@ namespace APSIM.Cloud.Specification
         public bool UseEC { get; set; }
 
         /// <summary>Gets or sets the list of management actions.</summary>
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.Sow))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.Fertilise))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.Irrigate))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.Tillage))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.StubbleRemoved))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.ResetWater))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.ResetNitrogen))]
-        [XmlArrayItem(typeof(APSIM.Cloud.Runner.JobsService.ResetSurfaceOrganicMatter))]
-        public List<APSIM.Cloud.Runner.JobsService.Management> Management { get; set; }
+        [XmlArrayItem(typeof(Sow))]
+        [XmlArrayItem(typeof(Fertilise))]
+        [XmlArrayItem(typeof(Irrigate))]
+        [XmlArrayItem(typeof(Tillage))]
+        [XmlArrayItem(typeof(StubbleRemoved))]
+        [XmlArrayItem(typeof(ResetWater))]
+        [XmlArrayItem(typeof(ResetNitrogen))]
+        [XmlArrayItem(typeof(ResetSurfaceOrganicMatter))]
+        public List<Management> Management { get; set; }
 
         /// <summary>Gets or sets the soil samples.</summary>
-        public List<APSIM.Cloud.Runner.JobsService.Sample> Samples { get; set; }
+        public List<APSIM.Shared.Soils.Sample> Samples { get; set; }
 
         /// <summary>Gets or sets the full APSoil path of the soil to use to lookup APSoil.</summary>
         public string SoilPath { get; set; }
 
         /// <summary>Gets or sets the soil. If null, the 'SoilName' property will
         /// be used to lookup the soil from APSoil</summary>
-        public APSIM.Cloud.Runner.JobsService.Soil Soil { get; set; }
+        public APSIM.Shared.Soils.Soil Soil { get; set; }
 
         /// <summary>Gets or sets a value indicating whether the run should be nitrogen unlimited</summary>
         public bool NUnlimited { get; set; }

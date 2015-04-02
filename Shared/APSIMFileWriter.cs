@@ -3,14 +3,14 @@
 // TODO: Update copyright text.
 // </copyright>
 // -----------------------------------------------------------------------
-namespace APSIM.Cloud.Runner
+namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
     using System.Xml;
-    using ApsimFile;
+    using APSIM.Shared.Soils;
 
     /// <summary>Writes a .apsim file</summary>
     class APSIMFileWriter
@@ -24,7 +24,7 @@ namespace APSIM.Cloud.Runner
         public APSIMFileWriter()
         {
             // Load the template file.
-            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Runner.Resources.Template.apsim");
+            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Shared.Resources.Template.apsim");
             XmlDocument doc = new XmlDocument();
             doc.Load(s);
             simulationXML = Utility.Xml.Find(doc.DocumentElement, "Base");
@@ -94,7 +94,7 @@ namespace APSIM.Cloud.Runner
         public void SetSoil(Soil soil)
         {
             XmlDocument soilDoc = new XmlDocument();
-            soilDoc.LoadXml(soil.ToXml());
+            soilDoc.LoadXml(SoilUtility.ToXML(soil));
             XmlNode paddockNode = Utility.Xml.Find(simulationXML, "Paddock");
             paddockNode.AppendChild(paddockNode.OwnerDocument.ImportNode(soilDoc.DocumentElement, true));
         }
@@ -107,7 +107,7 @@ namespace APSIM.Cloud.Runner
         /// or
         /// Invalid bed width found:  + sowing.BedWidth.ToString()
         /// </exception>
-        public string AddSowingOperation(JobsService.Sow sowing, bool useEC)
+        public string AddSowingOperation(Sow sowing, bool useEC)
         {
             string operationsXML = string.Empty;
 
@@ -198,7 +198,7 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Adds a fertilse operation.</summary>
         /// <param name="application">The application.</param>
-        public void AddFertilseOperation(JobsService.Fertilise application)
+        public void AddFertilseOperation(Fertilise application)
         {
             if (application.Scenario)
                 AddOperation(application.Date, "act_mods ScenarioOperation");
@@ -210,7 +210,7 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Adds a irrigation operation.</summary>
         /// <param name="application">The application.</param>
-        public void AddIrrigateOperation(JobsService.Irrigate application)
+        public void AddIrrigateOperation(Irrigate application)
         {
             if (application.Scenario)
                 AddOperation(application.Date, "act_mods ScenarioOperation");
@@ -222,12 +222,12 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Adds a tillage operation.</summary>
         /// <param name="application">The application.</param>
-        public void AddTillageOperation(JobsService.Tillage application)
+        public void AddTillageOperation(Tillage application)
         {
             double incorpFOM;
-            if (application.Disturbance == JobsService.Tillage.DisturbanceEnum.Low)
+            if (application.Disturbance == Tillage.DisturbanceEnum.Low)
                 incorpFOM = 0.2;
-            else if (application.Disturbance == JobsService.Tillage.DisturbanceEnum.Medium)
+            else if (application.Disturbance == Tillage.DisturbanceEnum.Medium)
                 incorpFOM = 0.5;
             else
                 incorpFOM = 0.8;
@@ -238,7 +238,7 @@ namespace APSIM.Cloud.Runner
         }
         /// <summary>Adds a stubble removed operation.</summary>
         /// <param name="application">The application.</param>
-        public void AddStubbleRemovedOperation(JobsService.StubbleRemoved application)
+        public void AddStubbleRemovedOperation(StubbleRemoved application)
         {
             double incorpFOM = application.Percent / 100;
 
@@ -251,7 +251,7 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Adds the reset water operation.</summary>
         /// <param name="reset">The reset.</param>
-        public void AddResetWaterOperation(JobsService.ResetWater reset)
+        public void AddResetWaterOperation(ResetWater reset)
         {
             AddOperation(reset.Date, "'Soil Water' reset");
             AddOperation(reset.Date, "act_mods reseting");
@@ -259,14 +259,14 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Adds the reset nitrogen operation.</summary>
         /// <param name="reset">The reset.</param>
-        public void AddResetNitrogenOperation(JobsService.ResetNitrogen reset)
+        public void AddResetNitrogenOperation(ResetNitrogen reset)
         {
             AddOperation(reset.Date, "'Soil Nitrogen' reset");
         }
 
         /// <summary>Adds the surface organic matter operation.</summary>
         /// <param name="reset">The reset.</param>
-        public void AddSurfaceOrganicMatterOperation(JobsService.ResetSurfaceOrganicMatter reset)
+        public void AddSurfaceOrganicMatterOperation(ResetSurfaceOrganicMatter reset)
         {
             AddOperation(reset.Date, "SurfaceOM reset");
         }

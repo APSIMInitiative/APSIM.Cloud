@@ -54,14 +54,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ApsimX\Bin\Utility.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APSIMFiles.cs" />
-    <Compile Include="APSIMFileWriter.cs" />
     <Compile Include="RunJobsInDB.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -75,11 +69,6 @@
     <Compile Include="RunnableJobs\APSIMPostSimulationJob.cs" />
     <Compile Include="RunnableJobs\ProcessYPJob.cs" />
     <Compile Include="RunnableJobs\YPPostSimulationJob.cs" />
-    <Compile Include="Service References\APSOIL\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Service References\JobsService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -90,9 +79,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Specification\APSIMSpec.cs" />
-    <Compile Include="Specification\Utils.cs" />
-    <Compile Include="WeatherFile.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -108,6 +94,7 @@
     </Compile>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -119,35 +106,22 @@
     </Compile>
     <EmbeddedResource Include="Resources\Crop.report" />
     <EmbeddedResource Include="Resources\SowingOpportunity.report" />
-    <EmbeddedResource Include="Resources\Template.apsim">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <None Include="Service References\APSOIL\APSIM.Cloud.Runner.APSOIL.PAWCByCrop.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\APSOIL\APSIM.Cloud.Runner.APSOIL.SoilAnalysisInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\APSOIL\APSIM.Cloud.Runner.APSOIL.SoilBasicInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\APSOIL\APSIM.Cloud.Runner.APSOIL.SoilInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\APSOIL\Service.wsdl" />
     <None Include="Service References\JobsService\APSIM.Cloud.Runner.JobsService.Job.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Runner.JobsService.YieldProphet.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Service.Soils1.xsd">
-      <SubType>Designer</SubType>
     </None>
     <None Include="Service References\JobsService\APSIM.Cloud.Service1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\JobsService\APSIM.Cloud.Shared.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\APSIM.Shared.Soils.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\JobsService\Arrays1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\service.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\JobsService\service1.wsdl" />
@@ -175,24 +149,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\APSOIL\" />
     <WCFMetadataStorage Include="Service References\JobsService\" />
     <WCFMetadataStorage Include="Service References\YPReporting\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\APSOIL\Service.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\APSOIL\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\APSOIL\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\APSOIL\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\JobsService\configuration91.svcinfo" />
@@ -220,6 +178,20 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\APSIM.Shared\Soils\Soils.csproj">
+      <Project>{431CDE14-7649-4A07-A57D-DBCE389172E2}</Project>
+      <Name>Soils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\APSIM.Shared\Utility\Utility.csproj">
+      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\APSIM.Cloud.Shared.csproj">
+      <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
+      <Name>APSIM.Cloud.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

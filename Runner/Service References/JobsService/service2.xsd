@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
+  <xs:import schemaLocation="" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" />
+  <xs:import schemaLocation="" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
   <xs:element name="Add">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" minOccurs="0" name="yieldProphet" nillable="true" type="q1:YieldProphet" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" minOccurs="0" name="yieldProphet" nillable="true" type="q1:YieldProphet" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -107,6 +108,30 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetLogMessages">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogMessagesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetLogMessagesResult" nillable="true">
+          <xs:complexType>
+            <xs:annotation>
+              <xs:appinfo>
+                <ActualType Name="DataSet" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+              </xs:appinfo>
+            </xs:annotation>
+            <xs:sequence>
+              <xs:element ref="xs:schema" />
+              <xs:any />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="SetCompleted">
     <xs:complexType>
       <xs:sequence>
@@ -130,34 +155,6 @@
   <xs:element name="ReRunResponse">
     <xs:complexType>
       <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="YieldProphetFromXML">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="xml" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="YieldProphetFromXMLResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" minOccurs="0" name="YieldProphetFromXMLResult" nillable="true" type="q5:YieldProphet" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="YieldProphetToXML">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" minOccurs="0" name="yieldProphet" nillable="true" type="q6:YieldProphet" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="YieldProphetToXMLResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="YieldProphetToXMLResult" nillable="true" type="xs:string" />
-      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>
