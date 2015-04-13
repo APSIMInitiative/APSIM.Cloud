@@ -9,6 +9,7 @@ namespace APSIM.Cloud.Runner
     using System.Linq;
     using System.Text;
     using System.Windows.Forms;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// Main form for runner application
@@ -16,7 +17,7 @@ namespace APSIM.Cloud.Runner
     public partial class MainForm : Form
     {
         /// <summary>The job manager to send our jobs to</summary>
-        private Utility.JobManager jobManager = null;
+        private JobManager jobManager = null;
 
         /// <summary>Initializes a new instance of the <see cref="MainForm"/> class.</summary>
         public MainForm()
@@ -29,7 +30,7 @@ namespace APSIM.Cloud.Runner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnLoad(object sender, EventArgs e)
         {
-            jobManager = new Utility.JobManager();
+            jobManager = new JobManager();
             jobManager.AddJob(new RunJobsInDB());
             jobManager.Start(waitUntilFinished: false);
         }

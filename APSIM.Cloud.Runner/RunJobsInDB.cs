@@ -16,12 +16,13 @@ namespace APSIM.Cloud.Runner
     using System.IO;
     using System.Reflection;
     using System.Diagnostics;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// This runnable job will periodically check the DB for new jobs that
     /// have been added. When found, they are added to the job manager queue.
     /// </summary>
-    public class RunJobsInDB : Utility.JobManager.IRunnable
+    public class RunJobsInDB : JobManager.IRunnable
     {
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
         public bool IsComputationallyTimeConsuming { get { return false; } }
@@ -36,7 +37,7 @@ namespace APSIM.Cloud.Runner
         private JobsService.Job runningJobDescription = null;
 
         /// <summary>The current running job.</summary>
-        private Utility.JobManager.IRunnable runningJob = null;
+        private JobManager.IRunnable runningJob = null;
 
         /// <summary>Entry point for this job.</summary>
         /// <param name="sender">The sender.</param>
@@ -44,7 +45,7 @@ namespace APSIM.Cloud.Runner
         public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Get our job manager.
-            Utility.JobManager jobManager = (Utility.JobManager)e.Argument;
+            JobManager jobManager = (JobManager)e.Argument;
 
             while (!e.Cancel)
             {
@@ -67,7 +68,7 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Processes any jobs that have been added.</summary>
         /// <param name="jobManager">The job manager.</param>
-        private void ProcessAddedJobs(Utility.JobManager jobManager)
+        private void ProcessAddedJobs(JobManager jobManager)
         {
             if (runningJobDescription == null)
             {

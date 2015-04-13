@@ -15,11 +15,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.Diagnostics;
     using System.Data;
     using APSIM.Cloud.Shared;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// A runnable class for Yield Prophet cleanup
     /// </summary>
-    public class YPPostSimulationJob : Utility.JobManager.IRunnable
+    public class YPPostSimulationJob : JobManager.IRunnable
     {
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
         public bool IsComputationallyTimeConsuming { get { return true; } }
@@ -73,8 +74,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             string archiveBaseFileName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
-            startInfo.Arguments = Utility.String.DQuote(reportFileName) + " " +
-                                  Utility.String.DQuote(archiveBaseFileName + ".gif");
+            startInfo.Arguments = StringUtilities.DQuote(reportFileName) + " " +
+                                  StringUtilities.DQuote(archiveBaseFileName + ".gif");
             startInfo.WorkingDirectory = workingDirectory;
             Process process = Process.Start(startInfo);
             process.WaitForExit();
@@ -87,7 +88,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.out"))
                 try
                 {
-                    dataSet.Tables.Add(Utility.ApsimTextFile.ToTable(outFileName));
+                    dataSet.Tables.Add(ApsimTextFile.ToTable(outFileName));
                 }
                 catch (Exception)
                 {

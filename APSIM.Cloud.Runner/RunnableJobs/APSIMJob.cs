@@ -8,11 +8,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// A runnable class for a single APSIM simulation run.
     /// </summary>
-    public class APSIMJob : Utility.JobManager.IRunnable
+    public class APSIMJob : JobManager.IRunnable
     {
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
         public bool IsComputationallyTimeConsuming { get { return true; } }

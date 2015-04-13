@@ -15,6 +15,7 @@ namespace APSIM.Cloud.Shared
     using System.Xml.Serialization;
     using System.Data;
     using APSIM.Shared.Soils;
+    using APSIM.Shared.Utilities;
 
     /// <summary>TODO: Update summary.</summary>
     public class APSIMFiles
@@ -38,7 +39,7 @@ namespace APSIM.Cloud.Shared
             // Write the .apsim file.
             string apsimFileName = Path.Combine(workingFolder, "YieldProphet.apsim");
             StreamWriter writer = new StreamWriter(apsimFileName);
-            writer.Write(Utility.Xml.FormattedXML(apsimNode.OuterXml));
+            writer.Write(XmlUtilities.FormattedXML(apsimNode.OuterXml));
             writer.Close();
 
             return apsimFileName;
@@ -114,8 +115,8 @@ namespace APSIM.Cloud.Shared
             APSOIL.ServiceSoapClient apsoilService = null;
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateElement("folder"));
-            Utility.Xml.SetNameAttr(doc.DocumentElement, "Simulations");
-            Utility.Xml.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
+            XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
+            XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
 
             foreach (APSIMSpec simulation in simulations)
             {
@@ -239,8 +240,8 @@ namespace APSIM.Cloud.Shared
             {
                 // Convert webservice proxy soil to a real soil.
                 XmlDocument soilDoc = new XmlDocument();
-                soilDoc.LoadXml(Utility.Xml.Serialise(simulation.Soil, false));
-                soil = Utility.Xml.Deserialise(soilDoc.DocumentElement, typeof(Soil)) as Soil;
+                soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Soil, false));
+                soil = XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(Soil)) as Soil;
 
                 // The crops aren't being Serialised correctly. They are put under a <Crops> node
                 // which isn't right. Do them manually.
@@ -260,7 +261,7 @@ namespace APSIM.Cloud.Shared
             // Make sure we have a soil crop parameterisation. If not then try creating one
             // based on wheat.
             Sow crop = YieldProphetUtility.GetCropBeingSown(simulation.Management);
-            if (crop != null && !Utility.String.Contains(SoilUtility.GetCropNames(soil), crop.Crop))
+            if (crop != null && !StringUtilities.Contains(SoilUtility.GetCropNames(soil), crop.Crop))
             {
                 SoilCrop wheat = SoilUtility.Crop(soil, "wheat");
 
@@ -281,8 +282,8 @@ namespace APSIM.Cloud.Shared
             {
                 // Convert webservice proxy samples to real samples.
                 XmlDocument soilDoc = new XmlDocument();
-                soilDoc.LoadXml(Utility.Xml.Serialise(simulation.Samples, false));
-                soil.Samples = Utility.Xml.Deserialise(soilDoc.DocumentElement, typeof(List<Sample>)) as List<Sample>;
+                soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Samples, false));
+                soil.Samples = XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(List<Sample>)) as List<Sample>;
             }
 
             foreach (Sample sample in soil.Samples)
@@ -375,7 +376,7 @@ namespace APSIM.Cloud.Shared
         /// <exception cref="System.Exception">Use double.NaN for missing values in soil array values</exception>
         private static void CheckMissingValuesAreNaN(double[] values)
         {
-            if (values.FirstOrDefault(v => v == Utility.Math.MissingValue) != 0)
+            if (values.FirstOrDefault(v => v == MathUtilities.MissingValue) != 0)
                 throw new Exception("Use NaN for missing values in soil array values");
         }
 

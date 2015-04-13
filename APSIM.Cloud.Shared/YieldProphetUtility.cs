@@ -15,6 +15,7 @@ namespace APSIM.Cloud.Shared
     using System.IO;
     using System.Data;
     using System.Reflection;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// TODO: Update summary.
@@ -28,7 +29,7 @@ namespace APSIM.Cloud.Shared
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(fileName);
-            if (Utility.Xml.Value(doc.DocumentElement, "Version") != "9")
+            if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
                 doc.LoadXml(YieldProphetOld.Convert(doc.DocumentElement, Path.GetDirectoryName(fileName)));
 
             XmlReader reader = new XmlNodeReader(doc.DocumentElement);
@@ -44,7 +45,7 @@ namespace APSIM.Cloud.Shared
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
-            if (Utility.Xml.Value(doc.DocumentElement, "Version") != "9")
+            if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
                 throw new Exception("Cannot convert from OLD YieldProphet xml into new XML. " +
                                     "Call YieldProphetUtility.YieldProphetFromFile instead");
 
@@ -84,7 +85,7 @@ namespace APSIM.Cloud.Shared
                                      "weeds",   "wheat"};
             int[] CNRatios = { 80, 120, 42, 42, 29, 80, 42, 42, 42, 42, 80, 80, 80, 42, 80, 80 };
 
-            int PosStubble = Utility.String.IndexOfCaseInsensitive(StubbleTypes, StubbleType);
+            int PosStubble = StringUtilities.IndexOfCaseInsensitive(StubbleTypes, StubbleType);
             if (PosStubble != -1)
                 return CNRatios[PosStubble];
             else
@@ -142,7 +143,7 @@ namespace APSIM.Cloud.Shared
             if (metFiles.Length > 0)
             {
                 string firstMetFile = Path.Combine(workingFolder, metFiles[0]);
-                Utility.ApsimTextFile textFile = new Utility.ApsimTextFile();
+                ApsimTextFile textFile = new ApsimTextFile();
                 textFile.Open(firstMetFile);
                 DataTable data = textFile.ToTable();
                 textFile.Close();
@@ -150,7 +151,7 @@ namespace APSIM.Cloud.Shared
                 if (data.Rows.Count > 0)
                 {
                     DataRow lastweatherRow = data.Rows[data.Rows.Count - 1];
-                    paddock.LastClimateDate = Utility.DataTable.GetDateFromRow(lastweatherRow);
+                    paddock.LastClimateDate = DataTableUtilities.GetDateFromRow(lastweatherRow);
                 }
             }
         }
@@ -164,7 +165,7 @@ namespace APSIM.Cloud.Shared
                 return DateTime.MinValue;
 
             int lastRowIndex = observedData.Rows.Count - 1;
-            return Utility.DataTable.GetDateFromRow(observedData.Rows[lastRowIndex]);
+            return DataTableUtilities.GetDateFromRow(observedData.Rows[lastRowIndex]);
         }
 
         /// <summary>Sums a column of a data table between dates.</summary>
@@ -180,7 +181,7 @@ namespace APSIM.Cloud.Shared
             {
                 foreach (DataRow row in data.Rows)
                 {
-                    DateTime rowDate = Utility.DataTable.GetDateFromRow(row);
+                    DateTime rowDate = DataTableUtilities.GetDateFromRow(row);
                     if (rowDate >= date1)
                         sum += Convert.ToDouble(row[columnName]);
                 }

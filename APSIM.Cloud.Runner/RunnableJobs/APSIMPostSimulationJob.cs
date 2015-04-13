@@ -8,11 +8,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.IO;
     using System.Collections.Generic;
     using System.Xml;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// A runnable class to run a series of post simulation cleanup functions.
     /// </summary>
-    public class APSIMPostSimulationJob : Utility.JobManager.IRunnable
+    public class APSIMPostSimulationJob : JobManager.IRunnable
     {
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
         public bool IsComputationallyTimeConsuming { get { return true; } }
@@ -48,12 +49,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 List<XmlNode> simulationNodes = new List<XmlNode>();
                 XmlDocument doc = new XmlDocument();
                 doc.Load(apsimFileName);
-                Utility.Xml.FindAllRecursivelyByType(doc.DocumentElement, "simulation", ref simulationNodes);
+                XmlUtilities.FindAllRecursivelyByType(doc.DocumentElement, "simulation", ref simulationNodes);
 
                 // Concatenate summary files.
                 foreach (XmlNode simNode in simulationNodes)
                 {
-                    string simName = Utility.Xml.NameAttr(simNode);
+                    string simName = XmlUtilities.NameAttr(simNode);
                     string[] sumFiles = Directory.GetFiles(workingFolder, simName + "_*.sum");
                     if (sumFiles.Length > 0)
                         ConcatenateSummaryFiles(sumFiles, simName + ".sum");
@@ -62,7 +63,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 // Concatenate yearly output files.
                 foreach (XmlNode simNode in simulationNodes)
                 {
-                    string simName = Utility.Xml.NameAttr(simNode);
+                    string simName = XmlUtilities.NameAttr(simNode);
                     string[] outFiles = Directory.GetFiles(workingFolder, simName + "_*Yearly.out");
                     if (outFiles.Length > 0)
                         ConcatenateOutputFiles(outFiles, simName + " Yearly.out");
@@ -71,7 +72,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 // Concatenate monthly output files.
                 foreach (XmlNode simNode in simulationNodes)
                 {
-                    string simName = Utility.Xml.NameAttr(simNode);
+                    string simName = XmlUtilities.NameAttr(simNode);
                     string[] outFiles = Directory.GetFiles(workingFolder, simName + "_*Monthly.out");
                     if (outFiles.Length > 0)
                         ConcatenateOutputFiles(outFiles, simName + " Monthly.out");
@@ -80,7 +81,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 // Concatenate daily output files.
                 foreach (XmlNode simNode in simulationNodes)
                 {
-                    string simName = Utility.Xml.NameAttr(simNode);
+                    string simName = XmlUtilities.NameAttr(simNode);
                     string[] outFiles = Directory.GetFiles(workingFolder, simName + "_*Daily.out");
                     if (outFiles.Length > 0)
                         ConcatenateOutputFiles(outFiles, simName + " Daily.out");
@@ -163,7 +164,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         private static void ZipFiles(string[] fileNames, string intoFileName)
         {
             // Zip up files.
-            Utility.Zip.ZipFiles(fileNames, intoFileName, null);
+            ZipUtilities.ZipFiles(fileNames, intoFileName, null);
 
             // Delete the .met files.
             foreach (string fileName in fileNames)

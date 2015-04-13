@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -42,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\APSIM.Shared\Utilities\ZipUtilities.cs">
+      <Link>ZipUtilities.cs</Link>
+    </Compile>
     <Compile Include="APSIMFiles.cs" />
     <Compile Include="APSIMFileWriter.cs" />
     <Compile Include="APSIMSpec.cs" />
@@ -65,6 +71,7 @@
     <EmbeddedResource Include="Resources\Template.apsim">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Service References\APSOIL\APSIM.Cloud.Shared.APSOIL.PAWCByCrop.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -98,13 +105,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.Soils\APSIM.Shared.Soils.csproj">
-      <Project>{431CDE14-7649-4A07-A57D-DBCE389172E2}</Project>
-      <Name>APSIM.Shared.Soils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.Utility\APSIM.Shared.Utility.csproj">
-      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
-      <Name>APSIM.Shared.Utility</Name>
+    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.csproj">
+      <Project>{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}</Project>
+      <Name>APSIM.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

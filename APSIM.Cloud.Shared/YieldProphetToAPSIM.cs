@@ -52,7 +52,7 @@ namespace APSIM.Cloud.Shared
         /// <returns>The created APSIM simulation spec.</returns>
         private static APSIMSpec CreateBaseSimulation(Paddock paddock)
         {
-            Paddock copyOfPaddock = paddock; // Utility.Xml.Clone(paddock) as JobsService.Paddock;
+            Paddock copyOfPaddock = paddock; // XmlUtilities.Clone(paddock) as JobsService.Paddock;
             copyOfPaddock.ObservedData = paddock.ObservedData;
 
             APSIMSpec shortSimulation = new APSIMSpec();

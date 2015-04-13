@@ -11,6 +11,7 @@ namespace APSIM.Cloud.Shared
     using System.Reflection;
     using System.Xml;
     using APSIM.Shared.Soils;
+    using APSIM.Shared.Utilities;
 
     /// <summary>Writes a .apsim file</summary>
     class APSIMFileWriter
@@ -27,14 +28,14 @@ namespace APSIM.Cloud.Shared
             Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Shared.Resources.Template.apsim");
             XmlDocument doc = new XmlDocument();
             doc.Load(s);
-            simulationXML = Utility.Xml.Find(doc.DocumentElement, "Base");
+            simulationXML = XmlUtilities.Find(doc.DocumentElement, "Base");
         }
 
         /// <summary>To the XML.</summary>
         /// <returns></returns>
         public XmlNode ToXML()
         {
-            XmlNode operationsNode = Utility.Xml.Find(simulationXML, "Paddock/Operations");
+            XmlNode operationsNode = XmlUtilities.Find(simulationXML, "Paddock/Operations");
 
             string operationsXML = string.Empty;
             foreach (string operation in operations)
@@ -48,14 +49,14 @@ namespace APSIM.Cloud.Shared
         /// <param name="simulationName">Name of the simulation.</param>
         public void NameSimulation(string simulationName)
         {
-            Utility.Xml.SetNameAttr(simulationXML, simulationName);
+            XmlUtilities.SetNameAttr(simulationXML, simulationName);
         }
 
         /// <summary>Sets the report date.</summary>
         /// <param name="reportDate">The date.</param>
         public void SetReportDate(DateTime reportDate)
         {
-            Utility.Xml.SetValue(simulationXML, "Paddock/Management/ui/DateReportWasGenerated", reportDate.ToString("yyyy-MM-dd"));
+            XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/DateReportWasGenerated", reportDate.ToString("yyyy-MM-dd"));
         }
 
         /// <summary>Sets the start end date.</summary>
@@ -63,15 +64,15 @@ namespace APSIM.Cloud.Shared
         /// <param name="endDate">The end date.</param>
         public void SetStartEndDate(DateTime startDate, DateTime endDate)
         {
-            Utility.Xml.SetValue(simulationXML, "Clock/start_date", startDate.ToString("d/MM/yyyy"));
-            Utility.Xml.SetValue(simulationXML, "Clock/end_date", endDate.ToString("d/MM/yyyy"));
+            XmlUtilities.SetValue(simulationXML, "Clock/start_date", startDate.ToString("d/MM/yyyy"));
+            XmlUtilities.SetValue(simulationXML, "Clock/end_date", endDate.ToString("d/MM/yyyy"));
         }
 
         /// <summary>Sets the weather file.</summary>
         /// <param name="weatherFileName">Name of the weather file.</param>
         public void SetWeatherFile(string weatherFileName)
         {
-            Utility.Xml.SetValue(simulationXML, "Met/filename", weatherFileName);
+            XmlUtilities.SetValue(simulationXML, "Met/filename", weatherFileName);
         }
 
         /// <summary>Sets the stubble.</summary>
@@ -84,9 +85,9 @@ namespace APSIM.Cloud.Shared
             // Stubble.
             if (stubbleType == null || stubbleType == "None")
                 throw new Exception("No stubble type specified");
-            Utility.Xml.SetValue(simulationXML, "Paddock/SurfaceOM/Type", stubbleType);
-            Utility.Xml.SetValue(simulationXML, "Paddock/SurfaceOM/Mass", stubbleMass.ToString());
-            Utility.Xml.SetValue(simulationXML, "Paddock/SurfaceOM/cnr", cnratio.ToString());
+            XmlUtilities.SetValue(simulationXML, "Paddock/SurfaceOM/Type", stubbleType);
+            XmlUtilities.SetValue(simulationXML, "Paddock/SurfaceOM/Mass", stubbleMass.ToString());
+            XmlUtilities.SetValue(simulationXML, "Paddock/SurfaceOM/cnr", cnratio.ToString());
         }
 
         /// <summary>Sets the soil.</summary>
@@ -95,7 +96,7 @@ namespace APSIM.Cloud.Shared
         {
             XmlDocument soilDoc = new XmlDocument();
             soilDoc.LoadXml(SoilUtility.ToXML(soil));
-            XmlNode paddockNode = Utility.Xml.Find(simulationXML, "Paddock");
+            XmlNode paddockNode = XmlUtilities.Find(simulationXML, "Paddock");
             paddockNode.AppendChild(paddockNode.OwnerDocument.ImportNode(soilDoc.DocumentElement, true));
         }
 
@@ -113,20 +114,20 @@ namespace APSIM.Cloud.Shared
 
             if (sowing.Date != DateTime.MinValue)
             {
-                Utility.Xml.SetValue(simulationXML, "Paddock/Management/ui/CropName", sowing.Crop);
+                XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/CropName", sowing.Crop);
 
                 string cropNodePath = "Paddock/" + sowing.Crop;
 
                 string useECValue = "no";
                 if (useEC)
                     useECValue = "yes";
-                Utility.Xml.SetValue(simulationXML, cropNodePath + "/ModifyKL", useECValue);
+                XmlUtilities.SetValue(simulationXML, cropNodePath + "/ModifyKL", useECValue);
 
                 // Maximum rooting depth.
                 if (sowing.MaxRootDepth > 0 && sowing.MaxRootDepth < 20)
                     throw new Exception("Maximum root depth should be specified in mm, not cm");
                 if (sowing.MaxRootDepth > 0)
-                    Utility.Xml.SetValue(simulationXML, cropNodePath + "/MaxRootDepth", sowing.MaxRootDepth.ToString());
+                    XmlUtilities.SetValue(simulationXML, cropNodePath + "/MaxRootDepth", sowing.MaxRootDepth.ToString());
 
                 // Make sure we have a row spacing.
                 if (sowing.RowSpacing == 0)
@@ -279,75 +280,75 @@ namespace APSIM.Cloud.Shared
         public static void CreateMetFactorial(XmlNode simulationXML, string paddockName, string rainFileName, string[] weatherFileNames)
         {
             // Make sure <factorial> exists.
-            XmlNode factorial = Utility.Xml.Find(simulationXML, "Factorials");
+            XmlNode factorial = XmlUtilities.Find(simulationXML, "Factorials");
             if (factorial == null)
                 factorial = simulationXML.AppendChild(simulationXML.OwnerDocument.CreateElement("factorial"));
-            Utility.Xml.SetNameAttr(factorial, "Factorials");
-            Utility.Xml.SetValue(factorial, "active", "1");
+            XmlUtilities.SetNameAttr(factorial, "Factorials");
+            XmlUtilities.SetValue(factorial, "active", "1");
 
             // Add a <factor> for Met
             XmlNode metFactor = factorial.AppendChild(factorial.OwnerDocument.CreateElement("factor"));
-            Utility.Xml.SetNameAttr(metFactor, "Met");
+            XmlUtilities.SetNameAttr(metFactor, "Met");
 
             // Set <targets> in met factor
-            Utility.Xml.SetValue(metFactor, "targets/Target", "/Simulations/" + paddockName + "/Met");
+            XmlUtilities.SetValue(metFactor, "targets/Target", "/Simulations/" + paddockName + "/Met");
 
             // Set <vars> in met factor
-            string weatherFilesCSV = Utility.String.BuildString(weatherFileNames, ",");
-            Utility.Xml.SetValue(metFactor, "vars/filename", weatherFilesCSV);
+            string weatherFilesCSV = StringUtilities.BuildString(weatherFileNames, ",");
+            XmlUtilities.SetValue(metFactor, "vars/filename", weatherFilesCSV);
 
             // Set <metfile> in met factor
             XmlNode met = metFactor.AppendChild(metFactor.OwnerDocument.CreateElement("metfile"));
-            Utility.Xml.SetNameAttr(met, "Met");
-            Utility.Xml.SetValue(met, "filename", "");
+            XmlUtilities.SetNameAttr(met, "Met");
+            XmlUtilities.SetValue(met, "filename", "");
         }
 
         /// <summary>Sets the n unlimited.</summary>
         /// <param name="simulationXML">The top level simulation node</param>
         public void SetNUnlimited()
         {
-            Utility.Xml.SetValue(simulationXML, "Paddock/Management/ui/NUnlimited", "yes");
+            XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/NUnlimited", "yes");
         }
 
         /// <summary>Sets the n unlimited from today</summary>
         /// <param name="simulationXML">The top level simulation node</param>
         public void SetNUnlimitedFromToday()
         {
-            Utility.Xml.SetValue(simulationXML, "Paddock/Management/ui/NUnlimitedFromToday", "yes");
+            XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/NUnlimitedFromToday", "yes");
         }
 
         /// <summary>Sets the daily output.</summary>
         public void SetDailyOutput()
         {
-            Utility.Xml.SetAttribute(simulationXML, "Paddock/Daily/enabled", "yes");
+            XmlUtilities.SetAttribute(simulationXML, "Paddock/Daily/enabled", "yes");
         }
 
         /// <summary>Sets the monthly output.</summary>
         public void SetMonthlyOutput()
         {
-            Utility.Xml.SetAttribute(simulationXML, "Paddock/Monthly/enabled", "yes");
+            XmlUtilities.SetAttribute(simulationXML, "Paddock/Monthly/enabled", "yes");
         }
 
         /// <summary>Sets the yearly output.</summary>
         public void SetYearlyOutput()
         {
-            Utility.Xml.SetAttribute(simulationXML, "Paddock/Yearly/enabled", "yes");
+            XmlUtilities.SetAttribute(simulationXML, "Paddock/Yearly/enabled", "yes");
 
         }
 
         /// <summary>Writes the depth file.</summary>
         public void WriteDepthFile()
         {
-            Utility.Xml.SetValue(simulationXML, "Paddock/Management/ui/WriteDepthFile", "yes");
+            XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/WriteDepthFile", "yes");
         }
 
         /// <summary>Sets the next 10 days (from the report date) to be dry (no rain).</summary>
         public void Next10DaysDry()
         {
-            Utility.Xml.SetValue(simulationXML, "Paddock/Management/ui/DryNext10Days", "yes");
-            Utility.Xml.SetAttribute(simulationXML, "Paddock/Yearly/enabled", "no");
+            XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/DryNext10Days", "yes");
+            XmlUtilities.SetAttribute(simulationXML, "Paddock/Yearly/enabled", "no");
             SetDailyOutput();
-            Utility.Xml.SetValue(simulationXML, "Paddock/Daily/Reporting Frequency/event", "Next10Days");
+            XmlUtilities.SetValue(simulationXML, "Paddock/Daily/Reporting Frequency/event", "Next10Days");
         }
 
         /// <summary>
@@ -357,8 +358,8 @@ namespace APSIM.Cloud.Shared
         /// <param name="slopeLength">The slope length (m).</param>
         public void SetErosion(double slope, double slopeLength)
         {
-            Utility.Xml.SetValue(simulationXML, "Paddock/Erosion/slope", slope.ToString("F0"));
-            Utility.Xml.SetValue(simulationXML, "Paddock/Erosion/slope_length", slopeLength.ToString("F0"));
+            XmlUtilities.SetValue(simulationXML, "Paddock/Erosion/slope", slope.ToString("F0"));
+            XmlUtilities.SetValue(simulationXML, "Paddock/Erosion/slope_length", slopeLength.ToString("F0"));
         }
     }
 }

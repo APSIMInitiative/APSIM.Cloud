@@ -10,6 +10,7 @@ namespace APSIM.Cloud.Shared
     using System.IO;
     using System.Net;
     using System.Collections.Generic;
+    using APSIM.Shared.Utilities;
 
 
     /// <summary>
@@ -41,14 +42,14 @@ namespace APSIM.Cloud.Shared
                                     DateTime endDate,
                                     DataTable observedData)
         {
-            Utility.ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, startDate, endDate);
+            ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, startDate, endDate);
             if (weatherFile != null)
             {
                 DataTable weatherData = weatherFile.ToTable();
                 if (weatherData.Rows.Count == 0)
                     LastSILODateFound = DateTime.MinValue;
                 else
-                    LastSILODateFound = Utility.DataTable.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
+                    LastSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
 
                 // Add a codes column to weatherdata
                 AddCodesColumn(weatherData, 'S');
@@ -90,7 +91,7 @@ namespace APSIM.Cloud.Shared
             if (!AlreadyWritten(fileName))
             {
                 DateTime longTermStartDate = startDate.AddYears(-numYears);
-                Utility.ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, longTermStartDate, DateTime.Now);
+                ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, longTermStartDate, DateTime.Now);
                 DataTable weatherData = weatherFile.ToTable();
                 double latitude = Convert.ToDouble(weatherFile.Constant("Latitude").Value);
                 double longitude = Convert.ToDouble(weatherFile.Constant("Longitude").Value);
@@ -99,7 +100,7 @@ namespace APSIM.Cloud.Shared
                 if (weatherData.Rows.Count == 0)
                     LastSILODateFound = DateTime.MinValue;
                 else
-                    LastSILODateFound = Utility.DataTable.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
+                    LastSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
 
                 string workingFolder = Path.GetDirectoryName(fileName);
                 WriteDecileFile(weatherData, startDate, workingFolder);
@@ -172,7 +173,7 @@ namespace APSIM.Cloud.Shared
         /// <results>Montly decile data.</results>
         private static DataTable CreateDecileWeather(DataTable weatherData, DateTime startDate)
         {
-            DateTime firstDate = Utility.DataTable.GetDateFromRow(weatherData.Rows[0]);
+            DateTime firstDate = DataTableUtilities.GetDateFromRow(weatherData.Rows[0]);
 
             // Create an array of lists, 1 for each month.
             List<double>[] sumsForEachMonth = new List<double>[12];
@@ -183,7 +184,7 @@ namespace APSIM.Cloud.Shared
             foreach (DataRow row in weatherData.Rows)
             {
                 // Get the date and rain for the row.
-                DateTime rowDate = Utility.DataTable.GetDateFromRow(row);
+                DateTime rowDate = DataTableUtilities.GetDateFromRow(row);
                 double value = Convert.ToDouble(row["rain"]);
 
                 // Accumulate the value every day.
@@ -234,7 +235,7 @@ namespace APSIM.Cloud.Shared
         /// <returns></returns>
         private static double GetValueForProbability(double probability, double[] values)
         {
-            double[] probValues = Utility.Math.ProbabilityDistribution(values.Length, false);
+            double[] probValues = MathUtilities.ProbabilityDistribution(values.Length, false);
             Array.Sort(values);
             for (int i = 0; i < probValues.Length; i++)
             {
@@ -319,7 +320,7 @@ namespace APSIM.Cloud.Shared
             foreach (DataRow row in weatherData.Rows)
             {
                 writer.WriteLine("{0,12:yyyy-MM-dd}{1,9:F1}{2,5:F1}{3,5:F1}{4,5:F1}{5,6}",
-                                 new object[] {Utility.DataTable.GetDateFromRow(row),
+                                 new object[] {DataTableUtilities.GetDateFromRow(row),
                                                row["radn"],
                                                row["maxt"],
                                                row["mint"],
@@ -340,17 +341,17 @@ namespace APSIM.Cloud.Shared
             if (table2.Rows.Count > 0)
             {
                 // This algorithm assumes that table2 does not have missing days.
-                DateTime firstDate = Utility.DataTable.GetDateFromRow(table2.Rows[0]);
+                DateTime firstDate = DataTableUtilities.GetDateFromRow(table2.Rows[0]);
 
                 foreach (DataRow table1Row in table1.Rows)
                 {
-                    DateTime table1Date = Utility.DataTable.GetDateFromRow(table1Row);
+                    DateTime table1Date = DataTableUtilities.GetDateFromRow(table1Row);
 
                     int table2RowIndex = (table1Date - firstDate).Days;
                     if (table2RowIndex >= 0 && table2RowIndex < table2.Rows.Count)
                     {
                         DataRow table2Row = table2.Rows[table2RowIndex];
-                        if (Utility.DataTable.GetDateFromRow(table2Row) == table1Date)
+                        if (DataTableUtilities.GetDateFromRow(table2Row) == table1Date)
                         {
                             // Found the matching row
                             OverlayRowData(table1Row, table2Row);
@@ -378,7 +379,7 @@ namespace APSIM.Cloud.Shared
             
             foreach (DataColumn fromColumn in fromRow.Table.Columns)
             {
-                if (Utility.String.Contains(fieldsToInclude, fromColumn.ColumnName))
+                if (StringUtilities.Contains(fieldsToInclude, fromColumn.ColumnName))
                 {
                     // See if this column is in table2.
                     foreach (DataColumn toColumn in toRow.Table.Columns)
@@ -391,7 +392,7 @@ namespace APSIM.Cloud.Shared
                                 toRow[toColumn] = fromRow[fromColumn];
 
                                 // Update codes
-                                int codeIndex = Utility.String.IndexOfCaseInsensitive(fieldsToInclude, toColumn.ColumnName);
+                                int codeIndex = StringUtilities.IndexOfCaseInsensitive(fieldsToInclude, toColumn.ColumnName);
                                 toRowCodes[codeIndex] = fromRowCodes[codeIndex];
                             }
                         }
@@ -407,7 +408,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="endDate">The end date.</param>
         /// <exception cref="System.Exception">Cannot find SILO!</exception>
         /// <returns>The APSIM text file from SILO</returns>
-        private static Utility.ApsimTextFile ExtractMetFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
+        private static ApsimTextFile ExtractMetFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
         {
             if (startDate < DateTime.Now)
             {
@@ -443,7 +444,7 @@ namespace APSIM.Cloud.Shared
 
                     // Convert the memory stream to a data table.
                     siloStream.Seek(0, SeekOrigin.Begin);
-                    Utility.ApsimTextFile inputFile = new Utility.ApsimTextFile();
+                    ApsimTextFile inputFile = new ApsimTextFile();
                     inputFile.Open(siloStream);
                     return inputFile;
                 }
@@ -471,8 +472,8 @@ namespace APSIM.Cloud.Shared
             {
                 List<DateTime> dates = new List<DateTime>();
                 foreach (DataRow Row in table.Rows)
-                    dates.Add(Utility.DataTable.GetDateFromRow(Row));
-                Utility.DataTable.AddColumnOfObjects(table, "Date", dates.ToArray());
+                    dates.Add(DataTableUtilities.GetDateFromRow(Row));
+                DataTableUtilities.AddColumnOfObjects(table, "Date", dates.ToArray());
             }
         }
     }

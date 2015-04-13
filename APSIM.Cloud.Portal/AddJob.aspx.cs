@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using APSIM.Cloud.Shared;
 using APSIM.Shared.Soils;
+using APSIM.Shared.Utilities;
 
 namespace APSIM.Cloud.Portal
 {
@@ -57,7 +58,7 @@ namespace APSIM.Cloud.Portal
             File.Delete(tempFolder);
             Directory.CreateDirectory(tempFolder);
             MemoryStream memStream = new MemoryStream(bytes);
-            string[] fileNames = Utility.Zip.UnZipFiles(memStream, tempFolder, null);
+            string[] fileNames = ZipUtilities.UnZipFiles(memStream, tempFolder, null);
 
             string fileName = Path.Combine(tempFolder, "YieldProphet.xml");
 

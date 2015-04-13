@@ -14,6 +14,7 @@ namespace APSIM.Cloud.Shared
     using System.Xml.Serialization;
     using System.IO;
     using APSIM.Shared.Soils;
+    using APSIM.Shared.Utilities;
 
     class YieldProphetOld
     {
@@ -24,7 +25,7 @@ namespace APSIM.Cloud.Shared
         {
             List<Paddock> simulations = new List<Paddock>();
 
-            List<XmlNode> paddocks = Utility.Xml.ChildNodes(node, "Paddock");
+            List<XmlNode> paddocks = XmlUtilities.ChildNodes(node, "Paddock");
             for (int p = 0; p < paddocks.Count; p++)
             {
                 try
@@ -34,7 +35,7 @@ namespace APSIM.Cloud.Shared
                 }
                 catch (Exception err)
                 {
-                    string name = Utility.Xml.Value(paddocks[p], "Name");
+                    string name = XmlUtilities.Value(paddocks[p], "Name");
                     throw new Exception(err.Message + "\r\nPaddock name: " + name);
                 }
             }
@@ -43,16 +44,16 @@ namespace APSIM.Cloud.Shared
             simulationsSpec.Paddock = simulations;
 
             // Some top level simulation metadata.
-            string reportDescription = Utility.Xml.Value(node, "ReportDescription");
+            string reportDescription = XmlUtilities.Value(node, "ReportDescription");
             if (reportDescription != "")
                 simulationsSpec.ReportName = reportDescription;
-            string reportType = Utility.Xml.Value(node, "ReportType");
+            string reportType = XmlUtilities.Value(node, "ReportType");
             if (reportType == "Crop Report (Complete)")
                 simulationsSpec.ReportType = YieldProphet.ReportTypeEnum.Crop;
             else if (reportType == "Sowing Opportunity Report")
                 simulationsSpec.ReportType = YieldProphet.ReportTypeEnum.SowingOpportunity;
-            simulationsSpec.ClientName = Utility.Xml.Value(node, "GrowerName");
-            simulationsSpec.ReportGeneratedBy = Utility.Xml.Value(node, "LoginName");
+            simulationsSpec.ClientName = XmlUtilities.Value(node, "GrowerName");
+            simulationsSpec.ReportGeneratedBy = XmlUtilities.Value(node, "LoginName");
 
             // Now try deserialisation / serialisation.
             XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
@@ -78,15 +79,15 @@ namespace APSIM.Cloud.Shared
         {
             Paddock simulation = new Paddock();
 
-            string name = Utility.Xml.NameAttr(paddock);
+            string name = XmlUtilities.NameAttr(paddock);
             int posCaret = name.IndexOf('^');
 
             if (posCaret == -1)
                 throw new Exception("Bad paddock name: " + name);
 
-            string remainder = Utility.String.SplitOffAfterDelimiter(ref name, "^");
+            string remainder = StringUtilities.SplitOffAfterDelimiter(ref name, "^");
             string growerName;
-            string paddockName = Utility.String.SplitOffAfterDelimiter(ref remainder, "^");
+            string paddockName = StringUtilities.SplitOffAfterDelimiter(ref remainder, "^");
             if (paddockName == string.Empty)
             {
                 growerName = name;
@@ -113,7 +114,7 @@ namespace APSIM.Cloud.Shared
                 string fullFileName = Path.Combine(baseFolder, rainFileName);
                 if (!File.Exists(fullFileName))
                     throw new Exception("Cannot find file: " + fullFileName);
-                simulation.ObservedData = Utility.ApsimTextFile.ToTable(fullFileName);
+                simulation.ObservedData = ApsimTextFile.ToTable(fullFileName);
             }
 
             // Set the reset dates
@@ -147,7 +148,7 @@ namespace APSIM.Cloud.Shared
             simulation.UseEC = GetBoolean(paddock, "UseEC");
 
             // Fertilise nodes.
-            List<XmlNode> fertiliserNodes = Utility.Xml.ChildNodes(paddock, "Fertilise");
+            List<XmlNode> fertiliserNodes = XmlUtilities.ChildNodes(paddock, "Fertilise");
             for (int f = 0; f < fertiliserNodes.Count; f++)
             {
                 Fertilise fertilise = new Fertilise();
@@ -158,7 +159,7 @@ namespace APSIM.Cloud.Shared
             }
 
             // Irrigate nodes.
-            List<XmlNode> irrigateNodes = Utility.Xml.ChildNodes(paddock, "Irrigate");
+            List<XmlNode> irrigateNodes = XmlUtilities.ChildNodes(paddock, "Irrigate");
             for (int i = 0; i < irrigateNodes.Count; i++)
             {
                 Irrigate irrigate = new Irrigate();
@@ -170,7 +171,7 @@ namespace APSIM.Cloud.Shared
             }
 
             // Tillage nodes.
-            foreach (XmlNode tillageNode in Utility.Xml.ChildNodes(paddock, "Tillage"))
+            foreach (XmlNode tillageNode in XmlUtilities.ChildNodes(paddock, "Tillage"))
             {
                 Tillage tillage = new Tillage();
                 simulation.Management.Add(tillage);
@@ -186,7 +187,7 @@ namespace APSIM.Cloud.Shared
             }
 
             // Stubble removed nodes.
-            foreach (XmlNode stubbleRemovedNode in Utility.Xml.ChildNodes(paddock, "StubbleRemoved"))
+            foreach (XmlNode stubbleRemovedNode in XmlUtilities.ChildNodes(paddock, "StubbleRemoved"))
             {
                 StubbleRemoved stubbleRemoved = new StubbleRemoved();
                 simulation.Management.Add(stubbleRemoved);
@@ -206,7 +207,7 @@ namespace APSIM.Cloud.Shared
 
             double[] sample2Thickness = GetArray(paddock, "Sample2Thickness");
             Sample sample2 = sample1;
-            if (!Utility.Math.AreEqual(sample2Thickness, sample1.Thickness))
+            if (!MathUtilities.AreEqual(sample2Thickness, sample1.Thickness))
             {
                 sample2 = new Sample();
                 sample2.Name = "Sample2";
@@ -225,57 +226,57 @@ namespace APSIM.Cloud.Shared
             else
                 sample1.SWUnits = Sample.SWUnitsEnum.Volumetric;
 
-            if (Utility.Math.ValuesInArray(sample1.Thickness))
+            if (MathUtilities.ValuesInArray(sample1.Thickness))
                 simulation.Samples.Add(sample1);
-            if (Utility.Math.ValuesInArray(sample2.Thickness) && sample2 != sample1)
+            if (MathUtilities.ValuesInArray(sample2.Thickness) && sample2 != sample1)
                 simulation.Samples.Add(sample2);
 
             // Check to see if we need to convert the soil structure.
             simulation.SoilPath = GetString(paddock, "SoilName");
 
-            XmlNode soilNode = Utility.Xml.FindByType(paddock, "Soil");
+            XmlNode soilNode = XmlUtilities.FindByType(paddock, "Soil");
             if (soilNode != null)
             {
                 // Make sure we have NH4 values.
-                foreach (XmlNode soilSample in Utility.Xml.ChildNodes(soilNode, "Sample"))
+                foreach (XmlNode soilSample in XmlUtilities.ChildNodes(soilNode, "Sample"))
                 {
-                    List<string> no3 = Utility.Xml.Values(soilSample, "NO3/double");
+                    List<string> no3 = XmlUtilities.Values(soilSample, "NO3/double");
                     if (no3.Count > 0)
                     {
-                        List<string> nh4 = Utility.Xml.Values(soilSample, "NH4/double");
+                        List<string> nh4 = XmlUtilities.Values(soilSample, "NH4/double");
                         if (nh4.Count == 0)
                         {
-                            string[] defaultValues = Utility.String.CreateStringArray("0.1", no3.Count);
+                            string[] defaultValues = StringUtilities.CreateStringArray("0.1", no3.Count);
                             XmlNode NH4node = soilSample.AppendChild(soilSample.OwnerDocument.CreateElement("NH4"));
-                            Utility.Xml.SetValues(NH4node, "double", defaultValues);
+                            XmlUtilities.SetValues(NH4node, "double", defaultValues);
                         }
                     }
                 }
 
-                string testValue = Utility.Xml.Value(soilNode, "Water/Layer/Thickness");
+                string testValue = XmlUtilities.Value(soilNode, "Water/Layer/Thickness");
                 if (testValue != string.Empty)
                 {
                     // old format.
-                    Utility.Xml.SetAttribute(paddock, "version", "19");
+                    XmlUtilities.SetAttribute(paddock, "version", "19");
                     //ApsimFile.APSIMChangeTool.Upgrade(paddock);
-                    Utility.Xml.DeleteAttribute(paddock, "version");
+                    XmlUtilities.DeleteAttribute(paddock, "version");
                 }
 
                 // See if there is a 'SWUnits' value. If found then copy it into 
                 // <WaterFormat>
-                string waterFormat = Utility.Xml.Value(paddock, "WaterFormat");
+                string waterFormat = XmlUtilities.Value(paddock, "WaterFormat");
                 if (waterFormat == string.Empty)
                 {
                     int sampleNumber = 0;
-                    foreach (XmlNode soilSample in Utility.Xml.ChildNodes(soilNode, "Sample"))
+                    foreach (XmlNode soilSample in XmlUtilities.ChildNodes(soilNode, "Sample"))
                     {
-                        string swUnits = Utility.Xml.Value(soilSample, "SWUnits");
+                        string swUnits = XmlUtilities.Value(soilSample, "SWUnits");
                         if (swUnits != string.Empty)
-                            Utility.Xml.SetValue(paddock, "WaterFormat", swUnits);
+                            XmlUtilities.SetValue(paddock, "WaterFormat", swUnits);
 
                         // Also make sure we don't have 2 samples with the same name.
                         string sampleName = "Sample" + (sampleNumber + 1).ToString();
-                        Utility.Xml.SetAttribute(soilSample, "name", sampleName);
+                        XmlUtilities.SetAttribute(soilSample, "name", sampleName);
                         sampleNumber++;
                     }
                 }
@@ -291,9 +292,9 @@ namespace APSIM.Cloud.Shared
         /// <param name="nodeName">Name of the node.</param>
         private static void ChangeCaseOfElement(XmlNode paddock, string nodeName)
         {
-            XmlNode node = Utility.Xml.Find(paddock, nodeName);
+            XmlNode node = XmlUtilities.Find(paddock, nodeName);
             if (node != null)
-                Utility.Xml.ChangeType(node, nodeName);
+                XmlUtilities.ChangeType(node, nodeName);
         }
 
         /// <summary>Gets a boolean value from the specified node name</summary>
@@ -301,7 +302,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="nodeName">Name of the child node.</param>
         private static bool GetBoolean(XmlNode node, string nodeName)
         {
-            XmlNode booleanNode = Utility.Xml.Find(node, nodeName);
+            XmlNode booleanNode = XmlUtilities.Find(node, nodeName);
             if (booleanNode != null)
             {
                 if (booleanNode.InnerText == "no")
@@ -318,7 +319,7 @@ namespace APSIM.Cloud.Shared
         /// <returns>The value or "" if none</returns>
         private static string GetString(XmlNode node, string nodeName)
         {
-            return Utility.Xml.Value(node, nodeName);
+            return XmlUtilities.Value(node, nodeName);
         }
 
         /// <summary>Gets an integer value from the specified nodename</summary>
@@ -327,7 +328,7 @@ namespace APSIM.Cloud.Shared
         /// <returns>The value</returns>
         private static int GetInteger(XmlNode node, string nodeName)
         {
-            string value = Utility.Xml.Value(node, nodeName);
+            string value = XmlUtilities.Value(node, nodeName);
             if (value == string.Empty)
                 return 0;
             else
@@ -340,7 +341,7 @@ namespace APSIM.Cloud.Shared
         /// <returns>The value</returns>
         private static double GetDouble(XmlNode node, string nodeName)
         {
-            string value = Utility.Xml.Value(node, nodeName);
+            string value = XmlUtilities.Value(node, nodeName);
             if (value == string.Empty)
                 return 0;
             else
@@ -353,11 +354,11 @@ namespace APSIM.Cloud.Shared
         /// <returns>The date or DateTime.MinValue if not found</returns>
         private static DateTime GetDate(XmlNode node, string dateNodeName)
         {
-            XmlNode dateNode = Utility.Xml.Find(node, dateNodeName);
+            XmlNode dateNode = XmlUtilities.Find(node, dateNodeName);
             if (dateNode != null)
             {
                 string newName = dateNode.Name.Replace("Full", "");
-                dateNode = Utility.Xml.ChangeType(dateNode, newName);
+                dateNode = XmlUtilities.ChangeType(dateNode, newName);
                 DateTime d;
                 if (dateNode.InnerText.Contains('/'))
                     d = DateTime.ParseExact(dateNode.InnerText, "d/M/yyyy", CultureInfo.InvariantCulture);
@@ -372,7 +373,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="xmlNode">The XML node.</param>
         private static double[] GetArray(XmlNode xmlNode, string childName)
         {
-            XmlNode node = Utility.Xml.Find(xmlNode, childName);
+            XmlNode node = XmlUtilities.Find(xmlNode, childName);
             if (node != null)
             {
                 string[] arrayValues = node.InnerText.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);

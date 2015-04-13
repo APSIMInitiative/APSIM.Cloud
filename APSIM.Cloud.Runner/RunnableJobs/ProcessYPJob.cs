@@ -16,11 +16,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.Data;
     using System.Threading;
     using APSIM.Cloud.Shared;
+    using APSIM.Shared.Utilities;
 
     /// <summary>
     /// TODO: Update summary.
     /// </summary>
-    public class ProcessYPJob : Utility.JobManager.IRunnable
+    public class ProcessYPJob : JobManager.IRunnable
     {
         /// <summary>The working directory</summary>
         private string workingDirectory;
@@ -48,7 +49,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Get our job manager.
-            Utility.JobManager jobManager = (Utility.JobManager)e.Argument;
+            JobManager jobManager = (JobManager)e.Argument;
 
             // Create a working directory.
             workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -64,7 +65,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             string errorMessage = null;
             try
             {
-                Utility.JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory);
+                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory);
                 jobManager.AddJob(job);
                 while (!job.IsCompleted)
                     Thread.Sleep(5 * 1000); // 5 sec
@@ -77,8 +78,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
             // Zip the temporary directory and send to archive.
             string zipFileName = Path.Combine(workingDirectory, JobName + ".zip");
-            Utility.Zip.ZipFiles(Directory.GetFiles(workingDirectory), zipFileName, null);
-            Utility.FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", "Administrator", "CsiroDMZ!");
+            ZipUtilities.ZipFiles(Directory.GetFiles(workingDirectory), zipFileName, null);
+            FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", "Administrator", "CsiroDMZ!");
 
             // Get rid of our temporary directory.
             Directory.Delete(workingDirectory, true);
@@ -93,7 +94,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Create a runnable job for the APSIM simulations</summary>
         /// <param name="FilesToRun">The files to run.</param>
         /// <returns>A runnable job for all simulations</returns>
-        private static Utility.JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory)
+        private static JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory)
         {
             // Create a YieldProphet object from our YP xml file
             YieldProphet spec = YieldProphetUtility.YieldProphetFromXML(jobXML);
@@ -119,23 +120,23 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             Configuration.SetApsimDir(apsimHomeDirectory);
             PlugIns.LoadAll();
 
-            List<Utility.JobManager.IRunnable> jobs = new List<Utility.JobManager.IRunnable>();
+            List<JobManager.IRunnable> jobs = new List<JobManager.IRunnable>();
             XmlDocument Doc = new XmlDocument();
             Doc.Load(apsimFileName);
 
             List<XmlNode> simulationNodes = new List<XmlNode>();
-            Utility.Xml.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref simulationNodes);
+            XmlUtilities.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref simulationNodes);
 
             foreach (XmlNode simulation in simulationNodes)
             {
-                if (Utility.Xml.Attribute(simulation, "enabled") != "no")
+                if (XmlUtilities.Attribute(simulation, "enabled") != "no")
                 {
-                    XmlNode factorialNode = Utility.Xml.FindByType(Doc.DocumentElement, "factorial");
+                    XmlNode factorialNode = XmlUtilities.FindByType(Doc.DocumentElement, "factorial");
                     if (factorialNode == null)
                     {
                         RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(
                            fileName: apsimFileName,
-                           arguments: "Simulation=" + Utility.Xml.FullPath(simulation));
+                           arguments: "Simulation=" + XmlUtilities.FullPath(simulation));
                         jobs.Add(job);
                     }
                     else
@@ -149,7 +150,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                         Directory.SetCurrentDirectory(cwd);
 
                         FactorBuilder builder = new FactorBuilder();
-                        string path = "/" + Utility.Xml.FullPath(simulation);
+                        string path = "/" + XmlUtilities.FullPath(simulation);
                         path = path.Remove(path.LastIndexOf('/'));
                         List<string> simsToRun = new List<string>();
                         foreach (FactorItem item in builder.BuildFactorItems(F.FactorComponent, path))
@@ -173,9 +174,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             }
 
             // Create a sequential job.
-            Utility.JobSequence completeJob = new Utility.JobSequence();
-            completeJob.Jobs = new List<Utility.JobManager.IRunnable>();
-            completeJob.Jobs.Add(new Utility.JobParallel() { Jobs = jobs });
+            JobSequence completeJob = new JobSequence();
+            completeJob.Jobs = new List<JobManager.IRunnable>();
+            completeJob.Jobs.Add(new JobParallel() { Jobs = jobs });
             completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
             completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
 

@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -54,6 +57,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
     <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">
@@ -118,6 +122,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\APSIM.Shared\Utilities\ZipUtilities.cs">
+      <Link>ZipUtilities.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -169,13 +176,9 @@
     <WCFMetadataStorage Include="Service References\JobsService\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.Soils\APSIM.Shared.Soils.csproj">
-      <Project>{431CDE14-7649-4A07-A57D-DBCE389172E2}</Project>
-      <Name>APSIM.Shared.Soils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.Utility\APSIM.Shared.Utility.csproj">
-      <Project>{5BDAA3CD-C66F-4C91-94A2-31FB58177D4C}</Project>
-      <Name>APSIM.Shared.Utility</Name>
+    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.csproj">
+      <Project>{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}</Project>
+      <Name>APSIM.Shared</Name>
     </ProjectReference>
     <ProjectReference Include="..\APSIM.Cloud.Shared\APSIM.Cloud.Shared.csproj">
       <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
