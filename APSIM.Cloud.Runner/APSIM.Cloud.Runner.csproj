@@ -65,6 +65,11 @@
     <Compile Include="RunnableJobs\APSIMPostSimulationJob.cs" />
     <Compile Include="RunnableJobs\ProcessYPJob.cs" />
     <Compile Include="RunnableJobs\YPPostSimulationJob.cs" />
+    <Compile Include="Service References\F4P\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\JobsService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -102,6 +107,16 @@
     </Compile>
     <EmbeddedResource Include="Resources\Crop.report" />
     <EmbeddedResource Include="Resources\SowingOpportunity.report" />
+    <None Include="Service References\F4P\F4P.wsdl" />
+    <None Include="Service References\F4P\F4P.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\F4P\F4P1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\F4P\F4P2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\JobsService\APSIM.Cloud.Runner.JobsService.Job.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -145,6 +160,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\F4P\" />
     <WCFMetadataStorage Include="Service References\JobsService\" />
     <WCFMetadataStorage Include="Service References\YPReporting\" />
   </ItemGroup>
@@ -184,6 +200,21 @@
       <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
       <Name>APSIM.Cloud.Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\F4P\F4P.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\F4P\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\F4P\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\F4P\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

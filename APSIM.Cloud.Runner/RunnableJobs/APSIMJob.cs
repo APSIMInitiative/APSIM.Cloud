@@ -44,6 +44,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         {
             this.fileName = fileName;
             this.arguments = arguments;
+            this.workingDirectory = Path.GetDirectoryName(fileName);
         }
 
         /// <summary>Called to start the job.</summary>

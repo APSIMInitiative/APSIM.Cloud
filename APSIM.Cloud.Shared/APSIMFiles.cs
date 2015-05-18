@@ -112,7 +112,6 @@ namespace APSIM.Cloud.Shared
         /// <exception cref="System.Exception"></exception>
         private static XmlNode CreateApsimFile(IEnumerable<APSIMSpec> simulations)
         {
-            APSOIL.ServiceSoapClient apsoilService = null;
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateElement("folder"));
             XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
@@ -122,7 +121,7 @@ namespace APSIM.Cloud.Shared
             {
                 try
                 {
-                    XmlNode simulationXML = CreateSimulationXML(simulation, apsoilService);
+                    XmlNode simulationXML = CreateSimulationXML(simulation);
                     if (simulationXML != null)
                         doc.DocumentElement.AppendChild(doc.ImportNode(simulationXML, true));
                 }
@@ -143,7 +142,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="todayDate">The today date.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        private static XmlNode CreateSimulationXML(APSIMSpec simulation)
         {
             APSIMFileWriter apsimWriter = new APSIMFileWriter();
 
@@ -191,7 +190,7 @@ namespace APSIM.Cloud.Shared
             apsimWriter.SetErosion(simulation.Slope, simulation.SlopeLength);
 
             // Do soil stuff.
-            Soil soil = DoSoil(simulation, apsoilService);
+            Soil soil = DoSoil(simulation);
             apsimWriter.SetSoil(soil);
 
             // Loop through all management actions and create an operations list
@@ -222,19 +221,18 @@ namespace APSIM.Cloud.Shared
         /// <param name="paddock">The paddock.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <exception cref="System.Exception">Cannot find soil:  + paddock.SoilName</exception>
-        public static Soil DoSoil(APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        public static Soil DoSoil(APSIMSpec simulation)
         {
             Soil soil;
             if (simulation.Soil == null)
             {
                 // Look for a <SoilName> and if found go get the soil from the Apsoil web service.
-                if (apsoilService == null)
-                    apsoilService = new APSOIL.ServiceSoapClient();
+                APSOIL.Service apsoilService = new APSOIL.Service();
                 string soilXml = apsoilService.SoilXML(simulation.SoilPath);
                 if (soilXml == string.Empty)
                     throw new Exception("Cannot find soil: " + simulation.SoilPath);
 
-                soil = SoilUtility.FromXML(soilXml);
+                soil = SoilUtilities.FromXML(soilXml);
             }
             else
             {
@@ -260,13 +258,13 @@ namespace APSIM.Cloud.Shared
 
             // Make sure we have a soil crop parameterisation. If not then try creating one
             // based on wheat.
-            Sow crop = YieldProphetUtility.GetCropBeingSown(simulation.Management);
-            if (crop != null && !StringUtilities.Contains(SoilUtility.GetCropNames(soil), crop.Crop))
+            Sow sowing = YieldProphetUtility.GetCropBeingSown(simulation.Management);
+            if (sowing != null && !StringUtilities.Contains(SoilUtilities.GetCropNames(soil), sowing.Crop))
             {
-                SoilCrop wheat = SoilUtility.Crop(soil, "wheat");
+                SoilCrop wheat = SoilUtilities.Crop(soil, "wheat");
 
                 SoilCrop newSoilCrop = new SoilCrop();
-                newSoilCrop.Name = crop.Crop;
+                newSoilCrop.Name = sowing.Crop;
                 newSoilCrop.Thickness = wheat.Thickness;
                 newSoilCrop.LL = wheat.LL;
                 newSoilCrop.KL = wheat.KL;
@@ -284,6 +282,45 @@ namespace APSIM.Cloud.Shared
                 XmlDocument soilDoc = new XmlDocument();
                 soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Samples, false));
                 soil.Samples = XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(List<Sample>)) as List<Sample>;
+            }
+            if (simulation.InitTotalWater != 0)
+            {
+                soil.InitialWater = new InitialWater();
+                soil.InitialWater.PercentMethod = InitialWater.PercentMethodEnum.FilledFromTop;
+
+                double pawc;
+                if (sowing == null || sowing.Crop == null)
+                {
+                    pawc = MathUtilities.Sum(SoilUtilities.PAWCmm(soil));
+                    soil.InitialWater.RelativeTo = "LL15";
+                }
+                else
+                {
+                    SoilCrop crop = SoilUtilities.Crop(soil, sowing.Crop);
+                    pawc = MathUtilities.Sum(SoilUtilities.PAWCCropmm(soil, crop));
+                    soil.InitialWater.RelativeTo = crop.Name;
+                }
+
+                soil.InitialWater.FractionFull = Convert.ToDouble(simulation.InitTotalWater) / pawc;
+            }
+
+            if (simulation.InitTotalNitrogen != 0)
+            {
+                // Add in a sample.
+                Sample nitrogenSample = new Sample();
+                nitrogenSample.Name = "NitrogenSample";
+                soil.Samples.Add(nitrogenSample);
+                nitrogenSample.Thickness = new double[] { 150, 150, 3000 };
+                nitrogenSample.NO3Units = Sample.NUnitsEnum.kgha;
+                nitrogenSample.NH4Units = Sample.NUnitsEnum.kgha;
+                nitrogenSample.NO3 = new double[] { 6.0, 2.1, 0.1 };
+                nitrogenSample.NH4 = new double[] { 0.5, 0.1, 0.1 };
+                nitrogenSample.OC = new double[] { double.NaN, double.NaN, double.NaN };
+                nitrogenSample.EC = new double[] { double.NaN, double.NaN, double.NaN };
+                nitrogenSample.PH = new double[] { double.NaN, double.NaN, double.NaN };
+
+                double Scale = Convert.ToDouble(simulation.InitTotalNitrogen) / MathUtilities.Sum(nitrogenSample.NO3);
+                nitrogenSample.NO3 = MathUtilities.Multiply_Value(nitrogenSample.NO3, Scale);
             }
 
             foreach (Sample sample in soil.Samples)
@@ -305,18 +342,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="sample">The sample.</param>
         private static void CheckSample(Soil parentSoil, Sample sample)
         {
-            if (sample.SW != null)
-            {
-                // Make sure the soil water isn't below airdry or above DUL.
-                double[] SWValues = SoilUtility.SW(parentSoil, sample, Sample.SWUnitsEnum.Volumetric);
-                double[] AirDry = SoilUtility.AirDryMapped(parentSoil, sample.Thickness);
-                double[] DUL = SoilUtility.DULMapped(parentSoil, sample.Thickness);
-                for (int i = 0; i < sample.SW.Length; i++)
-                {
-                    SWValues[i] = Math.Max(SWValues[i], AirDry[i]);
-                    SWValues[i] = Math.Min(SWValues[i], DUL[i]);
-                }
-            }
+            SoilUtilities.ConstrainSampleSW(sample, parentSoil);
 
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);

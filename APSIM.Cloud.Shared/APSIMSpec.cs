@@ -75,6 +75,12 @@ namespace APSIM.Cloud.Shared
         /// be used to lookup the soil from APSoil</summary>
         public APSIM.Shared.Soils.Soil Soil { get; set; }
 
+        /// <summary>Gets or sets the total water (mm) at the beginning of the simulation.</summary>
+        public double InitTotalWater { get; set; }
+
+        /// <summary>Gets or sets the total nitrogen (kg/ha) at the beginning of the simulation.</summary>
+        public double InitTotalNitrogen { get; set; }
+
         /// <summary>Gets or sets a value indicating whether the run should be nitrogen unlimited</summary>
         public bool NUnlimited { get; set; }
 

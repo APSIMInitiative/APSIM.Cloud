@@ -39,7 +39,7 @@ namespace APSIM.Cloud.Portal
                 foreach (Paddock paddock in yieldProphet.Paddock)
                     paddock.NowDate = nowDate;
 
-                string xml = SoilUtility.ToXML(yieldProphet.Paddock[0].Soil);
+                string xml = SoilUtilities.ToXML(yieldProphet.Paddock[0].Soil);
                 jobsService.Add(yieldProphet);
             }
             Response.Redirect("Main.aspx");

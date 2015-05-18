@@ -1,21 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
   <publishProfile publishUrl="ftp://www.apsim.info/APSIM.Cloud.Portal" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FTP" replaceMatchingFiles="False" userName="administrator" savePWD="False" userPWD="" SelectedForPublish="True">
-    <file relUrl="bin/Resources/delete2.png" publishTime="01/28/2015 10:22:55" />
+    <file relUrl="bin/APSIM.Cloud.Shared.dll" publishTime="04/15/2015 11:57:37" />
     <file relUrl="AddJob.aspx" publishTime="03/23/2015 14:53:11" />
-    <file relUrl="bin/Soils.pdb" publishTime="04/02/2015 11:47:58" />
     <file relUrl="ShowJobDetail.aspx" publishTime="03/23/2015 14:52:55" />
-    <file relUrl="bin/APSIM.Cloud.Shared.dll" publishTime="04/02/2015 11:47:58" />
-    <file relUrl="bin/Utility.dll" publishTime="04/02/2015 11:47:58" />
-    <file relUrl="bin/Soils.dll" publishTime="04/02/2015 11:47:58" />
-    <file relUrl="bin/APSIM.Cloud.Shared.pdb" publishTime="04/02/2015 11:47:58" />
-    <file relUrl="Main.aspx" publishTime="03/31/2015 10:23:54" />
+    <file relUrl="bin/APSIM.Cloud.Shared.pdb" publishTime="04/15/2015 11:57:37" />
+    <file relUrl="bin/Resources/delete2.png" publishTime="01/28/2015 10:22:55" />
+    <file relUrl="bin/APSIM.Shared.pdb" publishTime="04/15/2015 11:57:36" />
     <file relUrl="bin/Resources/media_play_green.png" publishTime="01/28/2015 10:22:55" />
+    <file relUrl="bin/APSIM.Shared.xml" publishTime="04/15/2015 11:57:36" />
+    <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="02/03/2015 16:13:54" />
     <file relUrl="bin/Resources/Rerun.png" publishTime="01/28/2015 10:22:56" />
-    <file relUrl="bin/APSIM.Cloud.Portal.dll" publishTime="04/02/2015 11:48:00" />
-    <file relUrl="Web.config" publishTime="04/02/2015 11:48:09" />
-    <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="04/01/2015 09:10:07" />
-    <file relUrl="bin/Utility.pdb" publishTime="04/02/2015 11:47:58" />
-    <file relUrl="bin/APSIM.Cloud.Portal.pdb" publishTime="04/02/2015 11:48:00" />
+    <file relUrl="bin/APSIM.Shared.dll" publishTime="04/15/2015 11:57:36" />
+    <file relUrl="bin/APSIM.Cloud.Shared.XmlSerializers.dll" publishTime="04/15/2015 11:57:37" />
+    <file relUrl="packages.config" publishTime="04/13/2015 15:37:32" />
+    <file relUrl="bin/APSIM.Cloud.Portal.dll" publishTime="04/15/2015 11:57:38" />
+    <file relUrl="Web.config" publishTime="04/15/2015 11:57:48" />
+    <file relUrl="Main.aspx" publishTime="03/31/2015 10:23:54" />
+    <file relUrl="bin/APSIM.Cloud.Portal.pdb" publishTime="04/15/2015 11:57:38" />
   </publishProfile>
 </publishData>

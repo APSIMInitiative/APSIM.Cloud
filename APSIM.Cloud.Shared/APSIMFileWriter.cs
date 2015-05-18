@@ -21,6 +21,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>The operations</summary>
         private List<string> operations = new List<string>();
 
+        /// <summary>The crop being sown</summary>
+        private string cropBeingSown;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMFileWriter"/> class.</summary>
         public APSIMFileWriter()
         {
@@ -95,7 +98,7 @@ namespace APSIM.Cloud.Shared
         public void SetSoil(Soil soil)
         {
             XmlDocument soilDoc = new XmlDocument();
-            soilDoc.LoadXml(SoilUtility.ToXML(soil));
+            soilDoc.LoadXml(SoilUtilities.ToXML(soil));
             XmlNode paddockNode = XmlUtilities.Find(simulationXML, "Paddock");
             paddockNode.AppendChild(paddockNode.OwnerDocument.ImportNode(soilDoc.DocumentElement, true));
         }
@@ -115,7 +118,7 @@ namespace APSIM.Cloud.Shared
             if (sowing.Date != DateTime.MinValue)
             {
                 XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/CropName", sowing.Crop);
-
+                cropBeingSown = sowing.Crop;
                 string cropNodePath = "Paddock/" + sowing.Crop;
 
                 string useECValue = "no";

@@ -37,7 +37,10 @@ namespace APSIM.Cloud.Shared
             Crop,
 
             /// <summary>User has requested a sowing opportunity report</summary>
-            SowingOpportunity
+            SowingOpportunity,
+
+            /// <summary>The Farm4Prophet report type</summary>
+            F4P
         }
 
         /// <summary>Gets or sets the type of the report the user has requested.</summary>
@@ -115,6 +118,12 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the soil. If null, the 'SoilName' property will
         /// be used to lookup the soil from APSoil</summary>
         public APSIM.Shared.Soils.Soil Soil { get; set; }
+
+        /// <summary>Gets or sets the total water (mm) at the beginning of the simulation.</summary>
+        public double InitTotalWater { get; set; }
+
+        /// <summary>Gets or sets the total nitrogen (kg/ha) at the beginning of the simulation.</summary>
+        public double InitTotalNitrogen { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="Paddock"/> class.</summary>
         public Paddock()

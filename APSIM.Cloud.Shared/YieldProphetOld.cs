@@ -231,6 +231,10 @@ namespace APSIM.Cloud.Shared
             if (MathUtilities.ValuesInArray(sample2.Thickness) && sample2 != sample1)
                 simulation.Samples.Add(sample2);
 
+            // Check for InitTotalWater & InitTotalNitrogen
+            simulation.InitTotalWater = GetDouble(paddock, "InitTotalWater");
+            simulation.InitTotalNitrogen = GetDouble(paddock, "InitTotalNitrogen");
+
             // Check to see if we need to convert the soil structure.
             simulation.SoilPath = GetString(paddock, "SoilName");
 
@@ -280,7 +284,7 @@ namespace APSIM.Cloud.Shared
                         sampleNumber++;
                     }
                 }
-                simulation.Soil = SoilUtility.FromXML(soilNode.OuterXml);
+                simulation.Soil = SoilUtilities.FromXML(soilNode.OuterXml);
                 if (simulation.Samples != null)
                     simulation.Soil.Samples = simulation.Samples;
             }
