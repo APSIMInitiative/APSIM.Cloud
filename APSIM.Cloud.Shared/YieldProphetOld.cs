@@ -15,6 +15,7 @@ namespace APSIM.Cloud.Shared
     using System.IO;
     using APSIM.Shared.Soils;
     using APSIM.Shared.Utilities;
+    using APSIM.Shared.OldAPSIM;
 
     class YieldProphetOld
     {
@@ -196,28 +197,62 @@ namespace APSIM.Cloud.Shared
                 stubbleRemoved.Percent = GetDouble(stubbleRemovedNode, "StubbleRemovedAmount");
             }
 
+            // Look for a soil node.
+            XmlNode soilNode = XmlUtilities.FindByType(paddock, "Soil");
 
             // Fix up soil sample variables.
             Sample sample1 = new Sample();
             sample1.Name = "Sample1";
             sample1.Thickness = GetArray(paddock, "Sample1Thickness");
             sample1.SW = GetArray(paddock, "SW");
-            sample1.NO3 = GetArray(paddock, "NO3");
-            sample1.NH4 = GetArray(paddock, "NH4");
-
-            double[] sample2Thickness = GetArray(paddock, "Sample2Thickness");
-            Sample sample2 = sample1;
-            if (!MathUtilities.AreEqual(sample2Thickness, sample1.Thickness))
+            if (sample1.SW == null)
             {
-                sample2 = new Sample();
-                sample2.Name = "Sample2";
+                // Really old way of doing samples - they are stored under soil.
+                List<XmlNode> sampleNodes = XmlUtilities.ChildNodes(soilNode, "Sample");
+                if (sampleNodes.Count > 0)
+                    sample1 = XmlUtilities.Deserialise(sampleNodes[0], typeof(Sample)) as Sample;
             }
-            sample2.OC = GetArray(paddock, "OC");
-            sample2.EC = GetArray(paddock, "EC");
-            sample2.PH = GetArray(paddock, "PH");
-            sample2.CL = GetArray(paddock, "CL");
-            sample2.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
-            sample2.PHUnits = Sample.PHSampleUnitsEnum.CaCl2;
+            else
+            {
+                sample1.NO3 = GetArray(paddock, "NO3");
+                sample1.NH4 = GetArray(paddock, "NH4");
+            }
+
+            Sample sample2 = null;
+            double[] sample2Thickness = GetArray(paddock, "Sample2Thickness");
+            if (sample2Thickness == null)
+            {
+                // Really old way of doing samples - they are stored under soil.
+                List<XmlNode> sampleNodes = XmlUtilities.ChildNodes(soilNode, "Sample");
+                if (sampleNodes.Count > 1)
+                    sample2 = XmlUtilities.Deserialise(sampleNodes[1], typeof(Sample)) as Sample;
+            }
+            else
+            {
+                sample2 = sample1;
+                if (!MathUtilities.AreEqual(sample2Thickness, sample1.Thickness))
+                {
+                    sample2 = new Sample();
+                    sample2.Name = "Sample2";
+                }
+                sample2.OC = GetArray(paddock, "OC");
+                sample2.EC = GetArray(paddock, "EC");
+                sample2.PH = GetArray(paddock, "PH");
+                sample2.CL = GetArray(paddock, "CL");
+                sample2.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
+                sample2.PHUnits = Sample.PHSampleUnitsEnum.CaCl2;
+            }
+
+            // Make sure we have NH4 values.
+            if (sample1.NH4 == null)
+            {
+                string[] defaultValues = StringUtilities.CreateStringArray("0.1", sample1.NO3.Length);
+                sample1.NH4 = MathUtilities.StringsToDoubles(defaultValues);
+            }
+
+            RemoveNullFieldsFromSample(sample1);
+            RemoveNullFieldsFromSample(sample2);
+
 
             // Fix up <WaterFormat>
             string waterFormatString = GetString(paddock, "WaterFormat");
@@ -238,33 +273,17 @@ namespace APSIM.Cloud.Shared
             // Check to see if we need to convert the soil structure.
             simulation.SoilPath = GetString(paddock, "SoilName");
 
-            XmlNode soilNode = XmlUtilities.FindByType(paddock, "Soil");
+            
             if (soilNode != null)
             {
-                // Make sure we have NH4 values.
-                foreach (XmlNode soilSample in XmlUtilities.ChildNodes(soilNode, "Sample"))
-                {
-                    List<string> no3 = XmlUtilities.Values(soilSample, "NO3/double");
-                    if (no3.Count > 0)
-                    {
-                        List<string> nh4 = XmlUtilities.Values(soilSample, "NH4/double");
-                        if (nh4.Count == 0)
-                        {
-                            string[] defaultValues = StringUtilities.CreateStringArray("0.1", no3.Count);
-                            XmlNode NH4node = soilSample.AppendChild(soilSample.OwnerDocument.CreateElement("NH4"));
-                            XmlUtilities.SetValues(NH4node, "double", defaultValues);
-                        }
-                    }
-                }
 
                 string testValue = XmlUtilities.Value(soilNode, "Water/Layer/Thickness");
                 if (testValue != string.Empty)
                 {
                     // old format.
-                    XmlUtilities.SetAttribute(paddock, "version", "19");
-                    //ApsimFile.APSIMChangeTool.Upgrade(paddock);
-                    XmlUtilities.DeleteAttribute(paddock, "version");
+                    soilNode = ConvertSoilNode.Upgrade(soilNode);
                 }
+
 
                 // See if there is a 'SWUnits' value. If found then copy it into 
                 // <WaterFormat>
@@ -289,6 +308,18 @@ namespace APSIM.Cloud.Shared
                     simulation.Soil.Samples = simulation.Samples;
             }
             return simulation;
+        }
+
+        private static void RemoveNullFieldsFromSample(Sample sample)
+        {
+            if (sample.CL == null) sample.CL = new double[0];
+            if (sample.EC == null) sample.EC = new double[0];
+            if (sample.ESP == null) sample.ESP = new double[0];
+            if (sample.NH4 == null) sample.NH4 = new double[0];
+            if (sample.NO3 == null) sample.NO3 = new double[0];
+            if (sample.OC == null) sample.OC = new double[0];
+            if (sample.PH == null) sample.PH = new double[0];
+            if (sample.SW == null) sample.SW = new double[0];
         }
 
         /// <summary>Changes the case of element.</summary>

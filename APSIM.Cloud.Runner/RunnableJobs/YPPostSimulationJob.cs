@@ -88,7 +88,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
             // Call the YP reporting webservice.
             DataSet dataSet = new DataSet("ReportData");
-            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.out"))
+            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.csv"))
                 try
                 {
                     dataSet.Tables.Add(ApsimTextFile.ToTable(outFileName));

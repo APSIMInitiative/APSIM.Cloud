@@ -39,7 +39,6 @@ namespace APSIM.Cloud.Portal
                 foreach (Paddock paddock in yieldProphet.Paddock)
                     paddock.NowDate = nowDate;
 
-                string xml = SoilUtilities.ToXML(yieldProphet.Paddock[0].Soil);
                 jobsService.Add(yieldProphet);
             }
             Response.Redirect("Main.aspx");
@@ -61,8 +60,21 @@ namespace APSIM.Cloud.Portal
             string[] fileNames = ZipUtilities.UnZipFiles(memStream, tempFolder, null);
 
             string fileName = Path.Combine(tempFolder, "YieldProphet.xml");
+            if (!File.Exists(fileName))
+            {
+                // Look for first XML file.
+                foreach (string file in fileNames)
+                {
+                    if (file.Contains(".xml"))
+                    {
+                        fileName = file;
+                        break;
+                    }
+                }
+            }
 
             yieldProphet = YieldProphetUtility.YieldProphetFromFile(fileName);
+            yieldProphet.ReportName = Path.GetFileNameWithoutExtension(fileName);
             Directory.Delete(tempFolder, true);
             return yieldProphet;
         }

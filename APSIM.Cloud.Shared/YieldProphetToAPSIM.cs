@@ -58,9 +58,16 @@ namespace APSIM.Cloud.Shared
 
             APSIMSpec shortSimulation = new APSIMSpec();
             shortSimulation.Name = "Base";
+            shortSimulation.WeatherFileName = shortSimulation.Name + ".met";
 
             // Start date of simulation should be the earliest of ResetDate, SowDate and StartSeasonDate
             Sow sow = YieldProphetUtility.GetCropBeingSown(paddock.Management);
+            if (sow == null)
+                throw new Exception("No sowing specified for paddock: " + paddock.Name);
+
+            if (sow.Date == DateTime.MinValue)
+                throw new Exception("No sowing DATE specified for paddock: " + paddock.Name);
+
             shortSimulation.StartDate = DateTime.MaxValue;
             if (paddock.SoilWaterSampleDate != DateTime.MinValue &&
                 paddock.SoilWaterSampleDate < shortSimulation.StartDate)
@@ -68,7 +75,7 @@ namespace APSIM.Cloud.Shared
             if (paddock.SoilNitrogenSampleDate != DateTime.MinValue &&
                 paddock.SoilNitrogenSampleDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.SoilNitrogenSampleDate;
-            if (sow != null && sow.Date < shortSimulation.StartDate)
+            if (sow != null && sow.Date < shortSimulation.StartDate && sow.Date != DateTime.MinValue)
                 shortSimulation.StartDate = sow.Date;
             if (paddock.StartSeasonDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.StartSeasonDate;

@@ -27,9 +27,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Gets or sets the name of the APSIM file.</summary>
         private string fileName;
 
-        /// <summary>The arguments</summary>
-        private string arguments;
-
         /// <summary>Gets or sets the working directory.</summary>
         private string workingDirectory;
 
@@ -40,10 +37,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <param name="apsimFileName">Name of the apsim file.</param>
         /// <param name="arguments">The arguments.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        public APSIMJob(string fileName, string arguments = null)
+        public APSIMJob(string fileName)
         {
             this.fileName = fileName;
-            this.arguments = arguments;
             this.workingDirectory = Path.GetDirectoryName(fileName);
         }
 
@@ -52,13 +48,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <param name="e">The <see cref="DoWorkEventArgs" /> instance containing the event data.</param>
         public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            // Sort out the command arguments.
-            string args = fileName;
-            if (arguments != null)
-                args += " " + arguments;
-
             // Open the summary file for writing.
-            summaryFile = new StreamWriter(Path.ChangeExtension(fileName, ".sum"));
+            string summaryFileName = Path.ChangeExtension(fileName, ".sum");
+            summaryFile = new StreamWriter(summaryFileName);
 
             string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -68,7 +60,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.FileName = Path.Combine(binDirectory, @"Temp\Model\ApsimModel.exe");
-            p.StartInfo.Arguments = args;
+            p.StartInfo.Arguments = StringUtilities.DQuote(fileName);
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;
             p.OutputDataReceived += OnStdOutWrite;
@@ -79,6 +71,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             p.WaitForExit();
 
             // Close the summary file.
+            if (StdErr != null)
+                summaryFile.WriteLine(StdErr);
             summaryFile.Close();
         }
 
