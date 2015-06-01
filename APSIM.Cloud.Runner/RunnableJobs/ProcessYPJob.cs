@@ -92,14 +92,19 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             }
         }
 
-        /// <summary>Create a runnable job for the APSIM simulations</summary>
+        /// <summary>Create a runnable job for the simulations</summary>
         /// <param name="FilesToRun">The files to run.</param>
         /// <returns>A runnable job for all simulations</returns>
         private static JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory)
         {
+            // Create a sequential job.
+            JobSequence completeJob = new JobSequence();
+            completeJob.Jobs = new List<JobManager.IRunnable>();
+
             List<JobManager.IRunnable> jobs = new List<JobManager.IRunnable>();
             DateTime nowDate;
 
+            // Determine if this is a YP or a F4P job to be added to the job list
             if (jobName.IndexOf("_F4P") > 0)
             {
                 Farm4Prophet spec = Farm4ProphetUtility.Farm4ProphetFromXML(jobXML);
@@ -110,10 +115,10 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
                 string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                string ausFarmHomeDirectory = Path.Combine(binDirectory, "F4P");
+                string ausFarmHomeDirectory = Path.Combine(binDirectory, "F4P");    // ?? not sure about the working path here
                 Configuration.SetApsimDir(ausFarmHomeDirectory);
                 PlugIns.LoadAll();
-                
+
                 //for each simulation
                 for (int i = 0; i < files.Length; i++)
                 {
@@ -123,17 +128,25 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     jobs.Add(job);
                 }
                 nowDate = DateTime.Now;
+
+                completeJob.Jobs.Add(new JobParallel() { Jobs = jobs });
             }
             else
             {
                 // Create a YieldProphet object from our YP xml file
                 YieldProphet spec = YieldProphetUtility.YieldProphetFromXML(jobXML);
 
+                string fileBaseToWrite;
+                if (spec.ReportType == YieldProphet.ReportTypeEnum.None)
+                    fileBaseToWrite = spec.ReportName;
+                else
+                    fileBaseToWrite = "YieldProphet";
+
                 // Convert YieldProphet spec into a simulation set.
                 List<APSIMSpec> simulations = YieldProphetToAPSIM.ToAPSIM(spec);
 
                 // Create all the files needed to run APSIM.
-                string apsimFileName = APSIMFiles.Create(simulations, workingDirectory);
+                string apsimFileName = APSIMFiles.Create(simulations, workingDirectory, fileBaseToWrite + ".apsim");
 
                 // Fill in calculated fields.
                 foreach (Paddock paddock in spec.Paddock)
@@ -142,7 +155,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 // Save YieldProphet.xml to working folder.
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(YieldProphetUtility.YieldProphetToXML(spec));
-                doc.Save(Path.Combine(workingDirectory, "YieldProphet.xml"));
+                doc.Save(Path.Combine(workingDirectory, fileBaseToWrite + ".xml"));
 
                 string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -156,28 +169,25 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 List<XmlNode> simulationNodes = new List<XmlNode>();
                 XmlUtilities.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref simulationNodes);
 
-                foreach (XmlNode simulation in simulationNodes)
+                // The OpenFile method below changes the current directory: We don't want
+                // this. Restore the current directory after calling it.
+                ApsimFile F = new ApsimFile();
+                string cwd = Directory.GetCurrentDirectory();
+                F.OpenFile(apsimFileName);
+                Directory.SetCurrentDirectory(cwd);
+
+                // Get a list of .sim files to run.
+                List<string> simFileNames;
+                XmlNode factorialNode = XmlUtilities.FindByType(Doc.DocumentElement, "factorial");
+                if (factorialNode == null)
+                    simFileNames = GetSimFileNames(F);
+                else
                 {
-                    if (XmlUtilities.Attribute(simulation, "enabled") != "no")
+                    simFileNames = new List<string>();
+                    foreach (XmlNode simulation in simulationNodes)
                     {
-                        XmlNode factorialNode = XmlUtilities.FindByType(Doc.DocumentElement, "factorial");
-                        if (factorialNode == null)
+                        if (XmlUtilities.Attribute(simulation, "enabled") != "no")
                         {
-                            RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(
-                               fileName: apsimFileName,
-                               arguments: "Simulation=" + XmlUtilities.FullPath(simulation));
-                            jobs.Add(job);
-                        }
-                        else
-                        {
-                            ApsimFile F = new ApsimFile();
-
-                            // The OpenFile method below changes the current directory: We don't want
-                            // this. Restore the current directory after calling it.
-                            string cwd = Directory.GetCurrentDirectory();
-                            F.OpenFile(apsimFileName);
-                            Directory.SetCurrentDirectory(cwd);
-
                             FactorBuilder builder = new FactorBuilder();
                             string path = "/" + XmlUtilities.FullPath(simulation);
                             path = path.Remove(path.LastIndexOf('/'));
@@ -192,26 +202,50 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                             List<SimFactorItem> simFactorItems = Factor.CreateSimFiles(F, simsToRun.ToArray(), workingDirectory);
 
                             foreach (SimFactorItem simFactorItem in simFactorItems)
-                            {
+                                simFileNames.Add(simFactorItem.SimFileName);
 
-                                RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(
-                                    fileName: simFactorItem.SimFileName);
-                                jobs.Add(job);
-                            }
                         }
                     }
                 }
-                nowDate = spec.Paddock[0].NowDate;
+
+                // For each .sim file, create a job to run it.
+                foreach (string simFileName in simFileNames)
+                    jobs.Add(new RunnableJobs.APSIMJob(simFileName));
+
+                completeJob.Jobs.Add(new JobParallel() { Jobs = jobs });
+                completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
+                if (spec.ReportType != YieldProphet.ReportTypeEnum.None)
+                    completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
+
+            }
+            return completeJob;
+        }
+
+        /// <summary>Gets the sim file names.</summary>
+        /// <param name="apsimFile">The apsim file.</param>
+        /// <returns>A list of .sim file names.</returns>
+        private static List<string> GetSimFileNames(ApsimFile apsimFile)
+        {
+            List<string> simFileNames = new List<string>();
+            List<String> SimulationPaths = new List<String>();
+            ApsimFile.ExpandSimsToRun(apsimFile.RootComponent, ref SimulationPaths);
+
+            // For each path, create a simfile, and a job in our target.
+            foreach (string SimulationPath in SimulationPaths)
+            {
+                string simName = SimulationPath;
+                int PosLastSlash = simName.LastIndexOf('/');
+                if (PosLastSlash != -1)
+                    simName = simName.Substring(PosLastSlash + 1);
+                string simFileName = Path.Combine(Path.GetDirectoryName(apsimFile.FileName), simName + ".sim");
+                StreamWriter fp = new StreamWriter(simFileName);
+                ApsimToSim.GetSimDoc(apsimFile.Find(SimulationPath), Configuration.getArchitecture()).Save(fp);
+                fp.Close();
+
+                simFileNames.Add(simFileName);
             }
 
-            // Create a sequential job.
-            JobSequence completeJob = new JobSequence();
-            completeJob.Jobs = new List<JobManager.IRunnable>();
-            completeJob.Jobs.Add(new JobParallel() { Jobs = jobs });
-            completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
-            completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, nowDate, workingDirectory));
-
-            return completeJob;
+            return simFileNames;
         }
     }
 }
