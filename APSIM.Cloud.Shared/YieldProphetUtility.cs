@@ -32,15 +32,11 @@ namespace APSIM.Cloud.Shared
                 yieldProphet = YieldProphetFromZip(fileName);
             else
             {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(fileName);
-                string xml;
-                if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
-                    xml = YieldProphetOld.Convert(doc.DocumentElement, Path.GetDirectoryName(fileName));
-                else
-                    xml = doc.DocumentElement.OuterXml;
+                StreamReader reader = new StreamReader(fileName);
+                string xml = reader.ReadToEnd();
+                reader.Close();
 
-                return YieldProphetUtility.YieldProphetFromXML(xml);
+                return YieldProphetUtility.YieldProphetFromXML(xml, Path.GetDirectoryName(fileName));
             }
 
             throw new Exception("Invalid file type: " + fileName);
@@ -91,13 +87,15 @@ namespace APSIM.Cloud.Shared
         /// <summary>Factory method for creating a YieldProphet object.</summary>
         /// <param name="xml">The XML to use to create the object</param>
         /// <returns>The newly created object.</returns>
-        public static YieldProphet YieldProphetFromXML(string xml)
+        public static YieldProphet YieldProphetFromXML(string xml, string workingFolder)
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
+
             if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
-                throw new Exception("Cannot convert from OLD YieldProphet xml into new XML. " +
-                                    "Call YieldProphetUtility.YieldProphetFromFile instead");
+            {
+                doc.LoadXml(YieldProphetOld.Convert(doc.DocumentElement, workingFolder));
+            }
 
             XmlReader reader = new XmlNodeReader(doc.DocumentElement);
             reader.Read();

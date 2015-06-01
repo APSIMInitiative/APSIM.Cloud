@@ -11,6 +11,7 @@ namespace APSIM.Cloud.Runner
     using System.Windows.Forms;
     using APSIM.Shared.Utilities;
     using System.IO;
+    using APSIM.Cloud.Shared;
 
     /// <summary>
     /// Main form for runner application
@@ -60,10 +61,8 @@ namespace APSIM.Cloud.Runner
         {
             if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
             {
-                StreamReader reader = new StreamReader(commandLineArguments[0]);
                 RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob();
-                job.JobXML = reader.ReadToEnd();
-                reader.Close();
+                job.JobFileName = commandLineArguments[0];
                 jobManager.AddJob(job);
                 jobManager.Start(waitUntilFinished: true);
                 Close();

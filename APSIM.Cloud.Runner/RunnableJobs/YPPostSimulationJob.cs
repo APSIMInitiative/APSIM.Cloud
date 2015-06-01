@@ -58,7 +58,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         {
             // Read in the yield prophet specification.
             StreamReader reader = new StreamReader(Path.Combine(workingDirectory, "YieldProphet.xml"));
-            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromXML(reader.ReadToEnd());
+            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromXML(reader.ReadToEnd(), workingDirectory);
             reader.Close();
 
             // copy in the report file.

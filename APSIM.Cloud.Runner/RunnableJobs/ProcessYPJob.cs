@@ -39,11 +39,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
         public bool IsCompleted { get; set; }
 
-        /// <summary>Gets or sets the name of the job. If null, jobXML will be used.</summary>
+        /// <summary>Gets or sets the name of the job. If null, JobFileName will be used.</summary>
         public string JobName { get; set; }
 
-        /// <summary>The job XML. If null then the JobName will be used to get the XML from the jobs db.</summary>
-        public string JobXML { get; set; }
+        /// <summary>The job file. If null then the JobName will be used to get the XML from the jobs db.</summary>
+        public string JobFileName { get; set; }
 
         /// <summary>
         /// Runs the YP job.
@@ -58,20 +58,35 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Create a working directory.
             workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(workingDirectory);
+            string jobXML;
 
-            if (JobName != null)
+            if (JobFileName == null)
             {
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
-                    JobXML = jobsClient.GetJobXML(JobName);
+                    jobXML = jobsClient.GetJobXML(JobName);
                 }
+            }
+            else
+            {
+                if (Path.GetExtension(JobFileName) == ".zip")
+                    ZipUtilities.UnZipFiles(JobFileName, workingDirectory, null);
+                else
+                    File.Copy(JobFileName, workingDirectory);
+                string[] xmlFileNames = Directory.GetFiles(workingDirectory, "*.xml");
+                if (xmlFileNames.Length == 0)
+                    throw new Exception("Cannot find a job xml file");
+                StreamReader reader = new StreamReader(xmlFileNames[0]);
+                jobXML = reader.ReadToEnd();
+                reader.Close();
+                JobName = Path.GetFileNameWithoutExtension(xmlFileNames[0]);
             }
 
             // Create and run a job.
             string errorMessage = null;
             try
             {
-                JobManager.IRunnable job = CreateRunnableJob(JobName, JobXML, workingDirectory);
+                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory);
                 jobManager.AddJob(job);
                 while (!job.IsCompleted)
                     Thread.Sleep(5 * 1000); // 5 sec
@@ -85,19 +100,23 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Zip the temporary directory and send to archive.
             string zipFileName = Path.Combine(workingDirectory, JobName + ".zip");
             ZipUtilities.ZipFiles(Directory.GetFiles(workingDirectory), zipFileName, null);
-            FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", "Administrator", "CsiroDMZ!");
-
-            // Get rid of our temporary directory.
-            Directory.Delete(workingDirectory, true);
 
             // Tell the job system that job is complete.
-            if (JobName != null)
+            if (JobFileName == null)
             {
+                FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", "Administrator", "CsiroDMZ!");
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
                     jobsClient.SetCompleted(JobName, errorMessage);
                 }
             }
+            else
+            {
+                string destZipFileName = Path.ChangeExtension(JobFileName, ".out.zip");
+                File.Copy(zipFileName, destZipFileName);
+            }
+            // Get rid of our temporary directory.
+            Directory.Delete(workingDirectory, true);
         }
 
         /// <summary>Create a runnable job for the simulations</summary>
@@ -142,10 +161,10 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             else
             {
                 // Create a YieldProphet object from our YP xml file
-                YieldProphet spec = YieldProphetUtility.YieldProphetFromXML(jobXML);
+                YieldProphet spec = YieldProphetUtility.YieldProphetFromXML(jobXML, workingDirectory);
 
                 string fileBaseToWrite;
-                if (spec.ReportType == YieldProphet.ReportTypeEnum.None)
+                if (spec.ReportType == YieldProphet.ReportTypeEnum.None && spec.ReportName != null)
                     fileBaseToWrite = spec.ReportName;
                 else
                     fileBaseToWrite = "YieldProphet";

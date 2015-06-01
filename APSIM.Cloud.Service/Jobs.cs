@@ -69,7 +69,7 @@ namespace APSIM.Cloud.Service
         /// </summary>
         /// <param name="f4p">The job specification.</param>
         /// <returns>The unique job name.</returns>
-        public string Add(Farm4Prophet f4p)
+        public string AddFarm4Prophet(Farm4Prophet f4p)
         {
             string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + f4p.TaskName + "_F4P";
 
