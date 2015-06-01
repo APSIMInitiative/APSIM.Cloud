@@ -39,8 +39,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
         public bool IsCompleted { get; set; }
 
-        /// <summary>Gets or sets the name of the job.</summary>
+        /// <summary>Gets or sets the name of the job. If null, jobXML will be used.</summary>
         public string JobName { get; set; }
+
+        /// <summary>The job XML. If null then the JobName will be used to get the XML from the jobs db.</summary>
+        public string JobXML { get; set; }
 
         /// <summary>
         /// Runs the YP job.
@@ -56,17 +59,19 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(workingDirectory);
 
-            string jobXML;
-            using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+            if (JobName != null)
             {
-                jobXML = jobsClient.GetJobXML(JobName);
+                using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+                {
+                    JobXML = jobsClient.GetJobXML(JobName);
+                }
             }
 
             // Create and run a job.
             string errorMessage = null;
             try
             {
-                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory);
+                JobManager.IRunnable job = CreateRunnableJob(JobName, JobXML, workingDirectory);
                 jobManager.AddJob(job);
                 while (!job.IsCompleted)
                     Thread.Sleep(5 * 1000); // 5 sec
@@ -86,9 +91,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             Directory.Delete(workingDirectory, true);
 
             // Tell the job system that job is complete.
-            using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+            if (JobName != null)
             {
-                jobsClient.SetCompleted(JobName, errorMessage);
+                using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+                {
+                    jobsClient.SetCompleted(JobName, errorMessage);
+                }
             }
         }
 

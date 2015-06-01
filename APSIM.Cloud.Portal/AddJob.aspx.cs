@@ -20,65 +20,40 @@ namespace APSIM.Cloud.Portal
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected void UploadButtonClick(object sender, EventArgs e)
         {
-            // Get the contents of the XML file.
+            // Get the contents of the file and write to a temp file.
             byte[] bytes = new byte[FileUpload.FileContent.Length];
             FileUpload.FileContent.Read(bytes, 0, bytes.Length);
+            string tempFile = Path.GetTempFileName();
+            FileStream writer = new FileStream(tempFile, FileMode.Create);
+            writer.Write(bytes, 0, bytes.Length);
+            writer.Close();
+
+            if (Path.GetExtension(FileUpload.FileName) == ".zip")
+            {
+                File.Move(tempFile, Path.ChangeExtension(tempFile, ".zip"));
+                tempFile = Path.ChangeExtension(tempFile, ".zip");
+            }
+
+            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromFile(tempFile);
+
+            DateTime nowDate = DateTime.Now;
+            if (NowEditBox.Text != "")
+                nowDate = DateTime.ParseExact(NowEditBox.Text, "d/M/yyyy", CultureInfo.InvariantCulture);
+
+            foreach (Paddock paddock in yieldProphet.Paddock)
+                paddock.NowDate = nowDate;
 
             using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
             {
-                YieldProphet yieldProphet = null;
-                if (Path.GetExtension(FileUpload.FileName) == ".zip")
-                    yieldProphet = GetYieldProphetFromZip(bytes);
-                else
-                    yieldProphet = YieldProphetUtility.YieldProphetFromXML(Encoding.ASCII.GetString(bytes));
-
-                DateTime nowDate = DateTime.Now;
-                if (NowEditBox.Text != "")
-                    nowDate = DateTime.ParseExact(NowEditBox.Text, "d/M/yyyy", CultureInfo.InvariantCulture);
-
-                foreach (Paddock paddock in yieldProphet.Paddock)
-                    paddock.NowDate = nowDate;
-
                 jobsService.Add(yieldProphet);
             }
+
+            File.Delete(tempFile);
+
             Response.Redirect("Main.aspx");
         }
 
-        /// <summary>
-        /// Creates a instance of a yield prophet spec from zip.
-        /// </summary>
-        /// <param name="bytes">The bytes of the .zip file.</param>
-        /// <returns></returns>
-        private static YieldProphet GetYieldProphetFromZip(byte[] bytes)
-        {
-            YieldProphet yieldProphet;
 
-            string tempFolder = Path.GetTempFileName();
-            File.Delete(tempFolder);
-            Directory.CreateDirectory(tempFolder);
-            MemoryStream memStream = new MemoryStream(bytes);
-            string[] fileNames = APSIM.Shared.Utilities.ZipUtilities.UnZipFiles(memStream, tempFolder, null);
 
-            string fileName = Path.Combine(tempFolder, "YieldProphet.xml");
-            if (!File.Exists(fileName))
-            {
-                // Look for first XML file.
-                foreach (string file in fileNames)
-                {
-                    if (file.Contains(".xml"))
-                    {
-                        fileName = file;
-                        break;
-                    }
-                }
-            }
-
-            yieldProphet = YieldProphetUtility.YieldProphetFromFile(fileName);
-            yieldProphet.ReportName = Path.GetFileNameWithoutExtension(fileName);
-            Directory.Delete(tempFolder, true);
-            return yieldProphet;
-        }
-
- 
     }
 }

@@ -27,15 +27,65 @@ namespace APSIM.Cloud.Shared
         /// <returns>The newly created object.</returns>
         public static YieldProphet YieldProphetFromFile(string fileName)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(fileName);
-            if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
-                doc.LoadXml(YieldProphetOld.Convert(doc.DocumentElement, Path.GetDirectoryName(fileName)));
+            YieldProphet yieldProphet;
+            if (Path.GetExtension(fileName) == ".zip")
+                yieldProphet = YieldProphetFromZip(fileName);
+            else
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(fileName);
+                string xml;
+                if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
+                    xml = YieldProphetOld.Convert(doc.DocumentElement, Path.GetDirectoryName(fileName));
+                else
+                    xml = doc.DocumentElement.OuterXml;
 
-            XmlReader reader = new XmlNodeReader(doc.DocumentElement);
-            reader.Read();
-            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
-            return (YieldProphet)serial.Deserialize(reader);
+                return YieldProphetUtility.YieldProphetFromXML(xml);
+            }
+
+            throw new Exception("Invalid file type: " + fileName);
+        }
+
+        /// <summary>
+        /// Creates a instance of a yield prophet spec from a zip file.
+        /// </summary>
+        /// <param name="zipFileName">The name of the .zip file.</param>
+        /// <returns>The newly create yieldprophet object.</returns>
+        private static YieldProphet YieldProphetFromZip(string zipFileName)
+        {
+            YieldProphet yieldProphet;
+
+            string tempFolder = Path.GetTempFileName();
+            File.Delete(tempFolder);
+            Directory.CreateDirectory(tempFolder);
+            FileStream reader = File.OpenRead(zipFileName);
+            try
+            {
+                string[] fileNames = ZipUtilities.UnZipFiles(reader, tempFolder, null);
+
+                string fileName = Path.Combine(tempFolder, "YieldProphet.xml");
+                if (!File.Exists(fileName))
+                {
+                    // Look for first XML file.
+                    foreach (string file in fileNames)
+                    {
+                        if (file.Contains(".xml"))
+                        {
+                            fileName = file;
+                            break;
+                        }
+                    }
+                }
+
+                yieldProphet = YieldProphetUtility.YieldProphetFromFile(fileName);
+                yieldProphet.ReportName = Path.GetFileNameWithoutExtension(fileName);
+            }
+            finally
+            {
+                reader.Close();
+            }
+            Directory.Delete(tempFolder, true);
+            return yieldProphet;
         }
 
         /// <summary>Factory method for creating a YieldProphet object.</summary>

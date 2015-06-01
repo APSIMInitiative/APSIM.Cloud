@@ -10,19 +10,24 @@ namespace APSIM.Cloud.Runner
     using System.Text;
     using System.Windows.Forms;
     using APSIM.Shared.Utilities;
+    using System.IO;
 
     /// <summary>
     /// Main form for runner application
     /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>The command line arguments</summary>
+        private string[] commandLineArguments;
+
         /// <summary>The job manager to send our jobs to</summary>
         private JobManager jobManager = null;
 
         /// <summary>Initializes a new instance of the <see cref="MainForm"/> class.</summary>
-        public MainForm()
+        public MainForm(string[] args)
         {
             InitializeComponent();
+            this.commandLineArguments = args;
         }
 
         /// <summary>Called when the form is loaded</summary>
@@ -31,8 +36,15 @@ namespace APSIM.Cloud.Runner
         private void OnLoad(object sender, EventArgs e)
         {
             jobManager = new JobManager();
-            jobManager.AddJob(new RunJobsInDB());
-            jobManager.Start(waitUntilFinished: false);
+            if (commandLineArguments != null)
+            {
+                RunJobFromCommandLine();
+            }
+            else
+            {
+                jobManager.AddJob(new RunJobsInDB());
+                jobManager.Start(waitUntilFinished: false);
+            }
         }
 
         /// <summary>Called when form is closed</summary>
@@ -42,5 +54,21 @@ namespace APSIM.Cloud.Runner
         {
             jobManager.Stop();
         }
+
+        /// <summary>Runs the job (.xml file) specified on the command line.</summary>
+        private void RunJobFromCommandLine()
+        {
+            if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
+            {
+                StreamReader reader = new StreamReader(commandLineArguments[0]);
+                RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob();
+                job.JobXML = reader.ReadToEnd();
+                reader.Close();
+                jobManager.AddJob(job);
+                jobManager.Start(waitUntilFinished: true);
+                Close();
+            }
+        }
+
     }
 }
