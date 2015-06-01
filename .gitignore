@@ -28,3 +28,5 @@ APSIM.Cloud.Runner/obj/
 APSIM.Cloud.Service/bin/
 APSIM.Cloud.Shared/bin/
 APSIM.Cloud.Test/Generated/
+/Backup
+/NH_TestYP_AusFarm

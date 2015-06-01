@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.7-r3655" name="Simulations">
+<folder version="36" creator="Apsim 7.7-r3678" name="Simulations">
   <simulation name="Base">
     <clock name="Clock" />
     <metfile name="Met">
@@ -8,13 +8,26 @@
     <area name="Paddock">
       <manager2 name="Management">
         <ui>
-          <DateReportWasGenerated type="text" description="The date the report was generated :">2014-06-01</DateReportWasGenerated>
+          <DateReportWasGenerated type="text" description="The date the report was generated :">2015-04-17</DateReportWasGenerated>
           <ProbeDepths type="text" description="The depth layer structure of probes :" />
           <CropName type="text" description="Crop to be sown">Wheat</CropName>
           <NUnlimited type="yesno" description="N Unlimited?">no</NUnlimited>
           <NUnlimitedFromToday type="yesno" description="N unlimited from today?">no</NUnlimitedFromToday>
           <WriteDepthFile type="yesno" description="Write a depth.out file?">yes</WriteDepthFile>
           <DryNext10Days type="yesno" description="Dry for next 10 days?">no</DryNext10Days>
+          <FertiliserCost type="text" description="Cost of N fertiliser ($/ha)">1.2</FertiliserCost>
+          <FertiliserApplicationCost type="text" description="Cost of N application ($/ha) : ">15</FertiliserApplicationCost>
+          <WaterCost type="text" description="Cost of water ($/Ml) : ">0</WaterCost>
+          <APH1Price type="text" description="APH1 Price ($/t) : ">240</APH1Price>
+          <APH2Price type="text" description="APH2 Price ($/t) : ">200</APH2Price>
+          <H2Price type="text" description="H2 Price ($/t) : ">180</H2Price>
+          <APWPrice type="text" description="APW Price ($/t) : ">160</APWPrice>
+          <ASWPrice type="text" description="ASW Price ($/t) : ">140</ASWPrice>
+          <APH1Protein type="text" description="APH1 Protein (%):">14</APH1Protein>
+          <APH2Protein type="text" description="APH2 Protein (%):">13</APH2Protein>
+          <H2Protein type="text" description="H2 Protein (%):">11.5</H2Protein>
+          <APWProtein type="text" description="APW Protein (%):">10.5</APWProtein>
+          <ASWProtein type="text" description="ASW Protein (%):">0</ASWProtein>
         </ui>
         <text>
 using System;
@@ -29,12 +42,16 @@ public class Script
    private double AvProbeTempValue = 0;
    private double CumulativeProbeRainSinceStartSeasonValue = 0;
    private bool ProbeRainHasStarted = false;
-
+   private int NumConsecWaterLoggedDays = 0;
+   private Soil Soil;
+   private double[] ProbeThicknesses = null;
+   private double organic_C_start = 0;
    
    [Link] Paddock Paddock; 
    [Link] Fertiliser Fertiliser;
    [Link] MetFile Met;
 
+   [Input] string title;
    [Input] DateTime Today;   
    [Input(IsOptional=true)] double node_no;        // Sorghum doesn't have a node_no hence optional.
    [Input(IsOptional=true)] double zadok_stage;    // Optional because canola doesn't have this variable.
@@ -54,14 +71,19 @@ public class Script
    [Input] double[] dlt_n_min_tot;
    [Input] double[] no3;
    [Input] double[] nh4;
+   [Input] double[] biom_c;
+   [Input] double[] hum_c;
    [Input(IsOptional=true)] double[] no3_uptake;    // Sorghum doesn't have this
    [Input] double maxt;
    [Input] double mint;
    [Input] double rain;
    [Input] double biomass_n;
    [Input] double RootGreenN;
+   [Input] double fertiliser;
+   [Input] double irrig_tot;
    [Input(IsOptional=true)] double unpatched_rain;
    [Input(IsOptional=true)] double Yield;
+   [Input(IsOptional=true)] double grain_protein;
    [Input(IsOptional=true)] double Biomass;
    [Input(IsOptional=true)] double root_depth;
    
@@ -72,6 +94,20 @@ public class Script
    [Param] bool WriteDepthFile;
    [Param] bool DryNext10Days;
    
+   [Param] double FertiliserCost;
+   [Param] double FertiliserApplicationCost;
+   [Param] double WaterCost;
+   [Param] double APH1Price;
+   [Param] double APH2Price;
+   [Param] double H2Price;
+   [Param] double APWPrice;
+   [Param] double ASWPrice;
+   [Param] double APH1Protein;
+   [Param] double APH2Protein;
+   [Param] double H2Protein;
+   [Param] double APWProtein;
+   [Param] double ASWProtein;
+      
    [Output][Param(IsOptional=true)] double[] ProbeDepths = null;
    [Output] double AvTemp;
    [Output] string AvProbeTemp = "*";
@@ -105,6 +141,7 @@ public class Script
    [Output] double[] VirtualProbeSW = null;
    [Output] double Zero { get { return 0.0; } }
    [Output] DateTime SowDate;
+   [Output] double BankBalance = 0;
    [Output] double WetYield
    {
       get
@@ -307,18 +344,21 @@ public class Script
          return ModerateFrostCount + SevereFrostCount;
       }
    }     
-   
-   int NumConsecWaterLoggedDays = 0;
-   Soil Soil;
-   
-   double[] ProbeThicknesses = null;
+
+   [Output] double ChangeInOrganicC
+   {
+      get
+      {
+         return MathUtility.Sum(biom_c) + MathUtility.Sum(hum_c) - organic_C_start;
+      }
+   }     
    
    // ------------------------------------------------------------------------------
    // The following event handler will be called once at the START OF THE SIMULATION
    // ------------------------------------------------------------------------------
    [EventHandler] public void OnInitialised()
    {
-      
+      organic_C_start = MathUtility.Sum(biom_c) + MathUtility.Sum(hum_c);
    }
       
    // ------------------------------------------------------------------------------
@@ -526,7 +566,10 @@ public class Script
             Paddock.Publish("WaterLog6OrMore");
          NumConsecWaterLoggedDays = 0;
       }
-        
+      
+      // Update our bank balance.
+      GrossMargin();
+      
       // Auto harvest crop
       string stageName;
       string plantStatus;
@@ -534,7 +577,8 @@ public class Script
       Paddock.Get(CropName + ".plant_status", out plantStatus);
       if (stageName == "harvest_ripe" || plantStatus == "dead")
       {
-         Paddock.Publish(CropName + ".harvest");
+         HarvestType harvest = new HarvestType();
+         Paddock.Publish(CropName + ".harvest", harvest);
          Paddock.Publish(CropName + ".end_crop"); 
       }
       
@@ -600,7 +644,7 @@ public class Script
       double[] cumThickness = Soil.ToCumThickness(dlayer);
       double[] ll = MathUtility.Divide(ll_dep, dlayer);
       
-      StreamWriter writer = new StreamWriter("Depth.out");
+      StreamWriter writer = new StreamWriter(title + " Depth.out");
       
       writer.WriteLine("Depth AirDry     LL    DUL    SAT      SW     NO3     NH4");
       writer.WriteLine(" (mm)   (mm)   (mm)   (mm)   (mm)    (mm) (kg/ha) (kg/ha)");
@@ -612,6 +656,42 @@ public class Script
       
       writer.Close();
    }
+   
+   // ------------------------------------------------------------------------------
+   // The following function will update the gross margin.
+   // ------------------------------------------------------------------------------
+   private void GrossMargin()
+   {
+      // Keep track of the fertiliser applications.
+      if (fertiliser &gt; 0)
+         BankBalance -= FertiliserCost * fertiliser + FertiliserApplicationCost;
+
+      // Keep track of the irrigation applications.
+      if (irrig_tot &gt; 0)
+         BankBalance -= WaterCost * (irrig_tot / 100);
+
+      // Calculate gross margin at harvest.
+      string stageName;
+      string plantStatus;
+      Paddock.Get(CropName + ".StageName", out stageName);
+      Paddock.Get(CropName + ".plant_status", out plantStatus);
+      if (stageName == "harvest_ripe" || plantStatus == "dead")
+      {
+         double FullPrice;
+         if (grain_protein &gt; APH1Protein)
+            FullPrice = APH1Price;
+         else if (grain_protein &gt; APH2Protein)
+            FullPrice = APH2Price;
+         else if (grain_protein &gt; H2Protein)
+            FullPrice = H2Price;
+         else if(grain_protein &gt; APWProtein)
+            FullPrice = APWPrice;
+         else
+            FullPrice = ASWPrice;
+         
+         BankBalance = BankBalance + FullPrice * WetYield;
+      }
+   }   
 }
        </text>
         <Reference>ApsimFile.dll</Reference>
@@ -684,6 +764,10 @@ public class Script
         <variable>sum of rain on end_of_day from CurrentDay to harvesting as RainToMaturity</variable>
         <variable>sum of Mineralisation on end_of_day from CurrentDay to harvesting as MineralisationToMaturity</variable>
         <variable>sum of NitrogenTieUp on end_of_day from CurrentDay to harvesting as NitrogenTieUpToMaturity</variable>
+        <variable>sum of runoff on end_of_day from start_simulation to end_simulation as TotalRunoff</variable>
+        <variable>sum of drain on end_of_day from start_simulation to end_simulation as TotalDrainage</variable>
+        <variable>sum of leach_no3 on end_of_day from start_simulation to end_simulation as TotalNo3Leaching</variable>
+        <variable>sum of n2o_atm() on end_of_day from start_simulation to end_simulation as TotalN2O</variable>
       </tracker>
       <outputfile name="Yearly" enabled="no">
         <filename output="yes">Base Yearly.out</filename>
@@ -735,6 +819,12 @@ public class Script
           <variable>NumWaterLoggingEventsFor6OrMoreDays</variable>
           <variable>MineralisationToMaturity</variable>
           <variable>NitrogenTieUpToMaturity</variable>
+          <variable>BankBalance</variable>
+          <variable>TotalRunoff</variable>
+          <variable>TotalDrainage</variable>
+          <variable>TotalNO3Leaching</variable>
+          <variable>TotalN2O</variable>
+          <variable>ChangeInOrganicC</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>
@@ -792,6 +882,7 @@ public class Script
           <variable>n_stress_expan</variable>
           <variable>NUptakeKgHa</variable>
           <variable>AmountWaterLeft</variable>
+          <variable>BankBalance</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>post</event>

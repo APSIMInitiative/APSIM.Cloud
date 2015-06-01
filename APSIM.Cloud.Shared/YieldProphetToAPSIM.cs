@@ -41,6 +41,7 @@ namespace APSIM.Cloud.Shared
                 simulation.Name = paddock.Name;
                 simulation.DailyOutput = false;
                 simulation.YearlyOutput = true;
+                simulation.WriteDepthFile = false;
                 simulation.EndDate = simulation.StartDate.AddDays(300);
                 apsimSpecs.Add(simulation);
             }
@@ -57,16 +58,24 @@ namespace APSIM.Cloud.Shared
 
             APSIMSpec shortSimulation = new APSIMSpec();
             shortSimulation.Name = "Base";
+            shortSimulation.WeatherFileName = shortSimulation.Name + ".met";
 
             // Start date of simulation should be the earliest of ResetDate, SowDate and StartSeasonDate
             Sow sow = YieldProphetUtility.GetCropBeingSown(paddock.Management);
+            if (sow == null)
+                throw new Exception("No sowing specified for paddock: " + paddock.Name);
+
+            if (sow.Date == DateTime.MinValue)
+                throw new Exception("No sowing DATE specified for paddock: " + paddock.Name);
+
             shortSimulation.StartDate = DateTime.MaxValue;
-            if (paddock.SoilWaterSampleDate < shortSimulation.StartDate)
+            if (paddock.SoilWaterSampleDate != DateTime.MinValue &&
+                paddock.SoilWaterSampleDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.SoilWaterSampleDate;
             if (paddock.SoilNitrogenSampleDate != DateTime.MinValue &&
                 paddock.SoilNitrogenSampleDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.SoilNitrogenSampleDate;
-            if (sow != null && sow.Date < shortSimulation.StartDate)
+            if (sow != null && sow.Date < shortSimulation.StartDate && sow.Date != DateTime.MinValue)
                 shortSimulation.StartDate = sow.Date;
             if (paddock.StartSeasonDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.StartSeasonDate;
@@ -81,6 +90,8 @@ namespace APSIM.Cloud.Shared
             shortSimulation.SoilPath = copyOfPaddock.SoilPath;
             shortSimulation.Samples = new List<APSIM.Shared.Soils.Sample>();
             shortSimulation.Samples.AddRange(copyOfPaddock.Samples);
+            shortSimulation.InitTotalWater = copyOfPaddock.InitTotalWater;
+            shortSimulation.InitTotalNitrogen = copyOfPaddock.InitTotalNitrogen;
             shortSimulation.StationNumber = copyOfPaddock.StationNumber;
             shortSimulation.StubbleMass = copyOfPaddock.StubbleMass;
             shortSimulation.StubbleType = copyOfPaddock.StubbleType;
@@ -174,28 +185,29 @@ namespace APSIM.Cloud.Shared
         private static void AddResetDatesToManagement(Paddock paddock, APSIMSpec simulation)
         {
             // Reset
-            if (paddock.SoilWaterSampleDate == DateTime.MinValue)
-                throw new Exception("Cannot find soil water reset date");
-
-            if (paddock.SoilNitrogenSampleDate == DateTime.MinValue)
-                paddock.SoilNitrogenSampleDate = paddock.SoilWaterSampleDate;
-
-            Sow sowing = YieldProphetUtility.GetCropBeingSown(paddock.Management);
-            if (sowing != null && sowing.Date != DateTime.MinValue)
+            if (paddock.SoilWaterSampleDate != DateTime.MinValue)
             {
-                // reset at sowing if the sample dates are after sowing.
-                if (paddock.SoilWaterSampleDate > sowing.Date)
-                {
-                    simulation.Management.Add(new ResetWater() { Date = sowing.Date });
-                    simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = sowing.Date });
-                }
-                if (paddock.SoilNitrogenSampleDate > sowing.Date)
-                    simulation.Management.Add(new ResetNitrogen() { Date = sowing.Date });
 
-                // reset on the sample dates.
-                simulation.Management.Add(new ResetWater() { Date = paddock.SoilWaterSampleDate });
-                simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = paddock.SoilWaterSampleDate });
-                simulation.Management.Add(new ResetNitrogen() { Date = paddock.SoilNitrogenSampleDate });
+                if (paddock.SoilNitrogenSampleDate == DateTime.MinValue)
+                    paddock.SoilNitrogenSampleDate = paddock.SoilWaterSampleDate;
+
+                Sow sowing = YieldProphetUtility.GetCropBeingSown(paddock.Management);
+                if (sowing != null && sowing.Date != DateTime.MinValue)
+                {
+                    // reset at sowing if the sample dates are after sowing.
+                    if (paddock.SoilWaterSampleDate > sowing.Date)
+                    {
+                        simulation.Management.Add(new ResetWater() { Date = sowing.Date });
+                        simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = sowing.Date });
+                    }
+                    if (paddock.SoilNitrogenSampleDate > sowing.Date)
+                        simulation.Management.Add(new ResetNitrogen() { Date = sowing.Date });
+
+                    // reset on the sample dates.
+                    simulation.Management.Add(new ResetWater() { Date = paddock.SoilWaterSampleDate });
+                    simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = paddock.SoilWaterSampleDate });
+                    simulation.Management.Add(new ResetNitrogen() { Date = paddock.SoilNitrogenSampleDate });
+                }
             }
         }
     }

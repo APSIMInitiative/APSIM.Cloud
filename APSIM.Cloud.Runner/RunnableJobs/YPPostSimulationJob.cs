@@ -64,28 +64,31 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // copy in the report file.
             string reportFileName = Path.Combine(workingDirectory, yieldProphet.ReportType + ".report");
             Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Runner.Resources." + yieldProphet.ReportType + ".report");
-            XmlDocument doc = new XmlDocument(); 
-            doc.Load(s);
-            doc.Save(reportFileName);
+            if (s != null)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(s);
+                doc.Save(reportFileName);
 
-            // run ApsimReport to generate .GIF files and a .PDF
-            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                // run ApsimReport to generate .GIF files and a .PDF
+                string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            string archiveBaseFileName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
-            startInfo.Arguments = StringUtilities.DQuote(reportFileName) + " " +
-                                  StringUtilities.DQuote(archiveBaseFileName + ".gif");
-            startInfo.WorkingDirectory = workingDirectory;
-            Process process = Process.Start(startInfo);
-            process.WaitForExit();
-            startInfo.Arguments = startInfo.Arguments.Replace(".gif", ".pdf");
-            process = Process.Start(startInfo);
-            process.WaitForExit();
+                string archiveBaseFileName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
+                startInfo.Arguments = StringUtilities.DQuote(reportFileName) + " " +
+                                      StringUtilities.DQuote(archiveBaseFileName + ".gif");
+                startInfo.WorkingDirectory = workingDirectory;
+                Process process = Process.Start(startInfo);
+                process.WaitForExit();
+                startInfo.Arguments = startInfo.Arguments.Replace(".gif", ".pdf");
+                process = Process.Start(startInfo);
+                process.WaitForExit();
+            }
 
             // Call the YP reporting webservice.
             DataSet dataSet = new DataSet("ReportData");
-            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.out"))
+            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.csv"))
                 try
                 {
                     dataSet.Tables.Add(ApsimTextFile.ToTable(outFileName));
@@ -95,16 +98,35 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     // Sometimes .out files are empty - not an error.
                 }
 
-            // Call StoreReport
-            using (YPReporting.ReportingClient reportingClient = new YPReporting.ReportingClient())
+
+            if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.F4P)
             {
-                try
+                // Farm 4 Prophet - StoreReport
+                using (F4P.F4PClient f4pClient = new F4P.F4PClient())
                 {
-                    reportingClient.StoreReport(reportName, dataSet);
+                    try
+                    {
+                        f4pClient.StoreReport(reportName, dataSet);
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("Cannot call F4P StoreReport web service method");
+                    }
                 }
-                catch (Exception err)
+            }
+            else
+            {
+                // YieldProphet - StoreReport
+                using (YPReporting.ReportingClient ypClient = new YPReporting.ReportingClient())
                 {
-                    throw new Exception("Cannot call YP StoreReport web service method");
+                    try
+                    {
+                        ypClient.StoreReport(reportName, dataSet);
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("Cannot call YP StoreReport web service method");
+                    }
                 }
             }
         }

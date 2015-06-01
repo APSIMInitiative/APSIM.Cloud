@@ -725,7 +725,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 // simulation, it will have the correct soil layers at init time
                 if (!cropInitialised)
                 {
-                    SoilCrop wheat = SoilUtility.Crop(aSoil, "wheat");
+                    SoilCrop wheat = SoilUtilities.Crop(aSoil, "wheat");
                     if (wheat != null)
                     {
                         anode = apsimCompNode.SelectSingleNode("initdata/ll");

@@ -21,6 +21,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>The operations</summary>
         private List<string> operations = new List<string>();
 
+        /// <summary>The crop being sown</summary>
+        private string cropBeingSown;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMFileWriter"/> class.</summary>
         public APSIMFileWriter()
         {
@@ -95,7 +98,7 @@ namespace APSIM.Cloud.Shared
         public void SetSoil(Soil soil)
         {
             XmlDocument soilDoc = new XmlDocument();
-            soilDoc.LoadXml(SoilUtility.ToXML(soil));
+            soilDoc.LoadXml(SoilUtilities.ToXML(soil));
             XmlNode paddockNode = XmlUtilities.Find(simulationXML, "Paddock");
             paddockNode.AppendChild(paddockNode.OwnerDocument.ImportNode(soilDoc.DocumentElement, true));
         }
@@ -115,7 +118,7 @@ namespace APSIM.Cloud.Shared
             if (sowing.Date != DateTime.MinValue)
             {
                 XmlUtilities.SetValue(simulationXML, "Paddock/Management/ui/CropName", sowing.Crop);
-
+                cropBeingSown = sowing.Crop;
                 string cropNodePath = "Paddock/" + sowing.Crop;
 
                 string useECValue = "no";
@@ -273,11 +276,8 @@ namespace APSIM.Cloud.Shared
         }
 
         /// <summary>Creates a met factorial.</summary>
-        /// <param name="simulationXML">The top level simulation node</param>
-        /// <param name="paddockName">The name of the paddock.</param>
-        /// <param name="rainFileName">Name of the rain file.</param>
-        /// <param name="weatherFileNames">The weather file names.</param>
-        public static void CreateMetFactorial(XmlNode simulationXML, string paddockName, string rainFileName, string[] weatherFileNames)
+        /// <param name="factor">The factor</param>
+        public static void ApplyFactor(XmlNode simulationXML, APSIMSpec.Factor factor)
         {
             // Make sure <factorial> exists.
             XmlNode factorial = XmlUtilities.Find(simulationXML, "Factorials");
@@ -286,21 +286,24 @@ namespace APSIM.Cloud.Shared
             XmlUtilities.SetNameAttr(factorial, "Factorials");
             XmlUtilities.SetValue(factorial, "active", "1");
 
-            // Add a <factor> for Met
-            XmlNode metFactor = factorial.AppendChild(factorial.OwnerDocument.CreateElement("factor"));
-            XmlUtilities.SetNameAttr(metFactor, "Met");
+            // Add a <factor>
+            XmlNode factorNode = factorial.AppendChild(factorial.OwnerDocument.CreateElement("factor"));
+            XmlUtilities.SetNameAttr(factorNode, factor.Name);
 
-            // Set <targets> in met factor
-            XmlUtilities.SetValue(metFactor, "targets/Target", "/Simulations/" + paddockName + "/Met");
+            // Set <targets> in factor
+            XmlUtilities.SetValue(factorNode, "targets/Target", factor.ComponentPath);
 
             // Set <vars> in met factor
-            string weatherFilesCSV = StringUtilities.BuildString(weatherFileNames, ",");
-            XmlUtilities.SetValue(metFactor, "vars/filename", weatherFilesCSV);
+            string valuesCSV = StringUtilities.BuildString(factor.ComponentVariableValues, ",");
+            XmlUtilities.SetValue(factorNode, "vars/" + factor.ComponentVariableName, valuesCSV);
 
-            // Set <metfile> in met factor
-            XmlNode met = metFactor.AppendChild(metFactor.OwnerDocument.CreateElement("metfile"));
-            XmlUtilities.SetNameAttr(met, "Met");
-            XmlUtilities.SetValue(met, "filename", "");
+            // Find target component.
+            XmlNode target = XmlUtilities.Find(simulationXML.OwnerDocument.DocumentElement, factor.ComponentPath);
+            if (target == null)
+                throw new Exception("Cannot find target of factor. Target path: " + factor.ComponentPath);
+
+            // Add a component to the factor node.
+            factorNode.AppendChild(simulationXML.OwnerDocument.ImportNode(target, true));
         }
 
         /// <summary>Sets the n unlimited.</summary>

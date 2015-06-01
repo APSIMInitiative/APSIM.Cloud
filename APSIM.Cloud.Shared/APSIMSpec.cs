@@ -39,6 +39,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets any observed data. Can be null if no data.</summary>
         public DataTable ObservedData { get; set; }
 
+        /// <summary>Gets or sets the name of the weather file.</summary>
+        public string WeatherFileName { get; set; }
+
         /// <summary>Gets or sets the stubble mass (kg/ha)</summary>
         public double StubbleMass { get; set; }
 
@@ -75,6 +78,12 @@ namespace APSIM.Cloud.Shared
         /// be used to lookup the soil from APSoil</summary>
         public APSIM.Shared.Soils.Soil Soil { get; set; }
 
+        /// <summary>Gets or sets the total water (mm) at the beginning of the simulation.</summary>
+        public double InitTotalWater { get; set; }
+
+        /// <summary>Gets or sets the total nitrogen (kg/ha) at the beginning of the simulation.</summary>
+        public double InitTotalNitrogen { get; set; }
+
         /// <summary>Gets or sets a value indicating whether the run should be nitrogen unlimited</summary>
         public bool NUnlimited { get; set; }
 
@@ -103,5 +112,19 @@ namespace APSIM.Cloud.Shared
         /// Gets or sets a value indicating whether a 'next 10 days' output file should be created.
         /// </summary>
         public bool Next10DaysDry { get; set; }
+
+        /// <summary>Gets or sets the factors for factorial runs.</summary>
+        public List<Factor> Factors { get; set; }
+
+        /// <summary>
+        /// A factor
+        /// </summary>
+        public struct Factor
+        {
+            public string Name;
+            public string ComponentPath;
+            public string ComponentVariableName;
+            public string[] ComponentVariableValues;
+        }
     }
 }

@@ -23,21 +23,21 @@ namespace APSIM.Cloud.Shared
         private static int APSIMVerionNumber = 36;
 
         /// <summary>Create all necessary YP files (.apsim and .met) from a YieldProphet spec.</summary>
-        /// <param name="apsim">The yield prophet spec.</param>
-        /// <param name="endDate">The end date for using any observed data.</param>
+        /// <param name="simulations">The simulations to write.</param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
-        /// <param name="filterFileName">The name of a file containing paddocks to include. Can be null.</param>
+        /// <param name="fileNameToWrite">The name of a file to write.</param>
         /// <returns>The name of the created .apsim file.</returns>
-        public static string Create(IEnumerable<APSIMSpec> simulations, string workingFolder)
+        public static string Create(IEnumerable<APSIMSpec> simulations, string workingFolder, string fileNameToWrite)
         {
+            // Create all necessary weather files.
+            CreateWeatherFilesForSimulations(simulations, workingFolder);
+
             // Create the .apsim XML
             XmlNode apsimNode = CreateApsimFile(simulations);
 
-            // Create all necessary weather files.
-            CreateWeatherFilesForSimulations(simulations, workingFolder, apsimNode);
-
             // Write the .apsim file.
-            string apsimFileName = Path.Combine(workingFolder, "YieldProphet.apsim");
+            string apsimFileName = Path.Combine(workingFolder, fileNameToWrite);
+            
             StreamWriter writer = new StreamWriter(apsimFileName);
             writer.Write(XmlUtilities.FormattedXML(apsimNode.OuterXml));
             writer.Close();
@@ -48,59 +48,43 @@ namespace APSIM.Cloud.Shared
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
-        private static void CreateWeatherFilesForSimulations(IEnumerable<APSIMSpec> simulations, string workingFolder, XmlNode apsimNode)
+        private static void CreateWeatherFilesForSimulations(IEnumerable<APSIMSpec> simulations, string workingFolder)
         {
-            // Assume that all simulations are related i.e. use the same observed data.
-            // If there are 10 simulations then go find the smallest and largest start 
-            // and end dates so that a single weather file set can be created to service
-            // all simulations in the set.
-
             // Write the .met files for each paddock.
-            WeatherFile weatherData = new WeatherFile();
-
-            DateTime earliestStartDate = DateTime.MaxValue;
-            DateTime latestEndDate = DateTime.MinValue;
-            DateTime nowDate = DateTime.MaxValue;
-            DataTable observedData = null;
-            int stationNumber = 0;
             foreach (APSIMSpec simulation in simulations)
             {
-                stationNumber = simulation.StationNumber;
-                nowDate = simulation.NowDate;
-                observedData = simulation.ObservedData;
-                if (simulation.StartDate < earliestStartDate)
-                    earliestStartDate = simulation.StartDate;
-                if (simulation.EndDate > latestEndDate)
-                    latestEndDate = simulation.EndDate;
-            }
+                string rainFileName;
+                if (simulation.ObservedData != null)
+                    rainFileName = Path.Combine(workingFolder, simulation.StationNumber.ToString() + simulation.ObservedData.TableName + ".met");
+                else
+                    rainFileName = Path.Combine(workingFolder, simulation.StationNumber.ToString() + ".met");
 
-            // Create the set of weather files.
-            string rainFileName = Path.Combine(workingFolder, stationNumber.ToString()) + ".met";
-
-            // Create a short term weather file.
-            weatherData.CreateOneSeason(rainFileName, stationNumber,
-                            earliestStartDate, nowDate,
-                            observedData);
-
-
-            // Create a long term weather file.
-            weatherData.CreateLongTerm(rainFileName, stationNumber,
-                                        earliestStartDate, latestEndDate, nowDate,
-                                        observedData, 30);
-
-            // Now modify the simulations to create a met factorial.
-            foreach (APSIMSpec simulation in simulations)
-            {
-                if (simulation.EndDate > nowDate)
+                if (simulation.EndDate > simulation.NowDate)
                 {
-                    // long term runs
-                    APSIMFileWriter.CreateMetFactorial(apsimNode, simulation.Name, rainFileName, weatherData.FilesCreated);
+                    // long term.
+                    // Create a long term weather file.
+                    WeatherFile weatherData = new WeatherFile();
+                    weatherData.CreateLongTerm(rainFileName, simulation.StationNumber,
+                                                simulation.StartDate, simulation.EndDate, simulation.NowDate,
+                                                simulation.ObservedData, 30);
+                    APSIMSpec.Factor factor = new APSIMSpec.Factor();
+                    factor.Name = "Met";
+                    factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
+                    factor.ComponentVariableName = "filename";
+                    factor.ComponentVariableValues = weatherData.FilesCreated;
+                    if (simulation.Factors == null)
+                        simulation.Factors = new List<APSIMSpec.Factor>();
+                    simulation.Factors.Add(factor);
                 }
                 else
                 {
-                    // short term runs.
-                    string[] shortTermWeatherFiles = new string[] { rainFileName };
-                    APSIMFileWriter.CreateMetFactorial(apsimNode, simulation.Name, rainFileName, shortTermWeatherFiles);
+                    // short term.
+                    // Create a short term weather file.
+                    WeatherFile weatherData = new WeatherFile();
+                    weatherData.CreateOneSeason(rainFileName, simulation.StationNumber,
+                                                simulation.StartDate, simulation.NowDate,
+                                                simulation.ObservedData);
+                    simulation.WeatherFileName = Path.GetFileName(rainFileName);
                 }
             }
         }
@@ -112,7 +96,6 @@ namespace APSIM.Cloud.Shared
         /// <exception cref="System.Exception"></exception>
         private static XmlNode CreateApsimFile(IEnumerable<APSIMSpec> simulations)
         {
-            APSOIL.ServiceSoapClient apsoilService = null;
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateElement("folder"));
             XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
@@ -122,7 +105,7 @@ namespace APSIM.Cloud.Shared
             {
                 try
                 {
-                    XmlNode simulationXML = CreateSimulationXML(simulation, apsoilService);
+                    XmlNode simulationXML = CreateSimulationXML(simulation);
                     if (simulationXML != null)
                         doc.DocumentElement.AppendChild(doc.ImportNode(simulationXML, true));
                 }
@@ -130,6 +113,14 @@ namespace APSIM.Cloud.Shared
                 {
                     throw new Exception(err.Message + "\r\nPaddock name: " + simulation.Name);
                 }
+            }
+
+            // Apply factors.
+            foreach (APSIMSpec simulation in simulations)
+            {
+                if (simulation.Factors != null)
+                    foreach (APSIMSpec.Factor factor in simulation.Factors)
+                        APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
             }
 
             return doc.DocumentElement;
@@ -143,7 +134,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="todayDate">The today date.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        private static XmlNode CreateSimulationXML(APSIMSpec simulation)
         {
             APSIMFileWriter apsimWriter = new APSIMFileWriter();
 
@@ -157,7 +148,7 @@ namespace APSIM.Cloud.Shared
             apsimWriter.SetReportDate(simulation.NowDate);
 
             // Set the weather file
-            apsimWriter.SetWeatherFile(simulation.Name + ".met");
+            apsimWriter.SetWeatherFile(simulation.WeatherFileName);
 
             // Set the stubble
             apsimWriter.SetStubble(simulation.StubbleType, simulation.StubbleMass, YieldProphetUtility.GetStubbleCNRatio(simulation.StubbleType));
@@ -191,7 +182,7 @@ namespace APSIM.Cloud.Shared
             apsimWriter.SetErosion(simulation.Slope, simulation.SlopeLength);
 
             // Do soil stuff.
-            Soil soil = DoSoil(simulation, apsoilService);
+            Soil soil = DoSoil(simulation);
             apsimWriter.SetSoil(soil);
 
             // Loop through all management actions and create an operations list
@@ -222,19 +213,18 @@ namespace APSIM.Cloud.Shared
         /// <param name="paddock">The paddock.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <exception cref="System.Exception">Cannot find soil:  + paddock.SoilName</exception>
-        public static Soil DoSoil(APSIMSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        public static Soil DoSoil(APSIMSpec simulation)
         {
             Soil soil;
             if (simulation.Soil == null)
             {
                 // Look for a <SoilName> and if found go get the soil from the Apsoil web service.
-                if (apsoilService == null)
-                    apsoilService = new APSOIL.ServiceSoapClient();
+                APSOIL.Service apsoilService = new APSOIL.Service();
                 string soilXml = apsoilService.SoilXML(simulation.SoilPath);
                 if (soilXml == string.Empty)
                     throw new Exception("Cannot find soil: " + simulation.SoilPath);
 
-                soil = SoilUtility.FromXML(soilXml);
+                soil = SoilUtilities.FromXML(soilXml);
             }
             else
             {
@@ -260,13 +250,13 @@ namespace APSIM.Cloud.Shared
 
             // Make sure we have a soil crop parameterisation. If not then try creating one
             // based on wheat.
-            Sow crop = YieldProphetUtility.GetCropBeingSown(simulation.Management);
-            if (crop != null && !StringUtilities.Contains(SoilUtility.GetCropNames(soil), crop.Crop))
+            Sow sowing = YieldProphetUtility.GetCropBeingSown(simulation.Management);
+            if (sowing != null && !StringUtilities.Contains(SoilUtilities.GetCropNames(soil), sowing.Crop))
             {
-                SoilCrop wheat = SoilUtility.Crop(soil, "wheat");
+                SoilCrop wheat = SoilUtilities.Crop(soil, "wheat");
 
                 SoilCrop newSoilCrop = new SoilCrop();
-                newSoilCrop.Name = crop.Crop;
+                newSoilCrop.Name = sowing.Crop;
                 newSoilCrop.Thickness = wheat.Thickness;
                 newSoilCrop.LL = wheat.LL;
                 newSoilCrop.KL = wheat.KL;
@@ -284,6 +274,45 @@ namespace APSIM.Cloud.Shared
                 XmlDocument soilDoc = new XmlDocument();
                 soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Samples, false));
                 soil.Samples = XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(List<Sample>)) as List<Sample>;
+            }
+            if (simulation.InitTotalWater != 0)
+            {
+                soil.InitialWater = new InitialWater();
+                soil.InitialWater.PercentMethod = InitialWater.PercentMethodEnum.FilledFromTop;
+
+                double pawc;
+                if (sowing == null || sowing.Crop == null)
+                {
+                    pawc = MathUtilities.Sum(SoilUtilities.PAWCmm(soil));
+                    soil.InitialWater.RelativeTo = "LL15";
+                }
+                else
+                {
+                    SoilCrop crop = SoilUtilities.Crop(soil, sowing.Crop);
+                    pawc = MathUtilities.Sum(SoilUtilities.PAWCCropmm(soil, crop));
+                    soil.InitialWater.RelativeTo = crop.Name;
+                }
+
+                soil.InitialWater.FractionFull = Convert.ToDouble(simulation.InitTotalWater) / pawc;
+            }
+
+            if (simulation.InitTotalNitrogen != 0)
+            {
+                // Add in a sample.
+                Sample nitrogenSample = new Sample();
+                nitrogenSample.Name = "NitrogenSample";
+                soil.Samples.Add(nitrogenSample);
+                nitrogenSample.Thickness = new double[] { 150, 150, 3000 };
+                nitrogenSample.NO3Units = Sample.NUnitsEnum.kgha;
+                nitrogenSample.NH4Units = Sample.NUnitsEnum.kgha;
+                nitrogenSample.NO3 = new double[] { 6.0, 2.1, 0.1 };
+                nitrogenSample.NH4 = new double[] { 0.5, 0.1, 0.1 };
+                nitrogenSample.OC = new double[] { double.NaN, double.NaN, double.NaN };
+                nitrogenSample.EC = new double[] { double.NaN, double.NaN, double.NaN };
+                nitrogenSample.PH = new double[] { double.NaN, double.NaN, double.NaN };
+
+                double Scale = Convert.ToDouble(simulation.InitTotalNitrogen) / MathUtilities.Sum(nitrogenSample.NO3);
+                nitrogenSample.NO3 = MathUtilities.Multiply_Value(nitrogenSample.NO3, Scale);
             }
 
             foreach (Sample sample in soil.Samples)
@@ -305,18 +334,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="sample">The sample.</param>
         private static void CheckSample(Soil parentSoil, Sample sample)
         {
-            if (sample.SW != null)
-            {
-                // Make sure the soil water isn't below airdry or above DUL.
-                double[] SWValues = SoilUtility.SW(parentSoil, sample, Sample.SWUnitsEnum.Volumetric);
-                double[] AirDry = SoilUtility.AirDryMapped(parentSoil, sample.Thickness);
-                double[] DUL = SoilUtility.DULMapped(parentSoil, sample.Thickness);
-                for (int i = 0; i < sample.SW.Length; i++)
-                {
-                    SWValues[i] = Math.Max(SWValues[i], AirDry[i]);
-                    SWValues[i] = Math.Min(SWValues[i], DUL[i]);
-                }
-            }
+            SoilUtilities.ConstrainSampleSW(sample, parentSoil);
 
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);
@@ -331,9 +349,12 @@ namespace APSIM.Cloud.Shared
                 sample.NH4 = FixArrayLength(sample.NH4, sample.Thickness.Length);
 
             // NH4 can be null so give default values if that is the case.
-            for (int i = 0; i < sample.NH4.Length; i++)
-                if (double.IsNaN(sample.NH4[i]))
-                    sample.NH4[i] = 0.1;
+            if (sample.NH4 != null)
+            {
+                for (int i = 0; i < sample.NH4.Length; i++)
+                    if (double.IsNaN(sample.NH4[i]))
+                        sample.NH4[i] = 0.1;
+            }
 
             sample.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
             if (sample.OC != null)
@@ -376,7 +397,7 @@ namespace APSIM.Cloud.Shared
         /// <exception cref="System.Exception">Use double.NaN for missing values in soil array values</exception>
         private static void CheckMissingValuesAreNaN(double[] values)
         {
-            if (values.FirstOrDefault(v => v == MathUtilities.MissingValue) != 0)
+            if (values != null && values.FirstOrDefault(v => v == MathUtilities.MissingValue) != 0)
                 throw new Exception("Use NaN for missing values in soil array values");
         }
 

@@ -16,7 +16,8 @@ namespace APSIM.Cloud.Shared.AusFarm
     using System.Xml.Serialization;
     using System.Data;
     using APSIM.Shared.Soils;
-    using APSIM.Shared.Utilities;    
+    using APSIM.Shared.Utilities;
+    using APSIM.Cloud.Shared;
     
     public class AusFarmFiles
     {
@@ -91,12 +92,11 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <returns>The root XML node for the file</returns>
         private static XmlNode CreateAusFarmFile(AusFarmSpec simulation, string workingFolder)
         {
-            APSOIL.ServiceSoapClient apsoilService = null;
-
+            
             XmlDocument doc = new XmlDocument();
             try
             {
-                XmlNode simulationXML = CreateSimulationXML(simulation, apsoilService, workingFolder);
+                XmlNode simulationXML = CreateSimulationXML(simulation, workingFolder);
                 if (simulationXML != null)
                     doc.AppendChild(doc.ImportNode(simulationXML, true));
             }
@@ -116,7 +116,7 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <param name="todayDate">The today date.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(AusFarmSpec simulation, APSOIL.ServiceSoapClient apsoilService, string workingFolder)
+        private static XmlNode CreateSimulationXML(AusFarmSpec simulation, string workingFolder)
         {
             AusFarmFileWriter ausfarmWriter;
 
@@ -147,7 +147,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             }
             
             // Do soil stuff.
-            DoSoils(simulation, apsoilService);
+            DoSoils(simulation);
             ausfarmWriter.SetSoils(simulation);
             
             // Set the Livestock data
@@ -163,8 +163,9 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <param name="simulation"></param>
         /// <param name="apsoilService"></param>
         /// <returns></returns>
-        public static void DoSoils(AusFarmSpec simulation, APSOIL.ServiceSoapClient apsoilService)
+        public static void DoSoils(AusFarmSpec simulation)
         {
+            APSOIL.Service apsoilService = null; 
             Soil soil;
             for (int i = 0; i < simulation.OnFarmSoilTypes.Count; i++)
             {
@@ -174,20 +175,20 @@ namespace APSIM.Cloud.Shared.AusFarm
                 {
                     // Look for a <SoilName> and if found go get the soil from the Apsoil web service.
                     if (apsoilService == null)
-                        apsoilService = new APSOIL.ServiceSoapClient();
+                        apsoilService = new APSOIL.Service();
                     string soilXml = apsoilService.SoilXML(soilType.SoilPath);
                     if (soilXml == string.Empty)
                         throw new Exception("Cannot find soil: " + soilType.SoilPath);
 
-                    soil = SoilUtility.FromXML(soilXml);
+                    soil = SoilUtilities.FromXML(soilXml);
                 }
                 
                 // Make sure we have a soil crop parameterisation. If not then try creating one
                 // based on wheat.
-                SoilCrop wheat = SoilUtility.Crop(soil, "wheat");
+                SoilCrop wheat = SoilUtilities.Crop(soil, "wheat");
                 if (wheat != null)
                 {
-                    string[] soilCrops = SoilUtility.GetCropNames(soil);
+                    string[] soilCrops = SoilUtilities.GetCropNames(soil);
                     string cropName;
                     for (int crop = 0; crop < soilType.CropRotationList.Count; crop++)
                     {
@@ -233,14 +234,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             if (sample.SW != null)
             {
                 // Make sure the soil water isn't below airdry or above DUL.
-                double[] SWValues = SoilUtility.SW(parentSoil, sample, Sample.SWUnitsEnum.Volumetric);
-                double[] AirDry = SoilUtility.AirDryMapped(parentSoil, sample.Thickness);
-                double[] DUL = SoilUtility.DULMapped(parentSoil, sample.Thickness);
-                for (int i = 0; i < sample.SW.Length; i++)
-                {
-                    SWValues[i] = Math.Max(SWValues[i], AirDry[i]);
-                    SWValues[i] = Math.Min(SWValues[i], DUL[i]);
-                }
+                SoilUtilities.ConstrainSampleSW(sample, parentSoil);    
             }
 
             // Do some checking of NO3 / NH4
