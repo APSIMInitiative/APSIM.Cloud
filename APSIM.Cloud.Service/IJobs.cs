@@ -27,6 +27,9 @@ namespace APSIM.Cloud.Service
         [OperationContract]
         string Add(YieldProphet yieldProphet);
 
+        [OperationContract]
+        string Add(Farm4Prophet f4p);
+
         /// <summary>Add a new entry to the database.</summary>
         /// <param name="name">The name of the job.</param>
         /// <param name="jobXML">The job XML.</param>

@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CMPServices">
+      <HintPath>..\..\CMP\AusFarm\CMPServices.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -51,6 +55,12 @@
     <Compile Include="APSIMFiles.cs" />
     <Compile Include="APSIMFileWriter.cs" />
     <Compile Include="APSIMSpec.cs" />
+    <Compile Include="AusFarm\AusFarmFiles.cs" />
+    <Compile Include="AusFarm\AusFarmFileWriter.cs" />
+    <Compile Include="AusFarm\AusFarmSpec.cs" />
+    <Compile Include="AusFarm\Farm4ProphetSpec.cs" />
+    <Compile Include="AusFarm\Farm4ProphetToAusFarm.cs" />
+    <Compile Include="AusFarm\Farm4ProphetUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\APSOIL\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -72,6 +82,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\ausfarm_crop_only.sdml" />
+    <EmbeddedResource Include="Resources\ausfarm_warooka.sdml" />
     <None Include="Service References\APSOIL\APSIM.Cloud.Shared.APSOIL.PAWCByCrop.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ApsimFile">
-      <HintPath>..\..\APSIM\Model\ApsimFile.dll</HintPath>
+      <HintPath>..\..\..\apsim\Model\ApsimFile.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunnableJobs\APSIMJob.cs" />
     <Compile Include="RunnableJobs\APSIMPostSimulationJob.cs" />
+    <Compile Include="RunnableJobs\AusFarmJob.cs" />
     <Compile Include="RunnableJobs\ProcessYPJob.cs" />
     <Compile Include="RunnableJobs\YPPostSimulationJob.cs" />
     <Compile Include="Service References\JobsService\Reference.cs">

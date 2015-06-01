@@ -64,6 +64,21 @@ namespace APSIM.Cloud.Service
             return newJobName;
         }
 
+        /// <summary>
+        /// Adds a Farm4Prophet job to the APSIM cloud.
+        /// </summary>
+        /// <param name="f4p">The job specification.</param>
+        /// <returns>The unique job name.</returns>
+        public string Add(Farm4Prophet f4p)
+        {
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + f4p.TaskName + "_F4P";
+
+            string xml = Farm4ProphetUtility.Farm4ProphetToXML(f4p);
+
+            AddAsXML(newJobName, xml);
+            return newJobName;
+        }
+
         /// <summary>Add a new entry to the database.</summary>
         /// <param name="name">The name of the job.</param>
         /// <param name="jobXML">The job XML.</param>

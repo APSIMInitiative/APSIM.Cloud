@@ -58,7 +58,7 @@ namespace APSIM.Cloud.Portal
             File.Delete(tempFolder);
             Directory.CreateDirectory(tempFolder);
             MemoryStream memStream = new MemoryStream(bytes);
-            string[] fileNames = ZipUtilities.UnZipFiles(memStream, tempFolder, null);
+            string[] fileNames = APSIM.Shared.Utilities.ZipUtilities.UnZipFiles(memStream, tempFolder, null);
 
             string fileName = Path.Combine(tempFolder, "YieldProphet.xml");
 

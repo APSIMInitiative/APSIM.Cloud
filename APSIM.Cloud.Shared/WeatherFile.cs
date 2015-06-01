@@ -32,6 +32,60 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets the last SILO date found. Returns DateTime.MinValue if no data.</summary>
         public DateTime LastSILODateFound { get; private set; }
 
+        /// <summary>
+        /// Create a met file that is the same std layout as the apsim std silo files
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="stationNumber"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="observedData"></param>
+        public void CreateSimplePeriod(string fileName, int stationNumber,
+                                    DateTime startDate,
+                                    DateTime endDate,
+                                    DataTable observedData)
+        {
+            MemoryStream siloStream = ExtractMetStreamFromSILO(stationNumber, startDate, endDate);
+            if (siloStream != null)
+            {
+                // Convert the memory stream to a data table.
+                siloStream.Seek(0, SeekOrigin.Begin);
+                ApsimTextFile inputFile = new ApsimTextFile();
+                inputFile.Open(siloStream);
+
+                if (inputFile != null)
+                {
+                    DataTable weatherData = inputFile.ToTable();
+                    if (weatherData.Rows.Count == 0)
+                        LastSILODateFound = DateTime.MinValue;
+                    else
+                        LastSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
+
+                    // Add a codes column to weatherdata
+                    AddCodesColumn(weatherData, 'S');
+
+                    if (observedData != null)
+                    {
+                        AddCodesColumn(observedData, 'O');
+                        OverlayData(observedData, weatherData);
+                    }
+
+                    //write the raw silo file stream
+                    FileStream writer = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+                    siloStream.Seek(0, SeekOrigin.Begin);
+                    siloStream.WriteTo(writer);
+                    writer.Close();
+
+                    inputFile.Close();
+
+                    FilesCreated = new string[1] { fileName };
+                }
+                else
+                    FilesCreated = new string[0];
+               
+            }
+        }
+
         /// <summary>Creates a one season weather file.</summary>
         /// <param name="fileName">Name of the file to create</param>
         /// <param name="stationNumber">The SILO station number to use.</param>
@@ -410,6 +464,29 @@ namespace APSIM.Cloud.Shared
         /// <returns>The APSIM text file from SILO</returns>
         private static ApsimTextFile ExtractMetFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
         {
+            MemoryStream siloStream = ExtractMetStreamFromSILO(stationNumber, startDate, endDate);
+            if (siloStream != null)
+            {
+                // Convert the memory stream to a data table.
+                siloStream.Seek(0, SeekOrigin.Begin);
+                ApsimTextFile inputFile = new ApsimTextFile();
+                inputFile.Open(siloStream);
+                return inputFile;
+            }
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Extracts the SILO data and returns it in a memory stream
+        /// </summary>
+        /// <param name="stationNumber">The station number.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <exception cref="System.Exception">Cannot find SILO!</exception>
+        /// <returns>The SILO data stream</returns>
+        private static MemoryStream ExtractMetStreamFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
+        {
             if (startDate < DateTime.Now)
             {
                 string serverAddress = "http://apsrunet.apsim.info/cgi-bin";
@@ -441,12 +518,7 @@ namespace APSIM.Cloud.Shared
                         siloStream.Write(read, 0, count);
                         count = streamResponse.Read(read, 0, 1024);
                     }
-
-                    // Convert the memory stream to a data table.
-                    siloStream.Seek(0, SeekOrigin.Begin);
-                    ApsimTextFile inputFile = new ApsimTextFile();
-                    inputFile.Open(siloStream);
-                    return inputFile;
+                    return siloStream;
                 }
                 catch (Exception)
                 {
@@ -459,7 +531,6 @@ namespace APSIM.Cloud.Shared
                         SILOResponse.Close();
                 }
             }
-
             return null;
         }
 
