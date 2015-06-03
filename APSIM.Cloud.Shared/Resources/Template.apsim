@@ -720,7 +720,7 @@ public class Script
         <slope_length description="Length of plot (m)">60.0</slope_length>
         <k_factor description="Soil erodibility factor (t/ha/EI 30 )">0.4</k_factor>
         <p_factor description="Supporting practise factor (unitless)">1.0</p_factor>
-        <bed_depth description="Depth to bedrock (mm)">1900</bed_depth>
+        <bed_depth description="Depth to bedrock (mm)">4000</bed_depth>
         <profile_reduction type="list" listvalues="off,on" description="Profile Reduction">off</profile_reduction>
         <profile_layer_merge description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
         <minimum_depth description="If the profile erodes to this depth, the simulation is stopped (mm)">100.0</minimum_depth>

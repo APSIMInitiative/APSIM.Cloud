@@ -53,11 +53,7 @@ namespace APSIM.Cloud.Shared
             // Write the .met files for each paddock.
             foreach (APSIMSpec simulation in simulations)
             {
-                string rainFileName;
-                if (simulation.ObservedData != null)
-                    rainFileName = Path.Combine(workingFolder, simulation.StationNumber.ToString() + simulation.ObservedData.TableName + ".met");
-                else
-                    rainFileName = Path.Combine(workingFolder, simulation.StationNumber.ToString() + ".met");
+                string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
                 if (simulation.EndDate > simulation.NowDate)
                 {
