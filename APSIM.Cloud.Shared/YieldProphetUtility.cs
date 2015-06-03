@@ -93,14 +93,14 @@ namespace APSIM.Cloud.Shared
             doc.LoadXml(xml);
 
             if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
+                return YieldProphetOld.YieldProphetFromXML(doc.DocumentElement, workingFolder);
+            else
             {
-                doc.LoadXml(YieldProphetOld.Convert(doc.DocumentElement, workingFolder));
+                XmlReader reader = new XmlNodeReader(doc.DocumentElement);
+                reader.Read();
+                XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
+                return (YieldProphet)serial.Deserialize(reader);
             }
-
-            XmlReader reader = new XmlNodeReader(doc.DocumentElement);
-            reader.Read();
-            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
-            return (YieldProphet)serial.Deserialize(reader);
         }
 
         /// <summary>Convert the YieldProphet spec to XML.</summary>

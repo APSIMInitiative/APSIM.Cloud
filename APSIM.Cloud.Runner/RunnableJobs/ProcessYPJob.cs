@@ -12,12 +12,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.IO;
     using System.Xml;
     using System.Reflection;
-    using ApsimFile;
     using System.Data;
     using System.Threading;
     using APSIM.Cloud.Shared;
     using APSIM.Cloud.Shared.AusFarm;
     using APSIM.Shared.Utilities;
+    using ApsimFile;
 
     /// <summary>
     /// TODO: Update summary.
@@ -83,18 +83,17 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             }
 
             // Create and run a job.
-            string errorMessage = null;
             try
             {
                 JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory);
                 jobManager.AddJob(job);
                 while (!job.IsCompleted)
                     Thread.Sleep(5 * 1000); // 5 sec
-                errorMessage = job.ErrorMessage;
+                ErrorMessage = job.ErrorMessage;
             }
             catch (Exception err)
             {
-                errorMessage = err.Message + "\r\n" + err.StackTrace;
+                ErrorMessage = err.Message + "\r\n" + err.StackTrace;
             }
 
             // Zip the temporary directory and send to archive.
@@ -107,13 +106,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", "Administrator", "CsiroDMZ!");
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
-                    jobsClient.SetCompleted(JobName, errorMessage);
+                    jobsClient.SetCompleted(JobName, ErrorMessage);
                 }
             }
             else
             {
                 string destZipFileName = Path.ChangeExtension(JobFileName, ".out.zip");
-                File.Copy(zipFileName, destZipFileName);
+                File.Copy(zipFileName, destZipFileName, true);
             }
             // Get rid of our temporary directory.
             Directory.Delete(workingDirectory, true);

@@ -22,7 +22,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>Converts the old Yield Prophet XML to new XML format capable of deserialisation</summary>
         /// <param name="yieldProphetXML">The old Yield Prophet XML</param>
         /// <returns>The new Yield Prophet XML</returns>
-        public static string Convert(XmlNode node, string baseFolder)
+        public static YieldProphet YieldProphetFromXML(XmlNode node, string baseFolder)
         {
             List<Paddock> simulations = new List<Paddock>();
 
@@ -56,21 +56,7 @@ namespace APSIM.Cloud.Shared
             simulationsSpec.ClientName = XmlUtilities.Value(node, "GrowerName");
             simulationsSpec.ReportGeneratedBy = XmlUtilities.Value(node, "LoginName");
 
-            // Now try deserialisation / serialisation.
-            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            StringWriter writer = new StringWriter();
-            serial.Serialize(writer, simulationsSpec, ns);
-            string xml = writer.ToString();
-            if (xml.Length > 5 && xml.Substring(0, 5) == "<?xml")
-            {
-                // remove the first line: <?xml version="1.0"?>/n
-                int posEol = xml.IndexOf("\n");
-                if (posEol != -1)
-                    return xml.Substring(posEol + 1);
-            }
-            return xml;
+            return simulationsSpec;
         }
 
         /// <summary>Converts the paddock XML.</summary>
@@ -137,7 +123,7 @@ namespace APSIM.Cloud.Shared
             sowing.SowingDensity = GetInteger(paddock, "SowingDensity");
             sowing.MaxRootDepth = GetInteger(paddock, "MaxRootDepth") * 10;  // cm to mm
             sowing.BedWidth = GetInteger(paddock, "BedWidth");
-            sowing.BedRowSpacing = GetInteger(paddock, "BedRowSpacing");
+            sowing.BedRowSpacing = GetDouble(paddock, "BedRowSpacing");
 
             // Make sure we have a stubbletype
             simulation.StubbleType = GetString(paddock, "StubbleType");
@@ -244,14 +230,15 @@ namespace APSIM.Cloud.Shared
             }
 
             // Make sure we have NH4 values.
-            if (sample1.NH4 == null)
+            if (sample1.NH4 == null && sample1.NO3 != null)
             {
                 string[] defaultValues = StringUtilities.CreateStringArray("0.1", sample1.NO3.Length);
                 sample1.NH4 = MathUtilities.StringsToDoubles(defaultValues);
             }
 
             RemoveNullFieldsFromSample(sample1);
-            RemoveNullFieldsFromSample(sample2);
+            if (sample2 != null)
+                RemoveNullFieldsFromSample(sample2);
 
 
             // Fix up <WaterFormat>
@@ -263,7 +250,8 @@ namespace APSIM.Cloud.Shared
 
             if (MathUtilities.ValuesInArray(sample1.Thickness))
                 simulation.Samples.Add(sample1);
-            if (MathUtilities.ValuesInArray(sample2.Thickness) && sample2 != sample1)
+
+            if (sample2 != null && MathUtilities.ValuesInArray(sample2.Thickness) && sample2 != sample1)
                 simulation.Samples.Add(sample2);
 
             // Check for InitTotalWater & InitTotalNitrogen

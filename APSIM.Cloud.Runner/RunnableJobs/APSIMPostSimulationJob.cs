@@ -106,18 +106,20 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 XmlDocument doc1 = new XmlDocument();
                 doc1.Load(apsimFileName1);
 
-                XmlNode simulationNode = XmlUtilities.FindByType(doc1.DocumentElement, "simulation");
-                if (simulationNode != null)
+                foreach (XmlNode simulationNode in XmlUtilities.ChildNodes(doc1.DocumentElement, "simulation"))
                 {
-                    string simulationName = XmlUtilities.NameAttr(simulationNode);
-                    string[] outFileTypes = Directory.GetFiles(workingFolder, simulationName + "*.out");
-                    foreach (string outputfileName in outFileTypes)
+                    if (simulationNode != null)
                     {
-                        string outputFileType = Path.GetFileNameWithoutExtension(outputfileName.Replace(simulationName, ""));
-                        string wildcard = "*" + outputFileType + ".out";
-                        string[] outFiles = Directory.GetFiles(workingFolder, wildcard);
-                        string fileNameToWrite = Path.GetFileNameWithoutExtension(apsimFileName1) + outputFileType + ".csv";
-                        ConcatenateOutputFiles(outFiles, fileNameToWrite, outputFileType);
+                        string simulationName = XmlUtilities.NameAttr(simulationNode);
+                        string[] outFileTypes = Directory.GetFiles(workingFolder, simulationName + "*.out");
+                        foreach (string outputfileName in outFileTypes)
+                        {
+                            string outputFileType = Path.GetFileNameWithoutExtension(outputfileName.Replace(simulationName, ""));
+                            string wildcard = "*" + outputFileType + ".out";
+                            string[] outFiles = Directory.GetFiles(workingFolder, wildcard);
+                            string fileNameToWrite = Path.GetFileNameWithoutExtension(apsimFileName1) + outputFileType + ".csv";
+                            ConcatenateOutputFiles(outFiles, fileNameToWrite, outputFileType);
+                        }
                     }
                 }
             }
@@ -146,10 +148,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     DataTable data = reader.ToTable(constantsToAdd);
                     reader.Close();
 
+                    if (data.Columns.Count > 0 && data.Rows.Count > 0)
+                    {
                     if (allData == null)
                         allData = data;
                     else
-                        allData.Merge(data);
+                        DataTableUtilities.CopyRows(data, allData);
+                        }
                 }
 
                 // Move the title column to be first.
@@ -164,7 +169,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 string singleOutputFileName = Path.Combine(workingFolder, fileName);
                 StreamWriter outWriter = new StreamWriter(singleOutputFileName);
                  
-                outWriter.WriteLine(DataTableUtilities.DataTableToText(allData, 0, ",  ", true));
+                outWriter.Write(DataTableUtilities.DataTableToText(allData, 0, ",  ", true));
 
                 outWriter.Close();
 

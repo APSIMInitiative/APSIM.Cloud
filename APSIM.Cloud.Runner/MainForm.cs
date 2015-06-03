@@ -65,6 +65,10 @@ namespace APSIM.Cloud.Runner
                 job.JobFileName = commandLineArguments[0];
                 jobManager.AddJob(job);
                 jobManager.Start(waitUntilFinished: true);
+                if (job.ErrorMessage != null)
+                {
+                    MessageBox.Show(job.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 Close();
             }
         }

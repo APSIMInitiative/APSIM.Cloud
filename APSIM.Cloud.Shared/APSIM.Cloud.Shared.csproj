@@ -88,9 +88,6 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\ausfarm_crop_only.sdml" />
     <EmbeddedResource Include="Resources\ausfarm_warooka.sdml" />
-    <None Include="Service References\APSOIL\APSIM.Cloud.Shared.APSOIL.PAWCByCrop.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-	</None>  
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
