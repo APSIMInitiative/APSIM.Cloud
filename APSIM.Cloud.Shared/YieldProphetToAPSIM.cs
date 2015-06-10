@@ -42,7 +42,7 @@ namespace APSIM.Cloud.Shared
                 simulation.DailyOutput = false;
                 simulation.YearlyOutput = true;
                 simulation.WriteDepthFile = false;
-                simulation.EndDate = simulation.StartDate.AddDays(300);
+                simulation.EndDate = simulation.StartDate.AddDays(360);
                 apsimSpecs.Add(simulation);
             }
             return apsimSpecs;

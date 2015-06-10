@@ -736,6 +736,8 @@ public class Script
         <variable>sum of rain on end_of_day from sowing to harvesting as InCropRain</variable>
         <variable>sum of irrigation on end_of_day from sowing to harvesting as InCropIrrigation</variable>
         <variable>sum of fertiliser on end_of_day from emergence to harvesting as TopDressFertiliser</variable>
+        <variable>sum of fertiliser on end_of_day from sowing to emergence as SowingFertiliser</variable>
+        <variable>sum of fertiliser on end_of_day from start_simulation to sowing as PreSowingFertiliser</variable>
         <variable>sum of rain on end_of_day from GSRStart to GSREnd as GSR</variable>
         <variable>sum of n_stress_expan on end_of_day from sowing to harvesting as CumNStressExpan</variable>
         <variable>sum of n_stress_photo on end_of_day from sowing to harvesting as CumNStressPhoto</variable>
@@ -825,6 +827,15 @@ public class Script
           <variable>TotalNO3Leaching</variable>
           <variable>TotalN2O</variable>
           <variable>ChangeInOrganicC</variable>
+          <variable>AvailableWaterAtSowing</variable>
+          <variable>AvailableWater as AvailableWaterAtHarvest</variable>
+          <variable>InCropRain</variable>
+          <variable>InCropIrrigation</variable>
+          <variable>NitrogenAtSowing</variable>
+          <variable>Nitrogen as NitrogenAtHarvest</variable>
+          <variable>PreSowingFertiliser</variable>
+          <variable>SowingFertiliser</variable>
+          <variable>TopDressFertiliser</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>

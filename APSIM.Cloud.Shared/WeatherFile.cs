@@ -367,13 +367,13 @@ namespace APSIM.Cloud.Shared
             writer.WriteLine("! Codes: S=SILO, H=Historical SILO, O=Observed, P=POAMA");
 
             // Write headings and units
-            writer.WriteLine("        Date     radn maxt mint rain codes");
-            writer.WriteLine("(yyyy-mm-dd) (MJ/m^2) (oC) (oC) (mm)    ()");
+            writer.WriteLine("        Date     radn maxt mint   rain codes");
+            writer.WriteLine("(yyyy-mm-dd) (MJ/m^2) (oC) (oC)   (mm)    ()");
 
             // Write data.
             foreach (DataRow row in weatherData.Rows)
             {
-                writer.WriteLine("{0,12:yyyy-MM-dd}{1,9:F1}{2,5:F1}{3,5:F1}{4,5:F1}{5,6}",
+                writer.WriteLine("{0,12:yyyy-MM-dd}{1,9:F1}{2,5:F1}{3,5:F1}{4,7:F1}{5,6}",
                                  new object[] {DataTableUtilities.GetDateFromRow(row),
                                                row["radn"],
                                                row["maxt"],

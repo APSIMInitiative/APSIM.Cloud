@@ -67,14 +67,17 @@ namespace APSIM.Cloud.Shared
             Paddock simulation = new Paddock();
 
             string name = XmlUtilities.NameAttr(paddock);
-            int posCaret = name.IndexOf('^');
+            string delimiter = ";";
+            if (!name.Contains(delimiter))
+                delimiter = "^";
+            int posCaret = name.IndexOf(delimiter);
 
             if (posCaret == -1)
                 throw new Exception("Bad paddock name: " + name);
 
-            string remainder = StringUtilities.SplitOffAfterDelimiter(ref name, "^");
+            string remainder = StringUtilities.SplitOffAfterDelimiter(ref name, delimiter);
             string growerName;
-            string paddockName = StringUtilities.SplitOffAfterDelimiter(ref remainder, "^");
+            string paddockName = StringUtilities.SplitOffAfterDelimiter(ref remainder, delimiter);
             if (paddockName == string.Empty)
             {
                 growerName = name;
@@ -186,6 +189,16 @@ namespace APSIM.Cloud.Shared
             // Look for a soil node.
             XmlNode soilNode = XmlUtilities.FindByType(paddock, "Soil");
 
+            if (soilNode != null)
+            {
+                string testValue = XmlUtilities.Value(soilNode, "Water/Layer/Thickness");
+                if (testValue != string.Empty)
+                {
+                    // old format.
+                    soilNode = ConvertSoilNode.Upgrade(soilNode);
+                }
+            }
+
             // Fix up soil sample variables.
             Sample sample1 = new Sample();
             sample1.Name = "Sample1";
@@ -264,15 +277,6 @@ namespace APSIM.Cloud.Shared
             
             if (soilNode != null)
             {
-
-                string testValue = XmlUtilities.Value(soilNode, "Water/Layer/Thickness");
-                if (testValue != string.Empty)
-                {
-                    // old format.
-                    soilNode = ConvertSoilNode.Upgrade(soilNode);
-                }
-
-
                 // See if there is a 'SWUnits' value. If found then copy it into 
                 // <WaterFormat>
                 string waterFormat = XmlUtilities.Value(paddock, "WaterFormat");

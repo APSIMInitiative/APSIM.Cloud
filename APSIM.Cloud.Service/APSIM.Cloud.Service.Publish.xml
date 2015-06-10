@@ -1,16 +1,69 @@
 <publishData>
-  <publishTarget publishUrl="ftp://www.apsim.info/APSIM.Cloud.Service">
-    <file relUrl="bin/APSIM.Cloud.Shared.dll" publishTime="04/15/2015 08:09:28" />
-    <file relUrl="bin/APSIM.Shared.xml" publishTime="04/15/2015 08:02:00" />
-    <file relUrl="APSIM.Cloud.Service.Jobs.svc" publishTime="04/15/2015 08:09:44" />
-    <file relUrl="bin/APSIM.Cloud.Shared.pdb" publishTime="04/15/2015 08:09:28" />
-    <file relUrl="bin/APSIM.Cloud.Service.pdb" publishTime="04/15/2015 08:09:29" />
+  <publishTarget publishUrl="\\IIS-EXT1\APSIM-Sites\APSIM.Cloud.Service\">
+    <file relUrl="bin\Release/APSIM.Shared.dll" publishTime="06/10/2015 16:07:37" />
+    <file relUrl="bin/System.Data.SQLite.dll" publishTime="12/12/2014 09:09:16" />
+    <file relUrl="bin/APSIM.Cloud.Service.dll.config" publishTime="06/10/2015 15:57:51" />
+    <file relUrl="bin\Release/APSIM.Cloud.Service.dll.config" publishTime="06/10/2015 15:57:51" />
+    <file relUrl="bin/CMPServices.dll" publishTime="06/01/2015 16:28:40" />
+    <file relUrl="APSIM.Cloud.Service.csproj" publishTime="06/01/2015 17:08:24" />
+    <file relUrl="bin/APSIM.Cloud.Service.dll" publishTime="06/11/2015 08:14:40" />
+    <file relUrl="bin\Debug/APSIM.Shared.xml" publishTime="06/09/2015 16:44:31" />
+    <file relUrl="bin/ApsimFile.dll" publishTime="04/01/2015 14:53:29" />
+    <file relUrl="bin\Release/APSIM.Cloud.Shared.pdb" publishTime="06/11/2015 08:14:39" />
+    <file relUrl="bin\Debug/APSIM.Cloud.Service.pdb" publishTime="06/10/2015 12:38:51" />
+    <file relUrl="bin\Debug/APSIM.Cloud.Shared.dll" publishTime="06/10/2015 12:38:51" />
+    <file relUrl="IJobs.cs" publishTime="06/09/2015 15:04:43" />
+    <file relUrl="bin/CSGeneral.dll" publishTime="03/26/2015 09:55:56" />
+    <file relUrl="bin\Release/CSGeneral.dll" publishTime="03/26/2015 09:55:56" />
+    <file relUrl="bin/APSIM.Shared.dll" publishTime="06/10/2015 16:07:37" />
+    <file relUrl="bin/ApsimFile.pdb" publishTime="04/01/2015 14:53:29" />
+    <file relUrl="bin\Release/System.Data.SQLite.dll" publishTime="12/12/2014 09:09:16" />
+    <file relUrl="bin\Release/APSIM.Shared.pdb" publishTime="06/10/2015 16:07:37" />
+    <file relUrl="Properties/AssemblyInfo.cs" publishTime="03/24/2015 17:17:52" />
+    <file relUrl="bin\Release/ApsimFile.pdb" publishTime="04/01/2015 14:53:29" />
+    <file relUrl="bin/APSIM.Shared.pdb" publishTime="06/10/2015 16:07:37" />
+    <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="02/03/2015 16:13:54" />
+    <file relUrl="bin\Debug/ICSharpCode.SharpZipLib.dll" publishTime="02/03/2015 16:13:54" />
+    <file relUrl="APSIM.Cloud.Service.Publish.xml" publishTime="06/11/2015 08:11:29" />
+    <file relUrl="bin/APSIM.Cloud.Shared.dll" publishTime="06/11/2015 08:14:39" />
+    <file relUrl="bin/APSIM.Shared.xml" publishTime="06/10/2015 16:07:37" />
+    <file relUrl="bin/APSIM.Cloud.Service.pdb" publishTime="06/11/2015 08:14:40" />
+    <file relUrl="bin\Debug/CMPServices.dll" publishTime="06/01/2015 16:27:52" />
+    <file relUrl="bin\Debug/APSIM.Cloud.Service.dll" publishTime="06/10/2015 12:38:51" />
+    <file relUrl="bin\Debug/APSIM.Cloud.Shared.pdb" publishTime="06/10/2015 12:38:51" />
+    <file relUrl="Job.cs" publishTime="03/25/2015 09:44:32" />
+    <file relUrl="bin\Release/APSIM.Cloud.Shared.dll" publishTime="06/11/2015 08:14:39" />
+    <file relUrl="bin\Debug/APSIM.Shared.dll" publishTime="06/09/2015 16:44:31" />
+    <file relUrl="bin\Release/APSIM.Shared.xml" publishTime="06/10/2015 16:07:37" />
+    <file relUrl="bin\Release/ICSharpCode.SharpZipLib.dll" publishTime="02/03/2015 16:13:54" />
+    <file relUrl="bin\Release/CMPServices.dll" publishTime="06/01/2015 16:28:40" />
+    <file relUrl="APSIM.Cloud.Service.csproj.user" publishTime="06/11/2015 08:14:34" />
+    <file relUrl="bin\Release/APSIM.Cloud.Shared.XmlSerializers.dll" publishTime="06/11/2015 08:14:40" />
+    <file relUrl="bin\Debug/APSIM.Shared.pdb" publishTime="06/09/2015 16:44:31" />
+    <file relUrl="APSIM.Cloud.Service.Jobs.svc" publishTime="06/11/2015 08:14:51" />
+    <file relUrl="app.config" publishTime="06/10/2015 15:57:51" />
+    <file relUrl="Jobs.cs" publishTime="06/09/2015 14:51:37" />
+    <file relUrl="bin\Release/ApsimFile.dll" publishTime="04/01/2015 14:53:29" />
+    <file relUrl="bin\Debug/APSIM.Cloud.Service.dll.config" publishTime="03/25/2015 11:10:40" />
+    <file relUrl="bin\Release/APSIM.Cloud.Service.dll" publishTime="06/11/2015 08:14:40" />
+    <file relUrl="bin\Release/APSIM.Cloud.Service.pdb" publishTime="06/11/2015 08:14:40" />
     <file relUrl="Jobs.svc" publishTime="03/25/2015 10:18:53" />
-    <file relUrl="bin/APSIM.Cloud.Service.dll" publishTime="04/15/2015 08:09:29" />
-    <file relUrl="bin/APSIM.Shared.pdb" publishTime="04/15/2015 08:02:00" />
+    <file relUrl="Web.config" publishTime="06/10/2015 15:57:51" />
+    <file relUrl="bin/APSIM.Cloud.Shared.XmlSerializers.dll" publishTime="06/11/2015 08:14:40" />
+    <file relUrl="bin/APSIM.Cloud.Shared.pdb" publishTime="06/11/2015 08:14:39" />
+  </publishTarget>
+  <publishTarget publishUrl="ftp://www.apsim.info/APSIM.Cloud.Service">
     <file relUrl="bin/APSIM.Shared.dll" publishTime="04/15/2015 08:02:00" />
     <file relUrl="bin/APSIM.Cloud.Service.dll.config" publishTime="03/25/2015 11:10:40" />
-    <file relUrl="Web.config" publishTime="03/25/2015 11:10:40" />
+    <file relUrl="APSIM.Cloud.Service.Jobs.svc" publishTime="04/15/2015 08:09:44" />
     <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="02/03/2015 16:13:54" />
+    <file relUrl="bin/APSIM.Cloud.Service.dll" publishTime="04/15/2015 08:09:29" />
+    <file relUrl="bin/APSIM.Cloud.Service.pdb" publishTime="04/15/2015 08:09:29" />
+    <file relUrl="Web.config" publishTime="03/25/2015 11:10:40" />
+    <file relUrl="bin/APSIM.Shared.xml" publishTime="04/15/2015 08:02:00" />
+    <file relUrl="Jobs.svc" publishTime="03/25/2015 10:18:53" />
+    <file relUrl="bin/APSIM.Cloud.Shared.dll" publishTime="04/15/2015 08:09:28" />
+    <file relUrl="bin/APSIM.Cloud.Shared.pdb" publishTime="04/15/2015 08:09:28" />
+    <file relUrl="bin/APSIM.Shared.pdb" publishTime="04/15/2015 08:02:00" />
   </publishTarget>
 </publishData>

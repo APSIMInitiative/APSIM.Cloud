@@ -278,7 +278,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Open the DB ready for use.</summary>
         private void Open()
         {
-            string ConnectionString = "Data Source=www.apsim.info;Database=\"Jobs\";Trusted_Connection=False;User ID=sv-login-external;password=P@ssword123";
+            string ConnectionString = File.ReadAllText(@"\\IIS-EXT1\APSIM-Sites\dbConnect.txt") + ";Database=\"Jobs\"";
             Connection = new SqlConnection(ConnectionString);
             Connection.Open();
         }
