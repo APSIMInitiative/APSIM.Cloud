@@ -170,9 +170,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\JobsService\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.csproj">
       <Project>{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}</Project>
       <Name>APSIM.Shared</Name>
@@ -181,6 +178,9 @@
       <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
       <Name>APSIM.Cloud.Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\JobsService\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
