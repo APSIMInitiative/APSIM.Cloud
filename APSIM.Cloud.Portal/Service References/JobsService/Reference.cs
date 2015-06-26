@@ -9,90 +9,163 @@
 //------------------------------------------------------------------------------
 
 namespace APSIM.Cloud.Portal.JobsService {
-    using System.Runtime.Serialization;
-    using System;
+    using System.Data;
     
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Job", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="JobsService.JobsSoap")]
+    public interface JobsSoap {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        string Add(APSIM.Cloud.Portal.JobsService.YieldProphet yieldProphet);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/AddFarm4Prophet", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        string AddFarm4Prophet(APSIM.Cloud.Portal.JobsService.Farm4Prophet f4p);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/AddAsXML", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        void AddAsXML(string name, string jobXML);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Delete", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        void Delete(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        APSIM.Cloud.Portal.JobsService.Job Get(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetNextToRun", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        APSIM.Cloud.Portal.JobsService.Job GetNextToRun();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetMany", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        APSIM.Cloud.Portal.JobsService.Job[] GetMany(int maxNum);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetJobXML", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        string GetJobXML(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/AddLogMessage", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        void AddLogMessage(string message, bool isError);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetLogMessages", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        System.Data.DataSet GetLogMessages();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/SetCompleted", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        void SetCompleted(string jobName, string errorMessage);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ReRun", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(Management))]
+        void ReRun(string jobName);
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
     [System.SerializableAttribute()]
-    public partial class Job : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class YieldProphet : object, System.ComponentModel.INotifyPropertyChanged {
         
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        private int versionField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ErrorTextField;
+        private Paddock[] paddockField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NameField;
+        private ReportTypeEnum reportTypeField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private APSIM.Cloud.Portal.JobsService.StatusEnum StatusField;
+        private string reportNameField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string URLField;
+        private string clientNameField;
         
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+        private string reportGeneratedByField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int Version {
             get {
-                return this.extensionDataField;
+                return this.versionField;
             }
             set {
-                this.extensionDataField = value;
+                this.versionField = value;
+                this.RaisePropertyChanged("Version");
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ErrorText {
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Paddock", Order=1)]
+        public Paddock[] Paddock {
             get {
-                return this.ErrorTextField;
+                return this.paddockField;
             }
             set {
-                if ((object.ReferenceEquals(this.ErrorTextField, value) != true)) {
-                    this.ErrorTextField = value;
-                    this.RaisePropertyChanged("ErrorText");
-                }
+                this.paddockField = value;
+                this.RaisePropertyChanged("Paddock");
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public ReportTypeEnum ReportType {
             get {
-                return this.NameField;
+                return this.reportTypeField;
             }
             set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
+                this.reportTypeField = value;
+                this.RaisePropertyChanged("ReportType");
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public APSIM.Cloud.Portal.JobsService.StatusEnum Status {
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string ReportName {
             get {
-                return this.StatusField;
+                return this.reportNameField;
             }
             set {
-                if ((this.StatusField.Equals(value) != true)) {
-                    this.StatusField = value;
-                    this.RaisePropertyChanged("Status");
-                }
+                this.reportNameField = value;
+                this.RaisePropertyChanged("ReportName");
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string URL {
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public string ClientName {
             get {
-                return this.URLField;
+                return this.clientNameField;
             }
             set {
-                if ((object.ReferenceEquals(this.URLField, value) != true)) {
-                    this.URLField = value;
-                    this.RaisePropertyChanged("URL");
-                }
+                this.clientNameField = value;
+                this.RaisePropertyChanged("ClientName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string ReportGeneratedBy {
+            get {
+                return this.reportGeneratedByField;
+            }
+            set {
+                this.reportGeneratedByField = value;
+                this.RaisePropertyChanged("ReportGeneratedBy");
             }
         }
         
@@ -106,96 +179,3882 @@ namespace APSIM.Cloud.Portal.JobsService {
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="StatusEnum", Namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service")]
-    public enum StatusEnum : int {
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Paddock : object, System.ComponentModel.INotifyPropertyChanged {
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Queued = 0,
+        private string nameField;
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Running = 1,
+        private System.DateTime startSeasonDateField;
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Completed = 2,
+        private System.DateTime soilWaterSampleDateField;
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Error = 3,
+        private System.DateTime soilNitrogenSampleDateField;
+        
+        private int stationNumberField;
+        
+        private string stationNameField;
+        
+        private System.Data.DataTable observedDataField;
+        
+        private string rainfallSourceField;
+        
+        private string temperatureSourceField;
+        
+        private double stubbleMassField;
+        
+        private string stubbleTypeField;
+        
+        private double slopeField;
+        
+        private double slopeLengthField;
+        
+        private bool useECField;
+        
+        private Management[] managementField;
+        
+        private Sample[] samplesField;
+        
+        private string soilPathField;
+        
+        private Soil soilField;
+        
+        private double initTotalWaterField;
+        
+        private double initTotalNitrogenField;
+        
+        private System.DateTime nowDateField;
+        
+        private double stubbleIncorporatedPercentField;
+        
+        private string dateOfLastRainfallEntryField;
+        
+        private double rainfallSinceSoilWaterSampleDateField;
+        
+        private System.DateTime lastClimateDateField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("Name");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public System.DateTime StartSeasonDate {
+            get {
+                return this.startSeasonDateField;
+            }
+            set {
+                this.startSeasonDateField = value;
+                this.RaisePropertyChanged("StartSeasonDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public System.DateTime SoilWaterSampleDate {
+            get {
+                return this.soilWaterSampleDateField;
+            }
+            set {
+                this.soilWaterSampleDateField = value;
+                this.RaisePropertyChanged("SoilWaterSampleDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public System.DateTime SoilNitrogenSampleDate {
+            get {
+                return this.soilNitrogenSampleDateField;
+            }
+            set {
+                this.soilNitrogenSampleDateField = value;
+                this.RaisePropertyChanged("SoilNitrogenSampleDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public int StationNumber {
+            get {
+                return this.stationNumberField;
+            }
+            set {
+                this.stationNumberField = value;
+                this.RaisePropertyChanged("StationNumber");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string StationName {
+            get {
+                return this.stationNameField;
+            }
+            set {
+                this.stationNameField = value;
+                this.RaisePropertyChanged("StationName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public System.Data.DataTable ObservedData {
+            get {
+                return this.observedDataField;
+            }
+            set {
+                this.observedDataField = value;
+                this.RaisePropertyChanged("ObservedData");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public string RainfallSource {
+            get {
+                return this.rainfallSourceField;
+            }
+            set {
+                this.rainfallSourceField = value;
+                this.RaisePropertyChanged("RainfallSource");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public string TemperatureSource {
+            get {
+                return this.temperatureSourceField;
+            }
+            set {
+                this.temperatureSourceField = value;
+                this.RaisePropertyChanged("TemperatureSource");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public double StubbleMass {
+            get {
+                return this.stubbleMassField;
+            }
+            set {
+                this.stubbleMassField = value;
+                this.RaisePropertyChanged("StubbleMass");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string StubbleType {
+            get {
+                return this.stubbleTypeField;
+            }
+            set {
+                this.stubbleTypeField = value;
+                this.RaisePropertyChanged("StubbleType");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public double Slope {
+            get {
+                return this.slopeField;
+            }
+            set {
+                this.slopeField = value;
+                this.RaisePropertyChanged("Slope");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public double SlopeLength {
+            get {
+                return this.slopeLengthField;
+            }
+            set {
+                this.slopeLengthField = value;
+                this.RaisePropertyChanged("SlopeLength");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public bool UseEC {
+            get {
+                return this.useECField;
+            }
+            set {
+                this.useECField = value;
+                this.RaisePropertyChanged("UseEC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=14)]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(Fertilise))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(Irrigate))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(ResetNitrogen))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(ResetSurfaceOrganicMatter))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(ResetWater))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(Sow))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(StubbleRemoved))]
+        [System.Xml.Serialization.XmlArrayItemAttribute(typeof(Tillage))]
+        public Management[] Management {
+            get {
+                return this.managementField;
+            }
+            set {
+                this.managementField = value;
+                this.RaisePropertyChanged("Management");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=15)]
+        public Sample[] Samples {
+            get {
+                return this.samplesField;
+            }
+            set {
+                this.samplesField = value;
+                this.RaisePropertyChanged("Samples");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        public string SoilPath {
+            get {
+                return this.soilPathField;
+            }
+            set {
+                this.soilPathField = value;
+                this.RaisePropertyChanged("SoilPath");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        public Soil Soil {
+            get {
+                return this.soilField;
+            }
+            set {
+                this.soilField = value;
+                this.RaisePropertyChanged("Soil");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        public double InitTotalWater {
+            get {
+                return this.initTotalWaterField;
+            }
+            set {
+                this.initTotalWaterField = value;
+                this.RaisePropertyChanged("InitTotalWater");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        public double InitTotalNitrogen {
+            get {
+                return this.initTotalNitrogenField;
+            }
+            set {
+                this.initTotalNitrogenField = value;
+                this.RaisePropertyChanged("InitTotalNitrogen");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        public System.DateTime NowDate {
+            get {
+                return this.nowDateField;
+            }
+            set {
+                this.nowDateField = value;
+                this.RaisePropertyChanged("NowDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
+        public double StubbleIncorporatedPercent {
+            get {
+                return this.stubbleIncorporatedPercentField;
+            }
+            set {
+                this.stubbleIncorporatedPercentField = value;
+                this.RaisePropertyChanged("StubbleIncorporatedPercent");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
+        public string DateOfLastRainfallEntry {
+            get {
+                return this.dateOfLastRainfallEntryField;
+            }
+            set {
+                this.dateOfLastRainfallEntryField = value;
+                this.RaisePropertyChanged("DateOfLastRainfallEntry");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
+        public double RainfallSinceSoilWaterSampleDate {
+            get {
+                return this.rainfallSinceSoilWaterSampleDateField;
+            }
+            set {
+                this.rainfallSinceSoilWaterSampleDateField = value;
+                this.RaisePropertyChanged("RainfallSinceSoilWaterSampleDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
+        public System.DateTime LastClimateDate {
+            get {
+                return this.lastClimateDateField;
+            }
+            set {
+                this.lastClimateDateField = value;
+                this.RaisePropertyChanged("LastClimateDate");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Fertilise : Management {
+        
+        private double amountField;
+        
+        private bool scenarioField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+                this.RaisePropertyChanged("Amount");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public bool Scenario {
+            get {
+                return this.scenarioField;
+            }
+            set {
+                this.scenarioField = value;
+                this.RaisePropertyChanged("Scenario");
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ResetWater))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(StubbleRemoved))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Sow))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Fertilise))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Irrigate))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Tillage))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ResetSurfaceOrganicMatter))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(ResetNitrogen))]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Management : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private System.DateTime dateField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public System.DateTime Date {
+            get {
+                return this.dateField;
+            }
+            set {
+                this.dateField = value;
+                this.RaisePropertyChanged("Date");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Job : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string nameField;
+        
+        private StatusEnum statusField;
+        
+        private string uRLField;
+        
+        private string errorTextField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("Name");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public StatusEnum Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+                this.RaisePropertyChanged("Status");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string URL {
+            get {
+                return this.uRLField;
+            }
+            set {
+                this.uRLField = value;
+                this.RaisePropertyChanged("URL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string ErrorText {
+            get {
+                return this.errorTextField;
+            }
+            set {
+                this.errorTextField = value;
+                this.RaisePropertyChanged("ErrorText");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum StatusEnum {
+        
+        /// <remarks/>
+        Queued,
+        
+        /// <remarks/>
+        Running,
+        
+        /// <remarks/>
+        Completed,
+        
+        /// <remarks/>
+        Error,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class FarmLivestock : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string tradeLambBreedField;
+        
+        private int tradeLambCountField;
+        
+        private string tradeLambBuyDayField;
+        
+        private double tradeLambSaleWtField;
+        
+        private int breedingEweCountField;
+        
+        private string eweJoinDayField;
+        
+        private double lambingRateField;
+        
+        private double castForAgeYearsField;
+        
+        private double lambSaleWtField;
+        
+        private string shearingDayField;
+        
+        private string supplement1Field;
+        
+        private string supplement2Field;
+        
+        private double supp1PropnField;
+        
+        private double supp2PropnField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string TradeLambBreed {
+            get {
+                return this.tradeLambBreedField;
+            }
+            set {
+                this.tradeLambBreedField = value;
+                this.RaisePropertyChanged("TradeLambBreed");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public int TradeLambCount {
+            get {
+                return this.tradeLambCountField;
+            }
+            set {
+                this.tradeLambCountField = value;
+                this.RaisePropertyChanged("TradeLambCount");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string TradeLambBuyDay {
+            get {
+                return this.tradeLambBuyDayField;
+            }
+            set {
+                this.tradeLambBuyDayField = value;
+                this.RaisePropertyChanged("TradeLambBuyDay");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public double TradeLambSaleWt {
+            get {
+                return this.tradeLambSaleWtField;
+            }
+            set {
+                this.tradeLambSaleWtField = value;
+                this.RaisePropertyChanged("TradeLambSaleWt");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public int BreedingEweCount {
+            get {
+                return this.breedingEweCountField;
+            }
+            set {
+                this.breedingEweCountField = value;
+                this.RaisePropertyChanged("BreedingEweCount");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string EweJoinDay {
+            get {
+                return this.eweJoinDayField;
+            }
+            set {
+                this.eweJoinDayField = value;
+                this.RaisePropertyChanged("EweJoinDay");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public double LambingRate {
+            get {
+                return this.lambingRateField;
+            }
+            set {
+                this.lambingRateField = value;
+                this.RaisePropertyChanged("LambingRate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public double CastForAgeYears {
+            get {
+                return this.castForAgeYearsField;
+            }
+            set {
+                this.castForAgeYearsField = value;
+                this.RaisePropertyChanged("CastForAgeYears");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public double LambSaleWt {
+            get {
+                return this.lambSaleWtField;
+            }
+            set {
+                this.lambSaleWtField = value;
+                this.RaisePropertyChanged("LambSaleWt");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string ShearingDay {
+            get {
+                return this.shearingDayField;
+            }
+            set {
+                this.shearingDayField = value;
+                this.RaisePropertyChanged("ShearingDay");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string Supplement1 {
+            get {
+                return this.supplement1Field;
+            }
+            set {
+                this.supplement1Field = value;
+                this.RaisePropertyChanged("Supplement1");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public string Supplement2 {
+            get {
+                return this.supplement2Field;
+            }
+            set {
+                this.supplement2Field = value;
+                this.RaisePropertyChanged("Supplement2");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public double Supp1Propn {
+            get {
+                return this.supp1PropnField;
+            }
+            set {
+                this.supp1PropnField = value;
+                this.RaisePropertyChanged("Supp1Propn");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public double Supp2Propn {
+            get {
+                return this.supp2PropnField;
+            }
+            set {
+                this.supp2PropnField = value;
+                this.RaisePropertyChanged("Supp2Propn");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class FarmPaddockType : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double areaField;
+        
+        private double stubbleMassField;
+        
+        private string stubbleTypeField;
+        
+        private System.DateTime soilWaterSampleDateField;
+        
+        private System.DateTime soilNitrogenSampleDateField;
+        
+        private Sample sampleField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double Area {
+            get {
+                return this.areaField;
+            }
+            set {
+                this.areaField = value;
+                this.RaisePropertyChanged("Area");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public double StubbleMass {
+            get {
+                return this.stubbleMassField;
+            }
+            set {
+                this.stubbleMassField = value;
+                this.RaisePropertyChanged("StubbleMass");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string StubbleType {
+            get {
+                return this.stubbleTypeField;
+            }
+            set {
+                this.stubbleTypeField = value;
+                this.RaisePropertyChanged("StubbleType");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public System.DateTime SoilWaterSampleDate {
+            get {
+                return this.soilWaterSampleDateField;
+            }
+            set {
+                this.soilWaterSampleDateField = value;
+                this.RaisePropertyChanged("SoilWaterSampleDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public System.DateTime SoilNitrogenSampleDate {
+            get {
+                return this.soilNitrogenSampleDateField;
+            }
+            set {
+                this.soilNitrogenSampleDateField = value;
+                this.RaisePropertyChanged("SoilNitrogenSampleDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public Sample Sample {
+            get {
+                return this.sampleField;
+            }
+            set {
+                this.sampleField = value;
+                this.RaisePropertyChanged("Sample");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Sample : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string dateField;
+        
+        private double[] thicknessField;
+        
+        private double[] nO3Field;
+        
+        private double[] nH4Field;
+        
+        private double[] swField;
+        
+        private double[] ocField;
+        
+        private double[] ecField;
+        
+        private double[] clField;
+        
+        private double[] eSPField;
+        
+        private double[] phField;
+        
+        private NUnitsEnum nO3UnitsField;
+        
+        private NUnitsEnum nH4UnitsField;
+        
+        private SWUnitsEnum sWUnitsField;
+        
+        private OCSampleUnitsEnum oCUnitsField;
+        
+        private PHSampleUnitsEnum pHUnitsField;
+        
+        private string nameField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string Date {
+            get {
+                return this.dateField;
+            }
+            set {
+                this.dateField = value;
+                this.RaisePropertyChanged("Date");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=1)]
+        public double[] Thickness {
+            get {
+                return this.thicknessField;
+            }
+            set {
+                this.thicknessField = value;
+                this.RaisePropertyChanged("Thickness");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=2)]
+        public double[] NO3 {
+            get {
+                return this.nO3Field;
+            }
+            set {
+                this.nO3Field = value;
+                this.RaisePropertyChanged("NO3");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=3)]
+        public double[] NH4 {
+            get {
+                return this.nH4Field;
+            }
+            set {
+                this.nH4Field = value;
+                this.RaisePropertyChanged("NH4");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=4)]
+        public double[] SW {
+            get {
+                return this.swField;
+            }
+            set {
+                this.swField = value;
+                this.RaisePropertyChanged("SW");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
+        public double[] OC {
+            get {
+                return this.ocField;
+            }
+            set {
+                this.ocField = value;
+                this.RaisePropertyChanged("OC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=6)]
+        public double[] EC {
+            get {
+                return this.ecField;
+            }
+            set {
+                this.ecField = value;
+                this.RaisePropertyChanged("EC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=7)]
+        public double[] CL {
+            get {
+                return this.clField;
+            }
+            set {
+                this.clField = value;
+                this.RaisePropertyChanged("CL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=8)]
+        public double[] ESP {
+            get {
+                return this.eSPField;
+            }
+            set {
+                this.eSPField = value;
+                this.RaisePropertyChanged("ESP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=9)]
+        public double[] PH {
+            get {
+                return this.phField;
+            }
+            set {
+                this.phField = value;
+                this.RaisePropertyChanged("PH");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public NUnitsEnum NO3Units {
+            get {
+                return this.nO3UnitsField;
+            }
+            set {
+                this.nO3UnitsField = value;
+                this.RaisePropertyChanged("NO3Units");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public NUnitsEnum NH4Units {
+            get {
+                return this.nH4UnitsField;
+            }
+            set {
+                this.nH4UnitsField = value;
+                this.RaisePropertyChanged("NH4Units");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public SWUnitsEnum SWUnits {
+            get {
+                return this.sWUnitsField;
+            }
+            set {
+                this.sWUnitsField = value;
+                this.RaisePropertyChanged("SWUnits");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public OCSampleUnitsEnum OCUnits {
+            get {
+                return this.oCUnitsField;
+            }
+            set {
+                this.oCUnitsField = value;
+                this.RaisePropertyChanged("OCUnits");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public PHSampleUnitsEnum PHUnits {
+            get {
+                return this.pHUnitsField;
+            }
+            set {
+                this.pHUnitsField = value;
+                this.RaisePropertyChanged("PHUnits");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("name");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum NUnitsEnum {
+        
+        /// <remarks/>
+        ppm,
+        
+        /// <remarks/>
+        kgha,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum SWUnitsEnum {
+        
+        /// <remarks/>
+        Volumetric,
+        
+        /// <remarks/>
+        Gravimetric,
+        
+        /// <remarks/>
+        mm,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum OCSampleUnitsEnum {
+        
+        /// <remarks/>
+        Total,
+        
+        /// <remarks/>
+        WalkleyBlack,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum PHSampleUnitsEnum {
+        
+        /// <remarks/>
+        Water,
+        
+        /// <remarks/>
+        CaCl2,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class CropSpec : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string nameField;
+        
+        private bool isCropField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("name");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public bool isCrop {
+            get {
+                return this.isCropField;
+            }
+            set {
+                this.isCropField = value;
+                this.RaisePropertyChanged("isCrop");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class FarmSoilType : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double areaProportionField;
+        
+        private string soilPathField;
+        
+        private double slopeField;
+        
+        private double slopeLengthField;
+        
+        private CropSpec[] cropRotationListField;
+        
+        private Soil soilDescrField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double AreaProportion {
+            get {
+                return this.areaProportionField;
+            }
+            set {
+                this.areaProportionField = value;
+                this.RaisePropertyChanged("AreaProportion");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string SoilPath {
+            get {
+                return this.soilPathField;
+            }
+            set {
+                this.soilPathField = value;
+                this.RaisePropertyChanged("SoilPath");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public double Slope {
+            get {
+                return this.slopeField;
+            }
+            set {
+                this.slopeField = value;
+                this.RaisePropertyChanged("Slope");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public double SlopeLength {
+            get {
+                return this.slopeLengthField;
+            }
+            set {
+                this.slopeLengthField = value;
+                this.RaisePropertyChanged("SlopeLength");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CropRotationList", Order=4)]
+        public CropSpec[] CropRotationList {
+            get {
+                return this.cropRotationListField;
+            }
+            set {
+                this.cropRotationListField = value;
+                this.RaisePropertyChanged("CropRotationList");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public Soil SoilDescr {
+            get {
+                return this.soilDescrField;
+            }
+            set {
+                this.soilDescrField = value;
+                this.RaisePropertyChanged("SoilDescr");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Soil : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private int recordNumberField;
+        
+        private string aSCOrderField;
+        
+        private string aSCSubOrderField;
+        
+        private string soilTypeField;
+        
+        private string localNameField;
+        
+        private string siteField;
+        
+        private string nearestTownField;
+        
+        private string regionField;
+        
+        private string stateField;
+        
+        private string countryField;
+        
+        private string naturalVegetationField;
+        
+        private string apsoilNumberField;
+        
+        private double latitudeField;
+        
+        private double longitudeField;
+        
+        private string locationAccuracyField;
+        
+        private int yearOfSamplingField;
+        
+        private string dataSourceField;
+        
+        private string commentsField;
+        
+        private Water waterField;
+        
+        private SoilWater soilWaterField;
+        
+        private SoilOrganicMatter soilOrganicMatterField;
+        
+        private Analysis analysisField;
+        
+        private InitialWater initialWaterField;
+        
+        private Sample[] sampleField;
+        
+        private string nameField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int RecordNumber {
+            get {
+                return this.recordNumberField;
+            }
+            set {
+                this.recordNumberField = value;
+                this.RaisePropertyChanged("RecordNumber");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string ASCOrder {
+            get {
+                return this.aSCOrderField;
+            }
+            set {
+                this.aSCOrderField = value;
+                this.RaisePropertyChanged("ASCOrder");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string ASCSubOrder {
+            get {
+                return this.aSCSubOrderField;
+            }
+            set {
+                this.aSCSubOrderField = value;
+                this.RaisePropertyChanged("ASCSubOrder");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string SoilType {
+            get {
+                return this.soilTypeField;
+            }
+            set {
+                this.soilTypeField = value;
+                this.RaisePropertyChanged("SoilType");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public string LocalName {
+            get {
+                return this.localNameField;
+            }
+            set {
+                this.localNameField = value;
+                this.RaisePropertyChanged("LocalName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string Site {
+            get {
+                return this.siteField;
+            }
+            set {
+                this.siteField = value;
+                this.RaisePropertyChanged("Site");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public string NearestTown {
+            get {
+                return this.nearestTownField;
+            }
+            set {
+                this.nearestTownField = value;
+                this.RaisePropertyChanged("NearestTown");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public string Region {
+            get {
+                return this.regionField;
+            }
+            set {
+                this.regionField = value;
+                this.RaisePropertyChanged("Region");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public string State {
+            get {
+                return this.stateField;
+            }
+            set {
+                this.stateField = value;
+                this.RaisePropertyChanged("State");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string Country {
+            get {
+                return this.countryField;
+            }
+            set {
+                this.countryField = value;
+                this.RaisePropertyChanged("Country");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string NaturalVegetation {
+            get {
+                return this.naturalVegetationField;
+            }
+            set {
+                this.naturalVegetationField = value;
+                this.RaisePropertyChanged("NaturalVegetation");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public string ApsoilNumber {
+            get {
+                return this.apsoilNumberField;
+            }
+            set {
+                this.apsoilNumberField = value;
+                this.RaisePropertyChanged("ApsoilNumber");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public double Latitude {
+            get {
+                return this.latitudeField;
+            }
+            set {
+                this.latitudeField = value;
+                this.RaisePropertyChanged("Latitude");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public double Longitude {
+            get {
+                return this.longitudeField;
+            }
+            set {
+                this.longitudeField = value;
+                this.RaisePropertyChanged("Longitude");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public string LocationAccuracy {
+            get {
+                return this.locationAccuracyField;
+            }
+            set {
+                this.locationAccuracyField = value;
+                this.RaisePropertyChanged("LocationAccuracy");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        public int YearOfSampling {
+            get {
+                return this.yearOfSamplingField;
+            }
+            set {
+                this.yearOfSamplingField = value;
+                this.RaisePropertyChanged("YearOfSampling");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        public string DataSource {
+            get {
+                return this.dataSourceField;
+            }
+            set {
+                this.dataSourceField = value;
+                this.RaisePropertyChanged("DataSource");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        public string Comments {
+            get {
+                return this.commentsField;
+            }
+            set {
+                this.commentsField = value;
+                this.RaisePropertyChanged("Comments");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        public Water Water {
+            get {
+                return this.waterField;
+            }
+            set {
+                this.waterField = value;
+                this.RaisePropertyChanged("Water");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        public SoilWater SoilWater {
+            get {
+                return this.soilWaterField;
+            }
+            set {
+                this.soilWaterField = value;
+                this.RaisePropertyChanged("SoilWater");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        public SoilOrganicMatter SoilOrganicMatter {
+            get {
+                return this.soilOrganicMatterField;
+            }
+            set {
+                this.soilOrganicMatterField = value;
+                this.RaisePropertyChanged("SoilOrganicMatter");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
+        public Analysis Analysis {
+            get {
+                return this.analysisField;
+            }
+            set {
+                this.analysisField = value;
+                this.RaisePropertyChanged("Analysis");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
+        public InitialWater InitialWater {
+            get {
+                return this.initialWaterField;
+            }
+            set {
+                this.initialWaterField = value;
+                this.RaisePropertyChanged("InitialWater");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Sample", Order=23)]
+        public Sample[] Sample {
+            get {
+                return this.sampleField;
+            }
+            set {
+                this.sampleField = value;
+                this.RaisePropertyChanged("Sample");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("name");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Water : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double[] thicknessField;
+        
+        private double[] bdField;
+        
+        private double[] airDryField;
+        
+        private double[] lL15Field;
+        
+        private double[] dULField;
+        
+        private double[] sATField;
+        
+        private double[] ksField;
+        
+        private string[] bDMetadataField;
+        
+        private string[] airDryMetadataField;
+        
+        private string[] lL15MetadataField;
+        
+        private string[] dULMetadataField;
+        
+        private string[] sATMetadataField;
+        
+        private string[] kSMetadataField;
+        
+        private SoilCrop[] soilCropField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=0)]
+        public double[] Thickness {
+            get {
+                return this.thicknessField;
+            }
+            set {
+                this.thicknessField = value;
+                this.RaisePropertyChanged("Thickness");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=1)]
+        public double[] BD {
+            get {
+                return this.bdField;
+            }
+            set {
+                this.bdField = value;
+                this.RaisePropertyChanged("BD");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=2)]
+        public double[] AirDry {
+            get {
+                return this.airDryField;
+            }
+            set {
+                this.airDryField = value;
+                this.RaisePropertyChanged("AirDry");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=3)]
+        public double[] LL15 {
+            get {
+                return this.lL15Field;
+            }
+            set {
+                this.lL15Field = value;
+                this.RaisePropertyChanged("LL15");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=4)]
+        public double[] DUL {
+            get {
+                return this.dULField;
+            }
+            set {
+                this.dULField = value;
+                this.RaisePropertyChanged("DUL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
+        public double[] SAT {
+            get {
+                return this.sATField;
+            }
+            set {
+                this.sATField = value;
+                this.RaisePropertyChanged("SAT");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=6)]
+        public double[] KS {
+            get {
+                return this.ksField;
+            }
+            set {
+                this.ksField = value;
+                this.RaisePropertyChanged("KS");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=7)]
+        public string[] BDMetadata {
+            get {
+                return this.bDMetadataField;
+            }
+            set {
+                this.bDMetadataField = value;
+                this.RaisePropertyChanged("BDMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=8)]
+        public string[] AirDryMetadata {
+            get {
+                return this.airDryMetadataField;
+            }
+            set {
+                this.airDryMetadataField = value;
+                this.RaisePropertyChanged("AirDryMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=9)]
+        public string[] LL15Metadata {
+            get {
+                return this.lL15MetadataField;
+            }
+            set {
+                this.lL15MetadataField = value;
+                this.RaisePropertyChanged("LL15Metadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=10)]
+        public string[] DULMetadata {
+            get {
+                return this.dULMetadataField;
+            }
+            set {
+                this.dULMetadataField = value;
+                this.RaisePropertyChanged("DULMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=11)]
+        public string[] SATMetadata {
+            get {
+                return this.sATMetadataField;
+            }
+            set {
+                this.sATMetadataField = value;
+                this.RaisePropertyChanged("SATMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=12)]
+        public string[] KSMetadata {
+            get {
+                return this.kSMetadataField;
+            }
+            set {
+                this.kSMetadataField = value;
+                this.RaisePropertyChanged("KSMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SoilCrop", Order=13)]
+        public SoilCrop[] SoilCrop {
+            get {
+                return this.soilCropField;
+            }
+            set {
+                this.soilCropField = value;
+                this.RaisePropertyChanged("SoilCrop");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class SoilCrop : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double[] thicknessField;
+        
+        private double[] llField;
+        
+        private double[] klField;
+        
+        private double[] xfField;
+        
+        private string[] lLMetadataField;
+        
+        private string[] kLMetadataField;
+        
+        private string[] xFMetadataField;
+        
+        private string nameField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=0)]
+        public double[] Thickness {
+            get {
+                return this.thicknessField;
+            }
+            set {
+                this.thicknessField = value;
+                this.RaisePropertyChanged("Thickness");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=1)]
+        public double[] LL {
+            get {
+                return this.llField;
+            }
+            set {
+                this.llField = value;
+                this.RaisePropertyChanged("LL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=2)]
+        public double[] KL {
+            get {
+                return this.klField;
+            }
+            set {
+                this.klField = value;
+                this.RaisePropertyChanged("KL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=3)]
+        public double[] XF {
+            get {
+                return this.xfField;
+            }
+            set {
+                this.xfField = value;
+                this.RaisePropertyChanged("XF");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=4)]
+        public string[] LLMetadata {
+            get {
+                return this.lLMetadataField;
+            }
+            set {
+                this.lLMetadataField = value;
+                this.RaisePropertyChanged("LLMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
+        public string[] KLMetadata {
+            get {
+                return this.kLMetadataField;
+            }
+            set {
+                this.kLMetadataField = value;
+                this.RaisePropertyChanged("KLMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=6)]
+        public string[] XFMetadata {
+            get {
+                return this.xFMetadataField;
+            }
+            set {
+                this.xFMetadataField = value;
+                this.RaisePropertyChanged("XFMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("name");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class SoilWater : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double summerConaField;
+        
+        private double summerUField;
+        
+        private string summerDateField;
+        
+        private double winterConaField;
+        
+        private double winterUField;
+        
+        private string winterDateField;
+        
+        private double diffusConstField;
+        
+        private double diffusSlopeField;
+        
+        private double salbField;
+        
+        private double cN2BareField;
+        
+        private double cNRedField;
+        
+        private double cNCovField;
+        
+        private double slopeField;
+        
+        private double dischargeWidthField;
+        
+        private double catchmentAreaField;
+        
+        private double maxPondField;
+        
+        private double[] thicknessField;
+        
+        private double[] sWCONField;
+        
+        private double[] mWCONField;
+        
+        private double[] kLATField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double SummerCona {
+            get {
+                return this.summerConaField;
+            }
+            set {
+                this.summerConaField = value;
+                this.RaisePropertyChanged("SummerCona");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public double SummerU {
+            get {
+                return this.summerUField;
+            }
+            set {
+                this.summerUField = value;
+                this.RaisePropertyChanged("SummerU");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string SummerDate {
+            get {
+                return this.summerDateField;
+            }
+            set {
+                this.summerDateField = value;
+                this.RaisePropertyChanged("SummerDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public double WinterCona {
+            get {
+                return this.winterConaField;
+            }
+            set {
+                this.winterConaField = value;
+                this.RaisePropertyChanged("WinterCona");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public double WinterU {
+            get {
+                return this.winterUField;
+            }
+            set {
+                this.winterUField = value;
+                this.RaisePropertyChanged("WinterU");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string WinterDate {
+            get {
+                return this.winterDateField;
+            }
+            set {
+                this.winterDateField = value;
+                this.RaisePropertyChanged("WinterDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public double DiffusConst {
+            get {
+                return this.diffusConstField;
+            }
+            set {
+                this.diffusConstField = value;
+                this.RaisePropertyChanged("DiffusConst");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public double DiffusSlope {
+            get {
+                return this.diffusSlopeField;
+            }
+            set {
+                this.diffusSlopeField = value;
+                this.RaisePropertyChanged("DiffusSlope");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public double Salb {
+            get {
+                return this.salbField;
+            }
+            set {
+                this.salbField = value;
+                this.RaisePropertyChanged("Salb");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public double CN2Bare {
+            get {
+                return this.cN2BareField;
+            }
+            set {
+                this.cN2BareField = value;
+                this.RaisePropertyChanged("CN2Bare");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public double CNRed {
+            get {
+                return this.cNRedField;
+            }
+            set {
+                this.cNRedField = value;
+                this.RaisePropertyChanged("CNRed");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public double CNCov {
+            get {
+                return this.cNCovField;
+            }
+            set {
+                this.cNCovField = value;
+                this.RaisePropertyChanged("CNCov");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public double Slope {
+            get {
+                return this.slopeField;
+            }
+            set {
+                this.slopeField = value;
+                this.RaisePropertyChanged("Slope");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public double DischargeWidth {
+            get {
+                return this.dischargeWidthField;
+            }
+            set {
+                this.dischargeWidthField = value;
+                this.RaisePropertyChanged("DischargeWidth");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public double CatchmentArea {
+            get {
+                return this.catchmentAreaField;
+            }
+            set {
+                this.catchmentAreaField = value;
+                this.RaisePropertyChanged("CatchmentArea");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        public double MaxPond {
+            get {
+                return this.maxPondField;
+            }
+            set {
+                this.maxPondField = value;
+                this.RaisePropertyChanged("MaxPond");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=16)]
+        public double[] Thickness {
+            get {
+                return this.thicknessField;
+            }
+            set {
+                this.thicknessField = value;
+                this.RaisePropertyChanged("Thickness");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=17)]
+        public double[] SWCON {
+            get {
+                return this.sWCONField;
+            }
+            set {
+                this.sWCONField = value;
+                this.RaisePropertyChanged("SWCON");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=18)]
+        public double[] MWCON {
+            get {
+                return this.mWCONField;
+            }
+            set {
+                this.mWCONField = value;
+                this.RaisePropertyChanged("MWCON");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=19)]
+        public double[] KLAT {
+            get {
+                return this.kLATField;
+            }
+            set {
+                this.kLATField = value;
+                this.RaisePropertyChanged("KLAT");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class SoilOrganicMatter : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double rootCNField;
+        
+        private double rootWtField;
+        
+        private double soilCNField;
+        
+        private double enrACoeffField;
+        
+        private double enrBCoeffField;
+        
+        private double[] thicknessField;
+        
+        private double[] ocField;
+        
+        private string[] oCMetadataField;
+        
+        private double[] fBiomField;
+        
+        private double[] fInertField;
+        
+        private OCUnitsEnum oCUnitsField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double RootCN {
+            get {
+                return this.rootCNField;
+            }
+            set {
+                this.rootCNField = value;
+                this.RaisePropertyChanged("RootCN");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public double RootWt {
+            get {
+                return this.rootWtField;
+            }
+            set {
+                this.rootWtField = value;
+                this.RaisePropertyChanged("RootWt");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public double SoilCN {
+            get {
+                return this.soilCNField;
+            }
+            set {
+                this.soilCNField = value;
+                this.RaisePropertyChanged("SoilCN");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public double EnrACoeff {
+            get {
+                return this.enrACoeffField;
+            }
+            set {
+                this.enrACoeffField = value;
+                this.RaisePropertyChanged("EnrACoeff");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public double EnrBCoeff {
+            get {
+                return this.enrBCoeffField;
+            }
+            set {
+                this.enrBCoeffField = value;
+                this.RaisePropertyChanged("EnrBCoeff");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
+        public double[] Thickness {
+            get {
+                return this.thicknessField;
+            }
+            set {
+                this.thicknessField = value;
+                this.RaisePropertyChanged("Thickness");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=6)]
+        public double[] OC {
+            get {
+                return this.ocField;
+            }
+            set {
+                this.ocField = value;
+                this.RaisePropertyChanged("OC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=7)]
+        public string[] OCMetadata {
+            get {
+                return this.oCMetadataField;
+            }
+            set {
+                this.oCMetadataField = value;
+                this.RaisePropertyChanged("OCMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=8)]
+        public double[] FBiom {
+            get {
+                return this.fBiomField;
+            }
+            set {
+                this.fBiomField = value;
+                this.RaisePropertyChanged("FBiom");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=9)]
+        public double[] FInert {
+            get {
+                return this.fInertField;
+            }
+            set {
+                this.fInertField = value;
+                this.RaisePropertyChanged("FInert");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public OCUnitsEnum OCUnits {
+            get {
+                return this.oCUnitsField;
+            }
+            set {
+                this.oCUnitsField = value;
+                this.RaisePropertyChanged("OCUnits");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum OCUnitsEnum {
+        
+        /// <remarks/>
+        Total,
+        
+        /// <remarks/>
+        WalkleyBlack,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Analysis : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double[] thicknessField;
+        
+        private double[] rocksField;
+        
+        private string[] rocksMetadataField;
+        
+        private string[] textureField;
+        
+        private string[] textureMetadataField;
+        
+        private string[] munsellColourField;
+        
+        private string[] munsellMetadataField;
+        
+        private double[] ecField;
+        
+        private string[] eCMetadataField;
+        
+        private double[] phField;
+        
+        private string[] pHMetadataField;
+        
+        private double[] clField;
+        
+        private string[] cLMetadataField;
+        
+        private double[] boronField;
+        
+        private string[] boronMetadataField;
+        
+        private double[] cECField;
+        
+        private string[] cECMetadataField;
+        
+        private double[] caField;
+        
+        private string[] caMetadataField;
+        
+        private double[] mgField;
+        
+        private string[] mgMetadataField;
+        
+        private double[] naField;
+        
+        private string[] naMetadataField;
+        
+        private double[] kField;
+        
+        private string[] kMetadataField;
+        
+        private double[] eSPField;
+        
+        private string[] eSPMetadataField;
+        
+        private double[] mnField;
+        
+        private string[] mnMetadataField;
+        
+        private double[] alField;
+        
+        private string[] alMetadataField;
+        
+        private double[] particleSizeSandField;
+        
+        private string[] particleSizeSandMetadataField;
+        
+        private double[] particleSizeSiltField;
+        
+        private string[] particleSizeSiltMetadataField;
+        
+        private double[] particleSizeClayField;
+        
+        private string[] particleSizeClayMetadataField;
+        
+        private PHUnitsEnum pHUnitsField;
+        
+        private BoronUnitsEnum boronUnitsField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=0)]
+        public double[] Thickness {
+            get {
+                return this.thicknessField;
+            }
+            set {
+                this.thicknessField = value;
+                this.RaisePropertyChanged("Thickness");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=1)]
+        public double[] Rocks {
+            get {
+                return this.rocksField;
+            }
+            set {
+                this.rocksField = value;
+                this.RaisePropertyChanged("Rocks");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=2)]
+        public string[] RocksMetadata {
+            get {
+                return this.rocksMetadataField;
+            }
+            set {
+                this.rocksMetadataField = value;
+                this.RaisePropertyChanged("RocksMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=3)]
+        public string[] Texture {
+            get {
+                return this.textureField;
+            }
+            set {
+                this.textureField = value;
+                this.RaisePropertyChanged("Texture");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=4)]
+        public string[] TextureMetadata {
+            get {
+                return this.textureMetadataField;
+            }
+            set {
+                this.textureMetadataField = value;
+                this.RaisePropertyChanged("TextureMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
+        public string[] MunsellColour {
+            get {
+                return this.munsellColourField;
+            }
+            set {
+                this.munsellColourField = value;
+                this.RaisePropertyChanged("MunsellColour");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=6)]
+        public string[] MunsellMetadata {
+            get {
+                return this.munsellMetadataField;
+            }
+            set {
+                this.munsellMetadataField = value;
+                this.RaisePropertyChanged("MunsellMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=7)]
+        public double[] EC {
+            get {
+                return this.ecField;
+            }
+            set {
+                this.ecField = value;
+                this.RaisePropertyChanged("EC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=8)]
+        public string[] ECMetadata {
+            get {
+                return this.eCMetadataField;
+            }
+            set {
+                this.eCMetadataField = value;
+                this.RaisePropertyChanged("ECMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=9)]
+        public double[] PH {
+            get {
+                return this.phField;
+            }
+            set {
+                this.phField = value;
+                this.RaisePropertyChanged("PH");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=10)]
+        public string[] PHMetadata {
+            get {
+                return this.pHMetadataField;
+            }
+            set {
+                this.pHMetadataField = value;
+                this.RaisePropertyChanged("PHMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=11)]
+        public double[] CL {
+            get {
+                return this.clField;
+            }
+            set {
+                this.clField = value;
+                this.RaisePropertyChanged("CL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=12)]
+        public string[] CLMetadata {
+            get {
+                return this.cLMetadataField;
+            }
+            set {
+                this.cLMetadataField = value;
+                this.RaisePropertyChanged("CLMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=13)]
+        public double[] Boron {
+            get {
+                return this.boronField;
+            }
+            set {
+                this.boronField = value;
+                this.RaisePropertyChanged("Boron");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=14)]
+        public string[] BoronMetadata {
+            get {
+                return this.boronMetadataField;
+            }
+            set {
+                this.boronMetadataField = value;
+                this.RaisePropertyChanged("BoronMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=15)]
+        public double[] CEC {
+            get {
+                return this.cECField;
+            }
+            set {
+                this.cECField = value;
+                this.RaisePropertyChanged("CEC");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=16)]
+        public string[] CECMetadata {
+            get {
+                return this.cECMetadataField;
+            }
+            set {
+                this.cECMetadataField = value;
+                this.RaisePropertyChanged("CECMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=17)]
+        public double[] Ca {
+            get {
+                return this.caField;
+            }
+            set {
+                this.caField = value;
+                this.RaisePropertyChanged("Ca");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=18)]
+        public string[] CaMetadata {
+            get {
+                return this.caMetadataField;
+            }
+            set {
+                this.caMetadataField = value;
+                this.RaisePropertyChanged("CaMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=19)]
+        public double[] Mg {
+            get {
+                return this.mgField;
+            }
+            set {
+                this.mgField = value;
+                this.RaisePropertyChanged("Mg");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=20)]
+        public string[] MgMetadata {
+            get {
+                return this.mgMetadataField;
+            }
+            set {
+                this.mgMetadataField = value;
+                this.RaisePropertyChanged("MgMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=21)]
+        public double[] Na {
+            get {
+                return this.naField;
+            }
+            set {
+                this.naField = value;
+                this.RaisePropertyChanged("Na");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=22)]
+        public string[] NaMetadata {
+            get {
+                return this.naMetadataField;
+            }
+            set {
+                this.naMetadataField = value;
+                this.RaisePropertyChanged("NaMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=23)]
+        public double[] K {
+            get {
+                return this.kField;
+            }
+            set {
+                this.kField = value;
+                this.RaisePropertyChanged("K");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=24)]
+        public string[] KMetadata {
+            get {
+                return this.kMetadataField;
+            }
+            set {
+                this.kMetadataField = value;
+                this.RaisePropertyChanged("KMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=25)]
+        public double[] ESP {
+            get {
+                return this.eSPField;
+            }
+            set {
+                this.eSPField = value;
+                this.RaisePropertyChanged("ESP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=26)]
+        public string[] ESPMetadata {
+            get {
+                return this.eSPMetadataField;
+            }
+            set {
+                this.eSPMetadataField = value;
+                this.RaisePropertyChanged("ESPMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=27)]
+        public double[] Mn {
+            get {
+                return this.mnField;
+            }
+            set {
+                this.mnField = value;
+                this.RaisePropertyChanged("Mn");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=28)]
+        public string[] MnMetadata {
+            get {
+                return this.mnMetadataField;
+            }
+            set {
+                this.mnMetadataField = value;
+                this.RaisePropertyChanged("MnMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=29)]
+        public double[] Al {
+            get {
+                return this.alField;
+            }
+            set {
+                this.alField = value;
+                this.RaisePropertyChanged("Al");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=30)]
+        public string[] AlMetadata {
+            get {
+                return this.alMetadataField;
+            }
+            set {
+                this.alMetadataField = value;
+                this.RaisePropertyChanged("AlMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=31)]
+        public double[] ParticleSizeSand {
+            get {
+                return this.particleSizeSandField;
+            }
+            set {
+                this.particleSizeSandField = value;
+                this.RaisePropertyChanged("ParticleSizeSand");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=32)]
+        public string[] ParticleSizeSandMetadata {
+            get {
+                return this.particleSizeSandMetadataField;
+            }
+            set {
+                this.particleSizeSandMetadataField = value;
+                this.RaisePropertyChanged("ParticleSizeSandMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=33)]
+        public double[] ParticleSizeSilt {
+            get {
+                return this.particleSizeSiltField;
+            }
+            set {
+                this.particleSizeSiltField = value;
+                this.RaisePropertyChanged("ParticleSizeSilt");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=34)]
+        public string[] ParticleSizeSiltMetadata {
+            get {
+                return this.particleSizeSiltMetadataField;
+            }
+            set {
+                this.particleSizeSiltMetadataField = value;
+                this.RaisePropertyChanged("ParticleSizeSiltMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=35)]
+        public double[] ParticleSizeClay {
+            get {
+                return this.particleSizeClayField;
+            }
+            set {
+                this.particleSizeClayField = value;
+                this.RaisePropertyChanged("ParticleSizeClay");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=36)]
+        public string[] ParticleSizeClayMetadata {
+            get {
+                return this.particleSizeClayMetadataField;
+            }
+            set {
+                this.particleSizeClayMetadataField = value;
+                this.RaisePropertyChanged("ParticleSizeClayMetadata");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
+        public PHUnitsEnum PHUnits {
+            get {
+                return this.pHUnitsField;
+            }
+            set {
+                this.pHUnitsField = value;
+                this.RaisePropertyChanged("PHUnits");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
+        public BoronUnitsEnum BoronUnits {
+            get {
+                return this.boronUnitsField;
+            }
+            set {
+                this.boronUnitsField = value;
+                this.RaisePropertyChanged("BoronUnits");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum PHUnitsEnum {
+        
+        /// <remarks/>
+        Water,
+        
+        /// <remarks/>
+        CaCl2,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum BoronUnitsEnum {
+        
+        /// <remarks/>
+        HotWater,
+        
+        /// <remarks/>
+        HotCaCl2,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class InitialWater : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private double fractionFullField;
+        
+        private double depthWetSoilField;
+        
+        private PercentMethodEnum percentMethodField;
+        
+        private string relativeToField;
+        
+        private string nameField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double FractionFull {
+            get {
+                return this.fractionFullField;
+            }
+            set {
+                this.fractionFullField = value;
+                this.RaisePropertyChanged("FractionFull");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public double DepthWetSoil {
+            get {
+                return this.depthWetSoilField;
+            }
+            set {
+                this.depthWetSoilField = value;
+                this.RaisePropertyChanged("DepthWetSoil");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public PercentMethodEnum PercentMethod {
+            get {
+                return this.percentMethodField;
+            }
+            set {
+                this.percentMethodField = value;
+                this.RaisePropertyChanged("PercentMethod");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string RelativeTo {
+            get {
+                return this.relativeToField;
+            }
+            set {
+                this.relativeToField = value;
+                this.RaisePropertyChanged("RelativeTo");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public string name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("name");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum PercentMethodEnum {
+        
+        /// <remarks/>
+        FilledFromTop,
+        
+        /// <remarks/>
+        EvenlyDistributed,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class FarmSystem : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private SimulationType simTemplateTypeField;
+        
+        private string nameField;
+        
+        private System.DateTime startSeasonDateField;
+        
+        private int runLengthField;
+        
+        private int stationNumberField;
+        
+        private string stationNameField;
+        
+        private string reportNameField;
+        
+        private double areaField;
+        
+        private FarmSoilType[] onFarmSoilTypesField;
+        
+        private FarmPaddockType[] onFarmPaddocksField;
+        
+        private FarmLivestock liveStockField;
+        
+        private bool dailyOutputField;
+        
+        private bool monthlyOutputField;
+        
+        private bool yearlyOutputField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public SimulationType SimTemplateType {
+            get {
+                return this.simTemplateTypeField;
+            }
+            set {
+                this.simTemplateTypeField = value;
+                this.RaisePropertyChanged("SimTemplateType");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+                this.RaisePropertyChanged("Name");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public System.DateTime StartSeasonDate {
+            get {
+                return this.startSeasonDateField;
+            }
+            set {
+                this.startSeasonDateField = value;
+                this.RaisePropertyChanged("StartSeasonDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public int RunLength {
+            get {
+                return this.runLengthField;
+            }
+            set {
+                this.runLengthField = value;
+                this.RaisePropertyChanged("RunLength");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public int StationNumber {
+            get {
+                return this.stationNumberField;
+            }
+            set {
+                this.stationNumberField = value;
+                this.RaisePropertyChanged("StationNumber");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string StationName {
+            get {
+                return this.stationNameField;
+            }
+            set {
+                this.stationNameField = value;
+                this.RaisePropertyChanged("StationName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public string ReportName {
+            get {
+                return this.reportNameField;
+            }
+            set {
+                this.reportNameField = value;
+                this.RaisePropertyChanged("ReportName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public double Area {
+            get {
+                return this.areaField;
+            }
+            set {
+                this.areaField = value;
+                this.RaisePropertyChanged("Area");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=8)]
+        public FarmSoilType[] OnFarmSoilTypes {
+            get {
+                return this.onFarmSoilTypesField;
+            }
+            set {
+                this.onFarmSoilTypesField = value;
+                this.RaisePropertyChanged("OnFarmSoilTypes");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlArrayAttribute(Order=9)]
+        public FarmPaddockType[] OnFarmPaddocks {
+            get {
+                return this.onFarmPaddocksField;
+            }
+            set {
+                this.onFarmPaddocksField = value;
+                this.RaisePropertyChanged("OnFarmPaddocks");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public FarmLivestock LiveStock {
+            get {
+                return this.liveStockField;
+            }
+            set {
+                this.liveStockField = value;
+                this.RaisePropertyChanged("LiveStock");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public bool DailyOutput {
+            get {
+                return this.dailyOutputField;
+            }
+            set {
+                this.dailyOutputField = value;
+                this.RaisePropertyChanged("DailyOutput");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public bool MonthlyOutput {
+            get {
+                return this.monthlyOutputField;
+            }
+            set {
+                this.monthlyOutputField = value;
+                this.RaisePropertyChanged("MonthlyOutput");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        public bool YearlyOutput {
+            get {
+                return this.yearlyOutputField;
+            }
+            set {
+                this.yearlyOutputField = value;
+                this.RaisePropertyChanged("YearlyOutput");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum SimulationType {
+        
+        /// <remarks/>
+        stCropOnly,
+        
+        /// <remarks/>
+        stMixed,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Farm4Prophet : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private int versionField;
+        
+        private string taskNameField;
+        
+        private FarmSystem[] farmListField;
+        
+        private string clientNameField;
+        
+        private string returnResultsField;
+        
+        private string reportGeneratedByField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int Version {
+            get {
+                return this.versionField;
+            }
+            set {
+                this.versionField = value;
+                this.RaisePropertyChanged("Version");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string TaskName {
+            get {
+                return this.taskNameField;
+            }
+            set {
+                this.taskNameField = value;
+                this.RaisePropertyChanged("TaskName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("FarmList", Order=2)]
+        public FarmSystem[] FarmList {
+            get {
+                return this.farmListField;
+            }
+            set {
+                this.farmListField = value;
+                this.RaisePropertyChanged("FarmList");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string ClientName {
+            get {
+                return this.clientNameField;
+            }
+            set {
+                this.clientNameField = value;
+                this.RaisePropertyChanged("ClientName");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public string ReturnResults {
+            get {
+                return this.returnResultsField;
+            }
+            set {
+                this.returnResultsField = value;
+                this.RaisePropertyChanged("ReturnResults");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string ReportGeneratedBy {
+            get {
+                return this.reportGeneratedByField;
+            }
+            set {
+                this.reportGeneratedByField = value;
+                this.RaisePropertyChanged("ReportGeneratedBy");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class ResetWater : Management {
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class StubbleRemoved : Management {
+        
+        private double percentField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double Percent {
+            get {
+                return this.percentField;
+            }
+            set {
+                this.percentField = value;
+                this.RaisePropertyChanged("Percent");
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Sow : Management {
+        
+        private int maxRootDepthField;
+        
+        private string cropField;
+        
+        private string cultivarField;
+        
+        private int sowingDensityField;
+        
+        private System.DateTime emergenceDateField;
+        
+        private int rowSpacingField;
+        
+        private double bedRowSpacingField;
+        
+        private int bedWidthField;
+        
+        private string skipRowField;
+        
+        private double irrigationAmountField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public int MaxRootDepth {
+            get {
+                return this.maxRootDepthField;
+            }
+            set {
+                this.maxRootDepthField = value;
+                this.RaisePropertyChanged("MaxRootDepth");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public string Crop {
+            get {
+                return this.cropField;
+            }
+            set {
+                this.cropField = value;
+                this.RaisePropertyChanged("Crop");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public string Cultivar {
+            get {
+                return this.cultivarField;
+            }
+            set {
+                this.cultivarField = value;
+                this.RaisePropertyChanged("Cultivar");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public int SowingDensity {
+            get {
+                return this.sowingDensityField;
+            }
+            set {
+                this.sowingDensityField = value;
+                this.RaisePropertyChanged("SowingDensity");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public System.DateTime EmergenceDate {
+            get {
+                return this.emergenceDateField;
+            }
+            set {
+                this.emergenceDateField = value;
+                this.RaisePropertyChanged("EmergenceDate");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public int RowSpacing {
+            get {
+                return this.rowSpacingField;
+            }
+            set {
+                this.rowSpacingField = value;
+                this.RaisePropertyChanged("RowSpacing");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public double BedRowSpacing {
+            get {
+                return this.bedRowSpacingField;
+            }
+            set {
+                this.bedRowSpacingField = value;
+                this.RaisePropertyChanged("BedRowSpacing");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public int BedWidth {
+            get {
+                return this.bedWidthField;
+            }
+            set {
+                this.bedWidthField = value;
+                this.RaisePropertyChanged("BedWidth");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public string SkipRow {
+            get {
+                return this.skipRowField;
+            }
+            set {
+                this.skipRowField = value;
+                this.RaisePropertyChanged("SkipRow");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public double IrrigationAmount {
+            get {
+                return this.irrigationAmountField;
+            }
+            set {
+                this.irrigationAmountField = value;
+                this.RaisePropertyChanged("IrrigationAmount");
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Irrigate : Management {
+        
+        private double amountField;
+        
+        private double efficiencyField;
+        
+        private bool scenarioField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public double Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+                this.RaisePropertyChanged("Amount");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public double Efficiency {
+            get {
+                return this.efficiencyField;
+            }
+            set {
+                this.efficiencyField = value;
+                this.RaisePropertyChanged("Efficiency");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+        public bool Scenario {
+            get {
+                return this.scenarioField;
+            }
+            set {
+                this.scenarioField = value;
+                this.RaisePropertyChanged("Scenario");
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class Tillage : Management {
+        
+        private DisturbanceEnum disturbanceField;
+        
+        private bool scenarioField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+        public DisturbanceEnum Disturbance {
+            get {
+                return this.disturbanceField;
+            }
+            set {
+                this.disturbanceField = value;
+                this.RaisePropertyChanged("Disturbance");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public bool Scenario {
+            get {
+                return this.scenarioField;
+            }
+            set {
+                this.scenarioField = value;
+                this.RaisePropertyChanged("Scenario");
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum DisturbanceEnum {
+        
+        /// <remarks/>
+        Low,
+        
+        /// <remarks/>
+        Medium,
+        
+        /// <remarks/>
+        High,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class ResetSurfaceOrganicMatter : Management {
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class ResetNitrogen : Management {
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.0.30319.34234")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum ReportTypeEnum {
+        
+        /// <remarks/>
+        None,
+        
+        /// <remarks/>
+        Crop,
+        
+        /// <remarks/>
+        SowingOpportunity,
+        
+        /// <remarks/>
+        F4P,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="JobsService.IJobs")]
-    public interface IJobs {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Add", ReplyAction="http://tempuri.org/IJobs/AddResponse")]
-        string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddFarm4Prophet", ReplyAction="http://tempuri.org/IJobs/AddFarm4ProphetResponse")]
-        string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsXML", ReplyAction="http://tempuri.org/IJobs/AddAsXMLResponse")]
-        void AddAsXML(string name, string jobXML);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Delete", ReplyAction="http://tempuri.org/IJobs/DeleteResponse")]
-        void Delete(string name);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Get", ReplyAction="http://tempuri.org/IJobs/GetResponse")]
-        APSIM.Cloud.Portal.JobsService.Job Get(string name);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetNextToRun", ReplyAction="http://tempuri.org/IJobs/GetNextToRunResponse")]
-        APSIM.Cloud.Portal.JobsService.Job GetNextToRun();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetMany", ReplyAction="http://tempuri.org/IJobs/GetManyResponse")]
-        APSIM.Cloud.Portal.JobsService.Job[] GetMany(int maxNum);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetJobXML", ReplyAction="http://tempuri.org/IJobs/GetJobXMLResponse")]
-        string GetJobXML(string name);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddLogMessage", ReplyAction="http://tempuri.org/IJobs/AddLogMessageResponse")]
-        void AddLogMessage(string message, bool isError);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetLogMessages", ReplyAction="http://tempuri.org/IJobs/GetLogMessagesResponse")]
-        System.Data.DataSet GetLogMessages();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/SetCompleted", ReplyAction="http://tempuri.org/IJobs/SetCompletedResponse")]
-        void SetCompleted(string jobName, string errorMessage);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/ReRun", ReplyAction="http://tempuri.org/IJobs/ReRunResponse")]
-        void ReRun(string jobName);
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IJobsChannel : APSIM.Cloud.Portal.JobsService.IJobs, System.ServiceModel.IClientChannel {
+    public interface JobsSoapChannel : APSIM.Cloud.Portal.JobsService.JobsSoap, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class JobsClient : System.ServiceModel.ClientBase<APSIM.Cloud.Portal.JobsService.IJobs>, APSIM.Cloud.Portal.JobsService.IJobs {
+    public partial class JobsSoapClient : System.ServiceModel.ClientBase<APSIM.Cloud.Portal.JobsService.JobsSoap>, APSIM.Cloud.Portal.JobsService.JobsSoap {
         
-        public JobsClient() {
+        public JobsSoapClient() {
         }
         
-        public JobsClient(string endpointConfigurationName) : 
+        public JobsSoapClient(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
         
-        public JobsClient(string endpointConfigurationName, string remoteAddress) : 
+        public JobsSoapClient(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public JobsClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public JobsSoapClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public JobsClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public JobsSoapClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
         
-        public string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet) {
+        public string Add(APSIM.Cloud.Portal.JobsService.YieldProphet yieldProphet) {
             return base.Channel.Add(yieldProphet);
         }
         
-        public string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p) {
+        public string AddFarm4Prophet(APSIM.Cloud.Portal.JobsService.Farm4Prophet f4p) {
             return base.Channel.AddFarm4Prophet(f4p);
         }
         

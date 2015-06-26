@@ -43,9 +43,9 @@ namespace APSIM.Cloud.Portal
             foreach (Paddock paddock in yieldProphet.Paddock)
                 paddock.NowDate = nowDate;
 
-            using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
+            using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
             {
-                jobsService.Add(yieldProphet);
+                jobsService.Add(ToWebServiceYP(yieldProphet));
             }
 
             File.Delete(tempFile);
@@ -53,7 +53,15 @@ namespace APSIM.Cloud.Portal
             Response.Redirect("Main.aspx");
         }
 
-
+        /// <summary>Converts an internal yieldprophet instance to a web service instance.</summary>
+        /// <param name="yieldProphet">The yield prophet instance to convert.</param>
+        /// <returns>The web service version of the yieldprophet instance.</returns>
+        private JobsService.YieldProphet ToWebServiceYP(YieldProphet yieldProphet)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(XmlUtilities.Serialise(yieldProphet, false));
+            return XmlUtilities.Deserialise(doc.DocumentElement, typeof(JobsService.YieldProphet)) as JobsService.YieldProphet;
+        }
 
     }
 }

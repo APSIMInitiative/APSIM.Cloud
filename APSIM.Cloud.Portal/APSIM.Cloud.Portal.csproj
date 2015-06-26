@@ -96,30 +96,6 @@
     </Content>
     <Content Include="Main.aspx" />
     <None Include="Service References\JobsService\Jobs.wsdl" />
-    <None Include="Service References\JobsService\Jobs.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs5.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs6.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\JobsService\Jobs7.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

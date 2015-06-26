@@ -1,23 +1,30 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="Jobs.cs" company="APSIM Initiative">
-//     Copyright (c) APSIM Initiative
-// </copyright>
-//-----------------------------------------------------------------------
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Services;
+using System.Data.SqlClient;
+using APSIM.Cloud.Shared;
+using System.Data;
+using System.IO;
+using System.Web.Script.Services;
+
 namespace APSIM.Cloud.Service
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SqlClient;
-    using System.IO;
-    using System.Xml;
-    using System.Xml.Serialization;
-    using System.Data;
-    using APSIM.Cloud.Shared;
+    /// <summary>
+    /// An enumeration containing the valid values for the status field
+    /// in the DB
+    /// </summary>
+    public enum StatusEnum { Queued, Running, Completed, Error };
 
     /// <summary>
-    /// A class encapsulating a database of jobs that need running.
+    /// Summary description for Service1
     /// </summary>
-    public class Jobs : IJobs, IDisposable
+    [WebService(Namespace = "http://tempuri.org/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    [ScriptService]
+    public class Jobs : System.Web.Services.WebService
     {
         /// <summary>The connection to the jobs database</summary>
         private SqlConnection Connection = null;
@@ -48,6 +55,7 @@ namespace APSIM.Cloud.Service
         /// </summary>
         /// <param name="yieldProphet">The job specification.</param>
         /// <returns>The unique job name.</returns>
+        [WebMethod]
         public string Add(YieldProphet yieldProphet)
         {
             DateTime nowDate = DateTime.Now;
@@ -69,6 +77,7 @@ namespace APSIM.Cloud.Service
         /// </summary>
         /// <param name="f4p">The job specification.</param>
         /// <returns>The unique job name.</returns>
+        [WebMethod]
         public string AddFarm4Prophet(Farm4Prophet f4p)
         {
             string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + f4p.TaskName + "_F4P";
@@ -83,6 +92,7 @@ namespace APSIM.Cloud.Service
         /// <param name="name">The name of the job.</param>
         /// <param name="jobXML">The job XML.</param>
         /// <param name="zipFileContents">The zip file contents.</param>
+        [WebMethod]
         public void AddAsXML(string name, string jobXML)
         {
             string SQL = "INSERT INTO Jobs (Name, XML, Status) " +
@@ -100,6 +110,7 @@ namespace APSIM.Cloud.Service
 
         /// <summary>Delete the specified job from the database.</summary>
         /// <param name="name">The name of the job.</param>
+        [WebMethod]
         public void Delete(string name)
         {
             string SQL = "DELETE FROM Jobs WHERE Name = '" + name + "'";
@@ -110,6 +121,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Gets a specific job.</summary>
         /// <param name="name">The name of the job.</param>
         /// <returns>The job or null if not found</returns>
+        [WebMethod]
         public Job Get(string name)
         {
             string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "' ORDER BY name DESC";
@@ -133,6 +145,7 @@ namespace APSIM.Cloud.Service
         /// Gets the next job that needs to run.
         /// </summary>
         /// <returns>The job needing to be run or null if none.</returns>
+        [WebMethod]
         public Job GetNextToRun()
         {
             lock (lockObject)
@@ -163,6 +176,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Gets all jobs</summary>
         /// <param name="maxNum">The maximum number of jobs to return.</param>
         /// <returns>The array of matching jobs</returns>
+        [WebMethod]
         public Job[] GetMany(int maxNum)
         {
             List<Job> jobs = new List<Job>();
@@ -187,6 +201,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Gets a jobs XML.</summary>
         /// <param name="name">The name of the job.</param>
         /// <returns>The XML of the job or null if not found.</returns>
+        [WebMethod]
         public string GetJobXML(string name)
         {
             string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "' ORDER BY name DESC";
@@ -209,6 +224,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Adds a log message.</summary>
         /// <param name="message">The message to add.</param>
         /// <param name="isError">Indicates if message is an error message</param>
+        [WebMethod]
         public void AddLogMessage(string message, bool isError)
         {
             string SQL = "INSERT INTO Log (Date, Status, Message) " +
@@ -226,6 +242,7 @@ namespace APSIM.Cloud.Service
         /// Gets the log messages.
         /// </summary>
         /// <returns>The log message: Date, Status, Message</returns>
+        [WebMethod]
         public DataSet GetLogMessages()
         {
             string SQL = "SELECT TOP(100) * FROM LOG ORDER BY DATE DESC";
@@ -249,6 +266,7 @@ namespace APSIM.Cloud.Service
         /// <summary>Specifies that the job is completed./summary>
         /// <param name="jobName">Name of the job.</param>
         /// <param name="errorMessage">Any error message. Can be null.</param>
+        [WebMethod]
         public void SetCompleted(string jobName, string errorMessage)
         {
             string sql;
@@ -266,6 +284,7 @@ namespace APSIM.Cloud.Service
 
         /// <summary>Rerun the specified job/summary>
         /// <param name="jobName">Name of the job.</param>
+        [WebMethod]
         public void ReRun(string jobName)
         {
             string sql = "UPDATE Jobs SET Status = " + ((int)StatusEnum.Queued).ToString() +
@@ -322,7 +341,6 @@ namespace APSIM.Cloud.Service
             SqlCommand Cmd = new SqlCommand(SQL, Connection);
             Cmd.ExecuteNonQuery();
         }
-
 
     }
 }

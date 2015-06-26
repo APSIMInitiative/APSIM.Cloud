@@ -30,3 +30,4 @@ APSIM.Cloud.Shared/bin/
 APSIM.Cloud.Test/Generated/
 /Backup
 /NH_TestYP_AusFarm
+APSIM.Cloud.Service/obj/

@@ -1,836 +1,1003 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Jobs" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <wsp:Policy>
-            <sp:ProtectionToken>
-              <wsp:Policy>
-                <sp:SecureConversationToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
-                  <wsp:Policy>
-                    <sp:RequireDerivedKeys />
-                    <sp:BootstrapPolicy>
-                      <wsp:Policy>
-                        <sp:SignedParts>
-                          <sp:Body />
-                          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-                          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-                          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-                          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-                          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-                          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-                          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-                        </sp:SignedParts>
-                        <sp:EncryptedParts>
-                          <sp:Body />
-                        </sp:EncryptedParts>
-                        <sp:SymmetricBinding>
-                          <wsp:Policy>
-                            <sp:ProtectionToken>
-                              <wsp:Policy>
-                                <sp:SpnegoContextToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
-                                  <wsp:Policy>
-                                    <sp:RequireDerivedKeys />
-                                  </wsp:Policy>
-                                </sp:SpnegoContextToken>
-                              </wsp:Policy>
-                            </sp:ProtectionToken>
-                            <sp:AlgorithmSuite>
-                              <wsp:Policy>
-                                <sp:Basic256 />
-                              </wsp:Policy>
-                            </sp:AlgorithmSuite>
-                            <sp:Layout>
-                              <wsp:Policy>
-                                <sp:Strict />
-                              </wsp:Policy>
-                            </sp:Layout>
-                            <sp:IncludeTimestamp />
-                            <sp:EncryptSignature />
-                            <sp:OnlySignEntireHeadersAndBody />
-                          </wsp:Policy>
-                        </sp:SymmetricBinding>
-                        <sp:Wss11>
-                          <wsp:Policy />
-                        </sp:Wss11>
-                        <sp:Trust10>
-                          <wsp:Policy>
-                            <sp:MustSupportIssuedTokens />
-                            <sp:RequireClientEntropy />
-                            <sp:RequireServerEntropy />
-                          </wsp:Policy>
-                        </sp:Trust10>
-                      </wsp:Policy>
-                    </sp:BootstrapPolicy>
-                  </wsp:Policy>
-                </sp:SecureConversationToken>
-              </wsp:Policy>
-            </sp:ProtectionToken>
-            <sp:AlgorithmSuite>
-              <wsp:Policy>
-                <sp:Basic256 />
-              </wsp:Policy>
-            </sp:AlgorithmSuite>
-            <sp:Layout>
-              <wsp:Policy>
-                <sp:Strict />
-              </wsp:Policy>
-            </sp:Layout>
-            <sp:IncludeTimestamp />
-            <sp:EncryptSignature />
-            <sp:OnlySignEntireHeadersAndBody />
-          </wsp:Policy>
-        </sp:SymmetricBinding>
-        <sp:Wss11 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <wsp:Policy />
-        </sp:Wss11>
-        <sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <wsp:Policy>
-            <sp:MustSupportIssuedTokens />
-            <sp:RequireClientEntropy />
-            <sp:RequireServerEntropy />
-          </wsp:Policy>
-        </sp:Trust10>
-        <wsaw:UsingAddressing />
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_Add_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_Add_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_AddFarm4Prophet_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_AddFarm4Prophet_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_AddAsXML_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_AddAsXML_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_Delete_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_Delete_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_Get_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_Get_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetNextToRun_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetNextToRun_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetMany_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetMany_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetJobXML_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetJobXML_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_AddLogMessage_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_AddLogMessage_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetLogMessages_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_GetLogMessages_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_SetCompleted_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_SetCompleted_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_ReRun_Input_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
-  <wsp:Policy wsu:Id="WSHttpBinding_IJobs_ReRun_output_policy">
-    <wsp:ExactlyOne>
-      <wsp:All>
-        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
-          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
-        </sp:SignedParts>
-        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
-          <sp:Body />
-        </sp:EncryptedParts>
-      </wsp:All>
-    </wsp:ExactlyOne>
-  </wsp:Policy>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
-    <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
-      <xsd:import schemaLocation="https://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd7" />
-    </xsd:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Add">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="yieldProphet" type="tns:YieldProphet" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="YieldProphet">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Version" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Paddock" type="tns:Paddock" />
+          <s:element minOccurs="1" maxOccurs="1" name="ReportType" type="tns:ReportTypeEnum" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReportName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ClientName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReportGeneratedBy" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Paddock">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="StartSeasonDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="SoilWaterSampleDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="SoilNitrogenSampleDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="StationNumber" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="StationName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ObservedData">
+            <s:complexType>
+              <s:sequence>
+                <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+              </s:sequence>
+            </s:complexType>
+          </s:element>
+          <s:element minOccurs="0" maxOccurs="1" name="RainfallSource" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TemperatureSource" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="StubbleMass" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="StubbleType" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Slope" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="SlopeLength" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="UseEC" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Management" type="tns:ArrayOfChoice1" />
+          <s:element minOccurs="0" maxOccurs="1" name="Samples" type="tns:ArrayOfSample" />
+          <s:element minOccurs="0" maxOccurs="1" name="SoilPath" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Soil" type="tns:Soil" />
+          <s:element minOccurs="1" maxOccurs="1" name="InitTotalWater" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="InitTotalNitrogen" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="NowDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="StubbleIncorporatedPercent" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="DateOfLastRainfallEntry" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="RainfallSinceSoilWaterSampleDate" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="LastClimateDate" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfChoice1">
+        <s:choice minOccurs="0" maxOccurs="unbounded">
+          <s:element minOccurs="1" maxOccurs="1" name="ResetNitrogen" nillable="true" type="tns:ResetNitrogen" />
+          <s:element minOccurs="1" maxOccurs="1" name="Fertilise" nillable="true" type="tns:Fertilise" />
+          <s:element minOccurs="1" maxOccurs="1" name="Tillage" nillable="true" type="tns:Tillage" />
+          <s:element minOccurs="1" maxOccurs="1" name="StubbleRemoved" nillable="true" type="tns:StubbleRemoved" />
+          <s:element minOccurs="1" maxOccurs="1" name="ResetSurfaceOrganicMatter" nillable="true" type="tns:ResetSurfaceOrganicMatter" />
+          <s:element minOccurs="1" maxOccurs="1" name="Sow" nillable="true" type="tns:Sow" />
+          <s:element minOccurs="1" maxOccurs="1" name="ResetWater" nillable="true" type="tns:ResetWater" />
+          <s:element minOccurs="1" maxOccurs="1" name="Irrigate" nillable="true" type="tns:Irrigate" />
+        </s:choice>
+      </s:complexType>
+      <s:complexType name="ResetNitrogen">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Management">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Date" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ResetSurfaceOrganicMatter">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Tillage">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Disturbance" type="tns:DisturbanceEnum" />
+              <s:element minOccurs="1" maxOccurs="1" name="Scenario" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="DisturbanceEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Low" />
+          <s:enumeration value="Medium" />
+          <s:enumeration value="High" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="Irrigate">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="Efficiency" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="Scenario" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Fertilise">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="Scenario" type="s:boolean" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Sow">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="MaxRootDepth" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="Crop" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Cultivar" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="SowingDensity" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="EmergenceDate" type="s:dateTime" />
+              <s:element minOccurs="1" maxOccurs="1" name="RowSpacing" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="BedRowSpacing" type="s:double" />
+              <s:element minOccurs="1" maxOccurs="1" name="BedWidth" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="SkipRow" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="IrrigationAmount" type="s:double" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="StubbleRemoved">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Percent" type="s:double" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ResetWater">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Management" />
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfSample">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Sample" nillable="true" type="tns:Sample" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Sample">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Date" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Thickness" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="NO3" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="NH4" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="SW" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="OC" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="EC" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="CL" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="ESP" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="PH" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="1" maxOccurs="1" name="NO3Units" type="tns:NUnitsEnum" />
+          <s:element minOccurs="1" maxOccurs="1" name="NH4Units" type="tns:NUnitsEnum" />
+          <s:element minOccurs="1" maxOccurs="1" name="SWUnits" type="tns:SWUnitsEnum" />
+          <s:element minOccurs="1" maxOccurs="1" name="OCUnits" type="tns:OCSampleUnitsEnum" />
+          <s:element minOccurs="1" maxOccurs="1" name="PHUnits" type="tns:PHSampleUnitsEnum" />
+        </s:sequence>
+        <s:attribute name="name" type="s:string" />
+      </s:complexType>
+      <s:complexType name="ArrayOfDouble">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="double" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="NUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="ppm" />
+          <s:enumeration value="kgha" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="SWUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Volumetric" />
+          <s:enumeration value="Gravimetric" />
+          <s:enumeration value="mm" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="OCSampleUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Total" />
+          <s:enumeration value="WalkleyBlack" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="PHSampleUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Water" />
+          <s:enumeration value="CaCl2" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="Soil">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="RecordNumber" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ASCOrder" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ASCSubOrder" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SoilType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LocalName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Site" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NearestTown" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Region" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NaturalVegetation" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ApsoilNumber" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Latitude" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Longitude" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="LocationAccuracy" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="YearOfSampling" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="DataSource" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Comments" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Water" type="tns:Water" />
+          <s:element minOccurs="0" maxOccurs="1" name="SoilWater" type="tns:SoilWater" />
+          <s:element minOccurs="0" maxOccurs="1" name="SoilOrganicMatter" type="tns:SoilOrganicMatter" />
+          <s:element minOccurs="0" maxOccurs="1" name="Analysis" type="tns:Analysis" />
+          <s:element minOccurs="0" maxOccurs="1" name="InitialWater" type="tns:InitialWater" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Sample" type="tns:Sample" />
+        </s:sequence>
+        <s:attribute name="name" type="s:string" />
+      </s:complexType>
+      <s:complexType name="Water">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Thickness" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="BD" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="AirDry" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="LL15" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="DUL" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="SAT" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="KS" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="BDMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="AirDryMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="LL15Metadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="DULMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="SATMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="KSMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SoilCrop" type="tns:SoilCrop" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SoilCrop">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Thickness" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="LL" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="KL" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="XF" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="LLMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="KLMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="XFMetadata" type="tns:ArrayOfString" />
+        </s:sequence>
+        <s:attribute name="name" type="s:string" />
+      </s:complexType>
+      <s:complexType name="SoilWater">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="SummerCona" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="SummerU" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="SummerDate" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="WinterCona" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="WinterU" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="WinterDate" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiffusConst" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="DiffusSlope" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Salb" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CN2Bare" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CNRed" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CNCov" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Slope" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="DischargeWidth" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CatchmentArea" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="MaxPond" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="Thickness" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="SWCON" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="MWCON" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="KLAT" type="tns:ArrayOfDouble" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SoilOrganicMatter">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="RootCN" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="RootWt" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="SoilCN" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="EnrACoeff" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="EnrBCoeff" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="Thickness" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="OC" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="OCMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="FBiom" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="FInert" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="1" maxOccurs="1" name="OCUnits" type="tns:OCUnitsEnum" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OCUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Total" />
+          <s:enumeration value="WalkleyBlack" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="Analysis">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Thickness" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="Rocks" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="RocksMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Texture" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="TextureMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="MunsellColour" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="MunsellMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="EC" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="ECMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="PH" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="PHMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="CL" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="CLMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Boron" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="BoronMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="CEC" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="CECMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ca" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="CaMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mg" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="MgMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Na" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="NaMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="K" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="KMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="ESP" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="ESPMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mn" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="MnMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Al" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="AlMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParticleSizeSand" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParticleSizeSandMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParticleSizeSilt" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParticleSizeSiltMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParticleSizeClay" type="tns:ArrayOfDouble" />
+          <s:element minOccurs="0" maxOccurs="1" name="ParticleSizeClayMetadata" type="tns:ArrayOfString" />
+          <s:element minOccurs="1" maxOccurs="1" name="PHUnits" type="tns:PHUnitsEnum" />
+          <s:element minOccurs="1" maxOccurs="1" name="BoronUnits" type="tns:BoronUnitsEnum" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="PHUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Water" />
+          <s:enumeration value="CaCl2" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="BoronUnitsEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="HotWater" />
+          <s:enumeration value="HotCaCl2" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="InitialWater">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="FractionFull" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="DepthWetSoil" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="PercentMethod" type="tns:PercentMethodEnum" />
+          <s:element minOccurs="0" maxOccurs="1" name="RelativeTo" type="s:string" />
+        </s:sequence>
+        <s:attribute name="name" type="s:string" />
+      </s:complexType>
+      <s:simpleType name="PercentMethodEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="FilledFromTop" />
+          <s:enumeration value="EvenlyDistributed" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="ReportTypeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Crop" />
+          <s:enumeration value="SowingOpportunity" />
+          <s:enumeration value="F4P" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="AddResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddFarm4Prophet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="f4p" type="tns:Farm4Prophet" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Farm4Prophet">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Version" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="TaskName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FarmList" type="tns:FarmSystem" />
+          <s:element minOccurs="0" maxOccurs="1" name="ClientName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReturnResults" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReportGeneratedBy" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FarmSystem">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="SimTemplateType" type="tns:SimulationType" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="StartSeasonDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="RunLength" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="StationNumber" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="StationName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ReportName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Area" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="OnFarmSoilTypes" type="tns:ArrayOfFarmSoilType" />
+          <s:element minOccurs="0" maxOccurs="1" name="OnFarmPaddocks" type="tns:ArrayOfFarmPaddockType" />
+          <s:element minOccurs="0" maxOccurs="1" name="LiveStock" type="tns:FarmLivestock" />
+          <s:element minOccurs="1" maxOccurs="1" name="DailyOutput" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="MonthlyOutput" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="YearlyOutput" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="SimulationType">
+        <s:restriction base="s:string">
+          <s:enumeration value="stCropOnly" />
+          <s:enumeration value="stMixed" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfFarmSoilType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FarmSoilType" nillable="true" type="tns:FarmSoilType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FarmSoilType">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="AreaProportion" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="SoilPath" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Slope" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="SlopeLength" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="unbounded" name="CropRotationList" type="tns:CropSpec" />
+          <s:element minOccurs="0" maxOccurs="1" name="SoilDescr" type="tns:Soil" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CropSpec">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="isCrop" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFarmPaddockType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FarmPaddockType" nillable="true" type="tns:FarmPaddockType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FarmPaddockType">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Area" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="StubbleMass" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="StubbleType" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="SoilWaterSampleDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="SoilNitrogenSampleDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sample" type="tns:Sample" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FarmLivestock">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="TradeLambBreed" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TradeLambCount" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="TradeLambBuyDay" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TradeLambSaleWt" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="BreedingEweCount" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="EweJoinDay" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="LambingRate" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="CastForAgeYears" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="LambSaleWt" type="s:double" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShearingDay" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Supplement1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Supplement2" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Supp1Propn" type="s:double" />
+          <s:element minOccurs="1" maxOccurs="1" name="Supp2Propn" type="s:double" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AddFarm4ProphetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddFarm4ProphetResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddAsXML">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="jobXML" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddAsXMLResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="Delete">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="Get">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResult" type="tns:Job" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Job">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Status" type="tns:StatusEnum" />
+          <s:element minOccurs="0" maxOccurs="1" name="URL" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorText" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="StatusEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="Queued" />
+          <s:enumeration value="Running" />
+          <s:enumeration value="Completed" />
+          <s:enumeration value="Error" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetNextToRun">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetNextToRunResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetNextToRunResult" type="tns:Job" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMany">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="maxNum" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetManyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetManyResult" type="tns:ArrayOfJob" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfJob">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Job" nillable="true" type="tns:Job" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetJobXML">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetJobXMLResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetJobXMLResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddLogMessage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="message" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isError" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddLogMessageResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetLogMessages">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetLogMessagesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLogMessagesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetCompleted">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="jobName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="errorMessage" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetCompletedResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ReRun">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="jobName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ReRunResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
   </wsdl:types>
-  <wsdl:message name="IJobs_Add_InputMessage">
+  <wsdl:message name="AddSoapIn">
     <wsdl:part name="parameters" element="tns:Add" />
   </wsdl:message>
-  <wsdl:message name="IJobs_Add_OutputMessage">
+  <wsdl:message name="AddSoapOut">
     <wsdl:part name="parameters" element="tns:AddResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_AddFarm4Prophet_InputMessage">
+  <wsdl:message name="AddFarm4ProphetSoapIn">
     <wsdl:part name="parameters" element="tns:AddFarm4Prophet" />
   </wsdl:message>
-  <wsdl:message name="IJobs_AddFarm4Prophet_OutputMessage">
+  <wsdl:message name="AddFarm4ProphetSoapOut">
     <wsdl:part name="parameters" element="tns:AddFarm4ProphetResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_AddAsXML_InputMessage">
+  <wsdl:message name="AddAsXMLSoapIn">
     <wsdl:part name="parameters" element="tns:AddAsXML" />
   </wsdl:message>
-  <wsdl:message name="IJobs_AddAsXML_OutputMessage">
+  <wsdl:message name="AddAsXMLSoapOut">
     <wsdl:part name="parameters" element="tns:AddAsXMLResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_Delete_InputMessage">
+  <wsdl:message name="DeleteSoapIn">
     <wsdl:part name="parameters" element="tns:Delete" />
   </wsdl:message>
-  <wsdl:message name="IJobs_Delete_OutputMessage">
+  <wsdl:message name="DeleteSoapOut">
     <wsdl:part name="parameters" element="tns:DeleteResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_Get_InputMessage">
+  <wsdl:message name="GetSoapIn">
     <wsdl:part name="parameters" element="tns:Get" />
   </wsdl:message>
-  <wsdl:message name="IJobs_Get_OutputMessage">
+  <wsdl:message name="GetSoapOut">
     <wsdl:part name="parameters" element="tns:GetResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetNextToRun_InputMessage">
+  <wsdl:message name="GetNextToRunSoapIn">
     <wsdl:part name="parameters" element="tns:GetNextToRun" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetNextToRun_OutputMessage">
+  <wsdl:message name="GetNextToRunSoapOut">
     <wsdl:part name="parameters" element="tns:GetNextToRunResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetMany_InputMessage">
+  <wsdl:message name="GetManySoapIn">
     <wsdl:part name="parameters" element="tns:GetMany" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetMany_OutputMessage">
+  <wsdl:message name="GetManySoapOut">
     <wsdl:part name="parameters" element="tns:GetManyResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetJobXML_InputMessage">
+  <wsdl:message name="GetJobXMLSoapIn">
     <wsdl:part name="parameters" element="tns:GetJobXML" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetJobXML_OutputMessage">
+  <wsdl:message name="GetJobXMLSoapOut">
     <wsdl:part name="parameters" element="tns:GetJobXMLResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_AddLogMessage_InputMessage">
+  <wsdl:message name="AddLogMessageSoapIn">
     <wsdl:part name="parameters" element="tns:AddLogMessage" />
   </wsdl:message>
-  <wsdl:message name="IJobs_AddLogMessage_OutputMessage">
+  <wsdl:message name="AddLogMessageSoapOut">
     <wsdl:part name="parameters" element="tns:AddLogMessageResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetLogMessages_InputMessage">
+  <wsdl:message name="GetLogMessagesSoapIn">
     <wsdl:part name="parameters" element="tns:GetLogMessages" />
   </wsdl:message>
-  <wsdl:message name="IJobs_GetLogMessages_OutputMessage">
+  <wsdl:message name="GetLogMessagesSoapOut">
     <wsdl:part name="parameters" element="tns:GetLogMessagesResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_SetCompleted_InputMessage">
+  <wsdl:message name="SetCompletedSoapIn">
     <wsdl:part name="parameters" element="tns:SetCompleted" />
   </wsdl:message>
-  <wsdl:message name="IJobs_SetCompleted_OutputMessage">
+  <wsdl:message name="SetCompletedSoapOut">
     <wsdl:part name="parameters" element="tns:SetCompletedResponse" />
   </wsdl:message>
-  <wsdl:message name="IJobs_ReRun_InputMessage">
+  <wsdl:message name="ReRunSoapIn">
     <wsdl:part name="parameters" element="tns:ReRun" />
   </wsdl:message>
-  <wsdl:message name="IJobs_ReRun_OutputMessage">
+  <wsdl:message name="ReRunSoapOut">
     <wsdl:part name="parameters" element="tns:ReRunResponse" />
   </wsdl:message>
-  <wsdl:portType name="IJobs">
+  <wsdl:portType name="JobsSoap">
     <wsdl:operation name="Add">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Add" message="tns:IJobs_Add_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddResponse" message="tns:IJobs_Add_OutputMessage" />
+      <wsdl:input message="tns:AddSoapIn" />
+      <wsdl:output message="tns:AddSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="AddFarm4Prophet">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddFarm4Prophet" message="tns:IJobs_AddFarm4Prophet_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddFarm4ProphetResponse" message="tns:IJobs_AddFarm4Prophet_OutputMessage" />
+      <wsdl:input message="tns:AddFarm4ProphetSoapIn" />
+      <wsdl:output message="tns:AddFarm4ProphetSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="AddAsXML">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddAsXML" message="tns:IJobs_AddAsXML_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddAsXMLResponse" message="tns:IJobs_AddAsXML_OutputMessage" />
+      <wsdl:input message="tns:AddAsXMLSoapIn" />
+      <wsdl:output message="tns:AddAsXMLSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Delete">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Delete" message="tns:IJobs_Delete_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/DeleteResponse" message="tns:IJobs_Delete_OutputMessage" />
+      <wsdl:input message="tns:DeleteSoapIn" />
+      <wsdl:output message="tns:DeleteSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Get">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Get" message="tns:IJobs_Get_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetResponse" message="tns:IJobs_Get_OutputMessage" />
+      <wsdl:input message="tns:GetSoapIn" />
+      <wsdl:output message="tns:GetSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetNextToRun">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetNextToRun" message="tns:IJobs_GetNextToRun_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetNextToRunResponse" message="tns:IJobs_GetNextToRun_OutputMessage" />
+      <wsdl:input message="tns:GetNextToRunSoapIn" />
+      <wsdl:output message="tns:GetNextToRunSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetMany">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetMany" message="tns:IJobs_GetMany_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetManyResponse" message="tns:IJobs_GetMany_OutputMessage" />
+      <wsdl:input message="tns:GetManySoapIn" />
+      <wsdl:output message="tns:GetManySoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetJobXML">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetJobXML" message="tns:IJobs_GetJobXML_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetJobXMLResponse" message="tns:IJobs_GetJobXML_OutputMessage" />
+      <wsdl:input message="tns:GetJobXMLSoapIn" />
+      <wsdl:output message="tns:GetJobXMLSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="AddLogMessage">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddLogMessage" message="tns:IJobs_AddLogMessage_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddLogMessageResponse" message="tns:IJobs_AddLogMessage_OutputMessage" />
+      <wsdl:input message="tns:AddLogMessageSoapIn" />
+      <wsdl:output message="tns:AddLogMessageSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetLogMessages">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetLogMessages" message="tns:IJobs_GetLogMessages_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetLogMessagesResponse" message="tns:IJobs_GetLogMessages_OutputMessage" />
+      <wsdl:input message="tns:GetLogMessagesSoapIn" />
+      <wsdl:output message="tns:GetLogMessagesSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="SetCompleted">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/SetCompleted" message="tns:IJobs_SetCompleted_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/SetCompletedResponse" message="tns:IJobs_SetCompleted_OutputMessage" />
+      <wsdl:input message="tns:SetCompletedSoapIn" />
+      <wsdl:output message="tns:SetCompletedSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="ReRun">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/ReRun" message="tns:IJobs_ReRun_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/ReRunResponse" message="tns:IJobs_ReRun_OutputMessage" />
+      <wsdl:input message="tns:ReRunSoapIn" />
+      <wsdl:output message="tns:ReRunSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="WSHttpBinding_IJobs" type="tns:IJobs">
-    <wsp:PolicyReference URI="#WSHttpBinding_IJobs_policy" />
+  <wsdl:binding name="JobsSoap" type="tns:JobsSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Add">
+      <soap:operation soapAction="http://tempuri.org/Add" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddFarm4Prophet">
+      <soap:operation soapAction="http://tempuri.org/AddFarm4Prophet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddAsXML">
+      <soap:operation soapAction="http://tempuri.org/AddAsXML" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get">
+      <soap:operation soapAction="http://tempuri.org/Get" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNextToRun">
+      <soap:operation soapAction="http://tempuri.org/GetNextToRun" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMany">
+      <soap:operation soapAction="http://tempuri.org/GetMany" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetJobXML">
+      <soap:operation soapAction="http://tempuri.org/GetJobXML" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddLogMessage">
+      <soap:operation soapAction="http://tempuri.org/AddLogMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogMessages">
+      <soap:operation soapAction="http://tempuri.org/GetLogMessages" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetCompleted">
+      <soap:operation soapAction="http://tempuri.org/SetCompleted" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReRun">
+      <soap:operation soapAction="http://tempuri.org/ReRun" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="JobsSoap12" type="tns:JobsSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Add">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/Add" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/Add" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_Add_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_Add_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="AddFarm4Prophet">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/AddFarm4Prophet" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/AddFarm4Prophet" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_AddFarm4Prophet_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_AddFarm4Prophet_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="AddAsXML">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/AddAsXML" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/AddAsXML" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_AddAsXML_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_AddAsXML_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Delete">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/Delete" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/Delete" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_Delete_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_Delete_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Get">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/Get" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/Get" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_Get_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_Get_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetNextToRun">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/GetNextToRun" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/GetNextToRun" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetNextToRun_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetNextToRun_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetMany">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/GetMany" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/GetMany" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetMany_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetMany_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetJobXML">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/GetJobXML" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/GetJobXML" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetJobXML_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetJobXML_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="AddLogMessage">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/AddLogMessage" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/AddLogMessage" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_AddLogMessage_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_AddLogMessage_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetLogMessages">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/GetLogMessages" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/GetLogMessages" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetLogMessages_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_GetLogMessages_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="SetCompleted">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/SetCompleted" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/SetCompleted" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_SetCompleted_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_SetCompleted_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="ReRun">
-      <soap12:operation soapAction="http://tempuri.org/IJobs/ReRun" style="document" />
+      <soap12:operation soapAction="http://tempuri.org/ReRun" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_ReRun_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#WSHttpBinding_IJobs_ReRun_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="Jobs">
-    <wsdl:port name="WSHttpBinding_IJobs" binding="tns:WSHttpBinding_IJobs">
-      <soap12:address location="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc" />
-      <wsa10:EndpointReference>
-        <wsa10:Address>http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc</wsa10:Address>
-        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Spn>host/IIS-Ext1.it.csiro.au</Spn>
-        </Identity>
-      </wsa10:EndpointReference>
+    <wsdl:port name="JobsSoap" binding="tns:JobsSoap">
+      <soap:address location="https://www.apsim.info/APSIM.Cloud.Service/Jobs.asmx" />
+    </wsdl:port>
+    <wsdl:port name="JobsSoap12" binding="tns:JobsSoap12">
+      <soap12:address location="https://www.apsim.info/APSIM.Cloud.Service/Jobs.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

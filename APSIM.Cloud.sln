@@ -2,20 +2,14 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Portal", "APSIM.Cloud.Portal\APSIM.Cloud.Portal.csproj", "{00DAF19F-0146-4C49-A614-5785D585383D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817} = {DA75398F-72FF-4A55-8DF9-31DFADF90817}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Runner", "APSIM.Cloud.Runner\APSIM.Cloud.Runner.csproj", "{C3EC5998-E242-4209-8D48-46772F4629F4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817} = {DA75398F-72FF-4A55-8DF9-31DFADF90817}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{DA75398F-72FF-4A55-8DF9-31DFADF90817}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Shared", "APSIM.Cloud.Shared\APSIM.Cloud.Shared.csproj", "{38151154-60D4-47BD-BCC2-679BA8BF144E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Shared", "..\APSIM.Shared\APSIM.Shared.csproj", "{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{311A2C4A-5474-4476-97F9-3894BC3F4709}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,18 +47,6 @@ Global
 		{C3EC5998-E242-4209-8D48-46772F4629F4}.Release|Win32.ActiveCfg = Release|x86
 		{C3EC5998-E242-4209-8D48-46772F4629F4}.Release|x86.ActiveCfg = Release|x86
 		{C3EC5998-E242-4209-8D48-46772F4629F4}.Release|x86.Build.0 = Release|x86
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|Win32.ActiveCfg = Release|Any CPU
-		{DA75398F-72FF-4A55-8DF9-31DFADF90817}.Release|x86.ActiveCfg = Release|Any CPU
 		{38151154-60D4-47BD-BCC2-679BA8BF144E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38151154-60D4-47BD-BCC2-679BA8BF144E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38151154-60D4-47BD-BCC2-679BA8BF144E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -89,6 +71,18 @@ Global
 		{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}.Release|Win32.ActiveCfg = Release|Any CPU
 		{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}.Release|x86.ActiveCfg = Release|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Win32.ActiveCfg = Release|Any CPU
+		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
