@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Shared", "APSIM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Shared", "..\APSIM.Shared\APSIM.Shared.csproj", "{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{311A2C4A-5474-4476-97F9-3894BC3F4709}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,18 +71,18 @@ Global
 		{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}.Release|Win32.ActiveCfg = Release|Any CPU
 		{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}.Release|x86.ActiveCfg = Release|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Any CPU.Build.0 = Release|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|Win32.ActiveCfg = Release|Any CPU
-		{311A2C4A-5474-4476-97F9-3894BC3F4709}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Win32.ActiveCfg = Release|Any CPU
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

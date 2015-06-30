@@ -76,13 +76,38 @@
     <None Include="Service References\JobsService\APSIM.Cloud.Portal.JobsService.Job.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\JobsService\Jobs.disco" />
     <None Include="Service References\JobsService\configuration91.svcinfo" />
     <None Include="Service References\JobsService\configuration.svcinfo" />
+    <None Include="Service References\JobsService\Jobs.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs1.wsdl" />
+    <None Include="Service References\JobsService\Jobs1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs7.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\JobsService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Service References\JobsService\Jobs1.disco" />
     <Content Include="ShowJobDetail.aspx" />
     <Content Include="AddJob.aspx" />
     <Content Include="Web.config">
@@ -95,7 +120,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Main.aspx" />
-    <None Include="Service References\JobsService\Jobs.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -123,10 +123,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://www.apsim.info/ApsoilWebService/Service.asmx">
+    <WebReferenceUrl Include="https://www.apsim.info/ApsoilWebService/Service.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\APSOIL\</RelPath>
-      <UpdateFromURL>http://www.apsim.info/ApsoilWebService/Service.asmx</UpdateFromURL>
+      <UpdateFromURL>https://www.apsim.info/ApsoilWebService/Service.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

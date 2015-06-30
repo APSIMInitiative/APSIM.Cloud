@@ -118,29 +118,29 @@
     <None Include="Service References\JobsService\APSIM.Cloud.Runner.JobsService.Job.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Service1.xsd">
+    <None Include="Service References\JobsService\Jobs.wsdl" />
+    <None Include="Service References\JobsService\Jobs.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\APSIM.Cloud.Shared.xsd">
+    <None Include="Service References\JobsService\Jobs1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\APSIM.Shared.Soils.xsd">
+    <None Include="Service References\JobsService\Jobs2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Arrays1.xsd">
+    <None Include="Service References\JobsService\Jobs3.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\service.xsd">
+    <None Include="Service References\JobsService\Jobs4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\service1.wsdl" />
-    <None Include="Service References\JobsService\service2.xsd">
+    <None Include="Service References\JobsService\Jobs5.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\service21.xsd">
+    <None Include="Service References\JobsService\Jobs6.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\System.Data1.xsd">
+    <None Include="Service References\JobsService\Jobs7.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\YPReporting\Reporting.wsdl" />
@@ -213,6 +213,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\JobsService\Jobs.disco" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

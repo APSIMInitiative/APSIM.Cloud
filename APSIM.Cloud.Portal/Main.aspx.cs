@@ -18,7 +18,7 @@ namespace APSIM.Cloud.Portal
         protected void Page_Load(object sender, EventArgs e)
         {
             GridView.DataSource = null;
-            using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+            using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
             {
                 JobsService.Job[] jobs = jobsService.GetMany(Convert.ToInt32(NumRowsTextBox.Text));
 
@@ -79,7 +79,7 @@ namespace APSIM.Cloud.Portal
                 if (status == "Error")
                 {
                     string name = table.Rows[index]["Name"].ToString();
-                    using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+                    using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
                     {
                         JobsService.Job job = jobsService.Get(name);
                         Response.Redirect("ShowJobDetail.aspx?Name=" + name + "&Type=Error");
@@ -93,7 +93,7 @@ namespace APSIM.Cloud.Portal
             }
             else if (e.CommandName == "ReRun")
             {
-                using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+                using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
                 {
                     string name = table.Rows[index]["Name"].ToString();
                     jobsService.ReRun(name);
@@ -102,7 +102,7 @@ namespace APSIM.Cloud.Portal
             }
             else if (e.CommandName == "Delete")
             {
-                using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+                using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
                 {
                     string name = table.Rows[index]["Name"].ToString();
                     jobsService.Delete(name);

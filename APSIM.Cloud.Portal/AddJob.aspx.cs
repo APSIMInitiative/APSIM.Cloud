@@ -8,6 +8,7 @@ using System.Xml;
 using APSIM.Cloud.Shared;
 using APSIM.Shared.Soils;
 using APSIM.Shared.Utilities;
+using System.Xml.Serialization;
 
 namespace APSIM.Cloud.Portal
 {
@@ -34,7 +35,27 @@ namespace APSIM.Cloud.Portal
                 tempFile = Path.ChangeExtension(tempFile, ".zip");
             }
 
-            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromFile(tempFile);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(tempFile);
+            if (doc.DocumentElement.Name == "Farm4Prophet")
+            {
+                UploadFarm4Prophet(tempFile);
+            }
+            else
+            {
+                UploadYieldProphet(tempFile);
+            }
+
+            File.Delete(tempFile);
+
+            Response.Redirect("Main.aspx");
+        }
+
+        /// <summary>Uploads a job specified by the the yield prophet.</summary>
+        /// <param name="fileName">The name of the file.</param>
+        private void UploadYieldProphet(string fileName)
+        {
+            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromFile(fileName);
 
             DateTime nowDate = DateTime.Now;
             if (NowEditBox.Text != "")
@@ -43,25 +64,24 @@ namespace APSIM.Cloud.Portal
             foreach (Paddock paddock in yieldProphet.Paddock)
                 paddock.NowDate = nowDate;
 
-            using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+            using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
             {
-                jobsService.Add(ToWebServiceYP(yieldProphet));
+                jobsService.Add(yieldProphet);
             }
-
-            File.Delete(tempFile);
-
-            Response.Redirect("Main.aspx");
         }
 
-        /// <summary>Converts an internal yieldprophet instance to a web service instance.</summary>
-        /// <param name="yieldProphet">The yield prophet instance to convert.</param>
-        /// <returns>The web service version of the yieldprophet instance.</returns>
-        private JobsService.YieldProphet ToWebServiceYP(YieldProphet yieldProphet)
+        /// <summary>Uploads a job specified by the the yield prophet.</summary>
+        /// <param name="fileName">The name of the file.</param>
+        private void UploadFarm4Prophet(string fileName)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(XmlUtilities.Serialise(yieldProphet, false));
-            return XmlUtilities.Deserialise(doc.DocumentElement, typeof(JobsService.YieldProphet)) as JobsService.YieldProphet;
+            Farm4Prophet farm4Prophet = Farm4ProphetUtility.Farm4ProphetFromFile(fileName);
+
+            using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
+            {
+                jobsService.AddFarm4Prophet(farm4Prophet);
+            }
         }
+
 
     }
 }

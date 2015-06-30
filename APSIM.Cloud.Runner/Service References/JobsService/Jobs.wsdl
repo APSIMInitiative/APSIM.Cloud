@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Jobs" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
+      <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd7" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IJobs_GetData_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetData" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_Add_InputMessage">
+    <wsdl:part name="parameters" element="tns:Add" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_Add_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddFarm4Prophet_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddFarm4Prophet" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddFarm4Prophet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddFarm4ProphetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddAsXML_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddAsXML" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddAsXML_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddAsXMLResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_Get_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_Get_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetNextToRun_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextToRun" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetNextToRun_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextToRunResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetMany_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMany" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetMany_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetManyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetJobXML_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetJobXML" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetJobXML_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetJobXMLResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddLogMessage_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddLogMessage" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddLogMessage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddLogMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetLogMessages_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogMessages" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_GetLogMessages_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLogMessagesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_SetCompleted_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetCompleted" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_SetCompleted_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetCompletedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_ReRun_InputMessage">
+    <wsdl:part name="parameters" element="tns:ReRun" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_ReRun_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ReRunResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IJobs">
+    <wsdl:operation name="GetData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetData" message="tns:IJobs_GetData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetDataResponse" message="tns:IJobs_GetData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Add">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Add" message="tns:IJobs_Add_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddResponse" message="tns:IJobs_Add_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddFarm4Prophet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddFarm4Prophet" message="tns:IJobs_AddFarm4Prophet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddFarm4ProphetResponse" message="tns:IJobs_AddFarm4Prophet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddAsXML">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddAsXML" message="tns:IJobs_AddAsXML_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddAsXMLResponse" message="tns:IJobs_AddAsXML_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Delete" message="tns:IJobs_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/DeleteResponse" message="tns:IJobs_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Get" message="tns:IJobs_Get_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetResponse" message="tns:IJobs_Get_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNextToRun">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetNextToRun" message="tns:IJobs_GetNextToRun_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetNextToRunResponse" message="tns:IJobs_GetNextToRun_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMany">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetMany" message="tns:IJobs_GetMany_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetManyResponse" message="tns:IJobs_GetMany_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetJobXML">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetJobXML" message="tns:IJobs_GetJobXML_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetJobXMLResponse" message="tns:IJobs_GetJobXML_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddLogMessage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddLogMessage" message="tns:IJobs_AddLogMessage_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddLogMessageResponse" message="tns:IJobs_AddLogMessage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLogMessages">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetLogMessages" message="tns:IJobs_GetLogMessages_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetLogMessagesResponse" message="tns:IJobs_GetLogMessages_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetCompleted">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/SetCompleted" message="tns:IJobs_SetCompleted_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/SetCompletedResponse" message="tns:IJobs_SetCompleted_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ReRun">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/ReRun" message="tns:IJobs_ReRun_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/ReRunResponse" message="tns:IJobs_ReRun_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IJobs" type="tns:IJobs">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetData">
+      <soap:operation soapAction="http://tempuri.org/IJobs/GetData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Add">
+      <soap:operation soapAction="http://tempuri.org/IJobs/Add" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddFarm4Prophet">
+      <soap:operation soapAction="http://tempuri.org/IJobs/AddFarm4Prophet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddAsXML">
+      <soap:operation soapAction="http://tempuri.org/IJobs/AddAsXML" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IJobs/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get">
+      <soap:operation soapAction="http://tempuri.org/IJobs/Get" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNextToRun">
+      <soap:operation soapAction="http://tempuri.org/IJobs/GetNextToRun" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMany">
+      <soap:operation soapAction="http://tempuri.org/IJobs/GetMany" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetJobXML">
+      <soap:operation soapAction="http://tempuri.org/IJobs/GetJobXML" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddLogMessage">
+      <soap:operation soapAction="http://tempuri.org/IJobs/AddLogMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLogMessages">
+      <soap:operation soapAction="http://tempuri.org/IJobs/GetLogMessages" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetCompleted">
+      <soap:operation soapAction="http://tempuri.org/IJobs/SetCompleted" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReRun">
+      <soap:operation soapAction="http://tempuri.org/IJobs/ReRun" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Jobs">
+    <wsdl:port name="BasicHttpBinding_IJobs" binding="tns:BasicHttpBinding_IJobs">
+      <soap:address location="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

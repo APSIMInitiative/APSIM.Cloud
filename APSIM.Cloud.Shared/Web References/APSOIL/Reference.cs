@@ -35,6 +35,8 @@ namespace APSIM.Cloud.Shared.APSOIL {
         
         private System.Threading.SendOrPostCallback UpdateAllSoilsOperationCompleted;
         
+        private System.Threading.SendOrPostCallback UpdateSoilOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SoilXMLOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetSoilInfoOperationCompleted;
@@ -54,6 +56,8 @@ namespace APSIM.Cloud.Shared.APSOIL {
         private System.Threading.SendOrPostCallback SoilChartWithSamplePNGOperationCompleted;
         
         private System.Threading.SendOrPostCallback SearchSoilsReturnInfoOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback ClosestMatchingSoilsOperationCompleted;
         
         private System.Threading.SendOrPostCallback SoilAsJsonOperationCompleted;
         
@@ -115,6 +119,9 @@ namespace APSIM.Cloud.Shared.APSOIL {
         public event UpdateAllSoilsCompletedEventHandler UpdateAllSoilsCompleted;
         
         /// <remarks/>
+        public event UpdateSoilCompletedEventHandler UpdateSoilCompleted;
+        
+        /// <remarks/>
         public event SoilXMLCompletedEventHandler SoilXMLCompleted;
         
         /// <remarks/>
@@ -143,6 +150,9 @@ namespace APSIM.Cloud.Shared.APSOIL {
         
         /// <remarks/>
         public event SearchSoilsReturnInfoCompletedEventHandler SearchSoilsReturnInfoCompleted;
+        
+        /// <remarks/>
+        public event ClosestMatchingSoilsCompletedEventHandler ClosestMatchingSoilsCompleted;
         
         /// <remarks/>
         public event SoilAsJsonCompletedEventHandler SoilAsJsonCompleted;
@@ -243,6 +253,36 @@ namespace APSIM.Cloud.Shared.APSOIL {
             if ((this.UpdateAllSoilsCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateAllSoilsCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://www.apsim.info/UpdateSoil", RequestNamespace="http://www.apsim.info/", ResponseNamespace="http://www.apsim.info/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void UpdateSoil(string soilPath, string contents) {
+            this.Invoke("UpdateSoil", new object[] {
+                        soilPath,
+                        contents});
+        }
+        
+        /// <remarks/>
+        public void UpdateSoilAsync(string soilPath, string contents) {
+            this.UpdateSoilAsync(soilPath, contents, null);
+        }
+        
+        /// <remarks/>
+        public void UpdateSoilAsync(string soilPath, string contents, object userState) {
+            if ((this.UpdateSoilOperationCompleted == null)) {
+                this.UpdateSoilOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateSoilOperationCompleted);
+            }
+            this.InvokeAsync("UpdateSoil", new object[] {
+                        soilPath,
+                        contents}, this.UpdateSoilOperationCompleted, userState);
+        }
+        
+        private void OnUpdateSoilOperationCompleted(object arg) {
+            if ((this.UpdateSoilCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateSoilCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -555,6 +595,41 @@ namespace APSIM.Cloud.Shared.APSOIL {
             if ((this.SearchSoilsReturnInfoCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SearchSoilsReturnInfoCompleted(this, new SearchSoilsReturnInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://www.apsim.info/ClosestMatchingSoils", RequestNamespace="http://www.apsim.info/", ResponseNamespace="http://www.apsim.info/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string[] ClosestMatchingSoils(double[] thickness, double[] pawc, string cropName, int numSoilsToReturn) {
+            object[] results = this.Invoke("ClosestMatchingSoils", new object[] {
+                        thickness,
+                        pawc,
+                        cropName,
+                        numSoilsToReturn});
+            return ((string[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void ClosestMatchingSoilsAsync(double[] thickness, double[] pawc, string cropName, int numSoilsToReturn) {
+            this.ClosestMatchingSoilsAsync(thickness, pawc, cropName, numSoilsToReturn, null);
+        }
+        
+        /// <remarks/>
+        public void ClosestMatchingSoilsAsync(double[] thickness, double[] pawc, string cropName, int numSoilsToReturn, object userState) {
+            if ((this.ClosestMatchingSoilsOperationCompleted == null)) {
+                this.ClosestMatchingSoilsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnClosestMatchingSoilsOperationCompleted);
+            }
+            this.InvokeAsync("ClosestMatchingSoils", new object[] {
+                        thickness,
+                        pawc,
+                        cropName,
+                        numSoilsToReturn}, this.ClosestMatchingSoilsOperationCompleted, userState);
+        }
+        
+        private void OnClosestMatchingSoilsOperationCompleted(object arg) {
+            if ((this.ClosestMatchingSoilsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ClosestMatchingSoilsCompleted(this, new ClosestMatchingSoilsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1317,6 +1392,10 @@ namespace APSIM.Cloud.Shared.APSOIL {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.34209")]
+    public delegate void UpdateSoilCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.34209")]
     public delegate void SoilXMLCompletedEventHandler(object sender, SoilXMLCompletedEventArgs e);
     
     /// <remarks/>
@@ -1571,6 +1650,32 @@ namespace APSIM.Cloud.Shared.APSOIL {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((SoilInfo[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.34209")]
+    public delegate void ClosestMatchingSoilsCompletedEventHandler(object sender, ClosestMatchingSoilsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.34209")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ClosestMatchingSoilsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal ClosestMatchingSoilsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string[])(this.results[0]));
             }
         }
     }

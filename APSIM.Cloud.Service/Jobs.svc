@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="APSIM.Cloud.Service.Jobs" CodeBehind="Jobs.svc.cs" %>

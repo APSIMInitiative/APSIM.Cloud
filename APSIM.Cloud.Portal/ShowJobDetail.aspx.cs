@@ -22,7 +22,7 @@ namespace APSIM.Cloud.Portal
 
             if (Request.QueryString["Name"] != null)
             {
-                using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+                using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
                 {
                     string jobName = Request.QueryString["Name"];
                     JobsService.Job job = jobsService.Get(jobName);
@@ -48,7 +48,7 @@ namespace APSIM.Cloud.Portal
             }
             else
             {
-                using (JobsService.JobsSoapClient jobsService = new JobsService.JobsSoapClient())
+                using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
                 {
                     string text = string.Empty;
                     DataSet log = jobsService.GetLogMessages();
