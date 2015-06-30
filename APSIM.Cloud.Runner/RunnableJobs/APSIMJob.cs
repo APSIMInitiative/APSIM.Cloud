@@ -50,7 +50,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Start the external process to run APSIM and wait for it to finish.
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.FileName = Path.Combine(binDirectory, @"Temp\Model\Apsim.exe");
+            p.StartInfo.FileName = Path.Combine(binDirectory, @"APSIM\Model\Apsim.exe");
             p.StartInfo.Arguments = fileName;
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;

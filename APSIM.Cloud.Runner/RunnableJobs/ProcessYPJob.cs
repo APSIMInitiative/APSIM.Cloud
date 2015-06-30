@@ -29,7 +29,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         private string workingDirectory;
 
         /// <summary>The apsim report executable path.</summary>
-        private static string archiveLocation = @"ftp://www.apsim.info/YP/Archive";
+        private static string archiveLocation = @"ftp://bob.apsim.info/APSIM.Cloud.Archive";
 
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
         public bool IsComputationallyTimeConsuming { get { return false; } }
@@ -104,7 +104,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Tell the job system that job is complete.
             if (JobFileName == null)
             {
-                FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", "Administrator", "CsiroDMZ!");
+                string[] usernamepwd = File.ReadAllText(@"C:\inetpub\wwwroot\ftpuserpwd.txt").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", usernamepwd[0], usernamepwd[1]);
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
                     jobsClient.SetCompleted(JobName, ErrorMessage);
@@ -142,13 +144,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
                 string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                string ausFarmHomeDirectory = Path.Combine(binDirectory, "F4P");    // ?? not sure about the working path here
-
                 //for each simulation
                 for (int i = 0; i < files.Length; i++)
                 {
                     RunnableJobs.AusFarmJob job = new RunnableJobs.AusFarmJob(
-                     fileName: files[i],
+                     fileName: Path.Combine(workingDirectory, files[i]),
                      arguments: "");
                     jobs.Add(job);
                 }

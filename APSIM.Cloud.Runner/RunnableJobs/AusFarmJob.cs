@@ -45,6 +45,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         {
             this.fileName = fileName;
             this.arguments = arguments;
+            this.workingDirectory = Path.GetDirectoryName(fileName);
         }
 
         /// <summary>Called to start the job.</summary>
@@ -52,8 +53,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <param name="e">The <see cref="DoWorkEventArgs" /> instance containing the event data.</param>
         public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+
             // Sort out the command arguments.
-            string args = fileName;
+            string args = Path.GetFileName(fileName);
             if (arguments != null)
                 args += " " + arguments;
 
@@ -61,13 +63,21 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             summaryFile = new StreamWriter(Path.ChangeExtension(fileName, ".sum"));
 
             string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string ausfarmBin = Path.Combine(binDirectory, "AusFarm");
+
+            // Copy in the .prm files.
+            foreach (string prmFileName in Directory.GetFiles(ausfarmBin, "*.prm"))
+            {
+                File.Copy(prmFileName, Path.Combine(workingDirectory, Path.GetFileName(prmFileName)));
+            }
+
 
             // Start the external process to run AusFarm and wait for it to finish.
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.RedirectStandardError = true;
-            p.StartInfo.FileName = Path.Combine(binDirectory, @"F4P\auscmd32.exe");
+            p.StartInfo.FileName = Path.Combine(ausfarmBin, "auscmd32.exe");
             p.StartInfo.Arguments = args;
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;
@@ -80,6 +90,15 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
             // Close the summary file.
             summaryFile.Close();
+
+            // Look for an error log file. Seems the error file gets written to the AusFarm
+            // directory rather than the same place as the .sdml.
+            // If found then copy into the working directory.
+            string errorFile = Path.Combine(binDirectory, "AusFarm", Path.GetFileName(fileName) + "_errors.log");
+            if (File.Exists(errorFile))
+            {
+                File.Move(errorFile, Path.Combine(workingDirectory, Path.GetFileName(errorFile)));
+            }
         }
 
         /// <summary>Called when APSIM writes something to the STDOUT.</summary>

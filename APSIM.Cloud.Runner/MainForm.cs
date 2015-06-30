@@ -37,7 +37,7 @@ namespace APSIM.Cloud.Runner
         private void OnLoad(object sender, EventArgs e)
         {
             jobManager = new JobManager();
-            if (commandLineArguments != null)
+            if (commandLineArguments != null && commandLineArguments.Length > 0)
             {
                 RunJobFromCommandLine();
             }

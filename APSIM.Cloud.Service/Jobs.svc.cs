@@ -306,7 +306,7 @@ namespace APSIM.Cloud.Service
             string url = null;
             if ((StatusEnum)Reader["Status"] == StatusEnum.Completed ||
                  (StatusEnum)Reader["Status"] == StatusEnum.Error)
-                url = "http://www.apsim.info/YP/Archive/" + Reader["Name"] + ".zip";
+                url = "http://bob.apsim.info/APSIM.Cloud.Archive/" + Reader["Name"] + ".zip";
 
             return new Job(Reader["Name"].ToString(),
                             (StatusEnum)Reader["Status"],
