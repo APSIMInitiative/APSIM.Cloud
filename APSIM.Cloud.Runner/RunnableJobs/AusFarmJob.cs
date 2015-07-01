@@ -10,6 +10,10 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.IO;
     using System.Reflection;
     using APSIM.Shared.Utilities;
+    using System.Data;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
 
     /// <summary>
     /// A runnable class for a single AusFarm simulation run.
@@ -37,12 +41,16 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>The summary file</summary>
         private StreamWriter summaryFile;
 
+        /// <summary>The job name</summary>
+        private string jobName;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMJob"/> class.</summary>
-        /// <param name="apsimFileName">Name of the ausfarm file.</param>
+        /// <param name="jobName">The name of the job.</param>
+        /// <param name="fileName">Name of the ausfarm file.</param>
         /// <param name="arguments">The arguments.</param>
-        /// <param name="workingDirectory">The working directory.</param>
-        public AusFarmJob(string fileName, string arguments = null)
+        public AusFarmJob(string jobName, string fileName, string arguments = null)
         {
+            this.jobName = jobName;
             this.fileName = fileName;
             this.arguments = arguments;
             this.workingDirectory = Path.GetDirectoryName(fileName);
@@ -99,6 +107,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             {
                 File.Move(errorFile, Path.Combine(workingDirectory, Path.GetFileName(errorFile)));
             }
+
+            // Do post simulation stuff.
+            DoPostSimulation();
         }
 
         /// <summary>Called when APSIM writes something to the STDOUT.</summary>
@@ -109,6 +120,114 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         {
             if (!string.IsNullOrEmpty(outLine.Data))
                 summaryFile.WriteLine(outLine.Data);
+        }
+
+        /// <summary>Does the post simulation stuff.</summary>
+        private void DoPostSimulation()
+        {
+            DataSet dataSet = new DataSet("ReportData");
+            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.txt"))
+            {
+                try
+                {
+                    dataSet.Tables.Add(TxtToTable(outFileName));
+                }
+                catch (Exception)
+                {
+                    // Sometimes .txt files are empty - ignore them..
+                }
+            }
+
+            // Call Farm4Prophet web service.
+            using (F4P.F4PClient f4pClient = new F4P.F4PClient())
+            {
+                try
+                {
+                    f4pClient.StoreReport(jobName, dataSet);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Cannot call F4P StoreReport web service method");
+                }
+            }
+
+        }
+
+        /// <summary>Creates a datatable from a .txt file.</summary>
+        /// <param name="txtFileName">Name of the txt file.</param>
+        /// <returns>The newly created DataTable.</returns>
+        private DataTable TxtToTable(string txtFileName)
+        {
+            DataTable table = new DataTable();
+
+            // Open the .txt file.
+            StreamReader reader = new StreamReader(txtFileName);
+
+            char[] delimiter = new char[] { '\t' };
+
+            // read headings.
+            string[] headings = reader.ReadLine().Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+
+            // read and ignore units.
+            reader.ReadLine();
+
+            // read data.
+            while (!reader.EndOfStream)
+            {
+                // read line
+                string line = reader.ReadLine();
+
+                // split line into words
+                string[] lineWords = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                // make sure we have the right number of words i.e. matches headings.
+                if (lineWords.Length > 0)
+                {
+                    if (lineWords.Length != headings.Length)
+                        throw new Exception("A line in " + txtFileName + " doesn't have the right number of values. Line = " + line);
+
+                    // Convert the words into a list of objects (doubles or DateTimes)
+                    List<object> data = ConvertWordsToObjects(lineWords);
+
+                    // If we haven't set up the table columns yet then do so now.
+                    if (table.Columns.Count == 0)
+                        for (int i = 0; i < headings.Length; i++)
+                            table.Columns.Add(headings[i], data[i].GetType());
+
+                    // Store a new row in table.
+                    DataRow newRow = table.NewRow();
+                    for (int i = 0; i < data.Count; i++)
+                        newRow[i] = data[i];
+                    table.Rows.Add(newRow);
+                }
+            }
+
+            reader.Close();
+            return table;
+        }
+
+        /// <summary>Converts the words to objects.</summary>
+        /// <param name="lineWords">The line words.</param>
+        /// <returns>A list of objects.</returns>
+        private List<object> ConvertWordsToObjects(string[] lineWords)
+        {
+            List<object> data = new List<object>();
+            foreach (string word in lineWords)
+            {
+                if (word == "-")
+                    data.Add("-");
+                else if (word.Contains("-"))
+                    data.Add(DateTime.ParseExact(word, "yyyy-MM-dd", CultureInfo.InvariantCulture));
+                else
+                {
+                    double value;
+                    if (Double.TryParse(word, out value))
+                        data.Add(Convert.ToDouble(word));
+                    else
+                        data.Add(word);
+                }
+            }
+            return data;
         }
 
 

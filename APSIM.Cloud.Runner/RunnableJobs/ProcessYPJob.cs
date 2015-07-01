@@ -104,9 +104,14 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Tell the job system that job is complete.
             if (JobFileName == null)
             {
-                string[] usernamepwd = File.ReadAllText(@"C:\inetpub\wwwroot\ftpuserpwd.txt").Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-                FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", usernamepwd[0], usernamepwd[1]);
+                string pwdFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ftpuserpwd.txt");
+                if (!File.Exists(pwdFile))
+                    ErrorMessage = "Cannot find file: " + pwdFile;
+                else
+                {
+                    string[] usernamepwd = File.ReadAllText(pwdFile).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    FTPClient.Upload(zipFileName, archiveLocation + "/" + JobName + ".zip", usernamepwd[0], usernamepwd[1]);
+                }
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
                     jobsClient.SetCompleted(JobName, ErrorMessage);
@@ -136,6 +141,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Determine if this is a YP or a F4P job to be added to the job list
             if (jobName.IndexOf("_F4P") > 0)
             {
+                // Save YieldProphet.xml to working folder.
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(jobXML);
+                doc.Save(Path.Combine(workingDirectory, "f4p.xml"));
+
                 Farm4Prophet spec = Farm4ProphetUtility.Farm4ProphetFromXML(jobXML);
                 List<AusFarmSpec> simulations = Farm4ProphetToAusFarm.ToAusFarm(spec);
 
@@ -148,6 +158,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 for (int i = 0; i < files.Length; i++)
                 {
                     RunnableJobs.AusFarmJob job = new RunnableJobs.AusFarmJob(
+                     jobName: jobName,
                      fileName: Path.Combine(workingDirectory, files[i]),
                      arguments: "");
                     jobs.Add(job);

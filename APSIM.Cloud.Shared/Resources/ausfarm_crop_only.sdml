@@ -4483,7 +4483,7 @@
     <val>on start</val>
     <val>{</val>
     <val>  ! use the names passed into the simulation for output filenames</val>
-    <val>  set file_name_base = F4P_OUTPATH &amp; F4P_OUTPREFIX</val>
+    <val>  set file_name_base = F4P_OUTPREFIX</val>
     <val></val>
     <val>  reset text_01.filename     = file_name_base &amp; str('_daily.txt')</val>
     <val>  reset text_02.filename     = file_name_base &amp; str('_monthly.txt')</val>
