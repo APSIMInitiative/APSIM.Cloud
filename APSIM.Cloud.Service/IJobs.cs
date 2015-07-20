@@ -41,7 +41,7 @@ namespace APSIM.Cloud.Service
         /// </summary>
         /// <param name="yieldProphet">The job specification.</param>
         [OperationContract]
-        void Add(string yieldProphetXML, DataTable weatherData, DataTable soilProbeData);
+        void AddYP(string yieldProphetXML, DataTable weatherData, DataTable soilProbeData);
 
         /// <summary>Add a new entry to the database.</summary>
         /// <param name="name">The name of the job.</param>

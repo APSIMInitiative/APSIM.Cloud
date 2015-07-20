@@ -89,7 +89,7 @@ namespace APSIM.Cloud.Service
         /// Adds an older yield prophet job to the APSIM cloud.
         /// </summary>
         /// <param name="yieldProphet">The job specification.</param>
-        public void Add(string yieldProphetXML, DataTable weatherData, DataTable soilProbeData)
+        public void AddYP(string yieldProphetXML, DataTable weatherData, DataTable soilProbeData)
         {
             // Parse the PaddockXML.
             XmlDocument doc = new XmlDocument();
