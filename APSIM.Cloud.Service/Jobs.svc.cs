@@ -11,6 +11,9 @@ using System.IO;
 using System.Data;
 using APSIM.Cloud.Shared;
 using System.Reflection;
+using System.Xml;
+using APSIM.Shared.Utilities;
+using System.Net.Mail;
 
 namespace APSIM.Cloud.Service
 {
@@ -80,6 +83,58 @@ namespace APSIM.Cloud.Service
 
             AddAsXML(newJobName, xml);
             return newJobName;
+        }
+
+        /// <summary>
+        /// Adds an older yield prophet job to the APSIM cloud.
+        /// </summary>
+        /// <param name="yieldProphet">The job specification.</param>
+        public void Add(string yieldProphetXML, DataTable weatherData, DataTable soilProbeData)
+        {
+            // Parse the PaddockXML.
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(yieldProphetXML);
+
+            // Set the report type to indicate to the run machine to do a current growth stage.
+            //XmlHelper.SetValue(Doc.DocumentElement, "ReportType", "Current growth stage");
+
+            // Get the paddock node.
+            XmlNode PaddockNode = XmlUtilities.FindByType(doc.DocumentElement, "Paddock");
+            if (PaddockNode == null)
+                throw new Exception("Cannot find a <paddock> node in the PaddockXML");
+
+            // Get a temporary working folder.
+            string workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(workingDirectory);
+
+            // Save the xml to file so that we can attach it to the email.
+            string ypFileName = Path.Combine(workingDirectory, "YieldProphet.xml");
+            doc.Save(ypFileName);
+
+            // Write the weather file.
+            string weatherFileName = Path.Combine(workingDirectory, "observed.csv");
+            File.WriteAllText(weatherFileName, DataTableUtilities.DataTableToText(weatherData, 0, ",", true));
+
+            // Write the soil probe file.
+            string soilProbeFileName = Path.Combine(workingDirectory, "soilprobe.csv");
+            File.WriteAllText(soilProbeFileName, DataTableUtilities.DataTableToText(soilProbeData, 0, ",", true));
+
+            // Send email to run machine.
+            MailMessage mail = new MailMessage();
+            mail.Subject = "YieldProphet run";
+            mail.To.Add(new MailAddress("apsimmailer@gmail.com"));
+            mail.From = new System.Net.Mail.MailAddress("apsimmailer@gmail.com");
+            mail.IsBodyHtml = false;
+            mail.Attachments.Add(new Attachment(ypFileName));
+            mail.Attachments.Add(new Attachment(weatherFileName));
+            mail.Attachments.Add(new Attachment(soilProbeFileName));
+            SmtpClient smtp = new SmtpClient("smtp-relay.csiro.au");
+            smtp.Send(mail);
+            mail.Dispose();
+
+            // Clean up our directory.
+            Directory.Delete(workingDirectory, true);
+
         }
 
         /// <summary>Add a new entry to the database.</summary>

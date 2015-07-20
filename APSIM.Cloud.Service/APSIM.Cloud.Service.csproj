@@ -74,6 +74,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\APSIM.Shared\APSIM.Shared.csproj">
+      <Project>{E243AE8D-35E3-4397-B180-EF1E8A91AE8C}</Project>
+      <Name>APSIM.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\APSIM.Cloud.Shared\APSIM.Cloud.Shared.csproj">
       <Project>{38151154-60D4-47BD-BCC2-679BA8BF144E}</Project>
       <Name>APSIM.Cloud.Shared</Name>

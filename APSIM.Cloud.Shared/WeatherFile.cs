@@ -144,26 +144,20 @@ namespace APSIM.Cloud.Shared
 
             if (!AlreadyWritten(fileName))
             {
-                DateTime longTermStartDate = startDate.AddYears(-numYears);
-                ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, longTermStartDate, DateTime.Now);
-                DataTable weatherData = weatherFile.ToTable();
-                double latitude = Convert.ToDouble(weatherFile.Constant("Latitude").Value);
-                double longitude = Convert.ToDouble(weatherFile.Constant("Longitude").Value);
-                double tav = Convert.ToDouble(weatherFile.Constant("tav").Value);
-                double amp = Convert.ToDouble(weatherFile.Constant("amp").Value);
-                if (weatherData.Rows.Count == 0)
-                    LastSILODateFound = DateTime.MinValue;
-                else
-                    LastSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
+                // Get the longterm (numYears) SILO weather data.
+                Data  weatherFileData = ExtractDataFromSILO(stationNumber, 
+                                                                   startDate.AddYears(-numYears), 
+                                                                   DateTime.Now);
+                DataTable weatherData = weatherFileData.DailyData;
+                LastSILODateFound = weatherFileData.LastDate;
 
-                string workingFolder = Path.GetDirectoryName(fileName);
-                WriteDecileFile(weatherData, startDate, workingFolder);
-
-                // Add a codes and date column to weatherdata
-                AddCodesColumn(weatherData, 'H');
+                // Make sure the observed data has a codes column.
                 if (observedData != null)
                     AddCodesColumn(observedData, 'O');
-                AddDateToTable(weatherData);
+
+                string workingFolder = Path.GetDirectoryName(fileName);
+                WriteDecileFile(weatherData, startDate, Path.Combine(workingFolder, "Decile.out"));
+
 
                 // Need to create a patch data table from the observed data and the SILO data 
                 // between the 'startDate' and the 'now' date.
@@ -192,7 +186,8 @@ namespace APSIM.Cloud.Shared
                     OverlayData(patchData, yearlyData);
                     string weatherFileName = Path.Combine(workingFolder, Path.GetFileNameWithoutExtension(fileName) + year.ToString() + ".met");
                     WriteWeatherFile(yearlyData, weatherFileName,
-                                        latitude, longitude, tav, amp);
+                                     weatherFileData.Latitude, weatherFileData.Longitude,
+                                     weatherFileData.TAV, weatherFileData.AMP);
                     fileNamesCreated.Add(Path.GetFileName(weatherFileName));
                 }
 
@@ -200,14 +195,95 @@ namespace APSIM.Cloud.Shared
             }
         }
 
+        /// <summary>Creates a single long term, patched, weather file.</summary>
+        /// <param name="fileName">Name of the file to create.</param>
+        /// <param name="stationNumber">The SILO station number to use.</param>
+        /// <param name="observedData">The observed data to use. Can be null.</param>
+        public static void PatchWeatherDataAllYears(DataTable weatherData,
+                                                    DataTable observedData)
+        {
+            // Need to create a patch data table from the observed data and the SILO data 
+            if (observedData != null)
+                AddCodesColumn(observedData, 'O');
+
+            DateTime startDate = DataTableUtilities.GetDateFromRow(observedData.Rows[0]);
+            DateTime endDate = DataTableUtilities.GetDateFromRow(observedData.Rows[observedData.Rows.Count-1]);
+            DataTable patchData = CreatePatchFile(weatherData, observedData, startDate, endDate);
+
+            // Loop through all years in the long term weather data and overlay the patch data onto
+            // each year of the weather data
+            if (patchData.Rows.Count > 0)
+            {
+                int firstYear = DataTableUtilities.GetDateFromRow(weatherData.Rows[0]).Year;
+                int lastYear = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]).Year;
+                for (int year = firstYear; year <= lastYear; year++)
+                {
+                    // Before overlaying the patch data we need to change the year because the
+                    // OverlayData method uses date matching.
+                    SetYearInDateColumn(patchData, year);
+
+                    // Now overlay the patch data.
+                    OverlayData(patchData, weatherData);
+                }
+            }
+        }
+
+        /// <summary>Sets the year in date column.</summary>
+        /// <remarks>
+        ///     The patch data can go over a year i.e. starts in 2014 and goes into 2015.
+        ///     This method doesn't want to set all years to the one specified, rather
+        ///     it needs to work out what value needs to be subtracted from all years 
+        ///     such that the first year of patch data is the same as the year specified.
+        /// </remarks>
+        /// <param name="patchData">The patch data.</param>
+        /// <param name="year">The year to set the date to.</param>
+        private static void SetYearInDateColumn(DataTable patchData, int year)
+        {
+            int firstYear = DataTableUtilities.GetDateFromRow(patchData.Rows[0]).Year;
+            int offset = year - firstYear;
+
+            DateTime[] dates = DataTableUtilities.GetColumnAsDates(patchData, "Date");
+            for (int i = 0; i < dates.Length; i++)
+                dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, dates[i].Day);
+            DataTableUtilities.AddColumnOfObjects(patchData, "Date", dates);
+        }
+
+        /// <summary>
+        /// Extracts weather data from silo for the specified station number, between the 
+        /// specified dates. The private variables: latitude, longitude, tav, amp and 
+        /// LastSILODateFound will be set to the values from the SILO file.
+        /// </summary>
+        /// <param name="stationNumber">The station number.</param>
+        /// <param name="observedData">The observed data.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <returns>The data returned will have year, month, day, date and code columns.</returns>
+        public static Data ExtractDataFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
+        {
+            ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, startDate, endDate);
+
+            // Add a codes and date column to weatherdata
+            DataTable weatherData = weatherFile.ToTable();
+            AddCodesColumn(weatherData, '-');
+            AddDateToTable(weatherData);
+
+            // Return the info object.
+            return new Data(weatherData,
+                latitude: Convert.ToDouble(weatherFile.Constant("Latitude").Value),
+                longitude: Convert.ToDouble(weatherFile.Constant("Longitude").Value),
+                tav: Convert.ToDouble(weatherFile.Constant("tav").Value),
+                amp: Convert.ToDouble(weatherFile.Constant("amp").Value));
+        }
+
         /// <summary>Creates a monthly decile weather file</summary>
         /// <param name="weatherData">The weather data.</param>
         /// <param name="startDate">First date for decile table.</param>
+        /// <param name="fileName">The file name to write.</param>
         /// <results>Montly decile data.</results>
-        private static void WriteDecileFile(DataTable weatherData, DateTime startDate, string workingDirectory)
+        public static void WriteDecileFile(DataTable weatherData, DateTime startDate, string fileName)
         {
             DataTable decileRain = CreateDecileWeather(weatherData, startDate);
-            StreamWriter decileWriter = new StreamWriter(Path.Combine(workingDirectory, "Decile.out"));
+            StreamWriter decileWriter = new StreamWriter(fileName);
 
             decileWriter.WriteLine("      Date RainDecile1 RainDecile5 RainDecile9");
             decileWriter.WriteLine("(dd/mm/yyyy)      (mm)        (mm)        (mm)");
@@ -228,6 +304,8 @@ namespace APSIM.Cloud.Shared
         private static DataTable CreateDecileWeather(DataTable weatherData, DateTime startDate)
         {
             DateTime firstDate = DataTableUtilities.GetDateFromRow(weatherData.Rows[0]);
+            DataView weatherView = new DataView(weatherData);
+            weatherView.RowFilter = string.Format("Date >= #{0:yyyy-MM-dd}#", new DateTime(firstDate.Year, startDate.Month, startDate.Day));
 
             // Create an array of lists, 1 for each month.
             List<double>[] sumsForEachMonth = new List<double>[12];
@@ -235,20 +313,21 @@ namespace APSIM.Cloud.Shared
                 sumsForEachMonth[i] = new List<double>();
 
             double sum = 0.0;
-            foreach (DataRow row in weatherData.Rows)
+            foreach (DataRowView row in weatherView)
             {
                 // Get the date and rain for the row.
-                DateTime rowDate = DataTableUtilities.GetDateFromRow(row);
+                DateTime rowDate = DataTableUtilities.GetDateFromRow(row.Row);
                 double value = Convert.ToDouble(row["rain"]);
 
                 // Accumulate the value every day.
                 sum += value;
 
                 // At the end of each month, store the accumulated value into the right array element.
-                if (rowDate.AddDays(1).Day == 1)  // end of month?
+                // if (rowDate.AddDays(1).Day == 1)  // end of month?  - GOOD
+                if (rowDate.Day == 1)  // end of month?   - REPRODUCE BUG IN YP
                     sumsForEachMonth[rowDate.Month-1].Add(sum);
 
-                if (rowDate.Day == 1 && rowDate.Month == firstDate.Month)
+                if (rowDate.Day == 1 && rowDate.Month == startDate.Month)
                     sum = value;
             }
 
@@ -355,16 +434,19 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         /// <param name="weatherData">The data to write.</param>
         /// <param name="fileName">The name of the file to create.</param>
-        private static void WriteWeatherFile(DataTable weatherData, string fileName,
-                                             double latitude, double longitude,
-                                             double tav, double amp)
+        public static void WriteWeatherFile(DataTable weatherData, string fileName,
+                                            double latitude, double longitude,
+                                            double tav, double amp)
         {
             StreamWriter writer = new StreamWriter(fileName);
             writer.WriteLine("Latitude = " + latitude.ToString());
             writer.WriteLine("Longitude = " + longitude.ToString());
             writer.WriteLine("TAV = " + tav.ToString());
             writer.WriteLine("AMP = " + amp.ToString());
-            writer.WriteLine("! Codes: S=SILO, H=Historical SILO, O=Observed, P=POAMA");
+            writer.WriteLine("! Codes: -    SILO (unpatched)");
+            writer.WriteLine("         O    Observed(from patch file)");
+            writer.WriteLine("         S    SILO (from patch file)");
+            writer.WriteLine("         P    POAMA");
 
             // Write headings and units
             writer.WriteLine("        Date     radn maxt mint   rain codes");
@@ -386,7 +468,8 @@ namespace APSIM.Cloud.Shared
         }
 
         /// <summary>
-        /// Overlay data from table1 on top of table2 using the date in each row.
+        /// Overlay data from table1 on top of table2 using the date in each row. Date
+        /// dates in both tables have to exactly match before the data is overlaid.
         /// </summary>
         /// <param name="table1">First data table</param>
         /// <param name="table2">The data table that will change</param>
@@ -545,6 +628,57 @@ namespace APSIM.Cloud.Shared
                 foreach (DataRow Row in table.Rows)
                     dates.Add(DataTableUtilities.GetDateFromRow(Row));
                 DataTableUtilities.AddColumnOfObjects(table, "Date", dates.ToArray());
+            }
+        }
+
+        /// <summary>
+        /// A simple class for holding data from a weather file.
+        /// </summary>
+        public class Data
+        {
+            /// <summary>The latitude</summary>
+            public double Latitude { get; private set; }
+
+            /// <summary>The longitude</summary>
+            public double Longitude { get; private set; }
+
+            /// <summary>The tav</summary>
+            public double TAV { get; private set; }
+
+            /// <summary>The amp</summary>
+            public double AMP { get; private set; }
+
+            /// <summary>The daily data.</summary>
+            public DataTable DailyData { get; private set; }
+
+            /// <summary>Returns the last date in the weather data.</summary>
+            public DateTime LastDate
+            {
+                get
+                {
+                    if (DailyData.Rows.Count == 0)
+                        return DateTime.MinValue;
+                    else
+                        return DataTableUtilities.GetDateFromRow(DailyData.Rows[DailyData.Rows.Count - 1]);
+                }
+            }
+
+            /// <summary>
+            /// Constructor for a weather data instance.
+            /// </summary>
+            /// <param name="data">Daily data.</param>
+            /// <param name="latitude">The latitude.</param>
+            /// <param name="longitude">The longitude.</param>
+            /// <param name="tav">The average temp.</param>
+            /// <param name="amp">The temp. amplitude.</param>
+            public Data(DataTable data, double latitude, double longitude, 
+                        double tav, double amp)
+            {
+                this.DailyData = data;
+                this.Latitude = latitude;
+                this.Longitude = longitude;
+                this.TAV = tav;
+                this.AMP = amp;
             }
         }
     }

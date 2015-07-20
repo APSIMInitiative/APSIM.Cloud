@@ -20,9 +20,6 @@ namespace APSIM.Cloud.Service
     [ServiceContract]
     public interface IJobs
     {
-        [OperationContract]
-        string GetData(int value);
-
         /// <summary>
         /// Adds the job to the APSIM cloud.
         /// </summary>
@@ -31,8 +28,20 @@ namespace APSIM.Cloud.Service
         [OperationContract]
         string Add(YieldProphet yieldProphet);
 
+        /// <summary>
+        /// Adds a Farm4Prophet job to the APSIM cloud.
+        /// </summary>
+        /// <param name="f4p">The job specification.</param>
+        /// <returns>The unique job name.</returns>
         [OperationContract]
         string AddFarm4Prophet(Farm4Prophet f4p);
+
+        /// <summary>
+        /// Adds an older yield prophet job to the APSIM cloud.
+        /// </summary>
+        /// <param name="yieldProphet">The job specification.</param>
+        [OperationContract]
+        void Add(string yieldProphetXML, DataTable weatherData, DataTable soilProbeData);
 
         /// <summary>Add a new entry to the database.</summary>
         /// <param name="name">The name of the job.</param>
