@@ -7871,7 +7871,7 @@
     <val>wheat</val>
   </init>
   <init name="forage_params" kind="string">
-    <val>%AUSFARMBIN%\Library Crop Quality.prm</val>
+    <val>Library Crop Quality.prm</val>
   </init>
   <init name="kno3" kind="single" unit="kg/mg/d">
     <val>0.0199999995529652</val>
