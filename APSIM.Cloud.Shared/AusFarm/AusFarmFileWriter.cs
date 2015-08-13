@@ -907,13 +907,14 @@ namespace APSIM.Cloud.Shared.AusFarm
             init.member("clay").setElementCount((uint)aSoil.SoilWater.Thickness.Length);
             for (uint x = 0; x <= aSoil.SoilWater.Thickness.Length - 1; x++)
             {
-                if (aSoil.Analysis.ParticleSizeSand.Length > x)
+                if ((aSoil.Analysis.ParticleSizeSand != null) && (aSoil.Analysis.ParticleSizeSand.Length > x))
                 {
                     init.member("sand").item(x + 1).setValue(aSoil.Analysis.ParticleSizeSand[x] * 0.01);
                     init.member("clay").item(x + 1).setValue(aSoil.Analysis.ParticleSizeClay[x] * 0.01);
                 }
                 else
                 {
+                    // ## not suitable but it will allow the simulation to run
                     init.member("sand").item(x + 1).setValue(0.0);
                     init.member("clay").item(x + 1).setValue(0.0);
                 }
