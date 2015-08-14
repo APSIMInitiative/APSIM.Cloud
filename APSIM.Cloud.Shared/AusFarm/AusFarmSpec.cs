@@ -57,15 +57,6 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public bool NUnlimitedFromToday { get; set; }
 
-        /// <summary>Gets or sets a value indicating whether daily output is required.</summary>
-        public bool DailyOutput { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether monthly output is required.</summary>
-        public bool MonthlyOutput { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether yearly output is required.</summary>
-        public bool YearlyOutput { get; set; }
-
         /// <summary>Gets or sets the name of the output files.
         /// </summary>
         public string ReportName { get; set; }

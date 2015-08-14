@@ -36,9 +36,6 @@ namespace APSIM.Cloud.Shared
                 AusFarmSpec simulation = CreateBaseSimulation(farm);
                 simulation.Name = farm.Name;
                 simulation.Area = farm.Area;
-                simulation.DailyOutput = true;
-                simulation.MonthlyOutput = true;
-                simulation.YearlyOutput = true;
                 simulation.StartDate = farm.StartSeasonDate;
                 simulation.EndDate = simulation.StartDate.AddMonths(farm.RunLength);
                 simulation.ReportName = farm.ReportName;

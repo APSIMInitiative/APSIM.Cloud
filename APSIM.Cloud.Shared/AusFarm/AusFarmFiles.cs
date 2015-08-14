@@ -85,6 +85,9 @@ namespace APSIM.Cloud.Shared.AusFarm
                             earliestStartDate, nowDate,
                             observedData);
 
+            // ensure that the run period doesn't exceed the data retrieved
+            if (simulation.EndDate > weatherData.LastSILODateFound)
+                simulation.EndDate = weatherData.LastSILODateFound;
         }
 
         /// <summary>Create a .sdml file for the job</summary>

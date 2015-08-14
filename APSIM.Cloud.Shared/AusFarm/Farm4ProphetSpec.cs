@@ -73,7 +73,8 @@ namespace APSIM.Cloud.Shared
         public DateTime StartSeasonDate { get; set; }
 
         /// <summary>
-        /// The simulation run length in months
+        /// The simulation run length in months. Gets checked against the
+        /// last date of weather file.
         /// </summary>
         public int RunLength { get; set; }
 
@@ -111,15 +112,6 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public List<FarmPaddockType> OnFarmPaddocks { get; set; }
         public FarmLivestock LiveStock { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether daily output is required.</summary>
-        public bool DailyOutput { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether monthly output is required.</summary>
-        public bool MonthlyOutput { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether yearly output is required.</summary>
-        public bool YearlyOutput { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="FarmSystem"/> class.</summary>
         public FarmSystem()
