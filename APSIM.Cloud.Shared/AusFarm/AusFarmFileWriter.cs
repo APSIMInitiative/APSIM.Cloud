@@ -996,26 +996,6 @@ namespace APSIM.Cloud.Shared.AusFarm
             }
         }
 
-
-        /// <summary>Sets the daily output.</summary>
-        public void SetDailyOutput()
-        {
-            //XmlUtilities.SetAttribute(simulationXML, "Paddock/Daily/enabled", "yes");
-        }
-
-        /// <summary>Sets the monthly output.</summary>
-        public void SetMonthlyOutput()
-        {
-            //XmlUtilities.SetAttribute(simulationXML, "Paddock/Monthly/enabled", "yes");
-        }
-
-        /// <summary>Sets the yearly output.</summary>
-        public void SetYearlyOutput()
-        {
-            //XmlUtilities.SetAttribute(simulationXML, "Paddock/Yearly/enabled", "yes");
-
-        }
-
         /// <summary>
         /// Write all the livestock enterprise information
         /// </summary>
