@@ -422,9 +422,9 @@ namespace APSIM.Cloud.Shared
                 }
                 else
                 {
-                    row["RainDecile1"] = GetValueForProbability(10, sumsForEachMonth[i].ToArray());
-                    row["RainDecile5"] = GetValueForProbability(50, sumsForEachMonth[i].ToArray());
-                    row["RainDecile9"] = GetValueForProbability(80, sumsForEachMonth[i].ToArray());
+                    row["RainDecile1"] = GetValueForProbability(10, sumsForEachMonth[decileDate.Month - 1].ToArray());
+                    row["RainDecile5"] = GetValueForProbability(50, sumsForEachMonth[decileDate.Month - 1].ToArray());
+                    row["RainDecile9"] = GetValueForProbability(90, sumsForEachMonth[decileDate.Month - 1].ToArray());
                 }
 
                 decile.Rows.Add(row);
