@@ -295,7 +295,79 @@ namespace APSIM.Cloud.Shared
             decileWriter.Close();
         }
 
+        /// <summary>
+        /// Calculate the rainfall deciles for each decile for each month
+        /// </summary>
+        /// <param name="stationNumber"></param>
+        /// <param name="startDate">Start date for the calculations</param>
+        /// <param name="endDate"></param>
+        /// <returns>The deciles array</returns>
+        public double[,] CalculateRainDeciles(int stationNumber, DateTime startDate, DateTime endDate)
+        {
+            Data weatherFileData = ExtractDataFromSILO(stationNumber, startDate, endDate);
+            DataTable weatherData = weatherFileData.DailyData;
+                        
+            if (weatherData != null)
+            {
+                return CreatePercentileWeather(weatherData, startDate);
+            }
+            return null;
+        }
 
+        /// <summary>
+        /// Create the array of monthly deciles for each month from the startDate.
+        /// </summary>
+        /// <param name="weatherData">The raw daily weather data</param>
+        /// <param name="startDate">The starting date. The month is the start of the season.</param>
+        /// <returns>Array of monthly deciles (from 10 - 100)</returns>
+        private double[,] CreatePercentileWeather(DataTable weatherData, DateTime startDate)
+        {
+            DateTime firstDate = DataTableUtilities.GetDateFromRow(weatherData.Rows[0]);
+            DataView weatherView = new DataView(weatherData);
+            weatherView.RowFilter = string.Format("Date >= #{0:yyyy-MM-dd}#", new DateTime(firstDate.Year, startDate.Month, startDate.Day));
+
+            // Create an array of lists, 1 for each month.
+            List<double>[] sumsForEachMonth = new List<double>[12];
+            for (int i = 0; i < 12; i++)
+                sumsForEachMonth[i] = new List<double>();
+
+            int currentMonth = startDate.Month;
+            double sum = 0.0;
+            double value;
+            foreach (DataRowView row in weatherView)
+            {
+                // Get the date and rain for the row.
+                DateTime rowDate = DataTableUtilities.GetDateFromRow(row.Row);
+                value = Convert.ToDouble(row["rain"]);              // get rain value
+                if (currentMonth != rowDate.Month)                  // if new month then
+                {
+                    sumsForEachMonth[currentMonth - 1].Add(sum);    // store the month sum
+                    if (rowDate.Month == startDate.Month)           // if back at the start of yearly period
+                        sum = value;
+                    currentMonth = rowDate.Month;
+                }
+                else
+                {
+                    sum += value;                                   //accumulate
+                }
+            }
+
+            double[,] monthlyDeciles = new double[12,10];
+
+            DateTime decileDate = new DateTime(startDate.Year, startDate.Month, 1); ;
+            for (int i = 0; i < 12; i++)
+            {
+                double[] sums = new double[sumsForEachMonth[i].Count];
+                Array.Copy(sumsForEachMonth[i].ToArray(), sums, sumsForEachMonth[i].Count);
+                Array.Sort(sums);
+
+                for (int dec = 1; dec <= 10; dec++)
+                {
+                    monthlyDeciles[i, dec - 1] = MathUtilities.Percentile(sums, dec * 0.1);
+                }
+            }
+            return monthlyDeciles;
+        }
 
         /// <summary>Creates a monthly decile weather DataTable</summary>
         /// <param name="weatherData">The weather data.</param>
@@ -350,9 +422,9 @@ namespace APSIM.Cloud.Shared
                 }
                 else
                 {
-                    row["RainDecile1"] = GetValueForProbability(10, sumsForEachMonth[decileDate.Month - 1].ToArray());
-                    row["RainDecile5"] = GetValueForProbability(50, sumsForEachMonth[decileDate.Month - 1].ToArray());
-                    row["RainDecile9"] = GetValueForProbability(90, sumsForEachMonth[decileDate.Month - 1].ToArray());
+                    row["RainDecile1"] = GetValueForProbability(10, sumsForEachMonth[i].ToArray());
+                    row["RainDecile5"] = GetValueForProbability(50, sumsForEachMonth[i].ToArray());
+                    row["RainDecile9"] = GetValueForProbability(80, sumsForEachMonth[i].ToArray());
                 }
 
                 decile.Rows.Add(row);

@@ -408,6 +408,27 @@ namespace APSIM.Cloud.Shared.AusFarm
         }
 
         /// <summary>
+        /// Construct a series of decile strings [59,  86,  110, 139, 167, 186, 197] 
+        /// where the items are values for each month of the year
+        /// </summary>
+        /// <param name="deciles">The monthly decile values</param>
+        public void SetRainDeciles(double[,] deciles)
+        {
+            StringBuilder decileValues = new StringBuilder();
+            for (int dec = 1; dec <= 10; dec++)
+            {
+                decileValues.Clear();
+                decileValues.Append("[" + deciles[0, dec-1].ToString());
+                for (int month = 2; month <= 12; month++)
+                {
+                    decileValues.Append("," +deciles[month-1, dec-1].ToString());
+                }
+                decileValues.Append("]");
+                SetGenericCompStateVar("Params", "F4P_DECILE" + (10*dec).ToString(), decileValues.ToString());    
+            }
+        }
+
+        /// <summary>
         /// Set the crop rotation list of crop names for the soil type.
         /// </summary>
         /// <param name="index">The crop rotation number (soil type). 1-3</param>

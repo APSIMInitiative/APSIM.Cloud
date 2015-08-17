@@ -39,6 +39,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the SILO station number.</summary>
         public int StationNumber { get; set; }
 
+        /// <summary>The rain deciles calculated from the weather file from a starting month of the year.</summary>
+        public double[,] RainDeciles { get; set; }
+
         /// <summary>Gets or sets any observed data. Can be null if no data.</summary>
         public DataTable ObservedData { get; set; }
 

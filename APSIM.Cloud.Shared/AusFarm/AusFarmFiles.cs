@@ -79,7 +79,7 @@ namespace APSIM.Cloud.Shared.AusFarm
 
             // Create the weather files.
             FMetFile = Path.Combine(workingFolder, stationNumber.ToString()) + ".met";
-            
+
             // Create a weather file.
             weatherData.CreateSimplePeriod(FMetFile, stationNumber,
                             earliestStartDate, nowDate,
@@ -88,6 +88,14 @@ namespace APSIM.Cloud.Shared.AusFarm
             // ensure that the run period doesn't exceed the data retrieved
             if (simulation.EndDate > weatherData.LastSILODateFound)
                 simulation.EndDate = weatherData.LastSILODateFound;
+
+            // calculate the rain deciles from April from the year of the start of the simulation. 
+            // this could be improved to use more than a few decades of weather.
+            simulation.RainDeciles = new double[12, 10]; // 12 months, 10 deciles
+            DateTime accumStartDate = new DateTime(simulation.StartDate.Year, 4, 1);
+            if (simulation.StartDate > accumStartDate)              // ensure that the start date for decile accum exists in the weather
+                accumStartDate.AddYears(1);
+            simulation.RainDeciles = weatherData.CalculateRainDeciles(stationNumber, accumStartDate, simulation.EndDate);
         }
 
         /// <summary>Create a .sdml file for the job</summary>
@@ -143,6 +151,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             
             // Set the weather file
             ausfarmWriter.SetWeatherFile(FMetFile);
+            ausfarmWriter.SetRainDeciles(simulation.RainDeciles);
             ausfarmWriter.SetArea(simulation.Area);
             for (int i = 0; i < simulation.OnFarmSoilTypes.Count; i++)
             {
