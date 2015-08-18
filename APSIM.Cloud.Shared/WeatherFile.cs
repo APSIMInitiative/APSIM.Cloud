@@ -200,14 +200,14 @@ namespace APSIM.Cloud.Shared
         /// <param name="stationNumber">The SILO station number to use.</param>
         /// <param name="observedData">The observed data to use. Can be null.</param>
         public static void PatchWeatherDataAllYears(DataTable weatherData,
-                                                    DataTable observedData)
+                                                    DataTable observedData,
+                                                    DateTime startDate,
+                                                    DateTime endDate)
         {
             // Need to create a patch data table from the observed data and the SILO data 
             if (observedData != null)
                 AddCodesColumn(observedData, 'O');
 
-            DateTime startDate = DataTableUtilities.GetDateFromRow(observedData.Rows[0]);
-            DateTime endDate = DataTableUtilities.GetDateFromRow(observedData.Rows[observedData.Rows.Count-1]);
             DataTable patchData = CreatePatchFile(weatherData, observedData, startDate, endDate);
 
             // Loop through all years in the long term weather data and overlay the patch data onto
@@ -521,13 +521,13 @@ namespace APSIM.Cloud.Shared
             writer.WriteLine("         P    POAMA");
 
             // Write headings and units
-            writer.WriteLine("        Date     radn maxt mint   rain codes");
-            writer.WriteLine("(yyyy-mm-dd) (MJ/m^2) (oC) (oC)   (mm)    ()");
+            writer.WriteLine("        Date     radn maxt  mint   rain codes");
+            writer.WriteLine("(yyyy-mm-dd) (MJ/m^2) (oC)  (oC)   (mm)    ()");
 
             // Write data.
             foreach (DataRow row in weatherData.Rows)
             {
-                writer.WriteLine("{0,12:yyyy-MM-dd}{1,9:F1}{2,5:F1}{3,5:F1}{4,7:F1}{5,6}",
+                writer.WriteLine("{0,12:yyyy-MM-dd}{1,9:F1}{2,5:F1}{3,6:F1}{4,7:F1}{5,6}",
                                  new object[] {DataTableUtilities.GetDateFromRow(row),
                                                row["radn"],
                                                row["maxt"],
