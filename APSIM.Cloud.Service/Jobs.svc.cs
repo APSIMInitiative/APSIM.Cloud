@@ -19,15 +19,6 @@ namespace APSIM.Cloud.Service
 {
     public class Jobs : IJobs
     {
-        public string GetData(int value)
-        {
-            return Assembly.GetExecutingAssembly().Location;
-            //return string.Format("You entered: {0}", value);
-        }
-
-        /// <summary>The connection to the jobs database</summary>
-        private SqlConnection Connection = null;
-
         /// <summary>
         /// A lock object to control serial access when getting jobs to run.
         /// </summary>
@@ -38,15 +29,6 @@ namespace APSIM.Cloud.Service
         /// </summary>
         public Jobs()
         {
-            Open();
-        }
-
-        /// <summary>
-        /// Releases all resources used by the <see cref="T:System.ComponentModel.MarshalByValueComponent" />.
-        /// </summary>
-        public void Dispose()
-        {
-            Close();
         }
 
         /// <summary>
@@ -143,26 +125,33 @@ namespace APSIM.Cloud.Service
         /// <param name="zipFileContents">The zip file contents.</param>
         public void AddAsXML(string name, string jobXML)
         {
-            string SQL = "INSERT INTO Jobs (Name, XML, Status) " +
-                         "VALUES (@Name, @XML, @Status)";
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string SQL = "INSERT INTO Jobs (Name, XML, Status) " +
+                                "VALUES (@Name, @XML, @Status)";
 
-            string nowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
-
-            SqlCommand Cmd = new SqlCommand(SQL, Connection);
-
-            Cmd.Parameters.Add(new SqlParameter("@Name", name));
-            Cmd.Parameters.Add(new SqlParameter("@XML", jobXML));
-            Cmd.Parameters.Add(new SqlParameter("@Status", StatusEnum.Queued));
-            Cmd.ExecuteNonQuery();
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@Name", name));
+                    command.Parameters.Add(new SqlParameter("@XML", jobXML));
+                    command.Parameters.Add(new SqlParameter("@Status", StatusEnum.Queued));
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         /// <summary>Delete the specified job from the database.</summary>
         /// <param name="name">The name of the job.</param>
         public void Delete(string name)
         {
-            string SQL = "DELETE FROM Jobs WHERE Name = '" + name + "'";
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            Command.ExecuteNonQuery();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string SQL = "DELETE FROM Jobs WHERE Name = '" + name + "'";
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                    command.ExecuteNonQuery();
+            }
         }
 
         /// <summary>Gets a specific job.</summary>
@@ -170,20 +159,21 @@ namespace APSIM.Cloud.Service
         /// <returns>The job or null if not found</returns>
         public Job Get(string name)
         {
-            string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "' ORDER BY name DESC";
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "' ORDER BY name DESC";
 
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            SqlDataReader Reader = Command.ExecuteReader();
-            try
-            {
-                if (Reader.Read())
-                    return CreateJobFromReader(Reader);
-                else
-                    return null;
-            }
-            finally
-            {
-                Reader.Close();
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return CreateJobFromReader(reader);
+                        else
+                            return null;
+                    }
+                }
             }
         }
 
@@ -197,23 +187,24 @@ namespace APSIM.Cloud.Service
             {
                 string SQL = "SELECT TOP(1) * FROM Jobs WHERE Status = " + ((int)StatusEnum.Queued).ToString();
 
-                SqlCommand Command = new SqlCommand(SQL, Connection);
-                SqlDataReader Reader = Command.ExecuteReader();
-                try
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    if (Reader.Read())
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(SQL, connection))
                     {
-                        Job newJob = CreateJobFromReader(Reader);
-                        Reader.Close();
-                        SetStatus(newJob.Name, StatusEnum.Running);
-                        return newJob;
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Job newJob = CreateJobFromReader(reader);
+                                reader.Close();
+                                SetStatus(newJob.Name, StatusEnum.Running);
+                                return newJob;
+                            }
+                            else
+                                return null;
+                        }
                     }
-                    else
-                        return null;
-                }
-                finally
-                {
-                    Reader.Close();
                 }
             }
         }
@@ -227,16 +218,17 @@ namespace APSIM.Cloud.Service
 
             string SQL = "SELECT TOP(" + maxNum.ToString() + ") * FROM Jobs ORDER BY name DESC";
 
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            SqlDataReader Reader = Command.ExecuteReader();
-            try
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                while (Reader.Read())
-                    jobs.Add(CreateJobFromReader(Reader));
-            }
-            finally
-            {
-                Reader.Close();
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            jobs.Add(CreateJobFromReader(reader));
+                    }
+                }
             }
 
             return jobs.ToArray();
@@ -249,18 +241,20 @@ namespace APSIM.Cloud.Service
         {
             string SQL = "SELECT * FROM Jobs WHERE name = '" + name + "' ORDER BY name DESC";
 
-            SqlCommand Command = new SqlCommand(SQL, Connection);
-            SqlDataReader Reader = Command.ExecuteReader();
-            try
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                if (Reader.Read())
-                    return Reader["XML"].ToString();
-                else
-                    return null;
-            }
-            finally
-            {
-                Reader.Close();
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return reader["XML"].ToString();
+                        else
+                            return null;
+                    }
+                }
             }
         }
 
@@ -272,12 +266,18 @@ namespace APSIM.Cloud.Service
             string SQL = "INSERT INTO Log (Date, Status, Message) " +
                     "VALUES (@Date, @Status, @Message)";
 
-            SqlCommand Cmd = new SqlCommand(SQL, Connection);
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
 
-            Cmd.Parameters.Add(new SqlParameter("@Date", DateTime.Now));
-            Cmd.Parameters.Add(new SqlParameter("@Status", isError));
-            Cmd.Parameters.Add(new SqlParameter("@Message", message));
-            Cmd.ExecuteNonQuery();
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@Date", DateTime.Now));
+                    command.Parameters.Add(new SqlParameter("@Status", isError));
+                    command.Parameters.Add(new SqlParameter("@Message", message));
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         /// <summary>
@@ -288,19 +288,28 @@ namespace APSIM.Cloud.Service
         {
             string SQL = "SELECT TOP(100) * FROM LOG ORDER BY DATE DESC";
 
-            SqlCommand command = new SqlCommand(SQL, Connection);
-            SqlDataReader reader = command.ExecuteReader();
-            DataSet dataset = new DataSet();
-            try
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                DataTable table = new DataTable();
-                table.Load(reader);
-                dataset.Tables.Add(table);
-                return dataset;
-            }
-            finally
-            {
-                reader.Close();
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        DataSet dataset = new DataSet();
+                        try
+                        {
+                            DataTable table = new DataTable();
+                            table.Load(reader);
+                            dataset.Tables.Add(table);
+                            return dataset;
+                        }
+                        finally
+                        {
+                            reader.Close();
+                        }
+                    }
+                }
             }
         }
 
@@ -318,8 +327,13 @@ namespace APSIM.Cloud.Service
                          ", ErrorText = '" + errorMessage + "'" +
                          " WHERE Name = '" + jobName + "'";
 
-            SqlCommand Cmd = new SqlCommand(sql, Connection);
-            Cmd.ExecuteNonQuery();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                    command.ExecuteNonQuery();
+            }
         }
 
         /// <summary>Rerun the specified job/summary>
@@ -329,25 +343,21 @@ namespace APSIM.Cloud.Service
             string sql = "UPDATE Jobs SET Status = " + ((int)StatusEnum.Queued).ToString() +
                          " WHERE Name = '" + jobName + "'";
 
-            SqlCommand Cmd = new SqlCommand(sql, Connection);
-            Cmd.ExecuteNonQuery();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                    command.ExecuteNonQuery();
+            }
         }
 
         /// <summary>Open the DB ready for use.</summary>
-        private void Open()
+        private string ConnectionString
         {
-            string ConnectionString = File.ReadAllText(@"C:\inetpub\wwwroot\dbConnect.txt") + ";Database=\"Jobs\"";
-            Connection = new SqlConnection(ConnectionString);
-            Connection.Open();
-        }
-
-        /// <summary>Close the SoilsDB connection</summary>
-        private void Close()
-        {
-            if (Connection != null)
+            get
             {
-                Connection.Close();
-                Connection = null;
+                return File.ReadAllText(@"C:\inetpub\wwwroot\dbConnect.txt") + ";Database=\"Jobs\"";
             }
         }
 
@@ -377,8 +387,13 @@ namespace APSIM.Cloud.Service
             string SQL = "UPDATE Jobs SET Status = " + ((int)newStatus).ToString() +
                          " WHERE Name = '" + jobName + "'";
 
-            SqlCommand Cmd = new SqlCommand(SQL, Connection);
-            Cmd.ExecuteNonQuery();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand(SQL, connection))
+                    command.ExecuteNonQuery();
+            }
         }
 
 
