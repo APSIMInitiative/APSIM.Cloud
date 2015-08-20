@@ -129,7 +129,8 @@ namespace APSIM.Cloud.Shared
     public class FarmSoilType
     {
         /// <summary>
-        /// Gets or sets the proportion of farm area used by this soil type
+        /// Gets or sets the proportion (0-1) of farm area used by this soil type.
+        /// If this value is zero then this soil type will not have any crops sown on it.
         /// </summary>
         public double AreaProportion { get; set; }    
 

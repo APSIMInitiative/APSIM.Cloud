@@ -466,91 +466,62 @@ namespace APSIM.Cloud.Shared.AusFarm
 
         /// <summary>
         /// Sets the soil values in every paddock that has the soil type.
-        /// The only valid configuration currently is to:
-        /// - One soil type and many paddock definitions
-        ///      each paddock in the soil type is configured individually with these paddocks
-        /// - One to three soil types with the same number of paddocks, 1 to 1 relationship
-        ///      each paddock in the soil type uses the same paddock initialisation
+        /// The valid configuration is:
+        /// - One to three soil types. Currently there are four phases/paddocks for each soil type.
+        ///   This means that up to four different crops will be sown on a soil type in any year.
+        ///   To sow only one crop type on a soil type for the year, specifiy four crops with the same name.
+        ///   More than four names can be in the rotation list. 
+        ///   Each paddock in the soil type uses the same paddock initialisation
+        ///   The .AreaPoportion value is useful to dividing the farm. Any soil type that has
+        ///   zero proportion will have no area and will not be sown.
+        ///   If only one soil type is found then the remaining two will be set to zero proportion area.
         /// </summary>
-        /// <param name="farmSoilAreas">The specs for a soil type list on the chosen farm</param>
-        /// <param name="soils">The list of soil types retrieved from APSOIL</param>
+        /// <param name="simulation">The AusFarm simulation object</param>
         public void SetSoils(AusFarmSpec simulation)
         {
-            if ((simulation.OnFarmSoilTypes.Count == 1) && (simulation.OnFarmPaddocks.Count > 1))
+            double areaPropnTotal = 0.0;
+            int soilIdx = 0;
+
+            // find every paddock
+            XmlNodeList paddocks = simulationXMLNode.SelectNodes("//system[attribute::class=\"Paddock\"]");
+
+            // work through the 3 possible soil types
+            while (soilIdx < 3)
             {
-                // on one soil type we can configure multiple paddocks
-                FarmSoilType soilArea = simulation.OnFarmSoilTypes[0];
-                Soil soilConfig = soilArea.SoilDescr;
-
-                //find every paddock
-                XmlNodeList paddocks = simulationXMLNode.SelectNodes("//system[attribute::class=\"Paddock\"]");
-
-                int paddIdx = 0;
-                //for each paddock
-                foreach (XmlNode paddocknode in paddocks)
+                if (soilIdx < simulation.OnFarmSoilTypes.Count)
                 {
-                    //parse the name of the paddock to see if this soil applies to it- Expect "Soil1_01"
-                    int soilNo, paddNo;
-                    ParsePaddockName(paddocknode, out soilNo, out paddNo);
-
-                    // if this soil should be applied to this paddock
-                    if (soilNo == 1)
+                    // for every soil type that has been defined
+                    FarmSoilType soilArea = simulation.OnFarmSoilTypes[soilIdx];
+                    areaPropnTotal += soilArea.AreaProportion;
+                    SetGenericCompStateVar("Params", "F4P_AREAPROPN_ROT" + (soilIdx + 1).ToString(), String.Format("{0, 2:f2}", soilArea.AreaProportion));
+                    if (soilArea.AreaProportion > 0)
                     {
-                        for (int p = 0; p < simulation.OnFarmPaddocks.Count; p++)   // for each paddock in the spec
+                        FarmPaddockType defaultPaddock = simulation.OnFarmPaddocks[soilIdx];    //this paddock is applied to this soil type
+                        Soil soilConfig = soilArea.SoilDescr;
+
+                        int paddIdx = 0;
+                        // for each paddock
+                        foreach (XmlNode paddocknode in paddocks)
                         {
-                            if (paddNo == p + 1)
+                            // parse the name of the paddock to see if this soil applies to it- Expect "Soil1_01"
+                            int soilNo, paddNo;
+                            ParsePaddockName(paddocknode, out soilNo, out paddNo);
+
+                            // if this soil should be applied to this paddock
+                            if (soilNo == soilIdx + 1)
                             {
-                                FarmPaddockType defaultPaddock = simulation.OnFarmPaddocks[p];    //this paddock is applied to this paddock in the simulation
                                 SetSoilComponents(defaultPaddock, soilConfig, paddocknode);
                                 SetSoilCrops(soilConfig, paddocknode);
-                            }
-                        }
-                        paddIdx++;
-                    }
-                }
-            }
-            else
-            {
-                // if the number of soil types matches the number of paddocks then
-                // assume that a paddock definition is applied over the paddocks in this soil type.
-                // (residues may be difficult to set)
-                if (simulation.OnFarmPaddocks.Count == simulation.OnFarmSoilTypes.Count)
-                {
-                    //find every paddock
-                    XmlNodeList paddocks = simulationXMLNode.SelectNodes("//system[attribute::class=\"Paddock\"]");
-
-                    for (int soilIdx = 0; soilIdx < simulation.OnFarmSoilTypes.Count; soilIdx++)
-                    {
-                        // for every soil type that has been defined
-                        FarmSoilType soilArea = simulation.OnFarmSoilTypes[soilIdx];
-                        if (soilArea.AreaProportion > 0)
-                        {
-                            FarmPaddockType defaultPaddock = simulation.OnFarmPaddocks[soilIdx];    //this paddock is applied to this soil type
-                            Soil soilConfig = soilArea.SoilDescr;
-
-                            int paddIdx = 0;
-                            //for each paddock
-                            foreach (XmlNode paddocknode in paddocks)
-                            {
-                                //parse the name of the paddock to see if this soil applies to it- Expect "Soil1_01"
-                                int soilNo, paddNo;
-                                ParsePaddockName(paddocknode, out soilNo, out paddNo);
-
-                                // if this soil should be applied to this paddock
-                                if (soilNo == soilIdx + 1)
-                                {
-                                    SetSoilComponents(defaultPaddock, soilConfig, paddocknode);
-                                    SetSoilCrops(soilConfig, paddocknode);
-                                    paddIdx++;
-                                }
+                                paddIdx++;
                             }
                         }
                     }
                 }
                 else
                 {
-                    throw new Exception("The number of paddocks is not configured correctly for the number of soil types");
+                    SetGenericCompStateVar("Params", "F4P_AREAPROPN_ROT" + (soilIdx + 1).ToString(), "0.0");
                 }
+                soilIdx++;
             }
         }
 
