@@ -196,9 +196,9 @@ namespace APSIM.Cloud.Shared
         public double Area { get; set; }    
 
         /// <summary>
-        /// Gets the soil type for this paddock
+        /// Gets or sets the soil type for this paddock
         /// </summary>
-        public FarmSoilType SoilType { get { return FSoilType; } }
+        public FarmSoilType SoilType { get { return FSoilType; } set { FSoilType = value; } }
 
         /// <summary>Gets or sets the stubble mass (kg/ha).</summary>
         public double StubbleMass { get; set; }
