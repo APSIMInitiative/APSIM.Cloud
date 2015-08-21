@@ -565,7 +565,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             if (apsimCompNode != null)
             {
                 translatorNode = apsimCompNode.ParentNode;
-                initSoilWat_Trans(translatorNode, soilConfig);
+                initSoilWat_Trans(translatorNode, soilConfig, defaultPaddock.SoilType);
             }
 
             //set soiln
@@ -583,9 +583,9 @@ namespace APSIM.Cloud.Shared.AusFarm
             if (apsimCompNode != null)
             {
                 translatorNode = apsimCompNode.ParentNode;
-                initSOM_Trans(translatorNode, soilConfig);
+                initSOM_Trans(translatorNode, soilConfig, defaultPaddock.SoilType);
 
-                //if there is a paddock with init residue data then set it here
+                //if there is a paddock with init residue data and new crops in the rotation then set here 
                 setSurfaceOMPaddockInits(apsimCompNode, defaultPaddock);
             }
         }
@@ -621,8 +621,10 @@ namespace APSIM.Cloud.Shared.AusFarm
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Fababean\"]");
             setSoilCrop(apsimCompNode, "fababean", soilConfig);
+
+            apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Lupin\"]");
+            setSoilCrop(apsimCompNode, "lupin", soilConfig);
             //sorghum
-            //lupin
         }
 
         /// <summary>
@@ -640,6 +642,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             if (stubbleType == null || stubbleType == "None")
                 throw new Exception("No stubble type specified");
 
+            FarmSoilType farmSoil = paddock.SoilType;
             OrgMatter stubble = new OrgMatter();
             XmlNode valueNode = apsimCompNode.SelectSingleNode("initdata/type");
             if (valueNode != null)
@@ -653,6 +656,21 @@ namespace APSIM.Cloud.Shared.AusFarm
                 strToArray(ref stubble.cnrs, cnrNode.InnerText.ToLower());
                 XmlNode sfNode = apsimCompNode.SelectSingleNode("initdata/standing_fraction");
                 strToArray(ref stubble.stand_fract, sfNode.InnerText.ToLower());
+
+                // check that all the residue types are listed that are in the crop rotation
+                for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
+                {
+                    string cropName = farmSoil.CropRotationList[crop].name.ToLower();
+                    if (stubble.types.IndexOf(cropName) < 0)
+                    {
+                        //re-add the stubble with the correct values
+                        stubble.names.Add(cropName);
+                        stubble.types.Add(cropName);
+                        stubble.masses.Add("0.0");
+                        stubble.cnrs.Add("60.0");           // ?
+                        stubble.stand_fract.Add("0.0");
+                    }
+                }
 
                 int idx = stubble.types.IndexOf(paddock.StubbleType);       // if the stubble type exists in the list already
                 if (idx >= 0)
@@ -872,37 +890,45 @@ namespace APSIM.Cloud.Shared.AusFarm
             anode.AppendChild(comment);
 
             anode = compNode.SelectSingleNode("initdata/name");
-            if (anode.InnerText.Length < 5)
+            if (anode.InnerText.Length < 1)
             {
                 // if there are no residues configured then set some defaults
-                anode.InnerText = "wheat barley canola pasture";
+                anode.InnerText = "wheat canola pasture barley chickpea oats fieldpea fababean lupin";
                 anode = compNode.SelectSingleNode("initdata/type");
-                anode.InnerText = "wheat barley canola pasture";
+                anode.InnerText = "wheat canola pasture barley chickpea oats fieldpea fababean lupin";
                 anode = compNode.SelectSingleNode("initdata/mass");
-                anode.InnerText = "0.0 0.0 0.0 0.0";
+                anode.InnerText = "0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0";
                 anode = compNode.SelectSingleNode("initdata/cnr");
-                anode.InnerText = "60.0 60.0 80.0 60.0";
+                anode.InnerText = "60.0 80.0 60.0 60.0 60.0 60.0 60.0 60.0 60.0";
                 anode = compNode.SelectSingleNode("initdata/standing_fraction");
-                anode.InnerText = "0.0 0.0 0.0 0.0";
+                anode.InnerText = "0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0";
             }
         }
 
         /// <summary>
-        /// 
+        /// Initialise the Soil water translator
         /// </summary>
         /// <param name="compNode"></param>
         /// <param name="aSoil"></param>
-        private void initSoilWat_Trans(XmlNode compNode, Soil aSoil)
+        private void initSoilWat_Trans(XmlNode compNode, Soil aSoil, FarmSoilType farmSoil)
         {
             TSDMLValue init = GetTypedInit(compNode, "psd");
             init.member("sand").setElementCount((uint)aSoil.SoilWater.Thickness.Length);
             init.member("clay").setElementCount((uint)aSoil.SoilWater.Thickness.Length);
+            double value;
             for (uint x = 0; x <= aSoil.SoilWater.Thickness.Length - 1; x++)
             {
                 if ((aSoil.Analysis.ParticleSizeSand != null) && (aSoil.Analysis.ParticleSizeSand.Length > x))
                 {
-                    init.member("sand").item(x + 1).setValue(aSoil.Analysis.ParticleSizeSand[x] * 0.01);
-                    init.member("clay").item(x + 1).setValue(aSoil.Analysis.ParticleSizeClay[x] * 0.01);
+                    value = aSoil.Analysis.ParticleSizeSand[x];
+                    if (value == double.NaN)
+                        value = 0.0;                            // probably should be interpolated from any existing values
+                    init.member("sand").item(x + 1).setValue(value * 0.01);
+
+                    value = aSoil.Analysis.ParticleSizeClay[x];
+                    if (value == double.NaN)
+                        value = 0.0;
+                    init.member("clay").item(x + 1).setValue(value * 0.01);
                 }
                 else
                 {
@@ -913,19 +939,57 @@ namespace APSIM.Cloud.Shared.AusFarm
             }
             SetTypedInit(compNode, "psd", init);
 
-            //may not need to do this in an already configured simulation
+            // configure the published events for this translator so each crop component in the rotation is supported
             init = GetTypedInit(compNode, "published_events");
-            if (init.count() < 1)
+            
+            // if not the correct number of published events
+            if (init.count() < 2)
             {
                 init.setElementCount(2);
                 init.item(1).member("name").setValue(".model.new_profile");
                 init.item(1).member("connects").setElementCount(1);
                 init.item(1).member("connects").item(1).setValue("..nitrogen.model.new_profile");
+
                 init.item(2).member("name").setValue(".model.nitrogenchanged");
                 init.item(2).member("connects").setElementCount(1);
                 init.item(2).member("connects").item(1).setValue("..nitrogen.model.nitrogenchanged");
-                SetTypedInit(compNode, "published_events", init);
             }
+
+            // now ensure that the connections go to each crop component
+            // there should be a connection item for every plant component in the paddock
+            TTypedValue connects = null;
+            uint idx = 1;
+            // find the correct item in the published events array
+            while ((connects == null) && idx <= 2)
+            {
+                if (init.item(idx).member("name").asStr() == ".model.new_profile")
+                    connects = init.item(idx).member("connects");                       
+                idx++;
+            }
+
+            string connectionName;
+            // for each item in the crop rotation list
+            for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
+            {
+                string cropName = farmSoil.CropRotationList[crop].name;
+                idx = 1;
+                bool found = false;
+                while (!found && (idx <= connects.count()))
+                {
+                    connectionName =  connects.item(idx).asStr().ToLower();
+                    if (connectionName.Contains(cropName.ToLower()))
+                        found = true;
+                    idx++;
+                }
+
+                //if not found int the connections then add it to the list
+                if (!found)
+                {
+                    connects.setElementCount(connects.count() + 1);
+                    connects.item(connects.count()).setValue(".." + cropName + ".model.new_profile");
+                }
+            }
+            SetTypedInit(compNode, "published_events", init);
         }
 
         private void initSoilN_Trans(XmlNode compNode, Soil aSoil)
@@ -956,22 +1020,33 @@ namespace APSIM.Cloud.Shared.AusFarm
         }
 
         /// <summary>
-        /// 
+        /// Initialise the SOM translator
         /// </summary>
         /// <param name="compNode"></param>
         /// <param name="aSoil"></param>
-        private void initSOM_Trans(XmlNode compNode, Soil aSoil)
+        private void initSOM_Trans(XmlNode compNode, Soil aSoil, FarmSoilType farmSoil)
         {
             TSDMLValue init = GetTypedInit(compNode, "surfaceom_types");
-            if (init.count() < 1)
+            bool found;
+
+            // for each crop type in the rotaion list there should be a residue item in the translator
+            for (int res = 0; res < farmSoil.CropRotationList.Count; res++)
             {
-                init.setElementCount(4);
-                init.item(1).setValue("wheat");
-                init.item(2).setValue("barley");
-                init.item(3).setValue("canola");
-                init.item(4).setValue("pasture");
-                SetTypedInit(compNode, "surfaceom_types", init);
+                uint i = 1;
+                found = false;
+                while (!found && (i <= init.count()) )
+                {
+                    if (init.item(i).asStr() == farmSoil.CropRotationList[res].name)
+                        found = true;
+                    i++;
+                }
+                if (!found)
+                {
+                    init.setElementCount(init.count() + 1);
+                    init.item(init.count()).setValue(farmSoil.CropRotationList[res].name);
+                }
             }
+            SetTypedInit(compNode, "surfaceom_types", init);
 
             //may not need to do this in an already configured simulation
             init = GetTypedInit(compNode, "published_events");
