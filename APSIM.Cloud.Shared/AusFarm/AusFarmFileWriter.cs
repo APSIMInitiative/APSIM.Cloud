@@ -921,12 +921,12 @@ namespace APSIM.Cloud.Shared.AusFarm
                 if ((aSoil.Analysis.ParticleSizeSand != null) && (aSoil.Analysis.ParticleSizeSand.Length > x))
                 {
                     value = aSoil.Analysis.ParticleSizeSand[x];
-                    if (value == double.NaN)
+                    if (value.Equals(double.NaN))
                         value = 0.0;                            // probably should be interpolated from any existing values
                     init.member("sand").item(x + 1).setValue(value * 0.01);
 
                     value = aSoil.Analysis.ParticleSizeClay[x];
-                    if (value == double.NaN)
+                    if (value.Equals(double.NaN))
                         value = 0.0;
                     init.member("clay").item(x + 1).setValue(value * 0.01);
                 }
