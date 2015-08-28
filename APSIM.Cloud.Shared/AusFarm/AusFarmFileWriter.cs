@@ -972,21 +972,24 @@ namespace APSIM.Cloud.Shared.AusFarm
             for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
             {
                 string cropName = farmSoil.CropRotationList[crop].name;
-                idx = 1;
-                bool found = false;
-                while (!found && (idx <= connects.count()))
+                if (cropName != "medic")
                 {
-                    connectionName =  connects.item(idx).asStr().ToLower();
-                    if (connectionName.Contains(cropName.ToLower()))
-                        found = true;
-                    idx++;
-                }
+                    idx = 1;
+                    bool found = false;
+                    while (!found && (idx <= connects.count()))
+                    {
+                        connectionName = connects.item(idx).asStr().ToLower();
+                        if (connectionName.Contains(cropName.ToLower()))
+                            found = true;
+                        idx++;
+                    }
 
-                //if not found int the connections then add it to the list
-                if (!found)
-                {
-                    connects.setElementCount(connects.count() + 1);
-                    connects.item(connects.count()).setValue(".." + cropName + ".model.new_profile");
+                    //if not found int the connections then add it to the list
+                    if (!found)
+                    {
+                        connects.setElementCount(connects.count() + 1);
+                        connects.item(connects.count()).setValue(".." + cropName + ".model.new_profile");
+                    }
                 }
             }
             SetTypedInit(compNode, "published_events", init);
@@ -1032,18 +1035,21 @@ namespace APSIM.Cloud.Shared.AusFarm
             // for each crop type in the rotaion list there should be a residue item in the translator
             for (int res = 0; res < farmSoil.CropRotationList.Count; res++)
             {
-                uint i = 1;
-                found = false;
-                while (!found && (i <= init.count()) )
+                if (farmSoil.CropRotationList[res].name != "medic")
                 {
-                    if (init.item(i).asStr() == farmSoil.CropRotationList[res].name)
-                        found = true;
-                    i++;
-                }
-                if (!found)
-                {
-                    init.setElementCount(init.count() + 1);
-                    init.item(init.count()).setValue(farmSoil.CropRotationList[res].name);
+                    uint i = 1;
+                    found = false;
+                    while (!found && (i <= init.count()))
+                    {
+                        if (init.item(i).asStr() == farmSoil.CropRotationList[res].name)
+                            found = true;
+                        i++;
+                    }
+                    if (!found)
+                    {
+                        init.setElementCount(init.count() + 1);
+                        init.item(init.count()).setValue(farmSoil.CropRotationList[res].name);
+                    }
                 }
             }
             SetTypedInit(compNode, "surfaceom_types", init);
