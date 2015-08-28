@@ -49,6 +49,11 @@ namespace APSIM.Cloud.Shared.AusFarm
     public class AusFarmFileWriter
     {
         #region privates
+
+        /// <summary>
+        /// Names of crops - crop/plant components. This does not include names of pasture types.
+        /// </summary>
+        private string[] ValidCropNames = { "wheat", "canola", "barley", "chickpea", "oats", "fieldpea", "fababean", "lupin" };
         /// <summary>
         /// The simulation XML node
         /// </summary>
@@ -972,7 +977,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
             {
                 string cropName = farmSoil.CropRotationList[crop].name;
-                if (cropName != "medic")
+                if (IsValidCropName(cropName))
                 {
                     idx = 1;
                     bool found = false;
@@ -993,6 +998,24 @@ namespace APSIM.Cloud.Shared.AusFarm
                 }
             }
             SetTypedInit(compNode, "published_events", init);
+        }
+
+        /// <summary>
+        /// Check that the crop name is one of the Plant crops.
+        /// </summary>
+        /// <param name="crop">Crop name</param>
+        /// <returns>True if found</returns>
+        private bool IsValidCropName(string crop)
+        {
+            crop = crop.Trim();
+            int i = 0;
+            while (i < ValidCropNames.Length)
+            {
+                if (String.Compare(crop, ValidCropNames[i], true) == 0)
+                    return true;
+                i++;
+            }
+            return false;
         }
 
         private void initSoilN_Trans(XmlNode compNode, Soil aSoil)
@@ -1035,7 +1058,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             // for each crop type in the rotaion list there should be a residue item in the translator
             for (int res = 0; res < farmSoil.CropRotationList.Count; res++)
             {
-                if (farmSoil.CropRotationList[res].name != "medic")
+                if (IsValidCropName(farmSoil.CropRotationList[res].name))
                 {
                     uint i = 1;
                     found = false;
