@@ -324,7 +324,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 case SimulationType.stCropOnly:
                     scriptTemplate = "APSIM.Cloud.Shared.Resources.ausfarm_crop_only.sdml";
                     break;
-                case SimulationType.stMixed:
+                case SimulationType.stSingleFlock:
                     scriptTemplate = "APSIM.Cloud.Shared.Resources.ausfarm_warooka.sdml";
                     break;
             }
@@ -1071,25 +1071,43 @@ namespace APSIM.Cloud.Shared.AusFarm
         {
             if (livestock.TradeLambCount > 0)
             {
-                SetGenericCompStateVar("Params", "F4P_TRADE_BREED", "'" + livestock.TradeLambBreed + "'");
+                SetGenericCompStateVar("Params", "F4P_TRADE_BREED", DoQuote(livestock.TradeLambBreed));
                 SetGenericCompStateVar("Params", "F4P_TRADE_COUNT", livestock.TradeLambCount.ToString());
-                SetGenericCompStateVar("Params", "F4P_TRADE_BUY_ON", "'" + livestock.TradeLambBuyDay + "'");
+                SetGenericCompStateVar("Params", "F4P_TRADE_BUY_ON", DoQuote(livestock.TradeLambBuyDay));
                 SetGenericCompStateVar("Params", "F4P_TRADE_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.TradeLambSaleWt));
             }
-            if (livestock.BreedingEweCount > 0)
+            // configure the breeding flocks
+            string prefix;
+            for (int f = 0; f < livestock.Flocks.Count; f++)
             {
-                SetGenericCompStateVar("Params", "F4P_MERINO_EWES", livestock.BreedingEweCount.ToString());
-                SetGenericCompStateVar("Params", "F4P_MERINO_JOIN", "'" + livestock.EweJoinDay + "'");
-                SetGenericCompStateVar("Params", "F4P_LAMB_RATE", String.Format("{0, 2:f2}", livestock.LambingRate));
-                SetGenericCompStateVar("Params", "F4P_CULL_YRS", String.Format("{0, 2:f2}", livestock.CastForAgeYears));
-                SetGenericCompStateVar("Params", "F4P_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.LambSaleWt));
-                SetGenericCompStateVar("Params", "F4P_SHEAR_DAY", "'" + livestock.ShearingDay + "'");
+                string selfReplace = "TRUE";
+                if (livestock.Flocks[f].SelfReplacing == false)
+                {
+                    selfReplace = "FALSE";
+                }
+                SetGenericCompStateVar("Params", "F4P_SELF_REPLACING", selfReplace);
+                prefix = "F4P_FLOCK" + (f + 1).ToString();
+                SetGenericCompStateVar("Params", prefix + "_BREED", DoQuote(livestock.Flocks[f].Breed));
+                SetGenericCompStateVar("Params", prefix + "_SIRE", DoQuote(livestock.Flocks[f].SireBreed));
+                SetGenericCompStateVar("Params", prefix  +"_EWES", livestock.Flocks[f].BreedingEweCount.ToString());
+                SetGenericCompStateVar("Params", prefix + "_JOIN", DoQuote(livestock.Flocks[f].EweJoinDay));
+                SetGenericCompStateVar("Params", prefix + "_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.Flocks[f].LambSaleWt));
+                SetGenericCompStateVar("Params", prefix + "_CULL_YRS", String.Format("{0, 2:f2}", livestock.Flocks[f].CastForAgeYears));
+                // other breed parameters
+
             }
+            SetGenericCompStateVar("Params", "F4P_SHEAR_DAY", DoQuote(livestock.ShearingDay));
+
             // these should only be for the breeding flock (see ausfarm_warooka)
-            SetGenericCompStateVar("Params", "F4P_SUPP1", "'" + livestock.Supplement1 + "'");
-            SetGenericCompStateVar("Params", "F4P_SUPP2", "'" + livestock.Supplement2 + "'");
+            SetGenericCompStateVar("Params", "F4P_SUPP1", DoQuote(livestock.Supplement1));
+            SetGenericCompStateVar("Params", "F4P_SUPP2", DoQuote(livestock.Supplement2));
             SetGenericCompStateVar("Params", "F4P_SUPP1_PROPN", String.Format("{0, 2:f2}", livestock.Supp1Propn));
             SetGenericCompStateVar("Params", "F4P_SUPP2_PROPN", String.Format("{0, 2:f2}", livestock.Supp2Propn));
+        }
+
+        private string DoQuote(string value)
+        {
+            return "'" + value + "'";
         }
     }
 }

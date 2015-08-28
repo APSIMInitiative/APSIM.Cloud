@@ -132,11 +132,16 @@ namespace APSIM.Cloud.Shared.AusFarm
             AusFarmFileWriter ausfarmWriter;
 
             // determine which type of simulation this is based on stock, paddocks, crops
-            if ((simulation.LiveStock.BreedingEweCount == 0) && (simulation.LiveStock.TradeLambCount == 0))
+            if ((simulation.LiveStock.Flocks.Count == 0) && (simulation.LiveStock.TradeLambCount == 0))
                 ausfarmWriter = new AusFarmFileWriter(SimulationType.stCropOnly);
             else
             {
-                ausfarmWriter = new AusFarmFileWriter(SimulationType.stMixed);
+                if (simulation.LiveStock.Flocks.Count == 1)
+                {
+                    ausfarmWriter = new AusFarmFileWriter(SimulationType.stSingleFlock);
+                }
+                else
+                    ausfarmWriter = new AusFarmFileWriter(SimulationType.stDualFlock);
             }
 
             // Name the simulation

@@ -49,7 +49,7 @@ namespace APSIM.Cloud.Shared
     /// Range of valid simulation types that can be configured
     /// using a variety of template sdml files.
     /// </summary>
-    public enum SimulationType { stCropOnly, stMixed };
+    public enum SimulationType { stCropOnly, stSingleFlock, stDualFlock };
 
     /// <summary>
     /// A specification for a AusFarm simulated Farm System
@@ -239,6 +239,11 @@ namespace APSIM.Cloud.Shared
     public class FarmLivestock
     {
         /// <summary>
+        /// The breeding flocks in this livestock system
+        /// </summary>
+        [XmlElement("Flocks")]
+        public List<FlockDescr> Flocks { get; set; }
+        /// <summary>
         /// Breed name for the trade lambs
         /// Valid names include: merino
         /// </summary>
@@ -258,27 +263,7 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public double TradeLambSaleWt { get; set; }
         /// <summary>
-        /// Number of breeding ewes in the enterprise
-        /// </summary>
-        public int BreedingEweCount { get; set; }
-        /// <summary>
-        /// The day of the year for ewe joining 
-        /// </summary>
-        public string EweJoinDay { get; set; }
-        /// <summary>
-        /// Lambing proportion. 
-        /// </summary>
-        public double LambingRate { get; set; }
-        /// <summary>
-        /// Age in years to cast for age the merino ewes
-        /// </summary>
-        public double CastForAgeYears { get; set; }
-        /// <summary>
-        /// Target sale weight for offspring
-        /// </summary>
-        public double LambSaleWt { get; set; }
-        /// <summary>
-        /// Day of the year for shearing
+        /// Day of the year for shearing for all sheep
         /// </summary>
         public string ShearingDay { get; set; }
         /// <summary>
@@ -299,7 +284,52 @@ namespace APSIM.Cloud.Shared
 
         public FarmLivestock()
         {
-        }
+            Flocks = new List<FlockDescr>();
+        }        
+    }
+
+    /// <summary>
+    /// A description of a breeding flock
+    /// </summary>
+    public class FlockDescr
+    {
+        /// <summary>
+        /// True if this is a self replacing flock
+        /// </summary>
+        public bool SelfReplacing { get; set; }
+        /// <summary>
+        /// The breed name. "Small merino"
+        /// </summary>
+        public string Breed { get; set; }
+        /// <summary>
+        /// The breed of the ram used. Set it to the same as the ewe breed
+        /// for self replacing flocks.
+        /// </summary>
+        public string SireBreed { get; set; }
+        /// <summary>
+        /// Target sale weight for offspring
+        /// </summary>
+        public double LambSaleWt { get; set; }
+        /// <summary>
+        /// Age in years to cast for age the merino ewes
+        /// </summary>
+        public double CastForAgeYears { get; set; }
+        /// <summary>
+        /// Conception percentage of singles when ewes are at CS 3
+        /// </summary>
+        public double ConceptSingle { get; set; }
+        /// <summary>
+        /// Conception percentage of twins when ewes are at CS 3
+        /// </summary>
+        public double ConceptTwin { get; set; }
+        /// <summary>
+        /// Number of breeding ewes in this flock
+        /// </summary>
+        public int BreedingEweCount { get; set; }
+        /// <summary>
+        /// The day of the year for ewe joining 
+        /// </summary>
+        public string EweJoinDay { get; set; }
     }
 }
 
