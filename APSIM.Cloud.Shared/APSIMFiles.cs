@@ -55,33 +55,33 @@ namespace APSIM.Cloud.Shared
             {
                 string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
+                WeatherFile weatherData = new WeatherFile();
                 if (simulation.EndDate > simulation.NowDate)
                 {
                     // long term.
                     // Create a long term weather file.
-                    WeatherFile weatherData = new WeatherFile();
                     weatherData.CreateLongTerm(rainFileName, simulation.StationNumber,
                                                 simulation.StartDate, simulation.EndDate, simulation.NowDate,
                                                 simulation.ObservedData, 30);
-                    APSIMSpec.Factor factor = new APSIMSpec.Factor();
-                    factor.Name = "Met";
-                    factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
-                    factor.ComponentVariableName = "filename";
-                    factor.ComponentVariableValues = weatherData.FilesCreated;
-                    if (simulation.Factors == null)
-                        simulation.Factors = new List<APSIMSpec.Factor>();
-                    simulation.Factors.Add(factor);
                 }
                 else
                 {
                     // short term.
                     // Create a short term weather file.
-                    WeatherFile weatherData = new WeatherFile();
                     weatherData.CreateOneSeason(rainFileName, simulation.StationNumber,
                                                 simulation.StartDate, simulation.NowDate,
                                                 simulation.ObservedData);
                     simulation.WeatherFileName = Path.GetFileName(rainFileName);
                 }
+
+                APSIMSpec.Factor factor = new APSIMSpec.Factor();
+                factor.Name = "Met";
+                factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
+                factor.ComponentVariableName = "filename";
+                factor.ComponentVariableValues = weatherData.FilesCreated;
+                if (simulation.Factors == null)
+                    simulation.Factors = new List<APSIMSpec.Factor>();
+                simulation.Factors.Add(factor);
             }
         }
 
@@ -247,9 +247,10 @@ namespace APSIM.Cloud.Shared
             // Make sure we have a soil crop parameterisation. If not then try creating one
             // based on wheat.
             Sow sowing = YieldProphetUtility.GetCropBeingSown(simulation.Management);
-            if (sowing != null && !StringUtilities.Contains(SoilUtilities.GetCropNames(soil), sowing.Crop))
+            string[] cropNames = soil.Water.Crops.Select(c => c.Name).ToArray();
+            if (sowing != null && !StringUtilities.Contains(cropNames, sowing.Crop))
             {
-                SoilCrop wheat = SoilUtilities.Crop(soil, "wheat");
+                SoilCrop wheat = soil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
 
                 SoilCrop newSoilCrop = new SoilCrop();
                 newSoilCrop.Name = sowing.Crop;
@@ -279,13 +280,13 @@ namespace APSIM.Cloud.Shared
                 double pawc;
                 if (sowing == null || sowing.Crop == null)
                 {
-                    pawc = MathUtilities.Sum(SoilUtilities.PAWCmm(soil));
+                    pawc = MathUtilities.Sum(PAWC.OfSoilmm(soil));
                     soil.InitialWater.RelativeTo = "LL15";
                 }
                 else
                 {
-                    SoilCrop crop = SoilUtilities.Crop(soil, sowing.Crop);
-                    pawc = MathUtilities.Sum(SoilUtilities.PAWCCropmm(soil, crop));
+                    SoilCrop crop = soil.Water.Crops.Find(c => c.Name.Equals(sowing.Crop, StringComparison.InvariantCultureIgnoreCase));
+                    pawc = MathUtilities.Sum(PAWC.OfCropmm(soil, crop));
                     soil.InitialWater.RelativeTo = crop.Name;
                 }
 
@@ -299,8 +300,8 @@ namespace APSIM.Cloud.Shared
                 nitrogenSample.Name = "NitrogenSample";
                 soil.Samples.Add(nitrogenSample);
                 nitrogenSample.Thickness = new double[] { 150, 150, 3000 };
-                nitrogenSample.NO3Units = Sample.NUnitsEnum.kgha;
-                nitrogenSample.NH4Units = Sample.NUnitsEnum.kgha;
+                nitrogenSample.NO3Units = Nitrogen.NUnitsEnum.kgha;
+                nitrogenSample.NH4Units = Nitrogen.NUnitsEnum.kgha;
                 nitrogenSample.NO3 = new double[] { 6.0, 2.1, 0.1 };
                 nitrogenSample.NH4 = new double[] { 0.5, 0.1, 0.1 };
                 nitrogenSample.OC = new double[] { double.NaN, double.NaN, double.NaN };
@@ -330,8 +331,6 @@ namespace APSIM.Cloud.Shared
         /// <param name="sample">The sample.</param>
         private static void CheckSample(Soil parentSoil, Sample sample)
         {
-            SoilUtilities.ConstrainSampleSW(sample, parentSoil);
-
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);
             CheckMissingValuesAreNaN(sample.NH4);
@@ -352,7 +351,7 @@ namespace APSIM.Cloud.Shared
                         sample.NH4[i] = 0.1;
             }
 
-            sample.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
+            sample.OCUnits = SoilOrganicMatter.OCUnitsEnum.WalkleyBlack;
             if (sample.OC != null)
                 sample.OC = FixArrayLength(sample.OC, sample.Thickness.Length);
 
