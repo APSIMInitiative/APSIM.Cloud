@@ -1,16 +1,16 @@
 <report version="5">
-<Data>
-<ApsimFileReader name="Yearly" Left="6" Top="10" Width="162" Height="77">
-      <FileName type="filenames">Base Yearly.out</FileName>
+  <Data>
+    <ApsimFileReader name="Yearly" Left="6" Top="10" Width="162" Height="77">
+      <FileName type="filenames">Base Yearly.csv</FileName>
       <ParseTitle type="yesno">no</ParseTitle>
     </ApsimFileReader>
-<Probability name="YearlyProbability" Left="205" Top="54" Width="128" Height="179">
+    <Probability name="YearlyProbability" Left="205" Top="54" Width="128" Height="179">
       <Exceedence type="yesno">yes</Exceedence>
       <FieldName type="fieldnames">Hay</FieldName>
       <source>Yearly</source>
       <FieldName>wetyield</FieldName>
     </Probability>
-<Stats name="YearlyStats" Left="360" Top="54" Width="217" Height="179">
+    <Stats name="YearlyStats" Left="360" Top="54" Width="217" Height="179">
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">Minimum</Stat>
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">Maximum</Stat>
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">Mean</Stat>
@@ -38,7 +38,7 @@
       <FieldName>Zadok65Das</FieldName>
       <FieldName>Zadok75Das</FieldName>
     </Stats>
-<Frequency name="YearlyFrequency" Left="604" Top="54" Width="242" Height="150">
+    <Frequency name="YearlyFrequency" Left="604" Top="54" Width="242" Height="150">
       <Label type="multiedit">MildFrostRisk</Label>
       <FilterString type="multiedit"><![CDATA[MildFrostCount > 0]]></FilterString>
       <Percent type="yesno">yes</Percent>
@@ -54,48 +54,48 @@
       <FilterString type="multiedit"><![CDATA[SevereHeatShockCount > 0]]></FilterString>
       <source>Yearly</source>
     </Frequency>
-<XmlFileReader name="Metadata" Left="11" Top="914" Width="162" Height="77">
+    <XmlFileReader name="Metadata" Left="11" Top="914" Width="162" Height="77">
       <FileName type="filename">YieldProphet.xml</FileName>
     </XmlFileReader>
-<ApsimFileReader name="ThisYear" Left="6" Top="345" Width="162" Height="77">
-      <FileName type="filenames">ThisYear Daily.out</FileName>
+    <ApsimFileReader name="ThisYear" Left="6" Top="345" Width="162" Height="77">
+      <FileName type="filenames">ThisYear Daily.csv</FileName>
     </ApsimFileReader>
-<ApsimFileReader name="Decile" Left="6" Top="253" Width="162" Height="77">
+    <ApsimFileReader name="Decile" Left="6" Top="253" Width="162" Height="77">
       <FileName type="filenames">Decile.out</FileName>
     </ApsimFileReader>
-<ApsimFileReader name="Depth" Left="3" Top="461" Width="162" Height="74">
-      <FileName type="filenames">Depth.out</FileName>
+    <ApsimFileReader name="Depth" Left="3" Top="461" Width="162" Height="74">
+      <FileName type="filenames">ThisYear Depth.csv</FileName>
       <ParseTitle type="yesno">no</ParseTitle>
     </ApsimFileReader>
-<ApsimFileReader name="future" Left="507" Top="1083" Width="162" Height="74">
-      <FileName type="filenames">Next10DaysDry Daily.out</FileName>
+    <ApsimFileReader name="future" Left="507" Top="1083" Width="162" Height="74">
+      <FileName type="filenames">Next10DaysDry Daily.csv</FileName>
     </ApsimFileReader>
-<ApsimFileReader name="FutureRain" Left="709" Top="1025" Width="162" Height="74">
-      <FileName type="filenames">FutureRain.out</FileName>
+    <ApsimFileReader name="FutureRain" Left="709" Top="1025" Width="162" Height="74">
+      <FileName type="filenames">FutureRain.csv</FileName>
       <ParseTitle type="yesno">yes</ParseTitle>
     </ApsimFileReader>
-<XmlFileReader name="ClimateMap" Left="12" Top="824" Width="162" Height="74">
+    <XmlFileReader name="ClimateMap" Left="12" Top="824" Width="162" Height="74">
       <FileName type="filename">c:\YP\ClimateMaps\ClimateMap.xml</FileName>
     </XmlFileReader>
-<ApsimFileReader name="NUnlimited" Left="306" Top="253" Width="162" Height="87">
-      <FileName type="filenames">NUnlimited Yearly.out</FileName>
+    <ApsimFileReader name="NUnlimited" Left="306" Top="253" Width="162" Height="87">
+      <FileName type="filenames">NUnlimited Yearly.csv</FileName>
       <ParseTitle type="yesno">no</ParseTitle>
     </ApsimFileReader>
-<RecordFilter name="OnToday" Left="205" Top="443" Width="98" Height="133">
+    <RecordFilter name="OnToday" Left="205" Top="443" Width="98" Height="133">
       <FirstRecord type="yesno">no</FirstRecord>
       <LastRecord type="yesno">Yes</LastRecord>
-      <RecordNumber type="yesno"/>
+      <RecordNumber type="yesno" />
       <source>ThisYear</source>
     </RecordFilter>
-<Filter name="SinceStartSeason" Left="853" Top="450" Width="427" Height="85">
-      <FilterString><![CDATA[Date >= '$dateproperty(metadata.paddock.startseasondate)' and CurrentFallow = 0]]></FilterString>
+    <Filter name="SinceStartSeason" Left="853" Top="450" Width="427" Height="85">
+      <FilterString><![CDATA[Date >= '$dateproperty(metadata.paddock.startseasondate)']]></FilterString>
       <source>ThisYear</source>
     </Filter>
-<Filter name="SinceReset" Left="345" Top="490" Width="433" Height="72">
+    <Filter name="SinceReset" Left="345" Top="490" Width="433" Height="72">
       <FilterString><![CDATA[Date >= '$dateproperty(metadata.paddock.SoilWaterSampleDate)']]></FilterString>
       <source>ThisYear</source>
     </Filter>
-<Stats name="FutureStats" Left="632" Top="1320" Width="206" Height="163">
+    <Stats name="FutureStats" Left="632" Top="1320" Width="206" Height="163">
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">50</Stat>
       <FieldName type="fieldnames">es</FieldName>
       <FieldName type="fieldnames">ep</FieldName>
@@ -111,7 +111,7 @@
       <source>FutureSplitter</source>
       <IncludeZeros>Yes</IncludeZeros>
     </Stats>
-<Stats name="FutureRainStats" Left="856" Top="1126" Width="206" Height="163">
+    <Stats name="FutureRainStats" Left="856" Top="1126" Width="206" Height="163">
       <FieldName type="fieldnames">RainInComingMonths</FieldName>
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">Maximum</Stat>
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">20</Stat>
@@ -121,21 +121,21 @@
       <source>FutureRain</source>
       <IncludeZeros>Yes</IncludeZeros>
     </Stats>
-<Probability name="NUnlimitedProbability" Left="491" Top="275" Width="169" Height="108">
+    <Probability name="NUnlimitedProbability" Left="491" Top="275" Width="169" Height="108">
       <Exceedence type="yesno">yes</Exceedence>
       <FieldName type="fieldnames">wetyield</FieldName>
       <FieldName type="fieldnames">Hay</FieldName>
       <source>NUnlimited</source>
     </Probability>
-<Stats name="SinceStartSeasonStats" Left="839" Top="568" Width="206" Height="163">
+    <Stats name="SinceStartSeasonStats" Left="839" Top="568" Width="206" Height="163">
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">Sum</Stat>
       <source>SinceStartSeason</source>
       <IncludeZeros>Yes</IncludeZeros>
     </Stats>
-<Cumulative name="SinceStartSeasonCumulative" Left="891" Top="755" Width="114" Height="36">
+    <Cumulative name="SinceStartSeasonCumulative" Left="891" Top="755" Width="114" Height="36">
       <source>SinceStartSeason</source>
     </Cumulative>
-<Stats name="SinceResetStats" Left="345" Top="701" Width="206" Height="163">
+    <Stats name="SinceResetStats" Left="345" Top="701" Width="206" Height="163">
       <Stat type="multilist" listvalues="Mean,Count,Minimum,Maximum,Sum,10,20,30,40,50,60,70,80,90">Sum</Stat>
       <source>SinceReset</source>
       <IncludeZeros>Yes</IncludeZeros>
@@ -146,38 +146,38 @@
       <FieldName>es</FieldName>
       <FieldName>runoff</FieldName>
     </Stats>
-<RecordFilter name="OnReset" Left="345" Top="580" Width="98" Height="115">
+    <RecordFilter name="OnReset" Left="345" Top="580" Width="98" Height="115">
       <FirstRecord type="yesno">Yes</FirstRecord>
       <LastRecord type="yesno">no</LastRecord>
-      <RecordNumber type="yesno"/>
+      <RecordNumber type="yesno" />
       <source>SinceReset</source>
     </RecordFilter>
-<Filter name="FertiliserSinceReset" Left="654" Top="568" Width="156" Height="81">
+    <Filter name="FertiliserSinceReset" Left="654" Top="568" Width="156" Height="81">
       <FilterString><![CDATA[fertiliser > 0]]></FilterString>
       <source>SinceNReset</source>
     </Filter>
-<Filter name="IrrigationSinceReset" Left="345" Top="870" Width="135" Height="92">
+    <Filter name="IrrigationSinceReset" Left="345" Top="870" Width="135" Height="92">
       <FilterString><![CDATA[irrig_tot > 0]]></FilterString>
       <source>SinceReset</source>
     </Filter>
-<SeriesSplitter name="FutureSplitter" Left="582" Top="1190" Width="144" Height="99">
+    <SeriesSplitter name="FutureSplitter" Left="582" Top="1190" Width="144" Height="99">
       <source>future</source>
       <FieldName>Date</FieldName>
     </SeriesSplitter>
-<Filter name="SinceNReset" Left="345" Top="403" Width="433" Height="81">
+    <Filter name="SinceNReset" Left="345" Top="403" Width="433" Height="81">
       <FilterString><![CDATA[Date >'$dateproperty(metadata.paddock.SoilNitrogenSampleDate)']]></FilterString>
       <source>ThisYear</source>
     </Filter>
-<RecordFilter name="OnNReset" Left="654" Top="669" Width="135" Height="109">
+    <RecordFilter name="OnNReset" Left="654" Top="669" Width="135" Height="109">
       <FirstRecord>Yes</FirstRecord>
       <source>SinceNReset</source>
     </RecordFilter>
-<Stats name="SinceNResetStats" Left="654" Top="784" Width="207" Height="197">
+    <Stats name="SinceNResetStats" Left="654" Top="784" Width="207" Height="197">
       <IncludeZeros>Yes</IncludeZeros>
       <source>SinceNReset</source>
       <Stat>Sum</Stat>
     </Stats>
-<Frequency name="WaterLogging" Left="872" Top="54" Width="242" Height="150">
+    <Frequency name="WaterLogging" Left="872" Top="54" Width="242" Height="150">
       <Percent type="yesno">yes</Percent>
       <Label>0</Label>
       <FilterString><![CDATA[NumWaterLoggingEventsFor1OrMoreDays = 0]]></FilterString>
@@ -194,23 +194,23 @@
       <Label>6</Label>
       <FilterString><![CDATA[NumWaterLoggingEventsFor6OrMoreDays > 0]]></FilterString>
     </Frequency>
-<ApsimFileReader name="NUnlimitedFromToday" Left="804" Top="235" Width="178" Height="137">
-      <FileName>NUnlimitedFromToday Yearly.out</FileName>
+    <ApsimFileReader name="NUnlimitedFromToday" Left="804" Top="235" Width="178" Height="137">
+      <FileName>NUnlimitedFromToday Yearly.csv</FileName>
     </ApsimFileReader>
-<Probability name="NUnlimitedFromTodayProb" Left="1012" Top="275" Width="234" Height="137">
+    <Probability name="NUnlimitedFromTodayProb" Left="1012" Top="275" Width="234" Height="137">
       <source>NUnlimitedFromToday</source>
       <Exceedence type="yesno">yes</Exceedence>
       <FieldName>wetyield</FieldName>
       <FieldName>Hay</FieldName>
     </Probability>
-<ApsimFileReader Left="3" Top="997" Width="183" Height="77" name="DailySinceReset">
-      <FileName>Paddock1 DailySinceReset.out</FileName>
+    <ApsimFileReader Left="3" Top="997" Width="183" Height="77" name="DailySinceReset">
+      <FileName>Paddock1 DailySinceReset.csv</FileName>
     </ApsimFileReader>
-<ApsimFileReader name="Probe" Left="12" Top="741" Width="178" Height="77">
+    <ApsimFileReader name="Probe" Left="12" Top="741" Width="178" Height="77">
       <FileName>probe.txt</FileName>
     </ApsimFileReader>
-</Data>
-   <page> <![CDATA[
+  </Data>
+  <page><![CDATA[
 object Page1: TQuickRep
   Left = 44
   Top = 0
@@ -1043,9 +1043,8 @@ object Page1: TQuickRep
     FontSize = 10
   end
 end
-]]>
-   </page>
-   <page> <![CDATA[
+]]></page>
+  <page><![CDATA[
 object Page2: TQuickRep
   Left = 17
   Top = 0
@@ -4072,9 +4071,8 @@ object Page2: TQuickRep
     end
   end
 end
-]]>
-   </page>
-   <page> <![CDATA[
+]]></page>
+  <page><![CDATA[
 object Page3: TQuickRep
   Left = 77
   Top = 0
@@ -5370,9 +5368,8 @@ object Page3: TQuickRep
     end
   end
 end
-]]>
-   </page>
-   <page> <![CDATA[
+]]></page>
+  <page><![CDATA[
 object Page4: TQuickRep
   Left = 17
   Top = 0
@@ -6700,9 +6697,8 @@ object Page4: TQuickRep
     end
   end
 end
-]]>
-   </page>
-   <page> <![CDATA[
+]]></page>
+  <page><![CDATA[
 object Page5: TQuickRep
   Left = 17
   Top = 0
@@ -11334,9 +11330,8 @@ object Page5: TQuickRep
     end
   end
 end
-]]>
-   </page>
-   <page> <![CDATA[
+]]></page>
+  <page><![CDATA[
 object Page6: TQuickRep
   Left = 31
   Top = 0
@@ -12400,6 +12395,5 @@ object Page6: TQuickRep
     end
   end
 end
-]]>
-   </page>
+]]></page>
 </report>

@@ -379,7 +379,7 @@ public class Script
    // ------------------------------------------------------------------------------
    [EventHandler] public void OnPrepare()
    {
-      if (ProbeDepths != null)
+      if (ProbeDepths != null &amp;&amp; ProbeDepths.Length &gt; 0)
       {
          if (ProbeThicknesses == null)
          {
