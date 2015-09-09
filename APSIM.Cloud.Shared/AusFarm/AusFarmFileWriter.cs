@@ -423,10 +423,10 @@ namespace APSIM.Cloud.Shared.AusFarm
             for (int dec = 1; dec <= 10; dec++)
             {
                 decileValues.Clear();
-                decileValues.Append("[" + deciles[0, dec-1].ToString());
+                decileValues.Append("[" + String.Format("{0, 2:f2}", deciles[0, dec-1]));
                 for (int month = 2; month <= 12; month++)
                 {
-                    decileValues.Append("," +deciles[month-1, dec-1].ToString());
+                    decileValues.Append("," + String.Format("{0, 2:f2}", deciles[month-1, dec-1]));
                 }
                 decileValues.Append("]");
                 SetGenericCompStateVar("Params", "F4P_DECILE" + (10*dec).ToString(), decileValues.ToString());    
@@ -499,6 +499,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                     FarmSoilType soilArea = simulation.OnFarmSoilTypes[soilIdx];
                     areaPropnTotal += soilArea.AreaProportion;
                     SetGenericCompStateVar("Params", "F4P_AREAPROPN_ROT" + (soilIdx + 1).ToString(), String.Format("{0, 2:f2}", soilArea.AreaProportion));
+                    SetGenericCompStateVar("Params", "F4P_SOIL_FERT" + (soilIdx + 1).ToString(), String.Format("{0, 2:f2}", soilArea.SeasonFertiliser));
                     if (soilArea.AreaProportion > 0)
                     {
                         FarmPaddockType defaultPaddock = simulation.OnFarmPaddocks[soilIdx];    //this paddock is applied to this soil type
@@ -666,7 +667,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
                 {
                     string cropName = farmSoil.CropRotationList[crop].name.ToLower();
-                    if (stubble.types.IndexOf(cropName) < 0)
+                    if (IsValidCropName(cropName) && (stubble.types.IndexOf(cropName) < 0))
                     {
                         //re-add the stubble with the correct values
                         stubble.names.Add(cropName);
@@ -1008,14 +1009,8 @@ namespace APSIM.Cloud.Shared.AusFarm
         private bool IsValidCropName(string crop)
         {
             crop = crop.Trim();
-            int i = 0;
-            while (i < ValidCropNames.Length)
-            {
-                if (String.Compare(crop, ValidCropNames[i], true) == 0)
-                    return true;
-                i++;
-            }
-            return false;
+            int pos = Array.IndexOf(ValidCropNames, crop);
+            return pos >= 0;
         }
 
         private void initSoilN_Trans(XmlNode compNode, Soil aSoil)
@@ -1055,7 +1050,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             TSDMLValue init = GetTypedInit(compNode, "surfaceom_types");
             bool found;
 
-            // for each crop type in the rotaion list there should be a residue item in the translator
+            // for each crop type in the rotation list there should be a residue item in the translator
             for (int res = 0; res < farmSoil.CropRotationList.Count; res++)
             {
                 if (IsValidCropName(farmSoil.CropRotationList[res].name))

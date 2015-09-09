@@ -152,6 +152,12 @@ namespace APSIM.Cloud.Shared
         public List<CropSpec> CropRotationList { get; set; }
 
         /// <summary>
+        /// The total amount of fertiliser allowed to be applied to a crop (cereals and canola)
+        /// in one season on this soil type. Units are kg of N.
+        /// </summary>
+        public double SeasonFertiliser { get; set; }
+
+        /// <summary>
         /// Gets or sets a soil detailed description 
         /// </summary>
         public APSIM.Shared.Soils.Soil SoilDescr { get; set; }
