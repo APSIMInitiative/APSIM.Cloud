@@ -238,8 +238,8 @@ namespace APSIM.Cloud.Shared
                 sample2.EC = GetArray(paddock, "EC");
                 sample2.PH = GetArray(paddock, "PH");
                 sample2.CL = GetArray(paddock, "CL");
-                sample2.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
-                sample2.PHUnits = Sample.PHSampleUnitsEnum.CaCl2;
+                sample2.OCUnits = SoilOrganicMatter.OCUnitsEnum.WalkleyBlack;
+                sample2.PHUnits = Analysis.PHUnitsEnum.CaCl2;
             }
 
             // Make sure we have NH4 values.

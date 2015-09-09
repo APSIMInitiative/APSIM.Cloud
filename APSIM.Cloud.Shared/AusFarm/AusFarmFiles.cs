@@ -202,10 +202,10 @@ namespace APSIM.Cloud.Shared.AusFarm
                 
                 // Make sure we have a soil crop parameterisation. If not then try creating one
                 // based on wheat.
-                SoilCrop wheat = SoilUtilities.Crop(soil, "wheat");
+                SoilCrop wheat = soil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
                 if (wheat != null)
                 {
-                    string[] soilCrops = SoilUtilities.GetCropNames(soil);
+                    string[] soilCrops = soil.Water.Crops.Select(c => c.Name).ToArray();
                     string cropName;
                     for (int crop = 0; crop < soilType.CropRotationList.Count; crop++)
                     {
@@ -248,11 +248,6 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <param name="sample">The sample.</param>
         private static void CheckSample(Soil parentSoil, Sample sample)
         {
-            if (sample.SW != null)
-            {
-                // Make sure the soil water isn't below airdry or above DUL.
-                SoilUtilities.ConstrainSampleSW(sample, parentSoil);    
-            }
 
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);
@@ -271,7 +266,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 if (double.IsNaN(sample.NH4[i]))
                     sample.NH4[i] = 0.1;
 
-            sample.OCUnits = Sample.OCSampleUnitsEnum.WalkleyBlack;
+            sample.OCUnits = SoilOrganicMatter.OCUnitsEnum.WalkleyBlack;
             if (sample.OC != null)
                 sample.OC = FixArrayLength(sample.OC, sample.Thickness.Length);
 

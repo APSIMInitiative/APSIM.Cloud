@@ -150,28 +150,31 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
                     if (data.Columns.Count > 0 && data.Rows.Count > 0)
                     {
-                    if (allData == null)
-                        allData = data;
-                    else
-                        DataTableUtilities.CopyRows(data, allData);
-                        }
+                        if (allData == null)
+                            allData = data;
+                        else
+                            DataTableUtilities.CopyRows(data, allData);
+                    }
                 }
 
-                // Move the title column to be first.
-                allData.Columns["Title"].SetOrdinal(0);
+                if (allData != null)
+                {
+                    // Move the title column to be first.
+                    allData.Columns["Title"].SetOrdinal(0);
 
-                // Strip off the outputFileType (e.g. Yearly) from the titles.
-                foreach (DataRow row in allData.Rows)
-                    row["Title"] = row["Title"].ToString().Replace(outputFileType, "");
+                    // Strip off the outputFileType (e.g. Yearly) from the titles.
+                    foreach (DataRow row in allData.Rows)
+                        row["Title"] = row["Title"].ToString().Replace(outputFileType, "");
 
-                // Write data.
-                string workingFolder = Path.GetDirectoryName(outFiles[0]);
-                string singleOutputFileName = Path.Combine(workingFolder, fileName);
-                StreamWriter outWriter = new StreamWriter(singleOutputFileName);
-                 
-                outWriter.Write(DataTableUtilities.DataTableToText(allData, 0, ",  ", true));
+                    // Write data.
+                    string workingFolder = Path.GetDirectoryName(outFiles[0]);
+                    string singleOutputFileName = Path.Combine(workingFolder, fileName);
+                    StreamWriter outWriter = new StreamWriter(singleOutputFileName);
 
-                outWriter.Close();
+                    outWriter.Write(DataTableUtilities.DataTableToText(allData, 0, ",  ", true));
+
+                    outWriter.Close();
+                }
 
                 // Delete the .out files.
                 foreach (string outputFileName in outFiles)

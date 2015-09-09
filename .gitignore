@@ -31,3 +31,5 @@ APSIM.Cloud.Test/Generated/
 /Backup
 /NH_TestYP_AusFarm
 APSIM.Cloud.Service/obj/
+APSIM.Cloud.Portal/yieldprophet.xml
+APSIM.Cloud.sdf
