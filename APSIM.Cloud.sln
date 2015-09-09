@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Shared", "..\APSIM.Sh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NH_TestYP_AusFarm", "NH_TestYP_AusFarm\NH_TestYP_AusFarm.csproj", "{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,18 +83,6 @@ Global
 		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|Win32.ActiveCfg = Release|Any CPU
 		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}.Release|x86.ActiveCfg = Release|Any CPU
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Debug|Win32.ActiveCfg = Debug|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Debug|x86.ActiveCfg = Debug|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Debug|x86.Build.0 = Debug|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Release|Any CPU.ActiveCfg = Release|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Release|Mixed Platforms.Build.0 = Release|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Release|Win32.ActiveCfg = Release|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Release|x86.ActiveCfg = Release|x86
-		{11032BD5-BB82-45A0-A167-97AD4E1B3FE0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

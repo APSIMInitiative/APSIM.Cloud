@@ -89,9 +89,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\ausfarm_crop_only.sdml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ausfarm_crop_only.sdml" />
     <EmbeddedResource Include="Resources\ausfarm_warooka.sdml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

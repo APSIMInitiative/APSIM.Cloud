@@ -80,8 +80,8 @@ namespace APSIM.Cloud.Shared
             if (paddock.StartSeasonDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.StartSeasonDate;
 
-            shortSimulation.EndDate = copyOfPaddock.NowDate.AddDays(-1);
-            shortSimulation.NowDate = copyOfPaddock.NowDate.AddDays(-1);
+            shortSimulation.EndDate = copyOfPaddock.NowDate;
+            shortSimulation.NowDate = copyOfPaddock.NowDate;
             if (shortSimulation.NowDate == DateTime.MinValue)
                 shortSimulation.NowDate = DateTime.Now;
             shortSimulation.DailyOutput = true;

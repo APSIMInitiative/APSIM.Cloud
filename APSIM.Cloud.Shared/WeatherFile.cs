@@ -551,16 +551,10 @@ namespace APSIM.Cloud.Shared
             {
                 // This algorithm assumes that table2 does not have missing days.
                 DateTime firstDate = DataTableUtilities.GetDateFromRow(table2.Rows[0]);
-                DateTime lastDate = DataTableUtilities.GetDateFromRow(table2.Rows[table2.Rows.Count-1]);
 
-                // Filter the first table so that it is in the same range as table2.
-                DataView table1View = new DataView();
-                table1View.RowFilter = string.Format("Date >= #{0:yyyy-MM-dd}# and Date <= #{1:yyyy-MM-dd}#",
-                                                     firstDate, lastDate);
-
-                foreach (DataRowView table1Row in table1View)
+                foreach (DataRow table1Row in table1.Rows)
                 {
-                    DateTime table1Date = DataTableUtilities.GetDateFromRow(table1Row.Row);
+                    DateTime table1Date = DataTableUtilities.GetDateFromRow(table1Row);
 
                     int table2RowIndex = (table1Date - firstDate).Days;
                     if (table2RowIndex >= 0 && table2RowIndex < table2.Rows.Count)
@@ -569,7 +563,7 @@ namespace APSIM.Cloud.Shared
                         if (DataTableUtilities.GetDateFromRow(table2Row) == table1Date)
                         {
                             // Found the matching row
-                            OverlayRowData(table1Row.Row, table2Row);
+                            OverlayRowData(table1Row, table2Row);
                         }
                         else
                             throw new Exception("Non consecutive dates found in SILO data");
@@ -698,7 +692,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>
         /// Add year, month, day and date columns to the specified Table.
         /// </summary>
-        public static void AddDateToTable(DataTable table)
+        private static void AddDateToTable(DataTable table)
         {
             if (!table.Columns.Contains("Date"))
             {
