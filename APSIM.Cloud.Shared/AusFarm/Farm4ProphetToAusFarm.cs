@@ -81,6 +81,7 @@ namespace APSIM.Cloud.Shared
             runnableSim.LiveStock = copyOfFarm.LiveStock;
 
             runnableSim.StationNumber = copyOfFarm.StationNumber;
+            runnableSim.CroppingRegion = copyOfFarm.CroppingRegion;
             return runnableSim;
         }
     }

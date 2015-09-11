@@ -42,6 +42,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>The rain deciles calculated from the weather file from a starting month of the year.</summary>
         public double[,] RainDeciles { get; set; }
 
+        /// <summary>Cropping region name</summary>
+        public string CroppingRegion { get; set; }
+
         /// <summary>Gets or sets any observed data. Can be null if no data.</summary>
         public DataTable ObservedData { get; set; }
 

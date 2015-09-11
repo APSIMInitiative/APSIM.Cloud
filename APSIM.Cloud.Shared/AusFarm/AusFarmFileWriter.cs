@@ -434,6 +434,27 @@ namespace APSIM.Cloud.Shared.AusFarm
         }
 
         /// <summary>
+        /// Use the cropping region name to adjust the sowing window for the
+        /// various crops.
+        /// </summary>
+        /// <param name="region"></param>
+        public void SetCroppingRegion(string region)
+        {
+            // these values can be applied on a per soil type basis if required
+            if (region.Length == 0)
+                region = "Southern MRZ";
+            if (String.Compare(region, "Southern LRZ", true) == 0)
+            {
+                
+            }
+            else if (String.Compare(region, "Southern MRZ", true) == 0)
+            {
+                SetGenericCompStateVar("Params", "F4P_WHEATVAR1", "['derrimut','15-Apr','15-Jun']");
+                SetGenericCompStateVar("Params", "F4P_WHEATSOW1", "[180.0,30.0,225.0]");    
+            }
+        }
+
+        /// <summary>
         /// Set the crop rotation list of crop names for the soil type.
         /// </summary>
         /// <param name="index">The crop rotation number (soil type). 1-3</param>

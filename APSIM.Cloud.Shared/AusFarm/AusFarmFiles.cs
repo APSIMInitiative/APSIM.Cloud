@@ -157,6 +157,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             // Set the weather file
             ausfarmWriter.SetWeatherFile(FMetFile);
             ausfarmWriter.SetRainDeciles(simulation.RainDeciles);
+            ausfarmWriter.SetCroppingRegion(simulation.CroppingRegion);
             ausfarmWriter.SetArea(simulation.Area);
             for (int i = 0; i < simulation.OnFarmSoilTypes.Count; i++)
             {

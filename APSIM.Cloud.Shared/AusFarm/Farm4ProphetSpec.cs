@@ -73,6 +73,17 @@ namespace APSIM.Cloud.Shared
         public DateTime StartSeasonDate { get; set; }
 
         /// <summary>
+        /// Cropping region that is used for determining sowing windows
+        /// Southern LRZ
+        /// Southern MRZ
+        /// Southern HRZ
+        /// Western LRZ
+        /// Western MRZ
+        /// Western HRZ
+        /// </summary>
+        public string CroppingRegion { get; set; }
+        
+        /// <summary>
         /// The simulation run length in months. Gets checked against the
         /// last date of weather file.
         /// </summary>
