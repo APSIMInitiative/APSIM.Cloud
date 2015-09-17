@@ -42,6 +42,35 @@ namespace APSIM.Cloud.Shared.AusFarm
     }
 
     /// <summary>
+    /// The sowing details for each region and crop type
+    /// </summary>
+    internal struct SowingInfo
+    {
+        public string Region;
+        /// <summary>
+        /// The crop name or more precisely the use. e.g. oats-hay
+        /// </summary>
+        public string LandUse;
+        public string Cultivar;
+        public string Start;
+        public string End;
+        public double Density;
+        public double Depth;
+        public double Spacing;
+        public SowingInfo(string region, string landuse, string cultivar, string start, string end, double density, double depth, double spacing)
+        {
+            Region = region;
+            LandUse = landuse;
+            Cultivar = cultivar;
+            Start = start;
+            End = end;
+            Density = density;
+            Depth = depth;
+            Spacing = spacing;
+        }
+    }
+
+    /// <summary>
     /// This class uses the specified AusFarm SDML script and modifies it 
     /// into a runnable script with all the settings transferred from 
     /// an AusFarmSpec object.
@@ -54,6 +83,71 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// Names of crops - crop/plant components. This does not include names of pasture types.
         /// </summary>
         private string[] ValidCropNames = { "wheat", "canola", "barley", "chickpea", "oats", "fieldpea", "fababean", "lupin" };
+
+        /// <summary>
+        /// The sowing details for each region and crop type.
+        /// See SetCroppingRegion()
+        /// </summary>
+        private SowingInfo[] CropSowingInfo = new SowingInfo[45] {
+            new SowingInfo("Southern LRZ", "wheat", "derrimut", "15-apr", "31-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "wheat", "derrimut", "15-apr", "15-jun", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "wheat", "magenta",  "1-apr",  "15-jun", 200.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "wheat", "derrimut", "20-apr", "10-jun", 150.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "wheat", "derrimut", "25-apr", "20-jun", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "wheat", "magenta",  "25-apr", "20-jun", 200.0, 30.0, 250.0), 
+
+            new SowingInfo("Southern LRZ", "barley", "buloke", "15-apr", "31-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "barley", "sloop",  "15-apr", "15-jun", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "barley", "oxford", "1-apr",  "15-jun", 150.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "barley", "buloke", "15-apr", "31-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "barley", "sloop",  "15-apr", "15-jun", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "barley", "oxford", "1-apr",  "15-jun", 200.0, 30.0, 250.0),
+
+            new SowingInfo("Southern LRZ", "canola", "hyola42", "1-apr", "15-may", 50.0, 20.0, 250.0), 
+            new SowingInfo("Southern MRZ", "canola", "hyola42", "1-apr", "15-may", 50.0, 20.0, 250.0),
+            new SowingInfo("Southern HRZ", "canola", "hyola42", "1-apr", "15-may", 50.0, 20.0, 250.0), 
+            new SowingInfo("Western LRZ",  "canola", "hyola42", "1-apr", "20-may", 50.0, 20.0, 250.0), 
+            new SowingInfo("Western MRZ",  "canola", "hyola42", "10-apr","25-may", 50.0, 20.0, 250.0),
+            new SowingInfo("Western HRZ",  "canola", "hyola42", "15-apr","25-may", 50.0, 20.0, 250.0),
+
+            new SowingInfo("Southern LRZ", "oats", "wintaroo", "1-apr", "30-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "oats", "wintaroo", "1-apr", "30-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "oats", "wintaroo", "1-apr", "30-may", 200.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "oats", "wintaroo", "1-apr", "15-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "oats", "wintaroo", "1-apr", "15-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "oats", "wintaroo", "1-apr", "15-may", 200.0, 30.0, 250.0),
+
+            new SowingInfo("Southern LRZ", "oatshay", "algerian", "1-apr",  "15-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "oatshay", "algerian", "1-apr",  "15-may", 180.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "oatshay", "algerian", "1-apr",  "15-may", 180.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "oatshay", "algerian", "15-apr", "10-jun", 150.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "oatshay", "algerian", "15-apr", "10-jun", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "oatshay", "algerian", "15-apr", "10-jun", 200.0, 30.0, 250.0),
+
+            new SowingInfo("All", "chickpea", "amethyst", "15-apr", "30-may", 35.0, 30.0, 250.0), 
+
+            new SowingInfo("Southern LRZ", "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "fieldpea", "kaspa",  "15-may", "15-jun", 40.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "fieldpea", "kaspa",  "15-may", "30-jun", 40.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "fieldpea", "kaspalu","15-apr", "30-may", 40.0, 30.0, 250.0),
+
+            new SowingInfo("All", "lupin", "HighYield",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
+            
+            new SowingInfo("All", "fababean", "fiord",  "15-apr", "30-may", 25.0, 30.0, 250.0),
+
+            // AusFarm is currently using chickpea cultivar here
+            new SowingInfo("Southern LRZ", "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 250.0)
+
+            // vetchhay is currently using fieldpea cultivar
+        };
+
         /// <summary>
         /// The simulation XML node
         /// </summary>
@@ -443,14 +537,17 @@ namespace APSIM.Cloud.Shared.AusFarm
             // these values can be applied on a per soil type basis if required
             if (region.Length == 0)
                 region = "Southern MRZ";
-            if (String.Compare(region, "Southern LRZ", true) == 0)
+            
+            for (int i = 0; i < CropSowingInfo.Length; i++)
             {
-                
-            }
-            else if (String.Compare(region, "Southern MRZ", true) == 0)
-            {
-                SetGenericCompStateVar("Params", "F4P_WHEATVAR1", "['derrimut','15-Apr','15-Jun']");
-                SetGenericCompStateVar("Params", "F4P_WHEATSOW1", "[180.0,30.0,225.0]");    
+                SowingInfo info = CropSowingInfo[i];
+                if ( (info.Region == region) || (info.Region == "All") )
+                {
+                    // find each crop in this region
+                    // currently set for soil type 1
+                    SetGenericCompStateVar("Params", "F4P_" + info.LandUse.ToUpper() + "VAR1", String.Format("['{0}','{1}','{2}']", info.Cultivar, info.Start, info.End));
+                    SetGenericCompStateVar("Params", "F4P_" + info.LandUse.ToUpper() + "SOW1", String.Format("[{0, 2:f1},{1, 2:f1},{2, 2:f1}]", info.Density, info.Depth, info.Spacing));    
+                }
             }
         }
 
@@ -1116,10 +1213,10 @@ namespace APSIM.Cloud.Shared.AusFarm
         {
             if (livestock.TradeLambCount > 0)
             {
-                SetGenericCompStateVar("Params", "F4P_TRADE_BREED", DoQuote(livestock.TradeLambBreed));
-                SetGenericCompStateVar("Params", "F4P_TRADE_COUNT", livestock.TradeLambCount.ToString());
-                SetGenericCompStateVar("Params", "F4P_TRADE_BUY_ON", DoQuote(livestock.TradeLambBuyDay));
-                SetGenericCompStateVar("Params", "F4P_TRADE_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.TradeLambSaleWt));
+                SetGenericCompStateVar("AnimalParams", "F4P_TRADE_BREED", DoQuote(livestock.TradeLambBreed));
+                SetGenericCompStateVar("AnimalParams", "F4P_TRADE_COUNT", livestock.TradeLambCount.ToString());
+                SetGenericCompStateVar("AnimalParams", "F4P_TRADE_BUY_ON", DoQuote(livestock.TradeLambBuyDay));
+                SetGenericCompStateVar("AnimalParams", "F4P_TRADE_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.TradeLambSaleWt));
             }
             // configure the breeding flocks
             string prefix;
@@ -1130,24 +1227,24 @@ namespace APSIM.Cloud.Shared.AusFarm
                 {
                     selfReplace = "FALSE";
                 }
-                SetGenericCompStateVar("Params", "F4P_SELF_REPLACING", selfReplace);
+                SetGenericCompStateVar("AnimalParams", "F4P_SELF_REPLACING", selfReplace);
                 prefix = "F4P_FLOCK" + (f + 1).ToString();
-                SetGenericCompStateVar("Params", prefix + "_BREED", DoQuote(livestock.Flocks[f].Breed));
-                SetGenericCompStateVar("Params", prefix + "_SIRE", DoQuote(livestock.Flocks[f].SireBreed));
-                SetGenericCompStateVar("Params", prefix  +"_EWES", livestock.Flocks[f].BreedingEweCount.ToString());
-                SetGenericCompStateVar("Params", prefix + "_JOIN", DoQuote(livestock.Flocks[f].EweJoinDay));
-                SetGenericCompStateVar("Params", prefix + "_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.Flocks[f].LambSaleWt));
-                SetGenericCompStateVar("Params", prefix + "_CULL_YRS", String.Format("{0, 2:f2}", livestock.Flocks[f].CastForAgeYears));
+                SetGenericCompStateVar("AnimalParams", prefix + "_BREED", DoQuote(livestock.Flocks[f].Breed));
+                SetGenericCompStateVar("AnimalParams", prefix + "_SIRE", DoQuote(livestock.Flocks[f].SireBreed));
+                SetGenericCompStateVar("AnimalParams", prefix + "_EWES", livestock.Flocks[f].BreedingEweCount.ToString());
+                SetGenericCompStateVar("AnimalParams", prefix + "_JOIN", DoQuote(livestock.Flocks[f].EweJoinDay));
+                SetGenericCompStateVar("AnimalParams", prefix + "_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.Flocks[f].LambSaleWt));
+                SetGenericCompStateVar("AnimalParams", prefix + "_CULL_YRS", String.Format("{0, 2:f2}", livestock.Flocks[f].CastForAgeYears));
                 // other breed parameters
 
             }
-            SetGenericCompStateVar("Params", "F4P_SHEAR_DAY", DoQuote(livestock.ShearingDay));
+            SetGenericCompStateVar("AnimalParams", "F4P_SHEAR_DAY", DoQuote(livestock.ShearingDay));
 
             // these should only be for the breeding flock (see ausfarm_warooka)
-            SetGenericCompStateVar("Params", "F4P_SUPP1", DoQuote(livestock.Supplement1));
-            SetGenericCompStateVar("Params", "F4P_SUPP2", DoQuote(livestock.Supplement2));
-            SetGenericCompStateVar("Params", "F4P_SUPP1_PROPN", String.Format("{0, 2:f2}", livestock.Supp1Propn));
-            SetGenericCompStateVar("Params", "F4P_SUPP2_PROPN", String.Format("{0, 2:f2}", livestock.Supp2Propn));
+            SetGenericCompStateVar("AnimalParams", "F4P_SUPP1", DoQuote(livestock.Supplement1));
+            SetGenericCompStateVar("AnimalParams", "F4P_SUPP2", DoQuote(livestock.Supplement2));
+            SetGenericCompStateVar("AnimalParams", "F4P_SUPP1_PROPN", String.Format("{0, 2:f2}", livestock.Supp1Propn));
+            SetGenericCompStateVar("AnimalParams", "F4P_SUPP2_PROPN", String.Format("{0, 2:f2}", livestock.Supp2Propn));
         }
 
         private string DoQuote(string value)
