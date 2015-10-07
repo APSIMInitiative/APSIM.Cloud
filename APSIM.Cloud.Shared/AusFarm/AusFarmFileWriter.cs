@@ -83,6 +83,10 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// Names of crops - crop/plant components. This does not include names of pasture types.
         /// </summary>
         private string[] ValidCropNames = { "wheat", "canola", "barley", "chickpea", "oats", "fieldpea", "fababean", "lupin" };
+        /// <summary>
+        /// The flag to denote that these crops are winter legumes and will have missing LL values calculated rather than copied from wheat
+        /// </summary>
+        private bool[] IsWinterLegume = { false, false, false, true, false, true, true, true };
 
         /// <summary>
         /// The sowing details for each region and crop type.
@@ -426,6 +430,9 @@ namespace APSIM.Cloud.Shared.AusFarm
                 case SimulationType.stSingleFlock:
                     scriptTemplate = "APSIM.Cloud.Shared.Resources.ausfarm_warooka.sdml";
                     break;
+                case SimulationType.stDualFlock:
+                    scriptTemplate = "APSIM.Cloud.Shared.Resources.ausfarm_dual_flock.sdml";
+                    break;
             }
 
             if (scriptTemplate.Length > 0)
@@ -436,7 +443,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 simulationXMLNode = xmlScriptDoc.rootNode();
             }
             else
-                simulationXMLNode = null;
+                simulationXMLNode = null; 
         }
 
         /// <summary>Returns the XML node of the simulation sdml file.
@@ -537,16 +544,16 @@ namespace APSIM.Cloud.Shared.AusFarm
             // these values can be applied on a per soil type basis if required
             if (region.Length == 0)
                 region = "Southern MRZ";
-            
+
+            string sowingRecord;
             for (int i = 0; i < CropSowingInfo.Length; i++)
             {
                 SowingInfo info = CropSowingInfo[i];
                 if ( (info.Region == region) || (info.Region == "All") )
                 {
-                    // find each crop in this region
-                    // currently set for soil type 1
-                    SetGenericCompStateVar("Params", "F4P_" + info.LandUse.ToUpper() + "VAR1", String.Format("['{0}','{1}','{2}']", info.Cultivar, info.Start, info.End));
-                    SetGenericCompStateVar("Params", "F4P_" + info.LandUse.ToUpper() + "SOW1", String.Format("[{0, 2:f1},{1, 2:f1},{2, 2:f1}]", info.Density, info.Depth, info.Spacing));    
+                    // find each crop in this region. currently set for soil type 1
+                    sowingRecord = String.Format("(landuse:'{0}';first_day:'{1}';last_day:'{2}';cultivar:'{3}';density:{4, 2:f1};depth:{5, 2:f1};spacing:{6, 2:f1})", info.LandUse, info.Start, info.End, info.Cultivar, info.Density, info.Depth, info.Spacing);
+                    SetGenericCompStateVar("Params", "F4P_" + info.LandUse.ToUpper() + "SOWING1", sowingRecord);
                 }
             }
         }
@@ -574,11 +581,11 @@ namespace APSIM.Cloud.Shared.AusFarm
                 cropArrayStr += "]";
                 SetGenericCompStateVar("Params", rotationVariable, cropArrayStr);
 
-                // set the array of isCrop flags
+                // set the array of isCrop flags by checking the crop name list
                 string isCropArrayStr = "[";
                 for (int s = 0; s < crops.Count; s++)
                 {
-                    isCropArrayStr += (crops[s].isCrop == true ? "true": "false") ;
+                    isCropArrayStr += (IsValidCropName(crops[s].name) == true ? "true" : "false");
                     if (s < crops.Count - 1)
                         isCropArrayStr += ", ";
                 }
@@ -622,6 +629,11 @@ namespace APSIM.Cloud.Shared.AusFarm
                     {
                         FarmPaddockType defaultPaddock = simulation.OnFarmPaddocks[soilIdx];    //this paddock is applied to this soil type
                         Soil soilConfig = soilArea.SoilDescr;
+                        
+                        // determine the soil depth so the pasture components can be initialised
+                        double depth = 0;
+                        for (int i = 0; i < soilConfig.Water.Thickness.Length; i++)
+                            depth += soilConfig.Water.Thickness[i];
 
                         int paddIdx = 0;
                         // for each paddock
@@ -636,6 +648,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                             {
                                 SetSoilComponents(defaultPaddock, soilConfig, paddocknode);
                                 SetSoilCrops(soilConfig, paddocknode);
+                                SetPastureComponents(defaultPaddock, depth, paddocknode);
                                 paddIdx++;
                             }
                         }
@@ -669,6 +682,21 @@ namespace APSIM.Cloud.Shared.AusFarm
                 soilIdx = Convert.ToInt32(tmp);
                 tmp = paddockName.Substring(_idx + 1, paddockName.Length - (_idx + 1));
                 paddIdx = Convert.ToInt32(tmp);
+            }
+        }
+
+        /// <summary>
+        /// Configure the pasture components in the paddock
+        /// </summary>
+        /// <param name="defaultPaddock"></param>
+        /// <param name="depth">The cumulative soil depth</param>
+        /// <param name="paddocknode">The padddock to set</param>
+        private void SetPastureComponents(FarmPaddockType defaultPaddock, double depth, XmlNode paddocknode)
+        {
+            XmlNodeList pastureNodes = paddocknode.SelectNodes("component[attribute::class=\"Pasture\"]");
+            foreach (XmlNode pasture in pastureNodes)
+            {
+                SetValue(pasture, "max_rtdep", depth * 0.95);   // allow 95% of soil depth
             }
         }
 
@@ -859,6 +887,10 @@ namespace APSIM.Cloud.Shared.AusFarm
                 // simulation, it will have the correct soil layers at init time
                 if (!cropInitialised)
                 {
+                    if (IsWinterLegumeCrop(cropName))
+                    {
+
+                    }
                     SoilCrop wheat = aSoil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
                     if (wheat != null)
                     {
@@ -1129,6 +1161,18 @@ namespace APSIM.Cloud.Shared.AusFarm
             crop = crop.Trim();
             int pos = Array.IndexOf(ValidCropNames, crop);
             return pos >= 0;
+        }
+
+        private bool IsWinterLegumeCrop(string crop)
+        {
+            crop = crop.Trim();
+            int pos = Array.IndexOf(ValidCropNames, crop);
+            if (pos >= 0)
+            {
+                return IsWinterLegume[pos];
+            }
+            else
+                return false;
         }
 
         private void initSoilN_Trans(XmlNode compNode, Soil aSoil)

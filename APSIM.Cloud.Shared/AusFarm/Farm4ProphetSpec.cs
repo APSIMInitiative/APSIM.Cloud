@@ -188,14 +188,9 @@ namespace APSIM.Cloud.Shared
         /// Name of the crop
         /// </summary>
         public string name; 
-        /// <summary>
-        /// This could be a pasture or a crop
-        /// </summary>
-        public bool isCrop;
-        public CropSpec(string Name, bool iscrop)
+        public CropSpec(string Name)
         {
             name = Name;
-            isCrop = iscrop;
         }
     }
 

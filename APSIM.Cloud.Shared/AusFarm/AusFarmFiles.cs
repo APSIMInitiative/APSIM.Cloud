@@ -21,7 +21,7 @@ namespace APSIM.Cloud.Shared.AusFarm
     
     public class AusFarmFiles
     {
-        private static int AusFarmVersionNumber = 1411;
+        private static int AusFarmVersionNumber = 1413;
         private static string FMetFile;
 
         /// <summary>
@@ -140,8 +140,10 @@ namespace APSIM.Cloud.Shared.AusFarm
                 {
                     ausfarmWriter = new AusFarmFileWriter(SimulationType.stSingleFlock);
                 }
-                else
+                else if (simulation.LiveStock.Flocks.Count == 2)
                     ausfarmWriter = new AusFarmFileWriter(SimulationType.stDualFlock);
+                else
+                    throw new Exception();
             }
 
             // Name the simulation
