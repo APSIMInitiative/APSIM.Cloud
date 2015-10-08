@@ -88,6 +88,8 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// </summary>
         private bool[] IsWinterLegume = { false, false, false, true, false, true, true, true };
 
+        private string[] ValidPastureNames = { "anngrass", "lucerne", "medic", "pgrass"};   // these will match the simulation component names
+
         /// <summary>
         /// The sowing details for each region and crop type.
         /// See SetCroppingRegion()
@@ -213,7 +215,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 string newInitDataSection;
                 if (comp.IsAPSRU())
                 {
-                    //edit the node text for varName
+                    XmlUtilities.SetValue(initdata, varName, value);
                 }
                 else
                 {
@@ -278,6 +280,21 @@ namespace APSIM.Cloud.Shared.AusFarm
                 XmlNode initdata = compNode.SelectSingleNode("initdata");
                 initdata.InnerXml = "<![CDATA[" + newInitSection.ToString() + "]]>";
             }
+        }
+
+        /// <summary>
+        /// Get the init value for an AusFarm init
+        /// </summary>
+        /// <param name="compNode"></param>
+        /// <param name="varName"></param>
+        /// <returns></returns>
+        private string GetValue(XmlNode compNode, string varName)
+        {
+            TSDMLValue init = GetTypedInit(compNode, varName);
+            if (init != null)
+                return init.asStr();
+            else
+                return "";
         }
 
         /// <summary>
@@ -574,7 +591,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 string cropArrayStr = "[";
                 for (int s = 0; s < crops.Count; s++)
                 {
-                    cropArrayStr += "'" + crops[s].name + "'";
+                    cropArrayStr += "'" + crops[s].Name + "'";
                     if (s < crops.Count - 1)
                         cropArrayStr += ", ";
                 }
@@ -585,7 +602,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 string isCropArrayStr = "[";
                 for (int s = 0; s < crops.Count; s++)
                 {
-                    isCropArrayStr += (IsValidCropName(crops[s].name) == true ? "true" : "false");
+                    isCropArrayStr += (IsValidCropName(crops[s].Name) == true ? "true" : "false");
                     if (s < crops.Count - 1)
                         isCropArrayStr += ", ";
                 }
@@ -647,8 +664,8 @@ namespace APSIM.Cloud.Shared.AusFarm
                             if (soilNo == soilIdx + 1)
                             {
                                 SetSoilComponents(defaultPaddock, soilConfig, paddocknode);
-                                SetSoilCrops(soilConfig, paddocknode);
-                                SetPastureComponents(defaultPaddock, depth, paddocknode);
+                                SetSoilCrops(soilConfig, paddocknode, soilArea);
+                                SetPastureComponents(defaultPaddock, depth, paddocknode, soilArea);
                                 paddIdx++;
                             }
                         }
@@ -686,17 +703,33 @@ namespace APSIM.Cloud.Shared.AusFarm
         }
 
         /// <summary>
-        /// Configure the pasture components in the paddock
+        /// Configure the pasture components in the paddock. Set the rooting depths.
         /// </summary>
         /// <param name="defaultPaddock"></param>
         /// <param name="depth">The cumulative soil depth</param>
         /// <param name="paddocknode">The padddock to set</param>
-        private void SetPastureComponents(FarmPaddockType defaultPaddock, double depth, XmlNode paddocknode)
+        private void SetPastureComponents(FarmPaddockType defaultPaddock, double depth, XmlNode paddocknode, FarmSoilType soilArea)
         {
             XmlNodeList pastureNodes = paddocknode.SelectNodes("component[attribute::class=\"Pasture\"]");
-            foreach (XmlNode pasture in pastureNodes)
+            foreach (XmlNode pastureNode in pastureNodes)
             {
-                SetValue(pasture, "max_rtdep", depth * 0.95);   // allow 95% of soil depth
+                // get the current rooting depth from the pasture component in the simulation
+                string sDepth = GetValue(pastureNode, "max_rtdep");
+                double maxRtDep = (sDepth.Length > 0) ? Convert.ToDouble(sDepth) : 0;
+                string simCompName = XmlUtilities.NameAttr(pastureNode);
+
+                // find one that matches in the cropping rotation list and see if it specifies a new depth
+                CropSpec pastureCrop = soilArea.CropRotationList.Find(c => c.Name.Equals(simCompName, StringComparison.InvariantCultureIgnoreCase));
+                if (pastureCrop.MaxRootDepth > 0)
+                {
+                    maxRtDep = pastureCrop.MaxRootDepth;
+                    SetValue(pastureNode, "max_rtdep", Math.Min(maxRtDep, depth * 0.95));       // allow up to 95% of soil depth
+                }
+                else
+                {
+                    if (maxRtDep > (depth * 0.95))                                              // this won't need setting if it is less than the limit
+                        SetValue(pastureNode, "max_rtdep", Math.Min(maxRtDep, depth * 0.95));   // allow up to 95% of soil depth
+                }
             }
         }
 
@@ -747,35 +780,45 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// </summary>
         /// <param name="soilConfig">Soil crop parameters</param>
         /// <param name="paddocknode">The paddock node for the paddock</param>
+        /// <param name="maxRootDepth">The maximum root depth for any plant allowed on this soil type. mm</param>
         /// <returns></returns>
-        private void SetSoilCrops(Soil soilConfig, XmlNode paddocknode)
+        private void SetSoilCrops(Soil soilConfig, XmlNode paddocknode, FarmSoilType soilArea)
         {
             XmlNode apsimCompNode;
+            CropSpec crop;
 
             //set the ll, kl, xf values of the crop
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Wheat\"]");
-            setSoilCrop(apsimCompNode, "wheat", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "wheat", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Barley\"]");
-            setSoilCrop(apsimCompNode, "barley", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("barley", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "barley", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Canola\"]");
-            setSoilCrop(apsimCompNode, "canola", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("canola", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "canola", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Oats\"]");
-            setSoilCrop(apsimCompNode, "oats", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("oats", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "oats", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.ChickPea\"]");
-            setSoilCrop(apsimCompNode, "chickpea", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("chickpea", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "chickpea", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.FieldPea\"]");
-            setSoilCrop(apsimCompNode, "fieldpea", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("fieldpea", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "fieldpea", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Fababean\"]");
-            setSoilCrop(apsimCompNode, "fababean", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("fababean", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "fababean", soilConfig, crop);
 
             apsimCompNode = paddocknode.SelectSingleNode("system/component[@class=\"Plant.Lupin\"]");
-            setSoilCrop(apsimCompNode, "lupin", soilConfig);
+            crop = soilArea.CropRotationList.Find(c => c.Name.Equals("lupin", StringComparison.InvariantCultureIgnoreCase));
+            setSoilCrop(apsimCompNode, "lupin", soilConfig, crop);
             //sorghum
         }
 
@@ -812,7 +855,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 // check that all the residue types are listed that are in the crop rotation
                 for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
                 {
-                    string cropName = farmSoil.CropRotationList[crop].name.ToLower();
+                    string cropName = farmSoil.CropRotationList[crop].Name.ToLower();
                     if (IsValidCropName(cropName) && (stubble.types.IndexOf(cropName) < 0))
                     {
                         //re-add the stubble with the correct values
@@ -854,15 +897,20 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <param name="apsimCompNode"></param>
         /// <param name="cropName">Crop name string</param>
         /// <param name="aSoil"></param>
-        private void setSoilCrop(XmlNode apsimCompNode, string cropName, Soil aSoil)
+        private void setSoilCrop(XmlNode apsimCompNode, string cropName, Soil aSoil, CropSpec cropSown)
         {
             if (apsimCompNode != null)
             {
-                //set uptake source
+                // set uptake source
                 XmlNode anode;
                 anode = apsimCompNode.SelectSingleNode("initdata/uptake_source");
                 if (anode != null)
                     anode.InnerText = "apsim";
+                // if the crop has a max root depth set then use it for this component
+                if (cropSown.MaxRootDepth > 0)
+                {
+                    XmlUtilities.SetValue(apsimCompNode, "initdata/MaxRootDepth", cropSown.MaxRootDepth.ToString());
+                }
 
                 bool cropInitialised = false;
                 int i = 0;
@@ -887,11 +935,11 @@ namespace APSIM.Cloud.Shared.AusFarm
                 // simulation, it will have the correct soil layers at init time
                 if (!cropInitialised)
                 {
+                    SoilCrop wheat = aSoil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
                     if (IsWinterLegumeCrop(cropName))
                     {
-
+                        // calculate new LL values if required
                     }
-                    SoilCrop wheat = aSoil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
                     if (wheat != null)
                     {
                         anode = apsimCompNode.SelectSingleNode("initdata/ll");
@@ -1127,7 +1175,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             // for each item in the crop rotation list
             for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
             {
-                string cropName = farmSoil.CropRotationList[crop].name;
+                string cropName = farmSoil.CropRotationList[crop].Name;
                 if (IsValidCropName(cropName))
                 {
                     idx = 1;
@@ -1158,21 +1206,23 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <returns>True if found</returns>
         private bool IsValidCropName(string crop)
         {
-            crop = crop.Trim();
-            int pos = Array.IndexOf(ValidCropNames, crop);
-            return pos >= 0;
+            return (Array.IndexOf(ValidCropNames, crop.Trim()) >= 0);
         }
 
         private bool IsWinterLegumeCrop(string crop)
         {
-            crop = crop.Trim();
-            int pos = Array.IndexOf(ValidCropNames, crop);
+            int pos = Array.IndexOf(ValidCropNames, crop.Trim());
             if (pos >= 0)
             {
                 return IsWinterLegume[pos];
             }
             else
                 return false;
+        }
+
+        private bool IsValidPastureName(string pasture)
+        {
+            return (Array.IndexOf(ValidPastureNames, pasture.Trim()) >= 0);
         }
 
         private void initSoilN_Trans(XmlNode compNode, Soil aSoil)
@@ -1215,20 +1265,20 @@ namespace APSIM.Cloud.Shared.AusFarm
             // for each crop type in the rotation list there should be a residue item in the translator
             for (int res = 0; res < farmSoil.CropRotationList.Count; res++)
             {
-                if (IsValidCropName(farmSoil.CropRotationList[res].name))
+                if (IsValidCropName(farmSoil.CropRotationList[res].Name))
                 {
                     uint i = 1;
                     found = false;
                     while (!found && (i <= init.count()))
                     {
-                        if (init.item(i).asStr() == farmSoil.CropRotationList[res].name)
+                        if (init.item(i).asStr() == farmSoil.CropRotationList[res].Name)
                             found = true;
                         i++;
                     }
                     if (!found)
                     {
                         init.setElementCount(init.count() + 1);
-                        init.item(init.count()).setValue(farmSoil.CropRotationList[res].name);
+                        init.item(init.count()).setValue(farmSoil.CropRotationList[res].Name);
                     }
                 }
             }

@@ -214,7 +214,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                     {
                         //for each crop being sown in the rotation
                         //ensure it has ll, kl values
-                        cropName = soilType.CropRotationList[crop].name;
+                        cropName = soilType.CropRotationList[crop].Name;
                         if (!StringUtilities.Contains(soilCrops, cropName))
                         {
                             SoilCrop newSoilCrop = new SoilCrop();

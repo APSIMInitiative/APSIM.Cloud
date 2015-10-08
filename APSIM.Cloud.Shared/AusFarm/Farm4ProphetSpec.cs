@@ -122,6 +122,10 @@ namespace APSIM.Cloud.Shared
         /// Each paddock will have a soil type.
         /// </summary>
         public List<FarmPaddockType> OnFarmPaddocks { get; set; }
+
+        /// <summary>
+        /// The livestock description which includes the animal enterprise descriptions.
+        /// </summary>
         public FarmLivestock LiveStock { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="FarmSystem"/> class.</summary>
@@ -180,17 +184,31 @@ namespace APSIM.Cloud.Shared
     }
 
     /// <summary>
-    /// Crop details
+    /// Crop sown on a soil type 
     /// </summary>
     public struct CropSpec
     {
         /// <summary>
         /// Name of the crop
         /// </summary>
-        public string name; 
-        public CropSpec(string Name)
+        public string Name;
+
+        /// <summary>
+        /// Optional.
+        /// Maximum rooting depth allowed for this crop (on it's soil type) in mm.
+        /// If it is not specified then plants will use the profile specified.
+        /// </summary>
+        public double MaxRootDepth;
+
+        /// <summary>
+        /// Constructor for a crop type item
+        /// </summary>
+        /// <param name="Name">Name of the crop</param>
+        /// <param name="maxRtDepth">Rooting depth allowed in mm. Use a value lteq 0 for not set.</param>
+        public CropSpec(string name, double maxRtDepth = 0)
         {
-            name = Name;
+            Name = name.ToLower();
+            MaxRootDepth = maxRtDepth;
         }
     }
 
@@ -248,6 +266,10 @@ namespace APSIM.Cloud.Shared
         }
     }
     
+    /// <summary>
+    /// The livestock enterprises in the farming system. Includes the breeding
+    /// flocks and the supplements fed.
+    /// </summary>
     public class FarmLivestock
     {
         /// <summary>
@@ -301,7 +323,7 @@ namespace APSIM.Cloud.Shared
     }
 
     /// <summary>
-    /// A description of a breeding flock
+    /// The breeding livestock flock description.
     /// </summary>
     public class FlockDescr
     {
