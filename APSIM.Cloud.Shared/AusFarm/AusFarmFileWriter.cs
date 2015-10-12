@@ -71,30 +71,48 @@ namespace APSIM.Cloud.Shared.AusFarm
     }
 
     /// <summary>
-    /// This class uses the specified AusFarm SDML script and modifies it 
-    /// into a runnable script with all the settings transferred from 
-    /// an AusFarmSpec object.
+    /// Store the default values for KL for various crops. 
     /// </summary>
-    public class AusFarmFileWriter
+    internal struct SoilCropParams
     {
-        #region privates
+        public string CropName;
+        public double[] KL;
+        public SoilCropParams(string name, double[] kl)
+        {
+            CropName = name;
+            KL = new double[kl.Length];
+            Array.Copy(kl, KL, kl.Length);
+        }
+    }
 
+    /// <summary>
+    /// This class defines the details for each land use in the crop rotation phase.
+    /// Includes default soil parameters for various crops. Used when the soil values for the crop are not provided in the ApSoil specification. (Zvi Hochman)
+    /// </summary>
+    internal class SoilCropSpecs
+    {
+        /// <summary>
+        /// A list of the cropping landuse options.
+        /// </summary>
+        private string[] ValidLanduse = { "wheat", "barley", "canola", "oats", "chickpea", "fieldpea", "lupin", "fababean", "lentils", "oatshay", "vetchhay" };
         /// <summary>
         /// Names of crops - crop/plant components. This does not include names of pasture types.
+        /// The list of crops that are used to implement the landuse from above.
+        /// Only these crop names can have residues in the SurfaceOM component
         /// </summary>
-        private string[] ValidCropNames = { "wheat", "canola", "barley", "chickpea", "oats", "fieldpea", "fababean", "lupin" };
+        private string[] ValidCropNames = { "wheat", "barley", "canola", "oats", "chickpea", "fieldpea", "lupin", "fababean", "chickpea", "oats", "fieldpea" };
         /// <summary>
         /// The flag to denote that these crops are winter legumes and will have missing LL values calculated rather than copied from wheat
         /// </summary>
-        private bool[] IsWinterLegume = { false, false, false, true, false, true, true, true };
+        public bool[] IsWinterLegume = { false, false, false, false, true, true, true, true, true, false, true };
 
-        private string[] ValidPastureNames = { "anngrass", "lucerne", "medic", "pgrass"};   // these will match the simulation component names
+        public string[] ValidPastureNames = { "anngrass", "lucerne", "medic", "pgrass" };   // these will match the simulation component names
 
         /// <summary>
         /// The sowing details for each region and crop type.
-        /// See SetCroppingRegion()
+        /// See AusFarmFileWriter.SetCroppingRegion()
         /// </summary>
-        private SowingInfo[] CropSowingInfo = new SowingInfo[45] {
+        public SowingInfo[] CropSowingInfo = new SowingInfo[46] {
             new SowingInfo("Southern LRZ", "wheat", "derrimut", "15-apr", "31-may", 150.0, 30.0, 250.0), 
             new SowingInfo("Southern MRZ", "wheat", "derrimut", "15-apr", "15-jun", 150.0, 30.0, 250.0),
             new SowingInfo("Southern HRZ", "wheat", "magenta",  "1-apr",  "15-jun", 200.0, 30.0, 250.0), 
@@ -149,10 +167,139 @@ namespace APSIM.Cloud.Shared.AusFarm
             new SowingInfo("Southern HRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0), 
             new SowingInfo("Western LRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
             new SowingInfo("Western MRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
-            new SowingInfo("Western HRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0)
+            new SowingInfo("Western HRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
 
             // vetchhay is currently using fieldpea cultivar
+            new SowingInfo("All", "vetchhay", "kaspa",  "15-apr", "15-jun", 40.0, 30.0, 250.0) 
         };
+
+        public double[] Layers;
+        public SoilCropParams[] CropParams;
+        public SoilCropSpecs()
+        {
+            Layers = new double[7] { 150, 300, 600, 900, 1200, 1500, 1800 };
+            
+            // Initialise the lookup table of crop soil values. In this case KL values.
+            CropParams = new SoilCropParams[8] {
+                new SoilCropParams("wheat",     new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
+                new SoilCropParams("canola",    new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
+                new SoilCropParams("barley",    new double[7]{0.07,0.07,0.07,0.05,0.05,0.03,0.02}),
+                new SoilCropParams("chickpea",  new double[7]{0.06,0.06,0.06,0.04,0.04,0.0,0.0}),
+                new SoilCropParams("oats",      new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
+                new SoilCropParams("fieldpea",  new double[7]{0.06,0.06,0.06,0.05,0.04,0.02,0.01}),
+                new SoilCropParams("fababean",  new double[7]{0.08,0.08,0.08,0.08,0.06,0.04,0.03}),
+                new SoilCropParams("lupin",     new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01})
+            };
+        }
+
+        /// <summary>
+        /// Get the KL value for the crop up to the depth.
+        /// </summary>
+        /// <param name="cropName">Name of the crop</param>
+        /// <param name="depth">The depth</param>
+        /// <returns>KL</returns>
+        public double CropKL(string cropName, double depth)
+        {
+            double kl = 0.0;
+            int i = 0;
+            while (i < CropParams.Length)
+            {
+                SoilCropParams soilCrop = CropParams[i];
+                if (String.Compare(cropName, soilCrop.CropName, true) == 0)
+                {
+                    int layer = Layers.Length - 1;
+                    while ((layer >= 0) && (depth <= Layers[layer]))
+                    {
+                        kl = CropParams[i].KL[layer];
+                        layer--;
+                    }
+                    i = CropParams.Length;  // terminate loop
+                }
+                i++;
+            }
+            return kl;
+        }
+
+        /// <summary>
+        /// Could be a crop, pasture or fallow item
+        /// </summary>
+        /// <param name="landuse"></param>
+        /// <returns></returns>
+        public bool IsValidRotationItem(string landuse)
+        {
+            if ((Array.IndexOf(ValidPastureNames, landuse.Trim()) >= 0) || (Array.IndexOf(ValidLanduse, landuse.Trim()) >= 0) || (String.Compare(landuse, "fallow", true) == 0))
+                return true;
+            else
+                return false;
+        }
+
+        public bool IsValidPastureName(string pasture)
+        {
+            return (Array.IndexOf(ValidPastureNames, pasture.Trim()) >= 0);
+        }
+
+        public bool IsValidCropName(string crop)
+        {
+            return (Array.IndexOf(ValidCropNames, crop.Trim()) >= 0);
+        }
+
+        /// <summary>
+        /// The land use which is the name of the crops or fodder crops but not pasture
+        /// </summary>
+        /// <param name="landuse"></param>
+        /// <returns></returns>
+        public bool IsValidLanduse(string landuse)
+        {
+            return (Array.IndexOf(ValidLanduse, landuse.Trim()) >= 0);
+        }
+
+        /// <summary>
+        /// Get the crop name to be grown for this landuse.
+        /// e.g. oatshay uses oats
+        /// </summary>
+        /// <param name="landuse"></param>
+        /// <returns></returns>
+        public string CropFromLanduse(string landuse)
+        {
+            int pos = Array.IndexOf(ValidLanduse, landuse.Trim());
+            if (pos >= 0)
+                return ValidCropNames[pos];
+            else
+            {
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// Is this crop a winter legume
+        /// </summary>
+        /// <param name="crop"></param>
+        /// <returns></returns>
+        public bool IsWinterLegumeCrop(string crop)
+        {
+            int pos = Array.IndexOf(ValidCropNames, crop.Trim());
+            if (pos >= 0)
+            {
+                return IsWinterLegume[pos];
+            }
+            else
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// This class uses the specified AusFarm SDML script and modifies it 
+    /// into a runnable script with all the settings transferred from 
+    /// an AusFarmSpec object.
+    /// </summary>
+    public class AusFarmFileWriter
+    {
+        #region privates
+
+        /// <summary>
+        /// The default specifications for the soil parameters for crops grown
+        /// </summary>
+        private SoilCropSpecs CropPhases = new SoilCropSpecs();
 
         /// <summary>
         /// The simulation XML node
@@ -563,9 +710,9 @@ namespace APSIM.Cloud.Shared.AusFarm
                 region = "Southern MRZ";
 
             string sowingRecord;
-            for (int i = 0; i < CropSowingInfo.Length; i++)
+            for (int i = 0; i < CropPhases.CropSowingInfo.Length; i++)
             {
-                SowingInfo info = CropSowingInfo[i];
+                SowingInfo info = CropPhases.CropSowingInfo[i];
                 if ( (info.Region == region) || (info.Region == "All") )
                 {
                     // find each crop in this region. currently set for soil type 1
@@ -591,9 +738,16 @@ namespace APSIM.Cloud.Shared.AusFarm
                 string cropArrayStr = "[";
                 for (int s = 0; s < crops.Count; s++)
                 {
-                    cropArrayStr += "'" + crops[s].Name + "'";
-                    if (s < crops.Count - 1)
-                        cropArrayStr += ", ";
+                    if (CropPhases.IsValidRotationItem(crops[s].Name))
+                    {
+                        cropArrayStr += "'" + crops[s].Name + "'";
+                        if (s < crops.Count - 1)
+                            cropArrayStr += ", ";
+                    }
+                    else
+                    {
+                        throw new Exception(crops[s].Name + " is not a valid land use in the rotation list!");
+                    }
                 }
                 cropArrayStr += "]";
                 SetGenericCompStateVar("Params", rotationVariable, cropArrayStr);
@@ -602,7 +756,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 string isCropArrayStr = "[";
                 for (int s = 0; s < crops.Count; s++)
                 {
-                    isCropArrayStr += (IsValidCropName(crops[s].Name) == true ? "true" : "false");
+                    isCropArrayStr += (CropPhases.IsValidCropName(CropPhases.CropFromLanduse(crops[s].Name)) == true ? "true" : "false");
                     if (s < crops.Count - 1)
                         isCropArrayStr += ", ";
                 }
@@ -856,7 +1010,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
                 {
                     string cropName = farmSoil.CropRotationList[crop].Name.ToLower();
-                    if (IsValidCropName(cropName) && (stubble.types.IndexOf(cropName) < 0))
+                    if (CropPhases.IsValidCropName(cropName) && (stubble.types.IndexOf(cropName) < 0))
                     {
                         //re-add the stubble with the correct values
                         stubble.names.Add(cropName);
@@ -894,9 +1048,9 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <summary>
         /// On the crop component, set the ll, kl, xf arrays
         /// </summary>
-        /// <param name="apsimCompNode"></param>
+        /// <param name="apsimCompNode">Crop component node in the xml</param>
         /// <param name="cropName">Crop name string</param>
-        /// <param name="aSoil"></param>
+        /// <param name="aSoil">The ApSoil specification</param>
         private void setSoilCrop(XmlNode apsimCompNode, string cropName, Soil aSoil, CropSpec cropSown)
         {
             if (apsimCompNode != null)
@@ -936,18 +1090,63 @@ namespace APSIM.Cloud.Shared.AusFarm
                 if (!cropInitialised)
                 {
                     SoilCrop wheat = aSoil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
-                    if (IsWinterLegumeCrop(cropName))
-                    {
-                        // calculate new LL values if required
-                    }
                     if (wheat != null)
                     {
-                        anode = apsimCompNode.SelectSingleNode("initdata/ll");
-                        anode.InnerText = arrayAsStr(wheat.LL, "f3");
-                        anode = apsimCompNode.SelectSingleNode("initdata/kl");
-                        anode.InnerText = arrayAsStr(wheat.KL, "f3");
-                        anode = apsimCompNode.SelectSingleNode("initdata/xf");
-                        anode.InnerText = arrayAsStr(wheat.XF, "f3");
+                        XmlNode llnode = apsimCompNode.SelectSingleNode("initdata/ll");
+                        XmlNode klnode = apsimCompNode.SelectSingleNode("initdata/kl");
+                        XmlNode xfnode = apsimCompNode.SelectSingleNode("initdata/xf");
+                        // for winter legumes do some calculations
+                        if (CropPhases.IsWinterLegumeCrop(cropName))
+                        {
+                            double[] llvalues = new double[aSoil.Water.Thickness.Length];
+                            double[] klvalues = new double[aSoil.Water.Thickness.Length];
+                            double[] xfvalues = new double[aSoil.Water.Thickness.Length];
+                            // calculate the LL values
+                            double depth = 0;
+                            i = 0;
+                            while (i < aSoil.Water.Thickness.Length)
+                            {
+                                depth += aSoil.Water.Thickness[i];
+                                if (depth <= 600)
+                                {
+                                    llvalues[i] = wheat.LL[i];
+                                    klvalues[i] = CropPhases.CropKL(cropName, depth);
+                                    xfvalues[i] = wheat.XF[i];
+                                }
+                                else if (depth <= 900)
+                                {
+                                    llvalues[i] = wheat.LL[i] + (aSoil.Water.DUL[i] - wheat.LL[i]) * 1.0 / 3.0;
+                                    klvalues[i] = CropPhases.CropKL(cropName, depth);
+                                    xfvalues[i] = wheat.XF[i];
+                                }
+                                else if (depth <= 1200)
+                                {
+                                    llvalues[i] = wheat.LL[i] + (aSoil.Water.DUL[i] - wheat.LL[i]) * 2.0 / 3.0;
+                                    klvalues[i] = CropPhases.CropKL(cropName, depth);
+                                    xfvalues[i] = wheat.XF[i];
+                                }
+                                else if (depth <= 1800)
+                                {
+                                    // any values deeper than 1200 will be at DUL
+                                    llvalues[i] = wheat.LL[i] + (aSoil.Water.DUL[i] - wheat.LL[i]);
+                                    klvalues[i] = CropPhases.CropKL(cropName, depth);
+                                    xfvalues[i] = 0.0;  // assume that legumes don't root this deep
+                                }
+                                // override the xf if the user has entered a max root depth
+                                if ((cropSown.MaxRootDepth > 0) && (depth > cropSown.MaxRootDepth))
+                                    xfvalues[i] = 0.0;
+                                i++;
+                            }
+                            llnode.InnerText = arrayAsStr(llvalues, "f3");
+                            klnode.InnerText = arrayAsStr(klvalues, "f3");
+                            xfnode.InnerText = arrayAsStr(xfvalues, "f3");
+                        }
+                        else
+                        {
+                            llnode.InnerText = arrayAsStr(wheat.LL, "f3");   // just use the wheat LL values
+                            klnode.InnerText = arrayAsStr(wheat.KL, "f3");
+                            xfnode.InnerText = arrayAsStr(wheat.XF, "f3");
+                        }
                     }
                 }
             }
@@ -1175,8 +1374,9 @@ namespace APSIM.Cloud.Shared.AusFarm
             // for each item in the crop rotation list
             for (int crop = 0; crop < farmSoil.CropRotationList.Count; crop++)
             {
-                string cropName = farmSoil.CropRotationList[crop].Name;
-                if (IsValidCropName(cropName))
+                string landuse = farmSoil.CropRotationList[crop].Name;
+                string cropName = CropPhases.CropFromLanduse(landuse);
+                if (CropPhases.IsValidCropName(cropName))
                 {
                     idx = 1;
                     bool found = false;
@@ -1197,32 +1397,6 @@ namespace APSIM.Cloud.Shared.AusFarm
                 }
             }
             SetTypedInit(compNode, "published_events", init);
-        }
-
-        /// <summary>
-        /// Check that the crop name is one of the Plant crops.
-        /// </summary>
-        /// <param name="crop">Crop name</param>
-        /// <returns>True if found</returns>
-        private bool IsValidCropName(string crop)
-        {
-            return (Array.IndexOf(ValidCropNames, crop.Trim()) >= 0);
-        }
-
-        private bool IsWinterLegumeCrop(string crop)
-        {
-            int pos = Array.IndexOf(ValidCropNames, crop.Trim());
-            if (pos >= 0)
-            {
-                return IsWinterLegume[pos];
-            }
-            else
-                return false;
-        }
-
-        private bool IsValidPastureName(string pasture)
-        {
-            return (Array.IndexOf(ValidPastureNames, pasture.Trim()) >= 0);
         }
 
         private void initSoilN_Trans(XmlNode compNode, Soil aSoil)
@@ -1265,20 +1439,21 @@ namespace APSIM.Cloud.Shared.AusFarm
             // for each crop type in the rotation list there should be a residue item in the translator
             for (int res = 0; res < farmSoil.CropRotationList.Count; res++)
             {
-                if (IsValidCropName(farmSoil.CropRotationList[res].Name))
+                string cropName = CropPhases.CropFromLanduse(farmSoil.CropRotationList[res].Name);
+                if (CropPhases.IsValidCropName(cropName))
                 {
                     uint i = 1;
                     found = false;
                     while (!found && (i <= init.count()))
                     {
-                        if (init.item(i).asStr() == farmSoil.CropRotationList[res].Name)
+                        if (init.item(i).asStr() == cropName)
                             found = true;
                         i++;
                     }
                     if (!found)
                     {
                         init.setElementCount(init.count() + 1);
-                        init.item(init.count()).setValue(farmSoil.CropRotationList[res].Name);
+                        init.item(init.count()).setValue(cropName);
                     }
                 }
             }

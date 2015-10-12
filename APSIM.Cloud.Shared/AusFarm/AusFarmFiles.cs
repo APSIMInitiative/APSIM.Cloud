@@ -203,32 +203,8 @@ namespace APSIM.Cloud.Shared.AusFarm
                     soil = SoilUtilities.FromXML(soilXml);
                 }
                 
-                // Make sure we have a soil crop parameterisation. If not then try creating one
-                // based on wheat.
-                SoilCrop wheat = soil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
-                if (wheat != null)
-                {
-                    string[] soilCrops = soil.Water.Crops.Select(c => c.Name).ToArray();
-                    string cropName;
-                    for (int crop = 0; crop < soilType.CropRotationList.Count; crop++)
-                    {
-                        //for each crop being sown in the rotation
-                        //ensure it has ll, kl values
-                        cropName = soilType.CropRotationList[crop].Name;
-                        if (!StringUtilities.Contains(soilCrops, cropName))
-                        {
-                            SoilCrop newSoilCrop = new SoilCrop();
-                            newSoilCrop.Name = cropName;
-                            newSoilCrop.Thickness = wheat.Thickness;
-                            newSoilCrop.LL = wheat.LL;
-                            newSoilCrop.KL = wheat.KL;
-                            newSoilCrop.XF = wheat.XF;
-                            soil.Water.Crops.Add(newSoilCrop);
-                            Array.Resize(ref soilCrops, soilCrops.Length+1);    // add it to the array to stop repeats
-                            soilCrops[soilCrops.Length-1] = cropName;
-                        }
-                    }
-                }
+                // Other crop types not listed here will have their ll, kll, xf values calculated later
+
                 // Remove any initwater nodes.
                 soil.InitialWater = null;
 
