@@ -349,6 +349,26 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public double CastForAgeYears { get; set; }
         /// <summary>
+        /// Standard reference weight. kg
+        /// </summary>
+        public double SRW { get; set; }
+        /// <summary>
+        /// Weaner mortality %/year
+        /// </summary>
+        public double WeanerMortality { get; set; }
+        /// <summary>
+        /// Fleece yield %
+        /// </summary>
+        public double FleeceYield { get; set; }
+        /// <summary>
+        /// Maximum average wool fibre diameter microns
+        /// </summary>
+        public double MaxFibre { get; set; }
+        /// <summary>
+        /// Breed reference fleece weight
+        /// </summary>
+        public double PotFleece { get; set; }
+        /// <summary>
         /// Conception percentage of singles when ewes are at CS 3
         /// </summary>
         public double ConceptSingle { get; set; }

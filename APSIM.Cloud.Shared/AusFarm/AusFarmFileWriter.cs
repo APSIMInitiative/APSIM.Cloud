@@ -1505,7 +1505,45 @@ namespace APSIM.Cloud.Shared.AusFarm
                 SetGenericCompStateVar("AnimalParams", prefix + "_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.Flocks[f].LambSaleWt));
                 SetGenericCompStateVar("AnimalParams", prefix + "_CULL_YRS", String.Format("{0, 2:f2}", livestock.Flocks[f].CastForAgeYears));
                 // other breed parameters
-
+                XmlNode compNode = FindComponentByPathName(simulationXMLNode, "animals");
+                if (compNode != null)
+                {
+                    TSDMLValue init = GetTypedInit(compNode, "genotypes");
+                    if (init != null)
+                    {
+                        TTypedValue genoItem;
+                        bool foundBreed = false;
+                        uint i = 1;
+                        while (!foundBreed && (i <= init.count()))
+                        {
+                            // find the breed 
+                            if (String.Compare(init.item(i).member("name").asStr(), livestock.Flocks[f].Breed, true) == 0)
+                            {
+                                foundBreed = true;
+                                genoItem = init.item(i);
+                                genoItem.member("srw").setValue(livestock.Flocks[f].SRW);
+                                genoItem.member("ref_fleece_wt").setValue(livestock.Flocks[f].PotFleece);
+                                genoItem.member("max_fibre_diam").setValue(livestock.Flocks[f].MaxFibre);
+                                genoItem.member("fleece_yield").setValue(livestock.Flocks[f].FleeceYield * 0.01);
+                                genoItem.member("wnr_death_rate").setValue(livestock.Flocks[f].WeanerMortality * 0.01);
+                                genoItem.member("conception").setElementCount(2);
+                                genoItem.member("conception").item(1).setValue(livestock.Flocks[f].ConceptSingle * 0.01);
+                                genoItem.member("conception").item(2).setValue(livestock.Flocks[f].ConceptTwin * 0.01);
+                            }
+                            i++;
+                        }
+                        if (foundBreed)
+                        {
+                            SetTypedInit(compNode, "genotypes", init);
+                        }
+                        else
+                            throw new Exception("Cannot find the breed [" + livestock.Flocks[f].Breed + "] in the simulation");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Cannot find the Stock component [animals]");
+                }
             }
             SetGenericCompStateVar("AnimalParams", "F4P_SHEAR_DAY", DoQuote(livestock.ShearingDay));
 
