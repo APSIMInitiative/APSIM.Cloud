@@ -334,12 +334,12 @@ namespace APSIM.Cloud.Shared
         /// <summary>
         /// The breed name. "Small merino"
         /// </summary>
-        public string Breed { get; set; }
+        public string Dam { get; set; }
         /// <summary>
         /// The breed of the ram used. Set it to the same as the ewe breed
         /// for self replacing flocks.
         /// </summary>
-        public string SireBreed { get; set; }
+        public string Sire { get; set; }
         /// <summary>
         /// Target sale weight for offspring
         /// </summary>
@@ -349,7 +349,8 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public double CastForAgeYears { get; set; }
         /// <summary>
-        /// Standard reference weight. kg
+        /// Standard reference weight. Weigh of mature animal in average condition score
+        /// without fleece or conceptus. kg
         /// </summary>
         public double SRW { get; set; }
         /// <summary>
