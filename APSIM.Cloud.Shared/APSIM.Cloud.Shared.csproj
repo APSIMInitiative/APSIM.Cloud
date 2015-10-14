@@ -95,6 +95,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <EmbeddedResource Include="Resources\ausfarm_dual_flock.sdml" />
     <None Include="Web References\APSOIL\PAWCByCrop.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -137,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Web References\APSOIL\Service.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
