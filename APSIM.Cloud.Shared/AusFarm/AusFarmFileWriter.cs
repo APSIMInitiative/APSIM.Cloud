@@ -155,7 +155,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             new SowingInfo("Southern HRZ", "fieldpea", "kaspa",  "15-may", "30-jun", 40.0, 30.0, 250.0), 
             new SowingInfo("Western LRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
             new SowingInfo("Western MRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "fieldpea", "kaspalu","15-apr", "30-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "fieldpea", "kaspa","15-apr", "30-may", 40.0, 30.0, 250.0),
 
             new SowingInfo("All", "lupin", "HighYield",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
             
@@ -177,18 +177,18 @@ namespace APSIM.Cloud.Shared.AusFarm
         public SoilCropParams[] CropParams;
         public SoilCropSpecs()
         {
-            Layers = new double[7] { 150, 300, 600, 900, 1200, 1500, 1800 };
+            Layers = new double[8] { 150, 300, 600, 900, 1200, 1500, 1800, 2100 };
             
             // Initialise the lookup table of crop soil values. In this case KL values.
             CropParams = new SoilCropParams[8] {
-                new SoilCropParams("wheat",     new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
-                new SoilCropParams("canola",    new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
-                new SoilCropParams("barley",    new double[7]{0.07,0.07,0.07,0.05,0.05,0.03,0.02}),
-                new SoilCropParams("chickpea",  new double[7]{0.06,0.06,0.06,0.04,0.04,0.0,0.0}),
-                new SoilCropParams("oats",      new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
-                new SoilCropParams("fieldpea",  new double[7]{0.06,0.06,0.06,0.05,0.04,0.02,0.01}),
-                new SoilCropParams("fababean",  new double[7]{0.08,0.08,0.08,0.08,0.06,0.04,0.03}),
-                new SoilCropParams("lupin",     new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01})
+                new SoilCropParams("wheat",     new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01}),
+                new SoilCropParams("canola",    new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01}),
+                new SoilCropParams("barley",    new double[8]{0.07,0.07,0.07,0.05,0.05,0.03,0.02,0.02}),
+                new SoilCropParams("chickpea",  new double[8]{0.06,0.06,0.06,0.04,0.04,0.0,0.0,0.0}),
+                new SoilCropParams("oats",      new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01}),
+                new SoilCropParams("fieldpea",  new double[8]{0.06,0.06,0.06,0.05,0.04,0.02,0.01,0.01}),
+                new SoilCropParams("fababean",  new double[8]{0.08,0.08,0.08,0.08,0.06,0.04,0.03,0.03}),
+                new SoilCropParams("lupin",     new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01})
             };
         }
 
@@ -732,7 +732,6 @@ namespace APSIM.Cloud.Shared.AusFarm
             if ((index > 0) && (index <= 3))
             {
                 string rotationVariable = "F4P_CROP_ROT" + index.ToString();
-                string isCrop = "F4P_ISCROP_ROT" + index.ToString();
 
                 // crop name array
                 string cropArrayStr = "[";
@@ -751,17 +750,6 @@ namespace APSIM.Cloud.Shared.AusFarm
                 }
                 cropArrayStr += "]";
                 SetGenericCompStateVar("Params", rotationVariable, cropArrayStr);
-
-                // set the array of isCrop flags by checking the crop name list
-                string isCropArrayStr = "[";
-                for (int s = 0; s < crops.Count; s++)
-                {
-                    isCropArrayStr += (CropPhases.IsValidCropName(CropPhases.CropFromLanduse(crops[s].Name)) == true ? "true" : "false");
-                    if (s < crops.Count - 1)
-                        isCropArrayStr += ", ";
-                }
-                isCropArrayStr += "]";
-                SetGenericCompStateVar("Params", isCrop, isCropArrayStr);
             }
         }
 
@@ -1125,7 +1113,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                                     klvalues[i] = CropPhases.CropKL(cropName, depth);
                                     xfvalues[i] = wheat.XF[i];
                                 }
-                                else if (depth <= 1800)
+                                else if (depth <= 2100)
                                 {
                                     // any values deeper than 1200 will be at DUL
                                     llvalues[i] = wheat.LL[i] + (aSoil.Water.DUL[i] - wheat.LL[i]);
