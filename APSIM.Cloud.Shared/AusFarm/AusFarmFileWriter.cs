@@ -113,82 +113,82 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// See AusFarmFileWriter.SetCroppingRegion()
         /// </summary>
         public SowingInfo[] CropSowingInfo = new SowingInfo[46] {
-            new SowingInfo("Southern LRZ", "wheat", "derrimut", "15-apr", "31-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Southern MRZ", "wheat", "derrimut", "15-apr", "15-jun", 150.0, 30.0, 250.0),
-            new SowingInfo("Southern HRZ", "wheat", "magenta",  "1-apr",  "15-jun", 200.0, 30.0, 250.0), 
-            new SowingInfo("Western LRZ",  "wheat", "derrimut", "20-apr", "10-jun", 150.0, 30.0, 250.0), 
-            new SowingInfo("Western MRZ",  "wheat", "derrimut", "25-apr", "20-jun", 150.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "wheat", "magenta",  "25-apr", "20-jun", 200.0, 30.0, 250.0), 
+            new SowingInfo("Southern LRZ", "wheat", "derrimut", "8-may",  "10-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern MRZ", "wheat", "derrimut", "15-may", "17-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "wheat", "magenta",  "8-may",  "10-may", 200.0, 30.0, 250.0),
+            new SowingInfo("Western LRZ",  "wheat", "derrimut", "15-may", "17-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western MRZ",  "wheat", "derrimut", "23-may", "25-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "wheat", "magenta",  "23-may", "25-may", 200.0, 30.0, 250.0),
 
-            new SowingInfo("Southern LRZ", "barley", "buloke", "15-apr", "31-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Southern MRZ", "barley", "sloop",  "15-apr", "15-jun", 150.0, 30.0, 250.0),
-            new SowingInfo("Southern HRZ", "barley", "oxford", "1-apr",  "15-jun", 150.0, 30.0, 250.0), 
-            new SowingInfo("Western LRZ",  "barley", "buloke", "15-apr", "31-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Western MRZ",  "barley", "sloop",  "15-apr", "15-jun", 150.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "barley", "oxford", "1-apr",  "15-jun", 200.0, 30.0, 250.0),
+            new SowingInfo("Southern LRZ", "barley", "buloke", "8-may",  "10-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern MRZ", "barley", "sloop",  "15-may", "17-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "barley", "oxford", "8-may",  "10-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western LRZ",  "barley", "buloke", "8-may",  "10-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western MRZ",  "barley", "sloop",  "15-may", "17-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "barley", "oxford", "8-may",  "10-may", 200.0, 30.0, 250.0),
 
-            new SowingInfo("Southern LRZ", "canola", "hyola42", "1-apr", "15-may", 50.0, 20.0, 250.0), 
-            new SowingInfo("Southern MRZ", "canola", "hyola42", "1-apr", "15-may", 50.0, 20.0, 250.0),
-            new SowingInfo("Southern HRZ", "canola", "hyola42", "1-apr", "15-may", 50.0, 20.0, 250.0), 
-            new SowingInfo("Western LRZ",  "canola", "hyola42", "1-apr", "20-may", 50.0, 20.0, 250.0), 
-            new SowingInfo("Western MRZ",  "canola", "hyola42", "10-apr","25-may", 50.0, 20.0, 250.0),
-            new SowingInfo("Western HRZ",  "canola", "hyola42", "15-apr","25-may", 50.0, 20.0, 250.0),
+            new SowingInfo("Southern LRZ", "canola", "hyola42", "23-apr",  "25-apr", 50.0, 20.0, 250.0),
+            new SowingInfo("Southern MRZ", "canola", "hyola42", "23-apr",  "25-apr", 50.0, 20.0, 250.0),
+            new SowingInfo("Southern HRZ", "canola", "hyola42", "23-apr",  "25-apr", 50.0, 20.0, 250.0),
+            new SowingInfo("Western LRZ",  "canola", "hyola42", "25-apr",  "27-apr", 50.0, 20.0, 250.0),
+            new SowingInfo("Western MRZ",  "canola", "hyola42", "2-may",   "4-may",  50.0, 20.0, 250.0),
+            new SowingInfo("Western HRZ",  "canola", "hyola42", "5-may",   "7-may",  50.0, 20.0, 250.0),
 
-            new SowingInfo("Southern LRZ", "oats", "wintaroo", "1-apr", "30-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Southern MRZ", "oats", "wintaroo", "1-apr", "30-may", 150.0, 30.0, 250.0),
-            new SowingInfo("Southern HRZ", "oats", "wintaroo", "1-apr", "30-may", 200.0, 30.0, 250.0), 
-            new SowingInfo("Western LRZ",  "oats", "wintaroo", "1-apr", "15-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Western MRZ",  "oats", "wintaroo", "1-apr", "15-may", 150.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "oats", "wintaroo", "1-apr", "15-may", 200.0, 30.0, 250.0),
+            new SowingInfo("Southern LRZ", "oats", "wintaroo", "30-apr", "2-may",  150.0, 30.0, 250.0),
+            new SowingInfo("Southern MRZ", "oats", "wintaroo", "30-apr", "2-may",  150.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "oats", "wintaroo", "30-apr", "2-may",  200.0, 30.0, 250.0),
+            new SowingInfo("Western LRZ",  "oats", "wintaroo", "23-apr", "25-apr", 150.0, 30.0, 250.0),
+            new SowingInfo("Western MRZ",  "oats", "wintaroo", "23-apr", "25-apr", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "oats", "wintaroo", "23-apr", "25-apr", 200.0, 30.0, 250.0),
 
-            new SowingInfo("Southern LRZ", "oatshay", "algerian", "1-apr",  "15-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Southern MRZ", "oatshay", "algerian", "1-apr",  "15-may", 180.0, 30.0, 250.0),
-            new SowingInfo("Southern HRZ", "oatshay", "algerian", "1-apr",  "15-may", 180.0, 30.0, 250.0), 
-            new SowingInfo("Western LRZ",  "oatshay", "algerian", "15-apr", "10-jun", 150.0, 30.0, 250.0), 
-            new SowingInfo("Western MRZ",  "oatshay", "algerian", "15-apr", "10-jun", 150.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "oatshay", "algerian", "15-apr", "10-jun", 200.0, 30.0, 250.0),
+            new SowingInfo("Southern LRZ", "oatshay", "algerian", "23-apr",  "25-apr", 150.0, 30.0, 250.0),
+            new SowingInfo("Southern MRZ", "oatshay", "algerian", "23-apr",  "25-apr", 180.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "oatshay", "algerian", "23-apr",  "25-apr", 180.0, 30.0, 250.0),
+            new SowingInfo("Western LRZ",  "oatshay", "algerian", "13-may",  "15-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western MRZ",  "oatshay", "algerian", "13-may",  "15-may", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "oatshay", "algerian", "13-may",  "15-may", 200.0, 30.0, 250.0),
 
-            new SowingInfo("All", "chickpea", "amethyst", "15-apr", "30-may", 35.0, 30.0, 600.0), 
+            new SowingInfo("All", "chickpea", "amethyst", "7-may", "9-may", 35.0, 30.0, 600.0),
 
-            new SowingInfo("Southern LRZ", "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
-            new SowingInfo("Southern MRZ", "fieldpea", "kaspa",  "15-may", "15-jun", 40.0, 30.0, 250.0),
-            new SowingInfo("Southern HRZ", "fieldpea", "kaspa",  "15-may", "30-jun", 40.0, 30.0, 250.0), 
-            new SowingInfo("Western LRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
-            new SowingInfo("Western MRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "fieldpea", "kaspa","15-apr", "30-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Southern LRZ", "fieldpea", "kaspa",  "7-may",  "9-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Southern MRZ", "fieldpea", "kaspa",  "30-may", "1-jun", 40.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "fieldpea", "kaspa",  "7-jun",  "9-jun", 40.0, 30.0, 250.0),
+            new SowingInfo("Western LRZ",  "fieldpea", "kaspa",  "7-may",  "9-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Western MRZ",  "fieldpea", "kaspa",  "7-may",  "9-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "fieldpea", "kaspa",  "7-may",  "9-may", 40.0, 30.0, 250.0),
 
-            new SowingInfo("All", "lupin", "HighYield",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
-            
-            new SowingInfo("All", "fababean", "fiord",  "15-apr", "30-may", 25.0, 30.0, 250.0),
+            new SowingInfo("All", "lupin", "HighYield",  "7-may", "9-may", 40.0, 30.0, 250.0),
+           
+            new SowingInfo("All", "fababean", "fiord",  "7-may", "9-may", 25.0, 30.0, 250.0),
 
             // AusFarm is currently using chickpea cultivar here
-            new SowingInfo("Southern LRZ", "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
-            new SowingInfo("Southern MRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0),
-            new SowingInfo("Southern HRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0), 
-            new SowingInfo("Western LRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
-            new SowingInfo("Western MRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
-            new SowingInfo("Western HRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
+            new SowingInfo("Southern LRZ", "lentil", "amethyst",  "7-may",  "9-may", 120.0, 30.0, 600.0),
+            new SowingInfo("Southern MRZ", "lentil", "amethyst",  "30-may", "1-jun", 120.0, 30.0, 600.0),
+            new SowingInfo("Southern HRZ", "lentil", "amethyst",  "30-may", "1-jun", 120.0, 30.0, 600.0),
+            new SowingInfo("Western LRZ",  "lentil", "amethyst",  "7-may",  "9-may", 120.0, 30.0, 600.0),
+            new SowingInfo("Western MRZ",  "lentil", "amethyst",  "7-may",  "9-may", 120.0, 30.0, 600.0),
+            new SowingInfo("Western HRZ",  "lentil", "amethyst",  "7-may",  "9-may", 120.0, 30.0, 600.0),
 
             // vetchhay is currently using fieldpea cultivar
-            new SowingInfo("All", "vetchhay", "kaspa",  "15-apr", "15-jun", 40.0, 30.0, 250.0) 
+            new SowingInfo("All", "vetchhay", "kaspa",  "15-may", "17-may", 40.0, 30.0, 250.0)
         };
 
         public double[] Layers;
         public SoilCropParams[] CropParams;
         public SoilCropSpecs()
         {
-            Layers = new double[8] { 150, 300, 600, 900, 1200, 1500, 1800, 2100 };
+            Layers = new double[7] { 150, 300, 600, 900, 1200, 1500, 1800};
             
             // Initialise the lookup table of crop soil values. In this case KL values.
             CropParams = new SoilCropParams[8] {
-                new SoilCropParams("wheat",     new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01}),
-                new SoilCropParams("canola",    new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01}),
-                new SoilCropParams("barley",    new double[8]{0.07,0.07,0.07,0.05,0.05,0.03,0.02,0.02}),
-                new SoilCropParams("chickpea",  new double[8]{0.06,0.06,0.06,0.04,0.04,0.0,0.0,0.0}),
-                new SoilCropParams("oats",      new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01}),
-                new SoilCropParams("fieldpea",  new double[8]{0.06,0.06,0.06,0.05,0.04,0.02,0.01,0.01}),
-                new SoilCropParams("fababean",  new double[8]{0.08,0.08,0.08,0.08,0.06,0.04,0.03,0.03}),
-                new SoilCropParams("lupin",     new double[8]{0.06,0.06,0.06,0.04,0.04,0.02,0.01,0.01})
+                new SoilCropParams("wheat",     new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
+                new SoilCropParams("canola",    new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
+                new SoilCropParams("barley",    new double[7]{0.07,0.07,0.07,0.05,0.05,0.03,0.02}),
+                new SoilCropParams("chickpea",  new double[7]{0.06,0.06,0.06,0.04,0.04,0.0,0.0}),
+                new SoilCropParams("oats",      new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01}),
+                new SoilCropParams("fieldpea",  new double[7]{0.06,0.06,0.06,0.05,0.04,0.02,0.01}),
+                new SoilCropParams("fababean",  new double[7]{0.08,0.08,0.08,0.08,0.06,0.04,0.03}),
+                new SoilCropParams("lupin",     new double[7]{0.06,0.06,0.06,0.04,0.04,0.02,0.01})
             };
         }
 
@@ -208,6 +208,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                 if (String.Compare(cropName, soilCrop.CropName, true) == 0)
                 {
                     int layer = Layers.Length - 1;
+                    kl = CropParams[i].KL[layer];       // default to the max depth value
                     while ((layer >= 0) && (depth <= Layers[layer]))
                     {
                         kl = CropParams[i].KL[layer];
@@ -1113,7 +1114,7 @@ namespace APSIM.Cloud.Shared.AusFarm
                                     klvalues[i] = CropPhases.CropKL(cropName, depth);
                                     xfvalues[i] = wheat.XF[i];
                                 }
-                                else if (depth <= 2100)
+                                else 
                                 {
                                     // any values deeper than 1200 will be at DUL
                                     llvalues[i] = wheat.LL[i] + (aSoil.Water.DUL[i] - wheat.LL[i]);
