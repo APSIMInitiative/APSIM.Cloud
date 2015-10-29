@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.7-r3678" name="Simulations">
+<folder version="36" creator="Apsim 7.7-r3715" name="Simulations">
   <simulation name="Base">
     <clock name="Clock" />
     <metfile name="Met">
@@ -13,7 +13,7 @@
           <CropName type="text" description="Crop to be sown">Wheat</CropName>
           <NUnlimited type="yesno" description="N Unlimited?">no</NUnlimited>
           <NUnlimitedFromToday type="yesno" description="N unlimited from today?">no</NUnlimitedFromToday>
-          <WriteDepthFile type="yesno" description="Write a depth.out file?">yes</WriteDepthFile>
+          <WriteDepthFile type="yesno" description="Write a depth.out file?">no</WriteDepthFile>
           <DryNext10Days type="yesno" description="Dry for next 10 days?">no</DryNext10Days>
           <FertiliserCost type="text" description="Cost of N fertiliser ($/ha)">1.2</FertiliserCost>
           <FertiliserApplicationCost type="text" description="Cost of N application ($/ha) : ">15</FertiliserApplicationCost>
@@ -46,6 +46,8 @@ public class Script
    private Soil Soil;
    private double[] ProbeThicknesses = null;
    private double organic_C_start = 0;
+   private double fasw;
+   private double dsli;
    
    [Link] Paddock Paddock; 
    [Link] Fertiliser Fertiliser;
@@ -56,7 +58,8 @@ public class Script
    [Input(IsOptional=true)] double node_no;        // Sorghum doesn't have a node_no hence optional.
    [Input(IsOptional=true)] double zadok_stage;    // Optional because canola doesn't have this variable.
    [Input] int DaysAfterSowing;  
-   [Input] double runoff;        
+   [Input] double runoff;
+   [Input] double drain;
    [Input] double[] dlayer;
    [Input] double[] sw_dep;
    [Input] double[] sw;   
@@ -76,6 +79,8 @@ public class Script
    [Input(IsOptional=true)] double[] no3_uptake;    // Sorghum doesn't have this
    [Input] double maxt;
    [Input] double mint;
+   [Input(IsOptional=true)] double origmaxt = -999; // Short term met file doesn't have this.
+   [Input(IsOptional=true)] double origmint = -999; // Short term met file doesn't have this.
    [Input] double rain;
    [Input] double biomass_n;
    [Input] double RootGreenN;
@@ -86,6 +91,15 @@ public class Script
    [Input(IsOptional=true)] double grain_protein;
    [Input(IsOptional=true)] double Biomass;
    [Input(IsOptional=true)] double root_depth;
+   [Input(IsOptional=true)] double podGreenWt;
+   [Input] double[] ave_soil_temp = null;
+   [Input(IsOptional=true)] double ttafterstart_grain_fill = 0;   // peanut variable
+   [Input(IsOptional=true)] double start_grain_fillTTTarget = 0;  // peanut variable
+   [Input(IsOptional=true)] double cover_tot = 0;                 // peanut variable
+   [Input(IsOptional=true)] double EP = 0;                        // peanut variable
+   [Input(IsOptional=true)] double Stage = 0;                     // peanut variable
+   [Input] double[] WeeklyEP;                                     // tracker variable
+   
    
    [Param(IsOptional=true)] DateTime DateReportWasGenerated;
    [Param] string CropName;
@@ -142,6 +156,12 @@ public class Script
    [Output] double Zero { get { return 0.0; } }
    [Output] DateTime SowDate;
    [Output] double BankBalance = 0;
+   [Output] double aflo_perc;     // Peanut aflatoxin risk (%)
+   [Output] double watersupply;
+   [Output] double TAW;
+   [Output] double FCW;
+   [Output] double RAW;
+   [Output] double NextIrrig;
    [Output] double WetYield
    {
       get
@@ -152,6 +172,20 @@ public class Script
          return Yield / (1 - MoistureContent / 100.0) / 1000;
       }
    }
+   [Output] double PeanutPodYield
+   {
+      get
+      {
+         return podGreenWt * 10.0 + Yield; // Calculate peanut pod yield at 12% moisture
+      }
+   } 
+   [Output] double PercentCover
+   {
+      get
+      {
+         return cover_tot * 100.0;
+      }
+   }    
    [Output] double HayBiomass
    {
       get 
@@ -173,7 +207,7 @@ public class Script
    {
       get
       {
-         double[] PAWC = Soil.CalcPAWC(dlayer, ll15_dep, sw_dep, xf);
+         double[] PAWC = Soil.CalcPAWC(dlayer, ll_dep, dul_dep, xf);
          return MathUtility.Sum(PAWC);          
       }
    }
@@ -359,6 +393,13 @@ public class Script
    [EventHandler] public void OnInitialised()
    {
       organic_C_start = MathUtility.Sum(biom_c) + MathUtility.Sum(hum_c);
+
+      if (origmint != -999)
+         Console.WriteLine("Using original minimum temperatures for frost/heat calculations");
+
+      if (origmaxt != -999)
+         Console.WriteLine("Using original maximum temperatures for frost/heat calculations");
+      
    }
       
    // ------------------------------------------------------------------------------
@@ -411,6 +452,11 @@ public class Script
          }         
       }
 
+      fasw = 0.0;
+      if (ll_dep != null &amp;&amp; ll_dep.Length == sw_dep.Length)
+         for (int i = 0; i &lt; sw_dep.Length; i++)
+            fasw += (sw_dep[i] - ll_dep[i]) / (dul_dep[i] - ll_dep[i]);
+      
       if (DaysAfterSowing == 1)
          SowDate = Today.AddDays(-1);
       
@@ -469,6 +515,56 @@ public class Script
       if (NUnlimitedFromToday &amp;&amp; NO3AvailToRoots &lt; 100 &amp;&amp; DaysAfterSowing &gt; 0 &amp;&amp;
          Today &gt; DateReportWasGenerated)
          Fertiliser.Apply(100.0f, 20.0f, "NO3_N");
+      
+      // Peanut irrigation deficit.
+      double Depletion_fraction;
+      double AWwateruse;
+      double critfasw = 0.50;
+      if (DaysAfterSowing &lt; 7)
+      {
+         AWwateruse = EP;
+         Depletion_fraction = 0.5;
+      }
+      else
+      {
+         AWwateruse = WeeklyEP[0];
+         Depletion_fraction = critfasw + (0.04 * (5 - WeeklyEP[0]));
+      }
+
+      if  (Depletion_fraction &lt;= 0.1)
+         Depletion_fraction = 0.1;
+
+      else if (Depletion_fraction &gt;= 0.8)
+         Depletion_fraction = 0.8;
+  
+      // water depletion and irrigaiton requirement calculations
+      TAW = 0;
+      double TAW1 = ((dul_dep[0] - ll15_dep[0]) + (dul_dep[1] - ll15_dep[1]) + (dul_dep[2] - ll15_dep[2])) / (dlayer[0] + dlayer[1] + dlayer[2]) * 500;
+      FCW = (((dul_dep[0] - sw_dep[0]) + (dul_dep[1] - sw_dep[1]) + (dul_dep[2] - sw_dep[2])) / (dlayer[0] + dlayer[1] + dlayer[2]) * 500) - drain;
+      RAW = TAW1 * Depletion_fraction;
+      double Refillpoint = TAW1 - RAW;
+      double fesw = ((sw_dep[0] - ll15_dep[0]) + (sw_dep[1] - ll15_dep[1]) + (sw_dep[2] - ll15_dep[2])) / ((dul_dep[0] - ll15_dep[0]) + (dul_dep[1] - ll15_dep[1]) + (dul_dep[2] - ll15_dep[2]));
+      double deficit = (dul_dep[0] - sw_dep[0]) + (dul_dep[1] - sw_dep[1]) + (dul_dep[2] - sw_dep[2]);
+    
+      if (DaysAfterSowing &gt; 0 &amp;&amp; Stage &lt;= 8 &amp;&amp; fesw &lt;= 0.5 &amp;&amp; dsli &gt; 5)
+      {
+         watersupply = (TAW1 * (1 - fesw)) / 0.8;
+         dsli = 0;
+      }
+      else 
+         watersupply = 0;
+      
+      
+      NextIrrig = 0;
+      if (DaysAfterSowing &gt; 0 &amp;&amp; AWwateruse &gt; 0 &amp;&amp; FCW &lt; TAW)
+         NextIrrig = RAW / AWwateruse;
+      else if (DaysAfterSowing &gt; 0 &amp;&amp; AWwateruse &gt; 0 &amp;&amp; FCW &gt; TAW)
+         NextIrrig = (RAW - FCW) / AWwateruse;
+      
+      if (NextIrrig &gt; 15)
+         NextIrrig = 15;
+      
+      dsli = dsli + 1;
    }
    
    
@@ -594,22 +690,30 @@ public class Script
       }
       else
       {
+         double tempmin = mint;
+         if (origmint != -999)
+            tempmin = origmint;
+         
+         double tempmax = maxt;
+         if (origmaxt != -999)
+            tempmax = origmaxt;
+         
          if (Z &gt;= 60 &amp;&amp; Z &lt; 75.99)
          {
-            if (mint &gt;= 0 &amp;&amp; mint &lt; 2)
+            if (tempmin &gt;= 0 &amp;&amp; tempmin &lt; 2)
                MildFrostCount++;
-            else if (mint &gt;= -2 &amp;&amp; mint &lt; 0)
+            else if (tempmin &gt;= -2 &amp;&amp; tempmin &lt; 0)
                ModerateFrostCount++;
-            else if (mint &lt; -2)
+            else if (tempmin &lt; -2)
                SevereFrostCount++;
          }
          if (Z &gt;= 70 &amp;&amp; Z &lt; 79.99)
          {
-            if (maxt &gt;= 32 &amp;&amp; maxt &lt; 34)
+            if (tempmax &gt;= 32 &amp;&amp; tempmax &lt; 34)
                MildHeatShockCount++;
-            else if (maxt &gt;= 34 &amp;&amp; maxt &lt; 36)
+            else if (tempmax &gt;= 34 &amp;&amp; tempmax &lt; 36)
                ModerateHeatShockCount++;
-            else if (maxt &gt;= 36)
+            else if (tempmax &gt;= 36)
                SevereHeatShockCount++;
          }
       }
@@ -625,6 +729,48 @@ public class Script
       {
          Paddock.Publish("Next10Days");
       }
+      
+      // Aflatoxin risk.
+      if (CropName.ToLower() == "peanut" &amp;&amp; DaysAfterSowing &gt;= 1)
+      {
+         double adj_ave_soil_temp;
+         double aflo_temp_fact = 0;
+         adj_ave_soil_temp = ave_soil_temp[0];  // top layer.
+         
+         if (adj_ave_soil_temp &gt;= 22 &amp;&amp; adj_ave_soil_temp &lt;= 30)
+         aflo_temp_fact = (adj_ave_soil_temp - 22) / (30 - 22);
+         
+         if (adj_ave_soil_temp &gt; 30 &amp;&amp; adj_ave_soil_temp &lt; 35)
+         aflo_temp_fact = (35 - adj_ave_soil_temp) / (35 - 30);
+         
+         if (adj_ave_soil_temp &lt; 22)
+         aflo_temp_fact = 0;
+         
+         if (adj_ave_soil_temp &gt; 35)
+         aflo_temp_fact = 0;
+          
+         // Aflatoxin  rules for peanut with simulated temperature!!!!!! 
+         aflo_perc = 0;
+         if (Stage &gt;= 7)
+         {
+            double gddprop = ttafterstart_grain_fill / start_grain_fillTTTarget;
+            double aflo = 0;
+            if (gddprop &gt; 0.6 &amp;&amp; fasw &lt; 0.2)
+               aflo = aflo + (1 * aflo_temp_fact);
+            
+            aflo_perc = aflo * 3;
+            if (aflo_perc &gt; 100)
+               aflo_perc = 100;
+            
+            if (aflo_perc &lt; 0)
+               aflo_perc = 0;
+
+            //aflo_conc = -45.369 + (2.9422 * aflo_perc);
+            //if (aflo_conc &amp;lt; 0)
+            //   aflo_conc = 0;
+         }
+      }
+      
    }
    
    // ------------------------------------------------------------------------------
@@ -770,6 +916,7 @@ public class Script
         <variable>sum of drain on end_of_day from start_simulation to end_simulation as TotalDrainage</variable>
         <variable>sum of leach_no3 on end_of_day from start_simulation to end_simulation as TotalNo3Leaching</variable>
         <variable>sum of n2o_atm() on end_of_day from start_simulation to end_simulation as TotalN2O</variable>
+        <variable>average of ep on last 3 end_of_day from sowing to harvesting as WeeklyEP</variable>
       </tracker>
       <outputfile name="Yearly" enabled="no">
         <filename output="yes">Base Yearly.out</filename>
@@ -873,6 +1020,7 @@ public class Script
           <variable>PAWC</variable>
           <variable>Rain</variable>
           <variable>irrig_tot</variable>
+          <variable>Irrigation</variable>
           <variable>es</variable>
           <variable>ep</variable>
           <variable>drain</variable>
@@ -894,6 +1042,18 @@ public class Script
           <variable>NUptakeKgHa</variable>
           <variable>AmountWaterLeft</variable>
           <variable>BankBalance</variable>
+          <variable>DaysAfterSowing</variable>
+          <variable>PeanutPodYield</variable>
+          <variable>aflo_perc</variable>
+          <variable>TTAfterSowing</variable>
+          <variable>Stage</variable>
+          <variable>watersupply</variable>
+          <variable>TAW</variable>
+          <variable>RAW</variable>
+          <variable>FCW</variable>
+          <variable>WeeklyEP</variable>
+          <variable>NextIrrig</variable>
+          <variable>PercentCover</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>post</event>

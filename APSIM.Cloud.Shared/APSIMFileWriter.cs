@@ -29,6 +29,7 @@ namespace APSIM.Cloud.Shared
         {
             // Load the template file.
             Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Shared.Resources.Template.apsim");
+
             XmlDocument doc = new XmlDocument();
             doc.Load(s);
             simulationXML = XmlUtilities.Find(doc.DocumentElement, "Base");
@@ -221,7 +222,7 @@ namespace APSIM.Cloud.Shared
 
             string action = "Irrigation apply amount = " + application.Amount.ToString("F0") + " (mm)" +
                                          "efficiency = " + application.Efficiency.ToString("F2") + "(0-1)";
-            AddOperation(application.Date, action); AddOperation(application.Date, action);
+            AddOperation(application.Date, action);
         }
 
         /// <summary>Adds a tillage operation.</summary>

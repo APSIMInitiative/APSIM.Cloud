@@ -179,6 +179,7 @@ namespace APSIM.Cloud.Shared
 
             // Do soil stuff.
             Soil soil = DoSoil(simulation);
+
             apsimWriter.SetSoil(soil);
 
             // Loop through all management actions and create an operations list
@@ -264,14 +265,10 @@ namespace APSIM.Cloud.Shared
             // Remove any initwater nodes.
             soil.InitialWater = null;
 
-            // Transfer the APSIM simulation proxy samples to the soil
+            // Transfer the simulation samples to the soil
             if (simulation.Samples != null)
-            {
-                // Convert webservice proxy samples to real samples.
-                XmlDocument soilDoc = new XmlDocument();
-                soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Samples, false));
-                soil.Samples = XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(List<Sample>)) as List<Sample>;
-            }
+                soil.Samples = simulation.Samples;
+            
             if (simulation.InitTotalWater != 0)
             {
                 soil.InitialWater = new InitialWater();
@@ -311,6 +308,12 @@ namespace APSIM.Cloud.Shared
                 double Scale = Convert.ToDouble(simulation.InitTotalNitrogen) / MathUtilities.Sum(nitrogenSample.NO3);
                 nitrogenSample.NO3 = MathUtilities.Multiply_Value(nitrogenSample.NO3, Scale);
             }
+
+            // Add in soil temperature. Needed for Aflatoxin risk.
+            soil.SoilTemperature = new SoilTemperature();
+            soil.SoilTemperature.BoundaryLayerConductance = 15;
+            if (soil.Analysis.ParticleSizeClay == null)
+                soil.Analysis.ParticleSizeClay = MathUtilities.CreateArrayOfValues(60, soil.Analysis.Thickness.Length);
 
             foreach (Sample sample in soil.Samples)
                 CheckSample(soil, sample);

@@ -23,7 +23,7 @@ namespace APSIM.Cloud.Shared
             else if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.SowingOpportunity)
                 return SowingOpportunityReport(yieldProphet);
             else
-                return ValidationRuns(yieldProphet);
+                return OtherRuns(yieldProphet);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         /// <param name="yieldProphet">The yield prophet specification</param>
         /// <returns>A list of APSIM specs. </returns>
-        private static List<APSIMSpec> ValidationRuns(YieldProphet yieldProphet)
+        private static List<APSIMSpec> OtherRuns(YieldProphet yieldProphet)
         {
             List<APSIMSpec> apsimSpecs = new List<APSIMSpec>();
 
@@ -39,10 +39,10 @@ namespace APSIM.Cloud.Shared
             {
                 APSIMSpec simulation = CreateBaseSimulation(paddock);
                 simulation.Name = paddock.Name;
-                simulation.DailyOutput = false;
+                simulation.DailyOutput = true;
                 simulation.YearlyOutput = true;
                 simulation.WriteDepthFile = false;
-                simulation.EndDate = simulation.StartDate.AddDays(360);
+                //simulation.EndDate = simulation.StartDate.AddDays(360);
                 apsimSpecs.Add(simulation);
             }
             return apsimSpecs;
@@ -97,6 +97,8 @@ namespace APSIM.Cloud.Shared
             shortSimulation.StubbleType = copyOfPaddock.StubbleType;
             shortSimulation.Management = new List<Management>();
             shortSimulation.Management.AddRange(copyOfPaddock.Management);
+            shortSimulation.UseEC = paddock.UseEC;
+            shortSimulation.WriteDepthFile = false;
             AddResetDatesToManagement(copyOfPaddock, shortSimulation);
             return shortSimulation;
         }

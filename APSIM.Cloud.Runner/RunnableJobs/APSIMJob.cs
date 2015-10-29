@@ -51,7 +51,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.FileName = Path.Combine(binDirectory, @"APSIM\Model\Apsim.exe");
-            p.StartInfo.Arguments = fileName;
+            p.StartInfo.Arguments = StringUtilities.DQuote(fileName);
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;
             p.Start();

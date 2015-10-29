@@ -21,7 +21,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>
         /// A list of fields to ignore when overlaying data.
         /// </summary>
-        private static string[] fieldsToInclude = new string[] { "radn", "maxt", "mint", "rain" };
+        private static string[] fieldsToOverlay = new string[] { "radn", "maxt", "mint", "rain" };
 
         /// <summary>The weatherfiles that have been written</summary>
         private List<string> weatherfilesWritten = new List<string>();
@@ -96,17 +96,17 @@ namespace APSIM.Cloud.Shared
                                     DateTime endDate,
                                     DataTable observedData)
         {
-            ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, startDate, endDate);
+            Data weatherFile = ExtractDataFromSILO(stationNumber, startDate, endDate);
             if (weatherFile != null)
             {
-                DataTable weatherData = weatherFile.ToTable();
+                DataTable weatherData = weatherFile.DailyData;
                 if (weatherData.Rows.Count == 0)
                     LastSILODateFound = DateTime.MinValue;
                 else
                     LastSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
 
                 // Add a codes column to weatherdata
-                AddCodesColumn(weatherData, 'S');
+                AddCodesColumn(weatherData, '-');
 
                 if (observedData != null)
                 {
@@ -114,12 +114,11 @@ namespace APSIM.Cloud.Shared
                     OverlayData(observedData, weatherData);
                 }
 
-                double latitude = Convert.ToDouble(weatherFile.Constant("Latitude").Value);
-                double longitude = Convert.ToDouble(weatherFile.Constant("Longitude").Value);
-                double tav = Convert.ToDouble(weatherFile.Constant("tav").Value);
-                double amp = Convert.ToDouble(weatherFile.Constant("amp").Value);
+                double latitude = Convert.ToDouble(weatherFile.Latitude);
+                double longitude = Convert.ToDouble(weatherFile.Longitude);
+                double tav = Convert.ToDouble(weatherFile.TAV);
+                double amp = Convert.ToDouble(weatherFile.AMP);
                 WriteWeatherFile(weatherData, fileName, latitude, longitude, tav, amp);
-                weatherFile.Close();
 
                 FilesCreated = new string[1] { fileName };
             }
@@ -150,6 +149,20 @@ namespace APSIM.Cloud.Shared
                                                                    DateTime.Now);
                 DataTable weatherData = weatherFileData.DailyData;
                 LastSILODateFound = weatherFileData.LastDate;
+
+                // Duplicate the maxt and mint columns to origmaxt and origmint columns. 
+                // This is so that we have both the patched and unpatched data.
+                weatherData.Columns.Add("origmaxt", typeof(double));
+                weatherData.Columns.Add("origmint", typeof(double));
+                foreach (DataRow row in weatherData.Rows)
+                {
+                    row["origmaxt"] = Convert.ToDouble(row["maxt"]);
+                    row["origmint"] = Convert.ToDouble(row["mint"]);
+                    row["codes"] = row["codes"].ToString() + "--";
+                }
+
+                // Move the codes column to the end.
+                weatherData.Columns["codes"].SetOrdinal(weatherData.Columns.Count-1);
 
                 // Make sure the observed data has a codes column.
                 if (observedData != null)
@@ -496,7 +509,14 @@ namespace APSIM.Cloud.Shared
         {
             if (!weatherData.Columns.Contains("codes"))
                 weatherData.Columns.Add("codes", typeof(string));
-            string codeString = new string(code, fieldsToInclude.Length);
+
+            // Count the number of code characters we need.
+            int count = 0;
+            foreach (string fieldToInclude in fieldsToOverlay)
+                if (weatherData.Columns.Contains(fieldToInclude))
+                    count++;
+
+            string codeString = new string(code, count);
             foreach (DataRow row in weatherData.Rows)
                 row["codes"] = codeString;
         }
@@ -516,24 +536,82 @@ namespace APSIM.Cloud.Shared
             writer.WriteLine("TAV = " + tav.ToString());
             writer.WriteLine("AMP = " + amp.ToString());
             writer.WriteLine("! Codes: -    SILO (unpatched)");
-            writer.WriteLine("         O    Observed(from patch file)");
-            writer.WriteLine("         S    SILO (from patch file)");
+            writer.WriteLine("         S    SILO (patched)");
+            writer.WriteLine("         O    Observed");
             writer.WriteLine("         P    POAMA");
 
+            // Work out column formats and widths.
+            string formatString = string.Empty;
+            string headings = string.Empty;
+            string units = string.Empty;
+            int i = 0;
+            foreach (DataColumn column in weatherData.Columns)
+            {
+                int columnWidth = 0;
+                string columnFormat = string.Empty;
+                string columnUnits = string.Empty;
+                if (column.DataType == typeof(DateTime))
+                {
+                    columnFormat += "yyyy-MM-dd";
+                    columnWidth = 12;
+                    columnUnits = "(yyyy-mm-dd)";
+                }
+                else if (column.ColumnName.Contains("radn"))
+                {
+                    columnFormat += "F1";
+                    columnWidth = 9;
+                    columnUnits = "(MJ/m^2)";
+                }
+                else if (column.ColumnName.Contains("maxt"))
+                {
+                    columnFormat += "F1";
+                    columnWidth = 9;
+                    columnUnits = "(oC)";
+                }
+                else if (column.ColumnName.Contains("mint"))
+                {
+                    columnFormat += "F1";
+                    columnWidth = 9;
+                    columnUnits = "(oC)";
+                }
+                else if (column.ColumnName.Contains("rain"))
+                {
+                    columnFormat += "F1";
+                    columnWidth = 7;
+                    columnUnits = "(mm)";
+                }
+                else
+                {
+                    columnFormat += string.Empty;
+                    columnWidth = 9;
+                    columnUnits = "()";
+                }
+
+                if (columnWidth > 0)
+                {
+                    headings += string.Format("{0," + columnWidth.ToString() + "}", column.ColumnName);
+                    units += string.Format("{0," + columnWidth.ToString() + "}", columnUnits);
+                    formatString += "{" + i + "," + columnWidth;
+                    if (columnFormat != string.Empty)
+                        formatString += ":" + columnFormat;
+                    formatString += "}";
+                    i++;
+                }
+            }
+
             // Write headings and units
-            writer.WriteLine("        Date     radn maxt  mint   rain codes");
-            writer.WriteLine("(yyyy-mm-dd) (MJ/m^2) (oC)  (oC)   (mm)    ()");
+            writer.WriteLine(headings);
+            writer.WriteLine(units);
 
             // Write data.
+            object[] values = new object[weatherData.Columns.Count];
             foreach (DataRow row in weatherData.Rows)
             {
-                writer.WriteLine("{0,12:yyyy-MM-dd}{1,9:F1}{2,5:F1}{3,6:F1}{4,7:F1}{5,6}",
-                                 new object[] {DataTableUtilities.GetDateFromRow(row),
-                                               row["radn"],
-                                               row["maxt"],
-                                               row["mint"],
-                                               row["rain"],
-                                               row["codes"]});
+                // Create an object array to pass to writeline.
+                for (int c = 0; c < weatherData.Columns.Count; c++)
+                    values[c] = row[c];
+
+                writer.WriteLine(formatString, values);
             }
             
             writer.Close();
@@ -554,7 +632,7 @@ namespace APSIM.Cloud.Shared
                 DateTime lastDate = DataTableUtilities.GetDateFromRow(table2.Rows[table2.Rows.Count-1]);
 
                 // Filter the first table so that it is in the same range as table2.
-                DataView table1View = new DataView();
+                DataView table1View = new DataView(table1);
                 table1View.RowFilter = string.Format("Date >= #{0:yyyy-MM-dd}# and Date <= #{1:yyyy-MM-dd}#",
                                                      firstDate, lastDate);
 
@@ -594,7 +672,7 @@ namespace APSIM.Cloud.Shared
             
             foreach (DataColumn fromColumn in fromRow.Table.Columns)
             {
-                if (StringUtilities.Contains(fieldsToInclude, fromColumn.ColumnName))
+                if (StringUtilities.Contains(fieldsToOverlay, fromColumn.ColumnName))
                 {
                     // See if this column is in table2.
                     foreach (DataColumn toColumn in toRow.Table.Columns)
@@ -607,7 +685,7 @@ namespace APSIM.Cloud.Shared
                                 toRow[toColumn] = fromRow[fromColumn];
 
                                 // Update codes
-                                int codeIndex = StringUtilities.IndexOfCaseInsensitive(fieldsToInclude, toColumn.ColumnName);
+                                int codeIndex = StringUtilities.IndexOfCaseInsensitive(fieldsToOverlay, toColumn.ColumnName);
                                 toRowCodes[codeIndex] = fromRowCodes[codeIndex];
                             }
                         }
@@ -706,6 +784,24 @@ namespace APSIM.Cloud.Shared
                 foreach (DataRow Row in table.Rows)
                     dates.Add(DataTableUtilities.GetDateFromRow(Row));
                 DataTableUtilities.AddColumnOfObjects(table, "Date", dates.ToArray());
+                table.Columns["Date"].SetOrdinal(0);
+
+                // remove year, day, pan, vp, code columns.
+                int yearColumn = table.Columns.IndexOf("Year");
+                if (yearColumn != -1)
+                    table.Columns.RemoveAt(yearColumn);
+                int dayColumn = table.Columns.IndexOf("Day");
+                if (dayColumn != -1)
+                    table.Columns.RemoveAt(dayColumn);
+                int panColumn = table.Columns.IndexOf("pan");
+                if (panColumn != -1)
+                    table.Columns.RemoveAt(panColumn);
+                int vpColumn = table.Columns.IndexOf("vp");
+                if (vpColumn != -1)
+                    table.Columns.RemoveAt(vpColumn);
+                int codeColumn = table.Columns.IndexOf("code");
+                if (codeColumn != -1)
+                    table.Columns.RemoveAt(codeColumn);
             }
         }
 

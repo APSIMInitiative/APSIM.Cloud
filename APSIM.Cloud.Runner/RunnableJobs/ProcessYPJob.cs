@@ -114,6 +114,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 }
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
+                    if (ErrorMessage != null)
+                        ErrorMessage = ErrorMessage.Replace("'", "");
                     jobsClient.SetCompleted(JobName, ErrorMessage);
                 }
             }
@@ -195,8 +197,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
                 completeJob.Jobs.Add(new RunnableJobs.APSIMJob(apsimFileName, workingDirectory));
                 completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
-                if (spec.ReportType != YieldProphet.ReportTypeEnum.None)
-                    completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
+                completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
 
             }
             return completeJob;

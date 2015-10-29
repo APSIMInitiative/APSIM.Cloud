@@ -57,7 +57,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Read in the yield prophet specification.
-            StreamReader reader = new StreamReader(Path.Combine(workingDirectory, "YieldProphet.xml"));
+            string[] xmlFiles = Directory.GetFiles(workingDirectory, "*.xml");
+            if (xmlFiles.Length == 0)
+                throw new Exception("Cannot find yieldprophet xml file in working directory.");
+
+            string yieldProphetFileName = xmlFiles[0];
+            StreamReader reader = new StreamReader(yieldProphetFileName);
             YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromXML(reader.ReadToEnd(), workingDirectory);
             reader.Close();
 
@@ -77,7 +82,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
                 startInfo.Arguments = StringUtilities.DQuote(reportFileName) + " " +
-                                      StringUtilities.DQuote(archiveBaseFileName + ".gif");
+                                        StringUtilities.DQuote(archiveBaseFileName + ".gif");
                 startInfo.WorkingDirectory = workingDirectory;
                 Process process = Process.Start(startInfo);
                 process.WaitForExit();
@@ -97,7 +102,23 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 {
                     // Sometimes .out files are empty - not an error.
                 }
+            foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.out"))
+                try
+                {
+                    dataSet.Tables.Add(ApsimTextFile.ToTable(outFileName));
+                }
+                catch (Exception)
+                {
+                    // Sometimes .out files are empty - not an error.
+                }
 
+            // Clean the table names (no spaces or underscores)
+            foreach (DataTable table in dataSet.Tables)
+            {
+                string tableName = table.TableName.Replace(" ", "");
+                tableName = tableName.Replace("_", "");
+                table.TableName = tableName;
+            }
 
             if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.F4P)
             {

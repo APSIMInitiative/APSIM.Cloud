@@ -73,7 +73,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 foreach (XmlNode simNode in simulationNodes)
                 {
                     string simulationName = XmlUtilities.NameAttr(simNode);
-                    foreach (string outputType in Directory.GetFiles(workingFolder, simulationName + "_01*.out"))
+                    foreach (string outputType in Directory.GetFiles(workingFolder, simulationName + "_*1*.out"))
                     {
                         string outputFileType = Path.GetFileNameWithoutExtension(outputType.Replace(simulationName, ""));
                         outputFileType = " " + StringUtilities.SplitOffAfterDelimiter(ref outputFileType, " ");
