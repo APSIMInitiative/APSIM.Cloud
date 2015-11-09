@@ -155,22 +155,22 @@ namespace APSIM.Cloud.Shared.AusFarm
             new SowingInfo("Southern HRZ", "fieldpea", "kaspa",  "15-may", "30-jun", 40.0, 30.0, 250.0), 
             new SowingInfo("Western LRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
             new SowingInfo("Western MRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "fieldpea", "kaspa","15-apr", "30-may", 40.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "fieldpea", "kaspa",  "15-apr", "30-may", 40.0, 30.0, 250.0),
 
             new SowingInfo("All", "lupin", "HighYield",  "15-apr", "30-may", 40.0, 30.0, 250.0), 
             
             new SowingInfo("All", "fababean", "fiord",  "15-apr", "30-may", 25.0, 30.0, 250.0),
 
             // AusFarm is currently using chickpea cultivar here
-            new SowingInfo("Southern LRZ", "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
-            new SowingInfo("Southern MRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0),
-            new SowingInfo("Southern HRZ", "lentil", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0), 
-            new SowingInfo("Western LRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
-            new SowingInfo("Western MRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
-            new SowingInfo("Western HRZ",  "lentil", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
+            new SowingInfo("Southern LRZ", "lentils", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
+            new SowingInfo("Southern MRZ", "lentils", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0),
+            new SowingInfo("Southern HRZ", "lentils", "amethyst",  "15-may", "15-jun", 120.0, 30.0, 600.0), 
+            new SowingInfo("Western LRZ",  "lentils", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0), 
+            new SowingInfo("Western MRZ",  "lentils", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
+            new SowingInfo("Western HRZ",  "lentils", "amethyst",  "15-apr", "30-may", 120.0, 30.0, 600.0),
 
             // vetchhay is currently using fieldpea cultivar
-            new SowingInfo("All", "vetchhay", "kaspa",  "15-apr", "15-jun", 40.0, 30.0, 250.0) 
+            new SowingInfo("All", "vetchhay", "parafield",  "15-apr", "15-jun", 40.0, 30.0, 250.0) 
         };
 
         public double[] Layers;
