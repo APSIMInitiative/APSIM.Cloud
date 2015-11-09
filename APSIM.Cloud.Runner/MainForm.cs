@@ -24,6 +24,9 @@ namespace APSIM.Cloud.Runner
         /// <summary>The job manager to send our jobs to</summary>
         private JobManager jobManager = null;
 
+        /// <summary>Job being run from command line.</summary>
+        private RunnableJobs.ProcessYPJob job = null;
+
         /// <summary>Initializes a new instance of the <see cref="MainForm"/> class.</summary>
         public MainForm(string[] args)
         {
@@ -61,17 +64,22 @@ namespace APSIM.Cloud.Runner
         {
             if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
             {
-                RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob();
+                job = new RunnableJobs.ProcessYPJob();
                 job.JobFileName = commandLineArguments[0];
                 jobManager.AddJob(job);
-                jobManager.Start(waitUntilFinished: true);
-                if (job.ErrorMessage != null)
-                {
-                    MessageBox.Show(job.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                Close();
+                jobManager.AllJobsCompleted += OnJobCompleted;
+                jobManager.Start(waitUntilFinished: false);
             }
         }
 
+        /// <summary>Job being run from command line is complete.</summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnJobCompleted(object sender, EventArgs e)
+        {
+            if (job.ErrorMessage != null)
+                MessageBox.Show(job.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Close();
+        }
     }
 }

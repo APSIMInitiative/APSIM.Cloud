@@ -42,6 +42,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the name of the weather file.</summary>
         public string WeatherFileName { get; set; }
 
+        /// <summary>Type of run to perform.</summary>
+        public Paddock.RunTypeEnum TypeOfRun { get; set; }
+
         /// <summary>Gets or sets the stubble mass (kg/ha)</summary>
         public double StubbleMass { get; set; }
 

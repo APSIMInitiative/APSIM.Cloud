@@ -46,7 +46,6 @@ public class Script
    private Soil Soil;
    private double[] ProbeThicknesses = null;
    private double organic_C_start = 0;
-   private double fasw;
    private double dsli;
    
    [Link] Paddock Paddock; 
@@ -158,6 +157,7 @@ public class Script
    [Output] double BankBalance = 0;
    [Output] double aflo_perc;     // Peanut aflatoxin risk (%)
    [Output] double watersupply;
+   [Output] double fasw = 0;   
    [Output] double TAW;
    [Output] double FCW;
    [Output] double RAW;
@@ -983,6 +983,7 @@ public class Script
           <variable>PreSowingFertiliser</variable>
           <variable>SowingFertiliser</variable>
           <variable>TopDressFertiliser</variable>
+          <variable>PeanutPodYield</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>
