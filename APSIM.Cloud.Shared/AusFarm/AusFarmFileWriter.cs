@@ -783,8 +783,8 @@ namespace APSIM.Cloud.Shared.AusFarm
                     // for every soil type that has been defined
                     FarmSoilType soilArea = simulation.OnFarmSoilTypes[soilIdx];
                     areaPropnTotal += soilArea.AreaProportion;
-                    SetGenericCompStateVar("Params", "F4P_AREAPROPN_ROT" + (soilIdx + 1).ToString(), String.Format("{0, 2:f2}", soilArea.AreaProportion));
-                    SetGenericCompStateVar("Params", "F4P_SOIL_FERT" + (soilIdx + 1).ToString(), String.Format("{0, 2:f2}", soilArea.SeasonFertiliser));
+                    SetGenericCompStateVar("Params", "F4P_AREAPROPN_ROT" + (soilIdx + 1).ToString(), soilArea.AreaProportion.ToString());
+                    SetGenericCompStateVar("Params", "F4P_SOIL_FERT" + (soilIdx + 1).ToString(), soilArea.SeasonFertiliser.ToString());
                     if (soilArea.AreaProportion > 0)
                     {
                         FarmPaddockType defaultPaddock = simulation.OnFarmPaddocks[soilIdx];    //this paddock is applied to this soil type
