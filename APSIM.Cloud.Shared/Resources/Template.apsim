@@ -454,8 +454,12 @@ public class Script
 
       fasw = 0.0;
       if (ll_dep != null &amp;&amp; ll_dep.Length == sw_dep.Length)
-         for (int i = 0; i &lt; sw_dep.Length; i++)
-            fasw += (sw_dep[i] - ll_dep[i]) / (dul_dep[i] - ll_dep[i]);
+      {
+         double paw = MathUtility.Sum(MathUtility.Subtract(sw_dep, ll_dep));
+         double pawc = MathUtility.Sum(MathUtility.Subtract(dul_dep, ll_dep));
+         fasw = paw / pawc;
+         fasw = Math.Abs(MathUtility.Bound(fasw, 0, 1));
+      }
       
       if (DaysAfterSowing == 1)
          SowDate = Today.AddDays(-1);
@@ -1054,6 +1058,8 @@ public class Script
           <variable>WeeklyEP</variable>
           <variable>NextIrrig</variable>
           <variable>PercentCover</variable>
+          <variable>FASW</variable>
+          <variable>ave_soil_temp(1) as SoilTemp</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>post</event>
