@@ -724,7 +724,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="endDate">The end date.</param>
         /// <exception cref="System.Exception">Cannot find SILO!</exception>
         /// <returns>The SILO data stream</returns>
-        private static MemoryStream ExtractMetStreamFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
+        public static MemoryStream ExtractMetStreamFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
         {
             if (startDate < DateTime.Now)
             {
