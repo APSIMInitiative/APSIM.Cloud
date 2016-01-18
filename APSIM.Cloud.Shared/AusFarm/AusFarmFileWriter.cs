@@ -1492,7 +1492,11 @@ namespace APSIM.Cloud.Shared.AusFarm
                     SetGenericCompStateVar("AnimalParams", prefix + "_DAM", DoQuote(newXBreed));    //use the crossbreed from the previous flock
                 else
                     SetGenericCompStateVar("AnimalParams", prefix + "_DAM", DoQuote(livestock.Flocks[f].Dam));
-                SetGenericCompStateVar("AnimalParams", prefix + "_SIRE", DoQuote(livestock.Flocks[f].Sire));
+                // ensure the self replacing flock has the correct breeds
+                if (livestock.Flocks[f].SelfReplacing)
+                    SetGenericCompStateVar("AnimalParams", prefix + "_SIRE", DoQuote(livestock.Flocks[f].Dam));
+                else
+                    SetGenericCompStateVar("AnimalParams", prefix + "_SIRE", DoQuote(livestock.Flocks[f].Sire));
                 SetGenericCompStateVar("AnimalParams", prefix + "_EWES", livestock.Flocks[f].BreedingEweCount.ToString());
                 SetGenericCompStateVar("AnimalParams", prefix + "_JOIN", DoQuote(livestock.Flocks[f].EweJoinDay));
                 SetGenericCompStateVar("AnimalParams", prefix + "_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.Flocks[f].LambSaleWt));
@@ -1509,9 +1513,17 @@ namespace APSIM.Cloud.Shared.AusFarm
                     // this is because the ewes are offspring from the first flock
                     ConfigureBreed(livestock.Flocks[f].BreedParams, livestock.Flocks[f].Sire);
                 }
-                // other breed parameters for offspring
-                newXBreed = ConfigureOffspringBreeds(livestock.Flocks[f], newXBreed);
-                SetGenericCompStateVar("AnimalParams", prefix + "_OFFSPRING", DoQuote(newXBreed));
+
+                if (livestock.Flocks[f].SelfReplacing)
+                {
+                    SetGenericCompStateVar("AnimalParams", prefix + "_OFFSPRING", DoQuote(livestock.Flocks[f].Dam));
+                }
+                else
+                {
+                    // other breed parameters for offspring
+                    newXBreed = ConfigureOffspringBreeds(livestock.Flocks[f], newXBreed);
+                    SetGenericCompStateVar("AnimalParams", prefix + "_OFFSPRING", DoQuote(newXBreed));
+                }
             }
             SetGenericCompStateVar("AnimalParams", "F4P_SHEAR_DAY", DoQuote(livestock.ShearingDay));
 
