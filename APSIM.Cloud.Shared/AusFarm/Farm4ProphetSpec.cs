@@ -322,32 +322,12 @@ namespace APSIM.Cloud.Shared
         }        
     }
 
-    /// <summary>
-    /// The breeding livestock flock description.
-    /// </summary>
-    public class FlockDescr
+    public class BreedParameters
     {
         /// <summary>
-        /// True if this is a self replacing flock
+        /// Set this to false to avoid these values overwriting any existing params
         /// </summary>
-        public bool SelfReplacing { get; set; }
-        /// <summary>
-        /// The breed name. "Small merino"
-        /// </summary>
-        public string Dam { get; set; }
-        /// <summary>
-        /// The breed of the ram used. Set it to the same as the ewe breed
-        /// for self replacing flocks.
-        /// </summary>
-        public string Sire { get; set; }
-        /// <summary>
-        /// Target sale weight for offspring
-        /// </summary>
-        public double LambSaleWt { get; set; }
-        /// <summary>
-        /// Age in years to cast for age the merino ewes
-        /// </summary>
-        public double CastForAgeYears { get; set; }
+        public Boolean UseParams { get; set; }
         /// <summary>
         /// Standard reference weight. Weigh of mature animal in average condition score
         /// without fleece or conceptus. kg
@@ -366,7 +346,7 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public double MaxFibre { get; set; }
         /// <summary>
-        /// Breed reference fleece weight
+        /// Breed reference fleece weight, kg.
         /// </summary>
         public double PotFleece { get; set; }
         /// <summary>
@@ -377,14 +357,57 @@ namespace APSIM.Cloud.Shared
         /// Conception percentage of twins when ewes are at CS 3
         /// </summary>
         public double ConceptTwin { get; set; }
+        public BreedParameters()
+        {
+            UseParams = true;
+        }
+    }
+
+    /// <summary>
+    /// The breeding livestock flock description.
+    /// </summary>
+    public class FlockDescr
+    {
+        /// <summary>
+        /// The breed parameters to use for this flock. In F4P the use of this
+        /// varies between flocks. Flock1 = dam params, Flock2 = sire params.
+        /// To avoid changing the values already set for the breed set 
+        /// </summary>
+        public BreedParameters BreedParams;
+        /// <summary>
+        /// True if this is a self replacing flock
+        /// </summary>
+        public bool SelfReplacing { get; set; }
+        /// <summary>
+        /// The breed name. e.g. "Small merino". If this value is empty and this is the second flock
+        /// then the offspring breed from the previous flock will be used.
+        /// </summary>
+        public string Dam { get; set; }
+        /// <summary>
+        /// The breed of the ram used. Set it to the same as the ewe breed for self replacing flocks.
+        /// </summary>
+        public string Sire { get; set; }
+        /// <summary>
+        /// Target sale weight for offspring, kg
+        /// </summary>
+        public double LambSaleWt { get; set; }
+        /// <summary>
+        /// Age in years to cast for age the merino ewes
+        /// </summary>
+        public double CastForAgeYears { get; set; }
         /// <summary>
         /// Number of breeding ewes in this flock
         /// </summary>
         public int BreedingEweCount { get; set; }
         /// <summary>
-        /// The day of the year for ewe joining 
+        /// The day of the year for ewe joining, 1-Feb 
         /// </summary>
         public string EweJoinDay { get; set; }
+        public FlockDescr()
+        {
+            BreedParams = new BreedParameters();
+            SelfReplacing = false;
+        }
     }
 }
 

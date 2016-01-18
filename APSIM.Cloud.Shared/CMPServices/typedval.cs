@@ -529,6 +529,40 @@ namespace CMPServices
             return nMember;
         }
 
+        //============================================================================
+        /// <summary>
+        /// Searches an array of records and attempts to match a specified field with
+        /// a value. When a case insensitive match is found then return the array item.
+        /// </summary>
+        /// <param name="sMemberName">The field name of the record</param>
+        /// <param name="sValue">The string value of the field</param>
+        /// <returns>The record item from the array of records</returns>
+        // N.Herrmann Jan 2016
+        //============================================================================
+        public TTypedValue findItemByMemberValue(String sMemberName, String sValue)
+        {
+            TTypedValue nMember = null;
+            TTypedValue _item;
+
+            if (FIsArray)
+            {
+                if ((FMembers.Count > 0) && (FMembers[0].hasField(sMemberName)))
+                {
+                    int i = 0;
+                    while ((nMember == null) && (i <= FMembers.Count - 1))
+                    {
+                        _item = FMembers[i]; 
+                        if (String.Compare(_item.member(sMemberName).asStr(), sValue, StringComparison.OrdinalIgnoreCase) == 0)
+                            nMember = _item;
+                        else
+                            i++;
+                    }
+                }
+            }
+
+            return nMember;
+        }
+
         //Common code for the constructors
         //Some of these functions call virtual functions, so they are called
         //in the derived classes.

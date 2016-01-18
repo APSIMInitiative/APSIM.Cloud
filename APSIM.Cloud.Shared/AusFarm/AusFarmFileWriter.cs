@@ -316,7 +316,7 @@ namespace APSIM.Cloud.Shared.AusFarm
         /// <param name="value"></param>
         private void SetGenericCompStateVar(string compName, string varName, string value)
         {
-            XmlNode compNode = FindComponentByPathName(simulationXMLNode, "Params");
+            XmlNode compNode = FindComponentByPathName(simulationXMLNode, compName);
             TSDMLValue init = GetTypedInit(compNode, "state_vars");
             uint i = 1;
             TTypedValue stateVar = null;
@@ -1486,16 +1486,31 @@ namespace APSIM.Cloud.Shared.AusFarm
                 {
                     selfReplace = "FALSE";
                 }
-                SetGenericCompStateVar("AnimalParams", "F4P_SELF_REPLACING", selfReplace);
                 prefix = "F4P_FLOCK" + (f + 1).ToString();
-                SetGenericCompStateVar("AnimalParams", prefix + "_DAM", DoQuote(livestock.Flocks[f].Dam));
+                SetGenericCompStateVar("AnimalParams", prefix + "_SELF_REPLACING", selfReplace);
+                if ((newXBreed.Length > 0) && (livestock.Flocks[f].Dam.Length == 0))
+                    SetGenericCompStateVar("AnimalParams", prefix + "_DAM", DoQuote(newXBreed));    //use the crossbreed from the previous flock
+                else
+                    SetGenericCompStateVar("AnimalParams", prefix + "_DAM", DoQuote(livestock.Flocks[f].Dam));
                 SetGenericCompStateVar("AnimalParams", prefix + "_SIRE", DoQuote(livestock.Flocks[f].Sire));
                 SetGenericCompStateVar("AnimalParams", prefix + "_EWES", livestock.Flocks[f].BreedingEweCount.ToString());
                 SetGenericCompStateVar("AnimalParams", prefix + "_JOIN", DoQuote(livestock.Flocks[f].EweJoinDay));
                 SetGenericCompStateVar("AnimalParams", prefix + "_LAMB_SALE_WT", String.Format("{0, 2:f2}", livestock.Flocks[f].LambSaleWt));
                 SetGenericCompStateVar("AnimalParams", prefix + "_CULL_YRS", String.Format("{0, 2:f2}", livestock.Flocks[f].CastForAgeYears));
-                // other breed parameters
-                newXBreed = ConfigureBreeds(livestock.Flocks[f], newXBreed);
+                //set the breed parameters for each flock
+                if (f == 0)
+                {
+                    // the first flock params are used to set the params for the ewe breed
+                    ConfigureBreed(livestock.Flocks[f].BreedParams, livestock.Flocks[f].Dam);
+                }
+                else if (f == 1)
+                {
+                    // the params for the second flock are used to set the params for the sire breed
+                    // this is because the ewes are offspring from the first flock
+                    ConfigureBreed(livestock.Flocks[f].BreedParams, livestock.Flocks[f].Sire);
+                }
+                // other breed parameters for offspring
+                newXBreed = ConfigureOffspringBreeds(livestock.Flocks[f], newXBreed);
                 SetGenericCompStateVar("AnimalParams", prefix + "_OFFSPRING", DoQuote(newXBreed));
             }
             SetGenericCompStateVar("AnimalParams", "F4P_SHEAR_DAY", DoQuote(livestock.ShearingDay));
@@ -1508,14 +1523,59 @@ namespace APSIM.Cloud.Shared.AusFarm
         }
 
         /// <summary>
-        /// Configure the Stock component with the genotype parameters.
-        /// Also adds the composite breed if required.
+        /// Configure the breed parameters for an existing breed from the stock component in the simulation
+        /// </summary>
+        /// <param name="breedParams">Genotype details</param>
+        /// <param name="sBreed">The breed name</param>
+        private void ConfigureBreed(BreedParameters breedParams, string sBreed)
+        {
+            if (breedParams.UseParams)
+            {
+                XmlNode compNode = FindComponentByPathName(simulationXMLNode, "animals");
+                if (compNode != null)
+                {
+                    TSDMLValue init = GetTypedInit(compNode, "genotypes");
+                    if (init != null)
+                    {
+                        // find the genotype item for the dam breed
+                        TTypedValue genoItem = init.findItemByMemberValue("name", sBreed);
+                        if (genoItem == null)
+                        {
+                            throw new Exception("Cannot find the female breed [" + sBreed + "] in the simulation");
+                        }
+                        else
+                        {
+                            if (breedParams.SRW != 0)
+                                genoItem.member("srw").setValue(breedParams.SRW);
+                            if (breedParams.PotFleece > 0)
+                                genoItem.member("ref_fleece_wt").setValue(breedParams.PotFleece);
+                            if (breedParams.MaxFibre > 0)
+                                genoItem.member("max_fibre_diam").setValue(breedParams.MaxFibre);
+                            if (breedParams.FleeceYield > 0)
+                                genoItem.member("fleece_yield").setValue(breedParams.FleeceYield * 0.01);
+
+                            genoItem.member("wnr_death_rate").setValue(breedParams.WeanerMortality * 0.01);
+
+                            if (breedParams.ConceptSingle > 0)
+                                genoItem.member("conception").item(1).setValue(breedParams.ConceptSingle * 0.01);
+                            if (breedParams.ConceptTwin > 0)
+                                genoItem.member("conception").item(2).setValue(breedParams.ConceptTwin * 0.01);
+
+                            SetTypedInit(compNode, "genotypes", init);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Configure the Stock component with the genotype parameters for a new composite breed.
         /// </summary>
         /// <param name="livestock">The livestock settings for the simulation</param>
         /// <param name="prevOffspring">The breed name of the offspring from the previous flock. Used when the dam breed
         /// is not specified because this flock uses offspring from the previous flock.</param>
         /// <returns>The name of the new offspring breed that has been added to the Stock component genotypes.</returns>
-        private string ConfigureBreeds(FlockDescr flock, string prevOffspring)
+        private string ConfigureOffspringBreeds(FlockDescr flock, string prevOffspring)
         {
             string offspringBreed;
             string flockDamBreed = flock.Dam;
@@ -1535,19 +1595,8 @@ namespace APSIM.Cloud.Shared.AusFarm
                 if (init != null)
                 {
                     // find the genotype item for the dam breed
-                    TTypedValue genoDamItem = null;   
-                    bool foundBreed = false;
-                    uint i = 1;
-                    while (!foundBreed && (i <= init.count()))
-                    {
-                        if (String.Compare(init.item(i).member("name").asStr(), flockDamBreed, true) == 0)
-                        {
-                            foundBreed = true;
-                            genoDamItem = init.item(i);
-                        }
-                        i++;
-                    }
-                    if (!foundBreed)
+                    TTypedValue genoDamItem = init.findItemByMemberValue("name", flockDamBreed);
+                    if (genoDamItem == null)
                         throw new Exception("Cannot find the female breed [" + flockDamBreed + "] in the simulation");
 
                     // now add and configure the offspring breed if this is not a purebred enterprise. Assume first cross. 
@@ -1558,61 +1607,32 @@ namespace APSIM.Cloud.Shared.AusFarm
                     }
 
                     //check if the sire breed exists in the stock component
-                    foundBreed = false;
-                    i = 1;
-                    while (!foundBreed && (i <= init.count()))
+                    TTypedValue genoSireItem = init.findItemByMemberValue("name", flock.Sire);
+                    if (genoSireItem != null)
                     {
-                        if (String.Compare(init.item(i).member("name").asStr(), flock.Sire, true) == 0)
-                        {
-                            foundBreed = true;
-                            TTypedValue genoSireItem;   // sire breed
-                            genoSireItem = init.item(i);
-                            // add a new X breed item in the init array
-                            init.setElementCount(init.count() + 1);
-                            // now do a proportional setting of parameters between the two breeds
-                            TTypedValue newItem = init.item(init.count());
-                            newItem.member("name").setValue(offspringBreed);
-                            newItem.member("dam_breed").setValue(flockDamBreed);
-                            newItem.member("sire_breed").setValue(flock.Sire);
-                            newItem.member("generation").setValue(generation);
-                            // if this flock has values set them use them or use the average of the two breeds
-                            if (flock.SRW != 0)
-                                newItem.member("srw").setValue(flock.SRW);
-                            else
-                                newItem.member("srw").setValue((genoSireItem.member("srw").asDouble() + genoDamItem.member("srw").asDouble()) * 0.5);
-                            if (flock.PotFleece > 0)
-                                newItem.member("ref_fleece_wt").setValue(flock.PotFleece);
-                            else
-                                newItem.member("ref_fleece_wt").setValue((genoSireItem.member("ref_fleece_wt").asDouble() + genoDamItem.member("ref_fleece_wt").asDouble()) * 0.5);
-                            if (flock.MaxFibre > 0)
-                                newItem.member("max_fibre_diam").setValue(flock.MaxFibre);
-                            else
-                                newItem.member("max_fibre_diam").setValue((genoSireItem.member("max_fibre_diam").asDouble() + genoDamItem.member("max_fibre_diam").asDouble()) * 0.5);
-                            if (flock.FleeceYield > 0)
-                                newItem.member("fleece_yield").setValue(flock.FleeceYield * 0.01);
-                            else
-                                newItem.member("fleece_yield").setValue((genoSireItem.member("fleece_yield").asDouble() + genoDamItem.member("fleece_yield").asDouble()) * 0.5);
+                        // add a new X breed item in the init array
+                        init.setElementCount(init.count() + 1);
+                        // now do a proportional setting of parameters between the two breeds
+                        TTypedValue newItem = init.item(init.count());
+                        newItem.member("name").setValue(offspringBreed);
+                        newItem.member("dam_breed").setValue(flockDamBreed);
+                        newItem.member("sire_breed").setValue(flock.Sire);
+                        newItem.member("generation").setValue(generation);
+                        // use the average of the two breeds
+                        newItem.member("srw").setValue((genoSireItem.member("srw").asDouble() + genoDamItem.member("srw").asDouble()) * 0.5);
+                        newItem.member("ref_fleece_wt").setValue((genoSireItem.member("ref_fleece_wt").asDouble() + genoDamItem.member("ref_fleece_wt").asDouble()) * 0.5);
+                        newItem.member("max_fibre_diam").setValue((genoSireItem.member("max_fibre_diam").asDouble() + genoDamItem.member("max_fibre_diam").asDouble()) * 0.5);
+                        newItem.member("fleece_yield").setValue((genoSireItem.member("fleece_yield").asDouble() + genoDamItem.member("fleece_yield").asDouble()) * 0.5);
 
-                            newItem.member("death_rate").setValue((genoSireItem.member("death_rate").asDouble() + genoDamItem.member("death_rate").asDouble()) * 0.5);
-                            newItem.member("peak_milk").setValue((genoSireItem.member("peak_milk").asDouble() + genoDamItem.member("peak_milk").asDouble()) * 0.5);
+                        newItem.member("death_rate").setValue((genoSireItem.member("death_rate").asDouble() + genoDamItem.member("death_rate").asDouble()) * 0.5);
+                        newItem.member("peak_milk").setValue((genoSireItem.member("peak_milk").asDouble() + genoDamItem.member("peak_milk").asDouble()) * 0.5);
 
-                            newItem.member("wnr_death_rate").setValue(flock.WeanerMortality * 0.01);
+                        newItem.member("wnr_death_rate").setValue((genoSireItem.member("wnr_death_rate").asDouble() + genoDamItem.member("wnr_death_rate").asDouble()) * 0.5);
 
-                            newItem.member("conception").setElementCount(2);
-                            if (flock.ConceptSingle > 0)
-                                newItem.member("conception").item(1).setValue(flock.ConceptSingle * 0.01);
-                            else
-                                newItem.member("conception").item(1).setValue((genoSireItem.member("conception").item(1).asDouble() + genoDamItem.member("conception").item(1).asDouble()) * 0.5);
-                            if (flock.ConceptTwin > 0)
-                                newItem.member("conception").item(2).setValue(flock.ConceptTwin * 0.01);
-                            else
-                                newItem.member("conception").item(2).setValue((genoSireItem.member("conception").item(1).asDouble() + genoDamItem.member("conception").item(2).asDouble()) * 0.5);
-                        }
-                        i++;
-                    }
+                        newItem.member("conception").setElementCount(2);
+                        newItem.member("conception").item(1).setValue((genoSireItem.member("conception").item(1).asDouble() + genoDamItem.member("conception").item(1).asDouble()) * 0.5);
+                        newItem.member("conception").item(2).setValue((genoSireItem.member("conception").item(1).asDouble() + genoDamItem.member("conception").item(2).asDouble()) * 0.5);
 
-                    if (foundBreed)
-                    {
                         SetTypedInit(compNode, "genotypes", init);
                     }
                     else
