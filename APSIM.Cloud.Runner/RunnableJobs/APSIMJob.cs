@@ -9,6 +9,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.IO;
     using System.Reflection;
     using APSIM.Shared.Utilities;
+    using System;
 
     /// <summary>
     /// A runnable class for a single APSIM simulation run.
@@ -30,14 +31,24 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Gets or sets the working directory.</summary>
         private string workingDirectory;
 
+        /// <summary>Path to apsim.exe.</summary>
+        private string ApsimExecutable;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMJob"/> class.</summary>
         /// <param name="apsimFileName">Name of the apsim file.</param>
         /// <param name="arguments">The arguments.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        public APSIMJob(string fileName, string workingDirectory)
+        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable)
         {
             this.fileName = fileName;
             this.workingDirectory = workingDirectory;
+            if (apsimExecutable == null)
+            {
+                string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                this.ApsimExecutable = Path.Combine(binDirectory, @"APSIM\Model\Apsim.exe");
+            }
+            else
+                this.ApsimExecutable = apsimExecutable;
         }
 
         /// <summary>Called to start the job.</summary>
@@ -45,12 +56,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <param name="e">The <see cref="DoWorkEventArgs" /> instance containing the event data.</param>
         public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Start the external process to run APSIM and wait for it to finish.
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.FileName = Path.Combine(binDirectory, @"APSIM\Model\Apsim.exe");
+            p.StartInfo.FileName = ApsimExecutable;
+            if (!File.Exists(p.StartInfo.FileName))
+                throw new Exception("Cannot find executable: " + p.StartInfo.FileName);
             p.StartInfo.Arguments = StringUtilities.DQuote(fileName);
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;

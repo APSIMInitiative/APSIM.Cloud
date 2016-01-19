@@ -63,6 +63,8 @@ namespace APSIM.Cloud.Runner
             {
                 RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob();
                 job.JobFileName = commandLineArguments[0];
+                if (commandLineArguments.Length > 1)
+                    job.ApsimExecutable = commandLineArguments[1];
                 jobManager.AddJob(job);
                 jobManager.Start(waitUntilFinished: true);
                 if (job.ErrorMessage != null)

@@ -27,9 +27,8 @@ namespace APSIM.Cloud.Shared
         /// <returns>The newly created object.</returns>
         public static YieldProphet YieldProphetFromFile(string fileName)
         {
-            YieldProphet yieldProphet;
             if (Path.GetExtension(fileName) == ".zip")
-                yieldProphet = YieldProphetFromZip(fileName);
+                return YieldProphetFromZip(fileName);
             else
             {
                 StreamReader reader = new StreamReader(fileName);
@@ -38,8 +37,6 @@ namespace APSIM.Cloud.Shared
 
                 return YieldProphetUtility.YieldProphetFromXML(xml, Path.GetDirectoryName(fileName));
             }
-
-            throw new Exception("Invalid file type: " + fileName);
         }
 
         /// <summary>

@@ -35,9 +35,14 @@ namespace APSIM.Cloud.Portal
                 tempFile = Path.ChangeExtension(tempFile, ".zip");
             }
 
-            XmlDocument doc = new XmlDocument();
-            doc.Load(tempFile);
-            if (doc.DocumentElement.Name == "Farm4Prophet")
+            bool ypJob = true;
+            if (Path.GetExtension(tempFile) == ".xml")
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(tempFile);
+                ypJob = doc.DocumentElement.Name != "Farm4Prophet";
+            }
+            if (!ypJob)
             {
                 UploadFarm4Prophet(tempFile);
             }

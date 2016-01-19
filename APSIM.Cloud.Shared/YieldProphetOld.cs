@@ -105,6 +105,8 @@ namespace APSIM.Cloud.Shared
                 if (!File.Exists(fullFileName))
                     throw new Exception("Cannot find file: " + fullFileName);
                 simulation.ObservedData = ApsimTextFile.ToTable(fullFileName);
+                if (simulation.ObservedData.Rows.Count == 0)
+                    simulation.ObservedData = null;
             }
 
             // Set the reset dates

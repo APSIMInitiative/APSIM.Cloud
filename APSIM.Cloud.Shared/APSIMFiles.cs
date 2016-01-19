@@ -97,6 +97,7 @@ namespace APSIM.Cloud.Shared
             XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
             XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
 
+            string errorMessages = null;
             foreach (APSIMSpec simulation in simulations)
             {
                 try
@@ -107,9 +108,12 @@ namespace APSIM.Cloud.Shared
                 }
                 catch (Exception err)
                 {
-                    throw new Exception(err.Message + "\r\nPaddock name: " + simulation.Name);
+                    errorMessages += err.Message + "\r\nPaddock name: " + simulation.Name + "\r\n";
                 }
             }
+
+            if (errorMessages != null)
+                throw new Exception(errorMessages);
 
             // Apply factors.
             foreach (APSIMSpec simulation in simulations)
@@ -249,9 +253,17 @@ namespace APSIM.Cloud.Shared
             // based on wheat.
             Sow sowing = YieldProphetUtility.GetCropBeingSown(simulation.Management);
             string[] cropNames = soil.Water.Crops.Select(c => c.Name).ToArray();
+            if (cropNames.Length == 0)
+                throw new Exception("Cannot find any crop parameterisations in soil: " + simulation.SoilPath);
+
             if (sowing != null && !StringUtilities.Contains(cropNames, sowing.Crop))
             {
                 SoilCrop wheat = soil.Water.Crops.Find(c => c.Name.Equals("wheat", StringComparison.InvariantCultureIgnoreCase));
+                if (wheat == null)
+                {
+                    // Use the first crop instead.
+                    wheat = soil.Water.Crops[0];
+                }
 
                 SoilCrop newSoilCrop = new SoilCrop();
                 newSoilCrop.Name = sowing.Crop;

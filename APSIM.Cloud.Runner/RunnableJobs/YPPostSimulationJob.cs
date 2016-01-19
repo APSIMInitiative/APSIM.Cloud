@@ -135,9 +135,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     }
                 }
             }
-            else
+            else if (yieldProphet.ReportName != null && yieldProphet.ReportName.Length > 4)
             {
                 // YieldProphet - StoreReport
+                // validation runs have a report name of the year e.g. 2015. 
+                // Don't need to call StoreReport for them.
                 using (YPReporting.ReportingClient ypClient = new YPReporting.ReportingClient())
                 {
                     try

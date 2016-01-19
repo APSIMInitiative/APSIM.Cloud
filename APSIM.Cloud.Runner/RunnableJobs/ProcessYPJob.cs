@@ -46,6 +46,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>The job file. If null then the JobName will be used to get the XML from the jobs db.</summary>
         public string JobFileName { get; set; }
 
+        /// <summary>Optional path to APSIM.exe</summary>
+        public string ApsimExecutable { get; set; }
+
         /// <summary>
         /// Runs the YP job.
         /// </summary>
@@ -86,7 +89,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Create and run a job.
             try
             {
-                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory);
+                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory, ApsimExecutable);
                 jobManager.AddJob(job);
                 while (!job.IsCompleted)
                     Thread.Sleep(5 * 1000); // 5 sec
@@ -126,12 +129,16 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             }
             // Get rid of our temporary directory.
             Directory.Delete(workingDirectory, true);
+
+            if (ErrorMessage != null)
+                throw new Exception(ErrorMessage);
         }
 
         /// <summary>Create a runnable job for the simulations</summary>
         /// <param name="FilesToRun">The files to run.</param>
+        /// <param name="ApsimExecutable">APSIM.exe path. Can be null.</param>
         /// <returns>A runnable job for all simulations</returns>
-        private static JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory)
+        private static JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory, string ApsimExecutable)
         {
             // Create a sequential job.
             JobSequence completeJob = new JobSequence();
@@ -195,7 +202,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 doc.LoadXml(YieldProphetUtility.YieldProphetToXML(spec));
                 doc.Save(Path.Combine(workingDirectory, fileBaseToWrite + ".xml"));
 
-                completeJob.Jobs.Add(new RunnableJobs.APSIMJob(apsimFileName, workingDirectory));
+                completeJob.Jobs.Add(new RunnableJobs.APSIMJob(apsimFileName, workingDirectory, ApsimExecutable));
                 completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
                 completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
 

@@ -111,11 +111,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     if (simulationNode != null)
                     {
                         string simulationName = XmlUtilities.NameAttr(simulationNode);
-                        string[] outFileTypes = Directory.GetFiles(workingFolder, simulationName + "*.out");
+                        string[] outFileTypes = Directory.GetFiles(workingFolder, simulationName + "*.out"); 
+                        if (outFileTypes.Length == 0)
+                            outFileTypes = Directory.GetFiles(workingFolder, simulationName + "*.csv");
                         foreach (string outputfileName in outFileTypes)
                         {
                             string outputFileType = Path.GetFileNameWithoutExtension(outputfileName.Replace(simulationName, ""));
-                            string wildcard = "*" + outputFileType + ".out";
+                            string wildcard = "*" + outputFileType + Path.GetExtension(outputfileName);
                             string[] outFiles = Directory.GetFiles(workingFolder, wildcard);
                             string fileNameToWrite = Path.GetFileNameWithoutExtension(apsimFileName1) + outputFileType + ".csv";
                             ConcatenateOutputFiles(outFiles, fileNameToWrite, outputFileType);
