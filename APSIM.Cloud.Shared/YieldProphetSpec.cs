@@ -83,6 +83,22 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the temperature source name that appears on Crop Report</summary>
         public string TemperatureSource { get; set; }
 
+        /// <summary>Type of APSIM run to create.</summary>
+        public enum RunTypeEnum
+        {
+            /// <summary>Run just this season.</summary>
+            SingleSeason,
+
+            /// <summary>Run a longterm simulation.</summary>
+            LongTerm,
+
+            /// <summary>Run a longterm simulation, patched with data from this year.</summary>
+            LongTermPatched
+        }
+
+        /// <summary>Type of run to perform.</summary>
+        public RunTypeEnum RunType { get; set; }
+
         /// <summary>Gets or sets the stubble mass (kg/ha).</summary>
         public double StubbleMass { get; set; }
 

@@ -11,6 +11,7 @@ namespace APSIM.Cloud.Shared
     using System.Net;
     using System.Collections.Generic;
     using APSIM.Shared.Utilities;
+    using System.Xml.Serialization;
 
 
     /// <summary>
@@ -27,10 +28,16 @@ namespace APSIM.Cloud.Shared
         private List<string> weatherfilesWritten = new List<string>();
 
         /// <summary>Gets the names of all files created.</summary>
+        [XmlIgnore]
         public string[] FilesCreated { get; private set; }
 
         /// <summary>Gets the last SILO date found. Returns DateTime.MinValue if no data.</summary>
+        [XmlIgnore]
         public DateTime LastSILODateFound { get; private set; }
+
+        /// <summary>Gets the first SILO date found. Returns DateTime.MinValue if no data.</summary>
+        [XmlIgnore]
+        public DateTime FirstSILODateFound { get; private set; }
 
         /// <summary>
         /// Create a met file that is the same std layout as the apsim std silo files
@@ -57,12 +64,18 @@ namespace APSIM.Cloud.Shared
                 {
                     DataTable weatherData = inputFile.ToTable();
                     if (weatherData.Rows.Count == 0)
+                    {
+                        FirstSILODateFound = DateTime.MinValue;
                         LastSILODateFound = DateTime.MinValue;
+                    }
                     else
+                    {
+                        FirstSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[0]);
                         LastSILODateFound = DataTableUtilities.GetDateFromRow(weatherData.Rows[weatherData.Rows.Count - 1]);
+                    }
 
                     // Add a codes column to weatherdata
-                    AddCodesColumn(weatherData, 'S');
+                    AddCodesColumn(weatherData, '-');
 
                     if (observedData != null)
                     {

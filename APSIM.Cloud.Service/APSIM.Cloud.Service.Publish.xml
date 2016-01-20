@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="ftp://bob.apsim.info/APSIM.Cloud.Service" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FTP" replaceMatchingFiles="False" userName="bob" savePWD="False" userPWD="" SelectedForPublish="True">
+    <file relUrl="bin/APSIM.Shared.dll" publishTime="07/21/2015 09:31:58" />
+    <file relUrl="bin/ICSharpCode.SharpZipLib.dll" publishTime="02/03/2015 16:13:54" />
+    <file relUrl="bin/APSIM.Cloud.Service.dll" publishTime="07/21/2015 09:37:08" />
+    <file relUrl="bin/APSIM.Cloud.Service.pdb" publishTime="07/21/2015 09:37:08" />
+    <file relUrl="Web.config" publishTime="07/21/2015 09:33:55" />
+    <file relUrl="Jobs.svc" publishTime="06/30/2015 09:09:37" />
+    <file relUrl="bin/APSIM.Shared.xml" publishTime="07/21/2015 09:31:58" />
+    <file relUrl="bin/APSIM.Cloud.Shared.dll" publishTime="07/21/2015 09:31:59" />
+    <file relUrl="bin/APSIM.Cloud.Shared.pdb" publishTime="07/21/2015 09:31:59" />
+    <file relUrl="bin/APSIM.Cloud.Shared.XmlSerializers.dll" publishTime="07/21/2015 09:31:59" />
+    <file relUrl="bin/APSIM.Shared.pdb" publishTime="07/21/2015 09:31:58" />
+  </publishProfile>
+</publishData>

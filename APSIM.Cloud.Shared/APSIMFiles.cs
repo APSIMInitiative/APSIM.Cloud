@@ -56,7 +56,7 @@ namespace APSIM.Cloud.Shared
                 string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
                 WeatherFile weatherData = new WeatherFile();
-                if (simulation.EndDate > simulation.NowDate)
+                if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTermPatched)
                 {
                     // long term.
                     // Create a long term weather file.
@@ -64,7 +64,14 @@ namespace APSIM.Cloud.Shared
                                                 simulation.StartDate, simulation.EndDate, simulation.NowDate,
                                                 simulation.ObservedData, 30);
                 }
-                else
+                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTerm)
+                {
+                    weatherData.CreateSimplePeriod(rainFileName, simulation.StationNumber,
+                                                   new DateTime(1980, 1, 1), DateTime.Now, null);  // ~30 years
+                    simulation.StartDate = weatherData.FirstSILODateFound;
+                    simulation.EndDate = weatherData.LastSILODateFound;
+                }
+                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason)
                 {
                     // short term.
                     // Create a short term weather file.

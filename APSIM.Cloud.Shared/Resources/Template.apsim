@@ -30,170 +30,170 @@
           <ASWProtein type="text" description="ASW Protein (%):">0</ASWProtein>
         </ui>
         <text>
-using System;
-using System.IO;
-using System.Xml;
-using ModelFramework;
-using CSGeneral;
-using ApsimFile;
+          using System;
+          using System.IO;
+          using System.Xml;
+          using ModelFramework;
+          using CSGeneral;
+          using ApsimFile;
 
-public class Script 
-{      
-   private double AvProbeTempValue = 0;
-   private double CumulativeProbeRainSinceStartSeasonValue = 0;
-   private bool ProbeRainHasStarted = false;
-   private int NumConsecWaterLoggedDays = 0;
-   private Soil Soil;
-   private double[] ProbeThicknesses = null;
-   private double organic_C_start = 0;
-   private double fasw;
-   private double dsli;
-   
-   [Link] Paddock Paddock; 
-   [Link] Fertiliser Fertiliser;
-   [Link] MetFile Met;
+          public class Script
+          {
+          private double AvProbeTempValue = 0;
+          private double CumulativeProbeRainSinceStartSeasonValue = 0;
+          private bool ProbeRainHasStarted = false;
+          private int NumConsecWaterLoggedDays = 0;
+          private Soil Soil;
+          private double[] ProbeThicknesses = null;
+          private double organic_C_start = 0;
+          private double dsli;
 
-   [Input] string title;
-   [Input] DateTime Today;   
-   [Input(IsOptional=true)] double node_no;        // Sorghum doesn't have a node_no hence optional.
-   [Input(IsOptional=true)] double zadok_stage;    // Optional because canola doesn't have this variable.
-   [Input] int DaysAfterSowing;  
-   [Input] double runoff;
-   [Input] double drain;
-   [Input] double[] dlayer;
-   [Input] double[] sw_dep;
-   [Input] double[] sw;   
-   [Input] double[] ll_dep;
-   [Input] double[] ll15_dep;
-   [Input] double[] air_dry;
-   [Input(IsOptional=true)] double[] xf;           // Sorghum doesn't have this as an output hence optional
-   [Input] double[] dul;
-   [Input] double[] sat;
-   [Input] double[] dul_dep;
-   [Input] double[] sat_dep;
-   [Input] double[] dlt_n_min_tot;
-   [Input] double[] no3;
-   [Input] double[] nh4;
-   [Input] double[] biom_c;
-   [Input] double[] hum_c;
-   [Input(IsOptional=true)] double[] no3_uptake;    // Sorghum doesn't have this
-   [Input] double maxt;
-   [Input] double mint;
-   [Input(IsOptional=true)] double origmaxt = -999; // Short term met file doesn't have this.
-   [Input(IsOptional=true)] double origmint = -999; // Short term met file doesn't have this.
-   [Input] double rain;
-   [Input] double biomass_n;
-   [Input] double RootGreenN;
-   [Input] double fertiliser;
-   [Input] double irrig_tot;
-   [Input(IsOptional=true)] double unpatched_rain;
-   [Input(IsOptional=true)] double Yield;
-   [Input(IsOptional=true)] double grain_protein;
-   [Input(IsOptional=true)] double Biomass;
-   [Input(IsOptional=true)] double root_depth;
-   [Input(IsOptional=true)] double podGreenWt;
-   [Input] double[] ave_soil_temp = null;
-   [Input(IsOptional=true)] double ttafterstart_grain_fill = 0;   // peanut variable
-   [Input(IsOptional=true)] double start_grain_fillTTTarget = 0;  // peanut variable
-   [Input(IsOptional=true)] double cover_tot = 0;                 // peanut variable
-   [Input(IsOptional=true)] double EP = 0;                        // peanut variable
-   [Input(IsOptional=true)] double Stage = 0;                     // peanut variable
-   [Input] double[] WeeklyEP;                                     // tracker variable
-   
-   
-   [Param(IsOptional=true)] DateTime DateReportWasGenerated;
-   [Param] string CropName;
-   [Param] bool NUnlimited;
-   [Param] bool NUnlimitedFromToday;
-   [Param] bool WriteDepthFile;
-   [Param] bool DryNext10Days;
-   
-   [Param] double FertiliserCost;
-   [Param] double FertiliserApplicationCost;
-   [Param] double WaterCost;
-   [Param] double APH1Price;
-   [Param] double APH2Price;
-   [Param] double H2Price;
-   [Param] double APWPrice;
-   [Param] double ASWPrice;
-   [Param] double APH1Protein;
-   [Param] double APH2Protein;
-   [Param] double H2Protein;
-   [Param] double APWProtein;
-   [Param] double ASWProtein;
-      
-   [Output][Param(IsOptional=true)] double[] ProbeDepths = null;
-   [Output] double AvTemp;
-   [Output] string AvProbeTemp = "*";
-   [Output] double CumulativeRainSinceStartSeason = 0;
-   [Output] string CumulativeProbeRainSinceStartSeason = "*";
-   [Output] string ProbeMinT = "*";
-   [Output] string ProbeMaxT = "*";
-   [Output] string AustState;   
-   [Output] double Z;
-   [Output] int Zadok11Das;
-   [Output] int Zadok12Das;
-   [Output] int Zadok13Das;
-   [Output] int Zadok14Das;
-   [Output] int Zadok15Das;
-   [Output] int Zadok16Das;
-   [Output] int Zadok30Das;
-   [Output] int Zadok31Das;
-   [Output] int Zadok32Das;
-   [Output] int Zadok37Das;
-   [Output] int Zadok39Das;
-   [Output] int Zadok45Das;
-   [Output] int Zadok55Das;
-   [Output] int Zadok65Das;
-   [Output] int Zadok75Das;
-   [Output] int MildHeatShockCount = 0;
-   [Output] int ModerateHeatShockCount = 0;
-   [Output] int SevereHeatShockCount = 0;
-   [Output] int MildFrostCount = 0;
-   [Output] int ModerateFrostCount = 0;
-   [Output] int SevereFrostCount = 0;   
-   [Output] double[] VirtualProbeSW = null;
-   [Output] double Zero { get { return 0.0; } }
-   [Output] DateTime SowDate;
-   [Output] double BankBalance = 0;
-   [Output] double aflo_perc;     // Peanut aflatoxin risk (%)
-   [Output] double watersupply;
-   [Output] double TAW;
-   [Output] double FCW;
-   [Output] double RAW;
-   [Output] double NextIrrig;
-   [Output] double WetYield
-   {
-      get
-      {
-         double MoistureContent = 12;
-         if (CropName == "Canola")   
-            MoistureContent = 8;
-         return Yield / (1 - MoistureContent / 100.0) / 1000;
-      }
-   }
-   [Output] double PeanutPodYield
-   {
-      get
-      {
-         return podGreenWt * 10.0 + Yield; // Calculate peanut pod yield at 12% moisture
-      }
-   } 
-   [Output] double PercentCover
-   {
-      get
-      {
-         return cover_tot * 100.0;
-      }
-   }    
-   [Output] double HayBiomass
-   {
-      get 
-      {
-         // Calculate hay biomass and convert kg / ha to t/ha - assume 13 % moisture
-         double CropBiomass = (Biomass / (1.0 - 13 / 100.0) / 1000);
-         double HayBiomassPercent;
-         if (Biomass &gt;= 2000 &amp;&amp; Biomass &lt;= 12000)
+          [Link] Paddock Paddock;
+          [Link] Fertiliser Fertiliser;
+          [Link] MetFile Met;
+
+          [Input] string title;
+          [Input] DateTime Today;
+          [Input(IsOptional=true)] double node_no;        // Sorghum doesn't have a node_no hence optional.
+          [Input(IsOptional=true)] double zadok_stage;    // Optional because canola doesn't have this variable.
+          [Input] int DaysAfterSowing;
+          [Input] double runoff;
+          [Input] double drain;
+          [Input] double[] dlayer;
+          [Input] double[] sw_dep;
+          [Input] double[] sw;
+          [Input] double[] ll_dep;
+          [Input] double[] ll15_dep;
+          [Input] double[] air_dry;
+          [Input(IsOptional=true)] double[] xf;           // Sorghum doesn't have this as an output hence optional
+          [Input] double[] dul;
+          [Input] double[] sat;
+          [Input] double[] dul_dep;
+          [Input] double[] sat_dep;
+          [Input] double[] dlt_n_min_tot;
+          [Input] double[] no3;
+          [Input] double[] nh4;
+          [Input] double[] biom_c;
+          [Input] double[] hum_c;
+          [Input(IsOptional=true)] double[] no3_uptake;    // Sorghum doesn't have this
+          [Input] double maxt;
+          [Input] double mint;
+          [Input(IsOptional=true)] double origmaxt = -999; // Short term met file doesn't have this.
+          [Input(IsOptional=true)] double origmint = -999; // Short term met file doesn't have this.
+          [Input] double rain;
+          [Input] double biomass_n;
+          [Input] double RootGreenN;
+          [Input] double fertiliser;
+          [Input] double irrig_tot;
+          [Input(IsOptional=true)] double unpatched_rain;
+          [Input(IsOptional=true)] double Yield;
+          [Input(IsOptional=true)] double grain_protein;
+          [Input(IsOptional=true)] double Biomass;
+          [Input(IsOptional=true)] double root_depth;
+          [Input(IsOptional=true)] double podGreenWt;
+          [Input] double[] ave_soil_temp = null;
+          [Input(IsOptional=true)] double ttafterstart_grain_fill = 0;   // peanut variable
+          [Input(IsOptional=true)] double start_grain_fillTTTarget = 0;  // peanut variable
+          [Input(IsOptional=true)] double cover_tot = 0;                 // peanut variable
+          [Input(IsOptional=true)] double EP = 0;                        // peanut variable
+          [Input(IsOptional=true)] double Stage = 0;                     // peanut variable
+          [Input] double[] WeeklyEP;                                     // tracker variable
+
+
+          [Param(IsOptional=true)] DateTime DateReportWasGenerated;
+          [Param] string CropName;
+          [Param] bool NUnlimited;
+          [Param] bool NUnlimitedFromToday;
+          [Param] bool WriteDepthFile;
+          [Param] bool DryNext10Days;
+
+          [Param] double FertiliserCost;
+          [Param] double FertiliserApplicationCost;
+          [Param] double WaterCost;
+          [Param] double APH1Price;
+          [Param] double APH2Price;
+          [Param] double H2Price;
+          [Param] double APWPrice;
+          [Param] double ASWPrice;
+          [Param] double APH1Protein;
+          [Param] double APH2Protein;
+          [Param] double H2Protein;
+          [Param] double APWProtein;
+          [Param] double ASWProtein;
+
+          [Output][Param(IsOptional=true)] double[] ProbeDepths = null;
+          [Output] double AvTemp;
+          [Output] string AvProbeTemp = "*";
+          [Output] double CumulativeRainSinceStartSeason = 0;
+          [Output] string CumulativeProbeRainSinceStartSeason = "*";
+          [Output] string ProbeMinT = "*";
+          [Output] string ProbeMaxT = "*";
+          [Output] string AustState;
+          [Output] double Z;
+          [Output] int Zadok11Das;
+          [Output] int Zadok12Das;
+          [Output] int Zadok13Das;
+          [Output] int Zadok14Das;
+          [Output] int Zadok15Das;
+          [Output] int Zadok16Das;
+          [Output] int Zadok30Das;
+          [Output] int Zadok31Das;
+          [Output] int Zadok32Das;
+          [Output] int Zadok37Das;
+          [Output] int Zadok39Das;
+          [Output] int Zadok45Das;
+          [Output] int Zadok55Das;
+          [Output] int Zadok65Das;
+          [Output] int Zadok75Das;
+          [Output] int MildHeatShockCount = 0;
+          [Output] int ModerateHeatShockCount = 0;
+          [Output] int SevereHeatShockCount = 0;
+          [Output] int MildFrostCount = 0;
+          [Output] int ModerateFrostCount = 0;
+          [Output] int SevereFrostCount = 0;
+          [Output] double[] VirtualProbeSW = null;
+          [Output] double Zero { get { return 0.0; } }
+          [Output] DateTime SowDate;
+          [Output] double BankBalance = 0;
+          [Output] double aflo_perc;     // Peanut aflatoxin risk (%)
+          [Output] double watersupply;
+          [Output] double fasw = 0;
+          [Output] double TAW;
+          [Output] double FCW;
+          [Output] double RAW;
+          [Output] double NextIrrig;
+          [Output] double WetYield
+          {
+          get
+          {
+          double MoistureContent = 12;
+          if (CropName == "Canola")
+          MoistureContent = 8;
+          return Yield / (1 - MoistureContent / 100.0) / 1000;
+          }
+          }
+          [Output] double PeanutPodYield
+          {
+          get
+          {
+          return podGreenWt * 10.0 + Yield; // Calculate peanut pod yield at 12% moisture
+          }
+          }
+          [Output] double PercentCover
+          {
+          get
+          {
+          return cover_tot * 100.0;
+          }
+          }
+          [Output] double HayBiomass
+          {
+          get
+          {
+          // Calculate hay biomass and convert kg / ha to t/ha - assume 13 % moisture
+          double CropBiomass = (Biomass / (1.0 - 13 / 100.0) / 1000);
+          double HayBiomassPercent;
+          if (Biomass &gt;= 2000 &amp;&amp; Biomass &lt;= 12000)
             HayBiomassPercent = 70.0 + (Biomass - 2000) / (12000 - 2000) * 5;
          else if (Biomass &gt; 12000)
             HayBiomassPercent = 75 + (Biomass - 12000) / (25000 - 12000) * 5;
@@ -987,6 +987,7 @@ public class Script
           <variable>PreSowingFertiliser</variable>
           <variable>SowingFertiliser</variable>
           <variable>TopDressFertiliser</variable>
+          <variable>PeanutPodYield</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>
