@@ -141,12 +141,12 @@ namespace APSIM.Cloud.Shared.AusFarm
             new SowingInfo("Western MRZ",  "oats", "wintaroo", "1-apr", "15-may", 150.0, 30.0, 250.0),
             new SowingInfo("Western HRZ",  "oats", "wintaroo", "1-apr", "15-may", 200.0, 30.0, 250.0),
 
-            new SowingInfo("Southern LRZ", "oatshay", "algerian", "1-apr",  "15-may", 150.0, 30.0, 250.0), 
-            new SowingInfo("Southern MRZ", "oatshay", "algerian", "1-apr",  "15-may", 180.0, 30.0, 250.0),
-            new SowingInfo("Southern HRZ", "oatshay", "algerian", "1-apr",  "15-may", 180.0, 30.0, 250.0), 
-            new SowingInfo("Western LRZ",  "oatshay", "algerian", "15-apr", "10-jun", 150.0, 30.0, 250.0), 
-            new SowingInfo("Western MRZ",  "oatshay", "algerian", "15-apr", "10-jun", 150.0, 30.0, 250.0),
-            new SowingInfo("Western HRZ",  "oatshay", "algerian", "15-apr", "10-jun", 200.0, 30.0, 250.0),
+            new SowingInfo("Southern LRZ", "oatshay", "wintaroo", "1-apr",  "15-may", 150.0, 30.0, 250.0), 
+            new SowingInfo("Southern MRZ", "oatshay", "wintaroo", "1-apr",  "15-may", 180.0, 30.0, 250.0),
+            new SowingInfo("Southern HRZ", "oatshay", "wintaroo", "1-apr",  "15-may", 180.0, 30.0, 250.0), 
+            new SowingInfo("Western LRZ",  "oatshay", "wintaroo", "15-apr", "10-jun", 150.0, 30.0, 250.0), 
+            new SowingInfo("Western MRZ",  "oatshay", "wintaroo", "15-apr", "10-jun", 150.0, 30.0, 250.0),
+            new SowingInfo("Western HRZ",  "oatshay", "wintaroo", "15-apr", "10-jun", 200.0, 30.0, 250.0),
 
             new SowingInfo("All", "chickpea", "amethyst", "15-apr", "30-may", 35.0, 30.0, 600.0), 
 
