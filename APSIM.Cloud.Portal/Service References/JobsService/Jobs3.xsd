@@ -14,41 +14,41 @@
       <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="EC" nillable="true" type="q2:ArrayOfdouble" />
       <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ESP" nillable="true" type="q3:ArrayOfdouble" />
       <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NH4" nillable="true" type="q4:ArrayOfdouble" />
-      <xs:element minOccurs="0" name="NH4Units" type="tns:Sample.NUnitsEnum" />
+      <xs:element minOccurs="0" name="NH4Units" type="tns:Nitrogen.NUnitsEnum" />
       <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NO3" nillable="true" type="q5:ArrayOfdouble" />
-      <xs:element minOccurs="0" name="NO3Units" type="tns:Sample.NUnitsEnum" />
+      <xs:element minOccurs="0" name="NO3Units" type="tns:Nitrogen.NUnitsEnum" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OC" nillable="true" type="q6:ArrayOfdouble" />
-      <xs:element minOccurs="0" name="OCUnits" type="tns:Sample.OCSampleUnitsEnum" />
+      <xs:element minOccurs="0" name="OCUnits" type="tns:SoilOrganicMatter.OCUnitsEnum" />
       <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="PH" nillable="true" type="q7:ArrayOfdouble" />
-      <xs:element minOccurs="0" name="PHUnits" type="tns:Sample.PHSampleUnitsEnum" />
+      <xs:element minOccurs="0" name="PHUnits" type="tns:Analysis.PHUnitsEnum" />
       <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SW" nillable="true" type="q8:ArrayOfdouble" />
       <xs:element minOccurs="0" name="SWUnits" type="tns:Sample.SWUnitsEnum" />
       <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q9:ArrayOfdouble" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Sample" nillable="true" type="tns:Sample" />
-  <xs:simpleType name="Sample.NUnitsEnum">
+  <xs:simpleType name="Nitrogen.NUnitsEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="ppm" />
       <xs:enumeration value="kgha" />
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="Sample.NUnitsEnum" nillable="true" type="tns:Sample.NUnitsEnum" />
-  <xs:simpleType name="Sample.OCSampleUnitsEnum">
+  <xs:element name="Nitrogen.NUnitsEnum" nillable="true" type="tns:Nitrogen.NUnitsEnum" />
+  <xs:simpleType name="SoilOrganicMatter.OCUnitsEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Total" />
       <xs:enumeration value="WalkleyBlack" />
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="Sample.OCSampleUnitsEnum" nillable="true" type="tns:Sample.OCSampleUnitsEnum" />
-  <xs:simpleType name="Sample.PHSampleUnitsEnum">
+  <xs:element name="SoilOrganicMatter.OCUnitsEnum" nillable="true" type="tns:SoilOrganicMatter.OCUnitsEnum" />
+  <xs:simpleType name="Analysis.PHUnitsEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Water" />
       <xs:enumeration value="CaCl2" />
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="Sample.PHSampleUnitsEnum" nillable="true" type="tns:Sample.PHSampleUnitsEnum" />
+  <xs:element name="Analysis.PHUnitsEnum" nillable="true" type="tns:Analysis.PHUnitsEnum" />
   <xs:simpleType name="Sample.SWUnitsEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Volumetric" />
@@ -68,20 +68,26 @@
       <xs:element minOccurs="0" name="DataSource" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="InitialWater" nillable="true" type="tns:InitialWater" />
       <xs:element minOccurs="0" name="Latitude" type="xs:double" />
+      <xs:element minOccurs="0" name="LayerStructure" nillable="true" type="tns:LayerStructure" />
       <xs:element minOccurs="0" name="LocalName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LocationAccuracy" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Longitude" type="xs:double" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NaturalVegetation" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="NearestTown" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nitrogen" nillable="true" type="tns:Nitrogen" />
+      <xs:element minOccurs="0" name="Phosphorus" nillable="true" type="tns:Phosphorus" />
       <xs:element minOccurs="0" name="RecordNumber" type="xs:int" />
       <xs:element minOccurs="0" name="Region" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Samples" nillable="true" type="tns:ArrayOfSample" />
       <xs:element minOccurs="0" name="Site" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SoilOrganicMatter" nillable="true" type="tns:SoilOrganicMatter" />
+      <xs:element minOccurs="0" name="SoilTemperature" nillable="true" type="tns:SoilTemperature" />
+      <xs:element minOccurs="0" name="SoilTemperature2" nillable="true" type="tns:SoilTemperature2" />
       <xs:element minOccurs="0" name="SoilType" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SoilWater" nillable="true" type="tns:SoilWater" />
       <xs:element minOccurs="0" name="State" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Swim" nillable="true" type="tns:Swim" />
       <xs:element minOccurs="0" name="Water" nillable="true" type="tns:Water" />
       <xs:element minOccurs="0" name="YearOfSampling" type="xs:int" />
     </xs:sequence>
@@ -138,13 +144,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="Analysis.BoronUnitsEnum" nillable="true" type="tns:Analysis.BoronUnitsEnum" />
-  <xs:simpleType name="Analysis.PHUnitsEnum">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Water" />
-      <xs:enumeration value="CaCl2" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="Analysis.PHUnitsEnum" nillable="true" type="tns:Analysis.PHUnitsEnum" />
   <xs:complexType name="InitialWater">
     <xs:sequence>
       <xs:element minOccurs="0" name="DepthWetSoil" type="xs:double" />
@@ -162,29 +161,76 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="InitialWater.PercentMethodEnum" nillable="true" type="tns:InitialWater.PercentMethodEnum" />
+  <xs:complexType name="LayerStructure">
+    <xs:sequence>
+      <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q47:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LayerStructure" nillable="true" type="tns:LayerStructure" />
+  <xs:complexType name="Nitrogen">
+    <xs:sequence>
+      <xs:element xmlns:q48="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NH4" nillable="true" type="q48:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="NH4Units" type="tns:Nitrogen.NUnitsEnum" />
+      <xs:element xmlns:q49="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NO3" nillable="true" type="q49:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="NO3Units" type="tns:Nitrogen.NUnitsEnum" />
+      <xs:element xmlns:q50="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q50:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Nitrogen" nillable="true" type="tns:Nitrogen" />
+  <xs:complexType name="Phosphorus">
+    <xs:sequence>
+      <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BandedP" nillable="true" type="q51:ArrayOfdouble" />
+      <xs:element xmlns:q52="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LabileP" nillable="true" type="q52:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RateDissolRock" type="xs:double" />
+      <xs:element minOccurs="0" name="RateLossAvail" type="xs:double" />
+      <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="RockP" nillable="true" type="q53:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="RootCP" type="xs:double" />
+      <xs:element xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Sorption" nillable="true" type="q54:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="SorptionCoeff" type="xs:double" />
+      <xs:element xmlns:q55="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q55:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Phosphorus" nillable="true" type="tns:Phosphorus" />
   <xs:complexType name="SoilOrganicMatter">
     <xs:sequence>
       <xs:element minOccurs="0" name="EnrACoeff" type="xs:double" />
       <xs:element minOccurs="0" name="EnrBCoeff" type="xs:double" />
-      <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FBiom" nillable="true" type="q47:ArrayOfdouble" />
-      <xs:element xmlns:q48="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FInert" nillable="true" type="q48:ArrayOfdouble" />
-      <xs:element xmlns:q49="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OC" nillable="true" type="q49:ArrayOfdouble" />
-      <xs:element xmlns:q50="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OCMetadata" nillable="true" type="q50:ArrayOfstring" />
+      <xs:element xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FBiom" nillable="true" type="q56:ArrayOfdouble" />
+      <xs:element xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FInert" nillable="true" type="q57:ArrayOfdouble" />
+      <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OC" nillable="true" type="q58:ArrayOfdouble" />
+      <xs:element xmlns:q59="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OCMetadata" nillable="true" type="q59:ArrayOfstring" />
       <xs:element minOccurs="0" name="OCUnits" type="tns:SoilOrganicMatter.OCUnitsEnum" />
       <xs:element minOccurs="0" name="RootCN" type="xs:double" />
       <xs:element minOccurs="0" name="RootWt" type="xs:double" />
       <xs:element minOccurs="0" name="SoilCN" type="xs:double" />
-      <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q51:ArrayOfdouble" />
+      <xs:element xmlns:q60="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q60:ArrayOfdouble" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SoilOrganicMatter" nillable="true" type="tns:SoilOrganicMatter" />
-  <xs:simpleType name="SoilOrganicMatter.OCUnitsEnum">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Total" />
-      <xs:enumeration value="WalkleyBlack" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="SoilOrganicMatter.OCUnitsEnum" nillable="true" type="tns:SoilOrganicMatter.OCUnitsEnum" />
+  <xs:complexType name="SoilTemperature">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BoundaryLayerConductance" type="xs:double" />
+      <xs:element xmlns:q61="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="InitialSoilTemperature" nillable="true" type="q61:ArrayOfdouble" />
+      <xs:element xmlns:q62="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q62:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilTemperature" nillable="true" type="tns:SoilTemperature" />
+  <xs:complexType name="SoilTemperature2">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BareSoilHeight" type="xs:double" />
+      <xs:element minOccurs="0" name="BoundaryLayerConductance" type="xs:double" />
+      <xs:element minOccurs="0" name="BoundaryLayerConductanceIterations" type="xs:int" />
+      <xs:element minOccurs="0" name="BoundaryLayerConductanceSource" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DefaultAltitude" type="xs:double" />
+      <xs:element minOccurs="0" name="DefaultInstrumentHeight" type="xs:double" />
+      <xs:element minOccurs="0" name="DefaultWindSpeed" type="xs:double" />
+      <xs:element minOccurs="0" name="MaxTTimeDefault" type="xs:double" />
+      <xs:element minOccurs="0" name="NetRadiationSource" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Note" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilTemperature2" nillable="true" type="tns:SoilTemperature2" />
   <xs:complexType name="SoilWater">
     <xs:sequence>
       <xs:element minOccurs="0" name="CN2Bare" type="xs:double" />
@@ -194,38 +240,114 @@
       <xs:element minOccurs="0" name="DiffusConst" type="xs:double" />
       <xs:element minOccurs="0" name="DiffusSlope" type="xs:double" />
       <xs:element minOccurs="0" name="DischargeWidth" type="xs:double" />
-      <xs:element xmlns:q52="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KLAT" nillable="true" type="q52:ArrayOfdouble" />
-      <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="MWCON" nillable="true" type="q53:ArrayOfdouble" />
+      <xs:element xmlns:q63="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KLAT" nillable="true" type="q63:ArrayOfdouble" />
+      <xs:element xmlns:q64="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="MWCON" nillable="true" type="q64:ArrayOfdouble" />
       <xs:element minOccurs="0" name="MaxPond" type="xs:double" />
-      <xs:element xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SWCON" nillable="true" type="q54:ArrayOfdouble" />
+      <xs:element xmlns:q65="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SWCON" nillable="true" type="q65:ArrayOfdouble" />
       <xs:element minOccurs="0" name="Salb" type="xs:double" />
       <xs:element minOccurs="0" name="Slope" type="xs:double" />
       <xs:element minOccurs="0" name="SummerCona" type="xs:double" />
       <xs:element minOccurs="0" name="SummerDate" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="SummerU" type="xs:double" />
-      <xs:element xmlns:q55="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q55:ArrayOfdouble" />
+      <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q66:ArrayOfdouble" />
       <xs:element minOccurs="0" name="WinterCona" type="xs:double" />
       <xs:element minOccurs="0" name="WinterDate" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="WinterU" type="xs:double" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SoilWater" nillable="true" type="tns:SoilWater" />
+  <xs:complexType name="Swim">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CN2Bare" type="xs:double" />
+      <xs:element minOccurs="0" name="CNCov" type="xs:double" />
+      <xs:element minOccurs="0" name="CNRed" type="xs:double" />
+      <xs:element minOccurs="0" name="DTmax" type="xs:double" />
+      <xs:element minOccurs="0" name="DTmin" type="xs:double" />
+      <xs:element minOccurs="0" name="Diagnostics" type="xs:boolean" />
+      <xs:element minOccurs="0" name="KDul" type="xs:double" />
+      <xs:element minOccurs="0" name="MaxWaterIncrement" type="xs:double" />
+      <xs:element minOccurs="0" name="PSIDul" type="xs:double" />
+      <xs:element minOccurs="0" name="Salb" type="xs:double" />
+      <xs:element minOccurs="0" name="SoluteSpaceWeightingFactor" type="xs:double" />
+      <xs:element minOccurs="0" name="SpaceWeightingFactor" type="xs:double" />
+      <xs:element minOccurs="0" name="SwimSoluteParameters" nillable="true" type="tns:SwimSoluteParameters" />
+      <xs:element minOccurs="0" name="SwimSubsurfaceDrain" nillable="true" type="tns:SwimSubsurfaceDrain" />
+      <xs:element minOccurs="0" name="SwimWaterTable" nillable="true" type="tns:SwimWaterTable" />
+      <xs:element minOccurs="0" name="VC" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Swim" nillable="true" type="tns:Swim" />
+  <xs:complexType name="SwimSoluteParameters">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="A" type="xs:double" />
+      <xs:element xmlns:q67="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ClExco" nillable="true" type="q67:ArrayOfdouble" />
+      <xs:element xmlns:q68="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ClFIP" nillable="true" type="q68:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="DTHC" type="xs:double" />
+      <xs:element minOccurs="0" name="DTHP" type="xs:double" />
+      <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DenitrificationInhibitorExco" nillable="true" type="q69:ArrayOfdouble" />
+      <xs:element xmlns:q70="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DenitrificationInhibitorFIP" nillable="true" type="q70:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="Dis" type="xs:double" />
+      <xs:element minOccurs="0" name="Disp" type="xs:double" />
+      <xs:element xmlns:q71="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="MineralisationInhibitorExco" nillable="true" type="q71:ArrayOfdouble" />
+      <xs:element xmlns:q72="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="MineralisationInhibitorFIP" nillable="true" type="q72:ArrayOfdouble" />
+      <xs:element xmlns:q73="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NH4Exco" nillable="true" type="q73:ArrayOfdouble" />
+      <xs:element xmlns:q74="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NH4FIP" nillable="true" type="q74:ArrayOfdouble" />
+      <xs:element xmlns:q75="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NO3Exco" nillable="true" type="q75:ArrayOfdouble" />
+      <xs:element xmlns:q76="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NO3FIP" nillable="true" type="q76:ArrayOfdouble" />
+      <xs:element xmlns:q77="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NitrificationInhibitorExco" nillable="true" type="q77:ArrayOfdouble" />
+      <xs:element xmlns:q78="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="NitrificationInhibitorFIP" nillable="true" type="q78:ArrayOfdouble" />
+      <xs:element xmlns:q79="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q79:ArrayOfdouble" />
+      <xs:element xmlns:q80="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="TracerExco" nillable="true" type="q80:ArrayOfdouble" />
+      <xs:element xmlns:q81="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="TracerFIP" nillable="true" type="q81:ArrayOfdouble" />
+      <xs:element xmlns:q82="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="UreaExco" nillable="true" type="q82:ArrayOfdouble" />
+      <xs:element xmlns:q83="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="UreaFIP" nillable="true" type="q83:ArrayOfdouble" />
+      <xs:element xmlns:q84="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="UreaseInhibitorExco" nillable="true" type="q84:ArrayOfdouble" />
+      <xs:element xmlns:q85="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="UreaseInhibitorFIP" nillable="true" type="q85:ArrayOfdouble" />
+      <xs:element minOccurs="0" name="WaterTableCl" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableDenitrificationInhibitor" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableMineralisationInhibitor" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableNH4" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableNO3" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableNitrificationInhibitor" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableTracer" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableUrea" type="xs:double" />
+      <xs:element minOccurs="0" name="WaterTableUreaseInhibitor" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SwimSoluteParameters" nillable="true" type="tns:SwimSoluteParameters" />
+  <xs:complexType name="SwimSubsurfaceDrain">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DrainDepth" type="xs:double" />
+      <xs:element minOccurs="0" name="DrainRadius" type="xs:double" />
+      <xs:element minOccurs="0" name="DrainSpacing" type="xs:double" />
+      <xs:element minOccurs="0" name="ImpermDepth" type="xs:double" />
+      <xs:element minOccurs="0" name="Klat" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SwimSubsurfaceDrain" nillable="true" type="tns:SwimSubsurfaceDrain" />
+  <xs:complexType name="SwimWaterTable">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="WaterTableDepth" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SwimWaterTable" nillable="true" type="tns:SwimWaterTable" />
   <xs:complexType name="Water">
     <xs:sequence>
-      <xs:element xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="AirDry" nillable="true" type="q56:ArrayOfdouble" />
-      <xs:element xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="AirDryMetadata" nillable="true" type="q57:ArrayOfstring" />
-      <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BD" nillable="true" type="q58:ArrayOfdouble" />
-      <xs:element xmlns:q59="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BDMetadata" nillable="true" type="q59:ArrayOfstring" />
+      <xs:element xmlns:q86="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="AirDry" nillable="true" type="q86:ArrayOfdouble" />
+      <xs:element xmlns:q87="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="AirDryMetadata" nillable="true" type="q87:ArrayOfstring" />
+      <xs:element xmlns:q88="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BD" nillable="true" type="q88:ArrayOfdouble" />
+      <xs:element xmlns:q89="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="BDMetadata" nillable="true" type="q89:ArrayOfstring" />
       <xs:element minOccurs="0" name="Crops" nillable="true" type="tns:ArrayOfSoilCrop" />
-      <xs:element xmlns:q60="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DUL" nillable="true" type="q60:ArrayOfdouble" />
-      <xs:element xmlns:q61="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DULMetadata" nillable="true" type="q61:ArrayOfstring" />
-      <xs:element xmlns:q62="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KS" nillable="true" type="q62:ArrayOfdouble" />
-      <xs:element xmlns:q63="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KSMetadata" nillable="true" type="q63:ArrayOfstring" />
-      <xs:element xmlns:q64="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LL15" nillable="true" type="q64:ArrayOfdouble" />
-      <xs:element xmlns:q65="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LL15Metadata" nillable="true" type="q65:ArrayOfstring" />
-      <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SAT" nillable="true" type="q66:ArrayOfdouble" />
-      <xs:element xmlns:q67="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SATMetadata" nillable="true" type="q67:ArrayOfstring" />
-      <xs:element xmlns:q68="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q68:ArrayOfdouble" />
+      <xs:element xmlns:q90="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DUL" nillable="true" type="q90:ArrayOfdouble" />
+      <xs:element xmlns:q91="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="DULMetadata" nillable="true" type="q91:ArrayOfstring" />
+      <xs:element xmlns:q92="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KS" nillable="true" type="q92:ArrayOfdouble" />
+      <xs:element xmlns:q93="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KSMetadata" nillable="true" type="q93:ArrayOfstring" />
+      <xs:element xmlns:q94="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LL15" nillable="true" type="q94:ArrayOfdouble" />
+      <xs:element xmlns:q95="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LL15Metadata" nillable="true" type="q95:ArrayOfstring" />
+      <xs:element xmlns:q96="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SAT" nillable="true" type="q96:ArrayOfdouble" />
+      <xs:element xmlns:q97="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SATMetadata" nillable="true" type="q97:ArrayOfstring" />
+      <xs:element xmlns:q98="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="SW" nillable="true" type="q98:ArrayOfdouble" />
+      <xs:element xmlns:q99="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q99:ArrayOfdouble" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Water" nillable="true" type="tns:Water" />
@@ -237,14 +359,14 @@
   <xs:element name="ArrayOfSoilCrop" nillable="true" type="tns:ArrayOfSoilCrop" />
   <xs:complexType name="SoilCrop">
     <xs:sequence>
-      <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KL" nillable="true" type="q69:ArrayOfdouble" />
-      <xs:element xmlns:q70="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KLMetadata" nillable="true" type="q70:ArrayOfstring" />
-      <xs:element xmlns:q71="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LL" nillable="true" type="q71:ArrayOfdouble" />
-      <xs:element xmlns:q72="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LLMetadata" nillable="true" type="q72:ArrayOfstring" />
+      <xs:element xmlns:q100="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KL" nillable="true" type="q100:ArrayOfdouble" />
+      <xs:element xmlns:q101="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="KLMetadata" nillable="true" type="q101:ArrayOfstring" />
+      <xs:element xmlns:q102="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LL" nillable="true" type="q102:ArrayOfdouble" />
+      <xs:element xmlns:q103="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="LLMetadata" nillable="true" type="q103:ArrayOfstring" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
-      <xs:element xmlns:q73="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q73:ArrayOfdouble" />
-      <xs:element xmlns:q74="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="XF" nillable="true" type="q74:ArrayOfdouble" />
-      <xs:element xmlns:q75="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="XFMetadata" nillable="true" type="q75:ArrayOfstring" />
+      <xs:element xmlns:q104="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Thickness" nillable="true" type="q104:ArrayOfdouble" />
+      <xs:element xmlns:q105="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="XF" nillable="true" type="q105:ArrayOfdouble" />
+      <xs:element xmlns:q106="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="XFMetadata" nillable="true" type="q106:ArrayOfstring" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="SoilCrop" nillable="true" type="tns:SoilCrop" />

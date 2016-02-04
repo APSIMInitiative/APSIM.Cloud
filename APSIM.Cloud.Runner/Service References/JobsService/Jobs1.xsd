@@ -43,6 +43,7 @@
       </xs:element>
       <xs:element minOccurs="0" name="RainfallSinceSoilWaterSampleDate" type="xs:double" />
       <xs:element minOccurs="0" name="RainfallSource" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RunType" type="tns:Paddock.RunTypeEnum" />
       <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Samples" nillable="true" type="q1:ArrayOfSample" />
       <xs:element minOccurs="0" name="Slope" type="xs:double" />
       <xs:element minOccurs="0" name="SlopeLength" type="xs:double" />
@@ -73,59 +74,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Management" nillable="true" type="tns:Management" />
-  <xs:complexType name="Tillage">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Disturbance" type="tns:Tillage.DisturbanceEnum" />
-          <xs:element minOccurs="0" name="Scenario" type="xs:boolean" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="Tillage" nillable="true" type="tns:Tillage" />
-  <xs:simpleType name="Tillage.DisturbanceEnum">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Low" />
-      <xs:enumeration value="Medium" />
-      <xs:enumeration value="High" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="Tillage.DisturbanceEnum" nillable="true" type="tns:Tillage.DisturbanceEnum" />
-  <xs:complexType name="ResetWater">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="ResetWater" nillable="true" type="tns:ResetWater" />
-  <xs:complexType name="ResetNitrogen">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="ResetNitrogen" nillable="true" type="tns:ResetNitrogen" />
-  <xs:complexType name="ResetSurfaceOrganicMatter">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence />
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="ResetSurfaceOrganicMatter" nillable="true" type="tns:ResetSurfaceOrganicMatter" />
-  <xs:complexType name="StubbleRemoved">
-    <xs:complexContent mixed="false">
-      <xs:extension base="tns:Management">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="Percent" type="xs:double" />
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="StubbleRemoved" nillable="true" type="tns:StubbleRemoved" />
   <xs:complexType name="Sow">
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Management">
@@ -138,6 +86,7 @@
           <xs:element minOccurs="0" name="IrrigationAmount" type="xs:double" />
           <xs:element minOccurs="0" name="MaxRootDepth" type="xs:int" />
           <xs:element minOccurs="0" name="RowSpacing" type="xs:int" />
+          <xs:element minOccurs="0" name="SeedDepth" type="xs:int" />
           <xs:element minOccurs="0" name="SkipRow" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="SowingDensity" type="xs:int" />
         </xs:sequence>
@@ -168,6 +117,67 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="Irrigate" nillable="true" type="tns:Irrigate" />
+  <xs:complexType name="Tillage">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Disturbance" type="tns:Tillage.DisturbanceEnum" />
+          <xs:element minOccurs="0" name="Scenario" type="xs:boolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Tillage" nillable="true" type="tns:Tillage" />
+  <xs:simpleType name="Tillage.DisturbanceEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Low" />
+      <xs:enumeration value="Medium" />
+      <xs:enumeration value="High" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Tillage.DisturbanceEnum" nillable="true" type="tns:Tillage.DisturbanceEnum" />
+  <xs:complexType name="StubbleRemoved">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Percent" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StubbleRemoved" nillable="true" type="tns:StubbleRemoved" />
+  <xs:complexType name="ResetWater">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetWater" nillable="true" type="tns:ResetWater" />
+  <xs:complexType name="ResetNitrogen">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetNitrogen" nillable="true" type="tns:ResetNitrogen" />
+  <xs:complexType name="ResetSurfaceOrganicMatter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetSurfaceOrganicMatter" nillable="true" type="tns:ResetSurfaceOrganicMatter" />
+  <xs:simpleType name="Paddock.RunTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SingleSeason" />
+      <xs:enumeration value="LongTerm" />
+      <xs:enumeration value="LongTermPatched" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Paddock.RunTypeEnum" nillable="true" type="tns:Paddock.RunTypeEnum" />
   <xs:simpleType name="YieldProphet.ReportTypeEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="None" />
@@ -197,9 +207,8 @@
   <xs:complexType name="FarmSystem">
     <xs:sequence>
       <xs:element minOccurs="0" name="Area" type="xs:double" />
-      <xs:element minOccurs="0" name="DailyOutput" type="xs:boolean" />
+      <xs:element minOccurs="0" name="CroppingRegion" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="LiveStock" nillable="true" type="tns:FarmLivestock" />
-      <xs:element minOccurs="0" name="MonthlyOutput" type="xs:boolean" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="OnFarmPaddocks" nillable="true" type="tns:ArrayOfFarmPaddockType" />
       <xs:element minOccurs="0" name="OnFarmSoilTypes" nillable="true" type="tns:ArrayOfFarmSoilType" />
@@ -209,17 +218,12 @@
       <xs:element minOccurs="0" name="StartSeasonDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="StationName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="StationNumber" type="xs:int" />
-      <xs:element minOccurs="0" name="YearlyOutput" type="xs:boolean" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FarmSystem" nillable="true" type="tns:FarmSystem" />
   <xs:complexType name="FarmLivestock">
     <xs:sequence>
-      <xs:element minOccurs="0" name="BreedingEweCount" type="xs:int" />
-      <xs:element minOccurs="0" name="CastForAgeYears" type="xs:double" />
-      <xs:element minOccurs="0" name="EweJoinDay" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="LambSaleWt" type="xs:double" />
-      <xs:element minOccurs="0" name="LambingRate" type="xs:double" />
+      <xs:element minOccurs="0" name="Flocks" nillable="true" type="tns:ArrayOfFlockDescr" />
       <xs:element minOccurs="0" name="ShearingDay" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Supp1Propn" type="xs:double" />
       <xs:element minOccurs="0" name="Supp2Propn" type="xs:double" />
@@ -232,6 +236,38 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FarmLivestock" nillable="true" type="tns:FarmLivestock" />
+  <xs:complexType name="ArrayOfFlockDescr">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FlockDescr" nillable="true" type="tns:FlockDescr" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFlockDescr" nillable="true" type="tns:ArrayOfFlockDescr" />
+  <xs:complexType name="FlockDescr">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BreedParams" nillable="true" type="tns:BreedParameters" />
+      <xs:element minOccurs="0" name="BreedingEweCount" type="xs:int" />
+      <xs:element minOccurs="0" name="CastForAgeYears" type="xs:double" />
+      <xs:element minOccurs="0" name="Dam" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EweJoinDay" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LambSaleWt" type="xs:double" />
+      <xs:element minOccurs="0" name="SelfReplacing" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Sire" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FlockDescr" nillable="true" type="tns:FlockDescr" />
+  <xs:complexType name="BreedParameters">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ConceptSingle" type="xs:double" />
+      <xs:element minOccurs="0" name="ConceptTwin" type="xs:double" />
+      <xs:element minOccurs="0" name="FleeceYield" type="xs:double" />
+      <xs:element minOccurs="0" name="MaxFibre" type="xs:double" />
+      <xs:element minOccurs="0" name="PotFleece" type="xs:double" />
+      <xs:element minOccurs="0" name="SRW" type="xs:double" />
+      <xs:element minOccurs="0" name="UseParams" type="xs:boolean" />
+      <xs:element minOccurs="0" name="WeanerMortality" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BreedParameters" nillable="true" type="tns:BreedParameters" />
   <xs:complexType name="ArrayOfFarmPaddockType">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="FarmPaddockType" nillable="true" type="tns:FarmPaddockType" />
@@ -243,22 +279,18 @@
       <xs:element minOccurs="0" name="Area" type="xs:double" />
       <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Sample" nillable="true" type="q3:Sample" />
       <xs:element minOccurs="0" name="SoilNitrogenSampleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SoilType" nillable="true" type="tns:FarmSoilType" />
       <xs:element minOccurs="0" name="SoilWaterSampleDate" type="xs:dateTime" />
       <xs:element minOccurs="0" name="StubbleMass" type="xs:double" />
       <xs:element minOccurs="0" name="StubbleType" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="FarmPaddockType" nillable="true" type="tns:FarmPaddockType" />
-  <xs:complexType name="ArrayOfFarmSoilType">
-    <xs:sequence>
-      <xs:element minOccurs="0" maxOccurs="unbounded" name="FarmSoilType" nillable="true" type="tns:FarmSoilType" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="ArrayOfFarmSoilType" nillable="true" type="tns:ArrayOfFarmSoilType" />
   <xs:complexType name="FarmSoilType">
     <xs:sequence>
       <xs:element minOccurs="0" name="AreaProportion" type="xs:double" />
       <xs:element minOccurs="0" name="CropRotationList" nillable="true" type="tns:ArrayOfCropSpec" />
+      <xs:element minOccurs="0" name="SeasonFertiliser" type="xs:double" />
       <xs:element minOccurs="0" name="Slope" type="xs:double" />
       <xs:element minOccurs="0" name="SlopeLength" type="xs:double" />
       <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="SoilDescr" nillable="true" type="q4:Soil" />
@@ -279,15 +311,22 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element minOccurs="0" name="isCrop" type="xs:boolean" />
-      <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MaxRootDepth" type="xs:double" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CropSpec" nillable="true" type="tns:CropSpec" />
+  <xs:complexType name="ArrayOfFarmSoilType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FarmSoilType" nillable="true" type="tns:FarmSoilType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFarmSoilType" nillable="true" type="tns:ArrayOfFarmSoilType" />
   <xs:simpleType name="SimulationType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="stCropOnly" />
-      <xs:enumeration value="stMixed" />
+      <xs:enumeration value="stSingleFlock" />
+      <xs:enumeration value="stDualFlock" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="SimulationType" nillable="true" type="tns:SimulationType" />

@@ -12,12 +12,6 @@
       <xsd:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd7" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IJobs_GetData_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetData" />
-  </wsdl:message>
-  <wsdl:message name="IJobs_GetData_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetDataResponse" />
-  </wsdl:message>
   <wsdl:message name="IJobs_Add_InputMessage">
     <wsdl:part name="parameters" element="tns:Add" />
   </wsdl:message>
@@ -29,6 +23,12 @@
   </wsdl:message>
   <wsdl:message name="IJobs_AddFarm4Prophet_OutputMessage">
     <wsdl:part name="parameters" element="tns:AddFarm4ProphetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddYP_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddYP" />
+  </wsdl:message>
+  <wsdl:message name="IJobs_AddYP_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddYPResponse" />
   </wsdl:message>
   <wsdl:message name="IJobs_AddAsXML_InputMessage">
     <wsdl:part name="parameters" element="tns:AddAsXML" />
@@ -91,10 +91,6 @@
     <wsdl:part name="parameters" element="tns:ReRunResponse" />
   </wsdl:message>
   <wsdl:portType name="IJobs">
-    <wsdl:operation name="GetData">
-      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/GetData" message="tns:IJobs_GetData_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/GetDataResponse" message="tns:IJobs_GetData_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="Add">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/Add" message="tns:IJobs_Add_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddResponse" message="tns:IJobs_Add_OutputMessage" />
@@ -102,6 +98,10 @@
     <wsdl:operation name="AddFarm4Prophet">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddFarm4Prophet" message="tns:IJobs_AddFarm4Prophet_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddFarm4ProphetResponse" message="tns:IJobs_AddFarm4Prophet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddYP">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddYP" message="tns:IJobs_AddYP_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJobs/AddYPResponse" message="tns:IJobs_AddYP_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="AddAsXML">
       <wsdl:input wsaw:Action="http://tempuri.org/IJobs/AddAsXML" message="tns:IJobs_AddAsXML_InputMessage" />
@@ -146,15 +146,6 @@
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IJobs" type="tns:IJobs">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="GetData">
-      <soap:operation soapAction="http://tempuri.org/IJobs/GetData" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
     <wsdl:operation name="Add">
       <soap:operation soapAction="http://tempuri.org/IJobs/Add" style="document" />
       <wsdl:input>
@@ -166,6 +157,15 @@
     </wsdl:operation>
     <wsdl:operation name="AddFarm4Prophet">
       <soap:operation soapAction="http://tempuri.org/IJobs/AddFarm4Prophet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddYP">
+      <soap:operation soapAction="http://tempuri.org/IJobs/AddYP" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

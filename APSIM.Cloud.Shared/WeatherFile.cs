@@ -698,8 +698,9 @@ namespace APSIM.Cloud.Shared
                                 toRow[toColumn] = fromRow[fromColumn];
 
                                 // Update codes
-                                int codeIndex = StringUtilities.IndexOfCaseInsensitive(fieldsToOverlay, toColumn.ColumnName);
-                                toRowCodes[codeIndex] = fromRowCodes[codeIndex];
+                                int fromCodeIndex = fromColumn.Ordinal - 1; // First column in fromRow will be Date but Date doesn't have a code.
+                                int toCodeIndex = StringUtilities.IndexOfCaseInsensitive(fieldsToOverlay, toColumn.ColumnName);
+                                toRowCodes[toCodeIndex] = fromRowCodes[fromCodeIndex];
                             }
                         }
                     }

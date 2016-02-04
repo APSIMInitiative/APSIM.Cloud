@@ -215,6 +215,8 @@ namespace APSIM.Cloud.Shared
         public int BedWidth { get; set; }
         [DataMember]
         public string SkipRow { get; set; }
+        [DataMember]
+        public int SeedDepth { get; set; }
 
         /// <summary>Gets or sets the amount of irrigation applied at sowing (mm).</summary>
         [DataMember]

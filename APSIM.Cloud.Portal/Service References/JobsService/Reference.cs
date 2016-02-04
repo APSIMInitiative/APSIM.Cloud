@@ -127,14 +127,14 @@ namespace APSIM.Cloud.Portal.JobsService {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="JobsService.IJobs")]
     public interface IJobs {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetData", ReplyAction="http://tempuri.org/IJobs/GetDataResponse")]
-        string GetData(int value);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Add", ReplyAction="http://tempuri.org/IJobs/AddResponse")]
         string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddFarm4Prophet", ReplyAction="http://tempuri.org/IJobs/AddFarm4ProphetResponse")]
         string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddYP", ReplyAction="http://tempuri.org/IJobs/AddYPResponse")]
+        void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsXML", ReplyAction="http://tempuri.org/IJobs/AddAsXMLResponse")]
         void AddAsXML(string name, string jobXML);
@@ -194,16 +194,16 @@ namespace APSIM.Cloud.Portal.JobsService {
                 base(binding, remoteAddress) {
         }
         
-        public string GetData(int value) {
-            return base.Channel.GetData(value);
-        }
-        
         public string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet) {
             return base.Channel.Add(yieldProphet);
         }
         
         public string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p) {
             return base.Channel.AddFarm4Prophet(f4p);
+        }
+        
+        public void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData) {
+            base.Channel.AddYP(yieldProphetXML, weatherData, soilProbeData);
         }
         
         public void AddAsXML(string name, string jobXML) {

@@ -136,9 +136,11 @@ namespace APSIM.Cloud.Shared
                 // Make sure we have a row spacing.
                 if (sowing.RowSpacing == 0)
                     sowing.RowSpacing = 250;
+                if (sowing.SeedDepth == 0)
+                    sowing.SeedDepth = 50;
 
                 string sowAction = sowing.Crop + " sow plants = " + sowing.SowingDensity.ToString() +
-                                   ", sowing_depth = 30" +
+                                   ", sowing_depth = " + sowing.SeedDepth +
                                    ", cultivar = " + sowing.Cultivar +
                                    ", row_spacing = " + sowing.RowSpacing.ToString() +
                                    ", crop_class = plant" +
