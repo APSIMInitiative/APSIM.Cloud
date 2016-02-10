@@ -90,36 +90,36 @@
     </None>
     <None Include="Service References\JobsService\configuration91.svcinfo" />
     <None Include="Service References\JobsService\configuration.svcinfo" />
-    <None Include="Service References\JobsService\Jobs.xsd">
+    <None Include="Service References\JobsService\Jobs.wsdl" />
+    <None Include="Service References\JobsService\Jobs8.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs1.wsdl" />
-    <None Include="Service References\JobsService\Jobs1.xsd">
+    <None Include="Service References\JobsService\Jobs81.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs2.xsd">
+    <None Include="Service References\JobsService\Jobs82.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs3.xsd">
+    <None Include="Service References\JobsService\Jobs83.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs4.xsd">
+    <None Include="Service References\JobsService\Jobs84.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs5.xsd">
+    <None Include="Service References\JobsService\Jobs85.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs6.xsd">
+    <None Include="Service References\JobsService\Jobs86.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\JobsService\Jobs7.xsd">
+    <None Include="Service References\JobsService\Jobs87.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\JobsService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Service References\JobsService\Jobs1.disco" />
+    <None Include="Service References\JobsService\Jobs.disco" />
     <Content Include="ShowJobDetail.aspx" />
     <Content Include="AddJob.aspx" />
     <Content Include="Web.config">
