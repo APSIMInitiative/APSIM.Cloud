@@ -357,7 +357,7 @@ namespace APSIM.Cloud.Service
         {
             get
             {
-                return File.ReadAllText(@"D:\Websites\dbConnect.txt") + ";Database=\"Jobs\"";
+                return File.ReadAllText(@"D:\Websites\dbConnect.txt") + ";Database=\"APSIM.Cloud\"";
             }
         }
 
