@@ -133,15 +133,22 @@ namespace APSIM.Cloud.Shared.AusFarm
 
             // determine which type of simulation this is based on stock, paddocks, crops
             if ((simulation.LiveStock.Flocks.Count == 0) && (simulation.LiveStock.TradeLambCount == 0))
+            {
                 ausfarmWriter = new AusFarmFileWriter(SimulationType.stCropOnly);
+                simulation.SimTemplateType = SimulationType.stCropOnly; // ensure that the simulation type is alway correct
+            }
             else
             {
                 if (simulation.LiveStock.Flocks.Count == 1)
                 {
                     ausfarmWriter = new AusFarmFileWriter(SimulationType.stSingleFlock);
+                    simulation.SimTemplateType = SimulationType.stSingleFlock; // ensure that the simulation type is alway correct
                 }
                 else if (simulation.LiveStock.Flocks.Count == 2)
+                {
                     ausfarmWriter = new AusFarmFileWriter(SimulationType.stDualFlock);
+                    simulation.SimTemplateType = SimulationType.stDualFlock; // ensure that the simulation type is alway correct
+                }
                 else
                     throw new Exception();
             }
@@ -169,9 +176,12 @@ namespace APSIM.Cloud.Shared.AusFarm
             // Do soil stuff.
             DoSoils(simulation);
             ausfarmWriter.SetSoils(simulation);
-            
-            // Set the Livestock data
-            ausfarmWriter.WriteStockEnterprises(simulation.LiveStock);
+
+            if (simulation.SimTemplateType != SimulationType.stCropOnly)
+            {
+                // Set the Livestock data
+                ausfarmWriter.WriteStockEnterprises(simulation.LiveStock);
+            }
 
             return ausfarmWriter.ToXML();
         }

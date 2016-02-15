@@ -317,21 +317,24 @@ namespace APSIM.Cloud.Shared.AusFarm
         private void SetGenericCompStateVar(string compName, string varName, string value)
         {
             XmlNode compNode = FindComponentByPathName(simulationXMLNode, compName);
-            TSDMLValue init = GetTypedInit(compNode, "state_vars");
-            uint i = 1;
-            TTypedValue stateVar = null;
-            while ((stateVar == null) && (i <= init.count()))
+            if (compNode != null)
             {
-                if (init.item(i).member("name").asStr() == varName)
+                TSDMLValue init = GetTypedInit(compNode, "state_vars");
+                uint i = 1;
+                TTypedValue stateVar = null;
+                while ((stateVar == null) && (i <= init.count()))
                 {
-                    stateVar = init.item(i);
+                    if (init.item(i).member("name").asStr() == varName)
+                    {
+                        stateVar = init.item(i);
+                    }
+                    i++;
                 }
-                i++;
-            }
-            if (stateVar != null)
-            {
-                stateVar.member("value").setValue(value);
-                SetTypedInit(compNode, "state_vars", init);
+                if (stateVar != null)
+                {
+                    stateVar.member("value").setValue(value);
+                    SetTypedInit(compNode, "state_vars", init);
+                }
             }
         }
 
