@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/01/18 15:21:11</lastsaved>
+  <lastsaved>2016/03/10 13:21:36</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -15,7 +15,7 @@
               <val>1980/01/01</val>
             </init>
             <init name="finish" kind="string">
-              <val>1984/12/31</val>
+              <val>1985/12/31</val>
             </init>
             <init name="timestep" kind="integer4">
               <val>1</val>
@@ -8651,85 +8651,29 @@
             <init name="rules" kind="string" array="T">
               <val>/*==============================================================================</val>
               <val> Livestock management -</val>
-              <val>================================================================================</val>
-              <val></val>
-              <val>================================================================================</val>
-              <val> Tag values</val>
               <val>================================================================================*/</val>
               <val></val>
               <val>define const integer PADD_COUNT                   = 15                          ! number of paddocks defined also in constants script</val>
               <val>define const integer MAX_PASTURE_COUNT            = 4                           ! maximum number of pasture species</val>
               <val></val>
               <val>!===============================================================================</val>
+              <val>! Tag values</val>
+              <val>!===============================================================================</val>
               <val></val>
-              <val>define const integer NUM_TAGS                     = 9                          ! ** number of tag groups defined below **</val>
+              <val>define const integer NUM_TAGS                     = 16                          ! ** number of tag groups defined below **</val>
               <val></val>
-              <val>define const integer REPLACEMENT_MERINO           = 1</val>
-              <val>define const integer EWE_MERINO_MAIDEN_DRY        = 2</val>
-              <val>define const integer EWE_MERINO_MAIDEN            = 3</val>
-              <val>define const integer EWE_MERINO_DRY               = 4</val>
-              <val>define const integer EWE_MERINO                   = 5</val>
-              <val>define const integer EWE_MERINO_CULL              = 6</val>
-              <val>define const integer LAMB_M                       = 7</val>
-              <val>define const integer LAMB_F                       = 8</val>
-              <val>define const integer TRADE_LAMBS                  = 9</val>
+              <val>define const integer REPLACEMENT_MERINO           = 1                           !Purchased Merino ewes (purchase -&gt; joining)</val>
+              <val>define const integer EWE_MERINO_MAIDEN_DRY        = 2                           !Maiden ewes (weaning -&gt; start of mating)</val>
+              <val>define const integer EWE_MERINO_MAIDEN            = 3                           !Purchased Merino ewes (joining -&gt; weaning)</val>
+              <val>define const integer EWE_MERINO_DRY               = 4                           !Merino ewe (weaning -&gt; joining)</val>
+              <val>define const integer EWE_MERINO                   = 5                           !Merino ewe (joining -&gt; weaning)</val>
+              <val>define const integer EWE_MERINO_CULL              = 6                           !Merino ewes ready for culling at the next sale</val>
               <val></val>
+              <val>define const integer LAMB_M                       = 12                          !Weaned lambs from Merino ewes. Males all sold.</val>
+              <val>define const integer LAMB_F                       = 13                          !Weaned lambs from Merino ewes. Some females sold, some kept as replacements</val>
               <val></val>
-              <val>! Animal age classes that may include more than one of the tag groups.</val>
-              <val>! The relationships are defined in animal_class_map array</val>
-              <val></val>
-              <val>! MERINO FLOCK</val>
-              <val>define const integer AC_MER_EWE_WEANED = 1</val>
-              <val>define const integer AC_MER_EWE_HOGGET = 2</val>
-              <val>define const integer AC_MER_EWE_MAIDEN = 3</val>
-              <val>define const integer AC_MER_EWE        = 4</val>
-              <val>define const integer AC_MER_EWE_OLD    = 5</val>
-              <val>define const integer AC_MER_M_WEANED   = 6</val>
-              <val>define const integer AC_MER_M_HOGGET   = 7</val>
-              <val>define const integer AC_MER_M_MATURE   = 8</val>
-              <val>define const integer AC_MER_LAMB       = 9</val>
-              <val>! X-BRED FLOCK</val>
-              <val>define const integer AC_X_EWE_WEANED   = 10</val>
-              <val>define const integer AC_X_EWE_HOGGET   = 11</val>
-              <val>define const integer AC_X_EWE_MAIDEN   = 12</val>
-              <val>define const integer AC_X_EWE          = 13</val>
-              <val>define const integer AC_X_EWE_OLD      = 14</val>
-              <val>define const integer AC_X_M_WEANED     = 15</val>
-              <val>define const integer AC_X_M_HOGGET     = 16</val>
-              <val>define const integer AC_X_M_MATURE     = 17</val>
-              <val>define const integer AC_X_LAMB         = 18</val>
-              <val>! TRADE ANIMALS</val>
-              <val>define const integer AC_TRADE_LAMB     = 19</val>
-              <val></val>
-              <val>define const integer NUM_CLASSES       = 19    ! keep in sync with above</val>
-              <val></val>
-              <val>define const real    DEAD              = 100.0</val>
-              <val></val>
-              <val>!                                      ID                                     includes these tags   age range yrs     suckling young</val>
-              <val>define animal_class_map = [ (class:AC_MER_EWE_WEANED; name: 'mer_ewe_weaned'; tags:[1,8];           gte:0.0; lt:0.5   ;isyoung:false),</val>
-              <val>                            (class:AC_MER_EWE_HOGGET; name: 'mer_ewe_hogget'; tags:[1,8];           gte:0.5; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_MER_EWE_MAIDEN; name: 'mer_ewe_maiden'; tags:[2,3];           gte:0.0; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_MER_EWE;        name: 'mer_ewe';        tags:[4,5,6];         gte:0.0; lt:5.0   ;isyoung:false),</val>
-              <val>                            (class:AC_MER_EWE_OLD;    name: 'mer_ewe_old';    tags:[4,5,6];         gte:5.0; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_MER_M_WEANED;   name: 'mer_m_weaned';   tags:[7];             gte:0.0; lt:0.5   ;isyoung:false),</val>
-              <val>                            (class:AC_MER_M_HOGGET;   name: 'mer_m_hogget';   tags:[7];             gte:0.5; lt:1.5   ;isyoung:false),</val>
-              <val>                            (class:AC_MER_M_MATURE;   name: 'mer_m_mature';   tags:[7];             gte:1.5; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_MER_LAMB;       name: 'mer_lamb';       tags:[3,5];           gte:0.0; lt:0.5   ;isyoung:TRUE),</val>
-              <val></val>
-              <val>                            (class:AC_X_EWE_WEANED;   name: 'X_ewe_weaned';   tags:[];              gte:0.0; lt:0.5   ;isyoung:false),</val>
-              <val>                            (class:AC_X_EWE_HOGGET;   name: 'X_ewe_hogget';   tags:[];              gte:0.5; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_X_EWE_MAIDEN;   name: 'X_ewe_maiden';   tags:[];              gte:0.0; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_X_EWE;          name: 'X_ewe_mature';   tags:[];              gte:0.0; lt:5.0   ;isyoung:false),</val>
-              <val>                            (class:AC_X_EWE_OLD;      name: 'X_ewe_old';      tags:[];              gte:5.0; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_X_M_WEANED;     name: 'X_m_weaned';     tags:[];              gte:0.0; lt:0.5   ;isyoung:false),</val>
-              <val>                            (class:AC_X_M_HOGGET;     name: 'X_m_hogget';     tags:[];              gte:0.5; lt:1.5   ;isyoung:false),</val>
-              <val>                            (class:AC_X_M_MATURE;     name: 'X_m_mature';     tags:[];              gte:1.5; lt:DEAD  ;isyoung:false),</val>
-              <val>                            (class:AC_X_LAMB;         name: 'X_lamb';         tags:[];              gte:0.0; lt:0.5   ;isyoung:TRUE),</val>
-              <val></val>
-              <val>                            (class:AC_TRADE_LAMB;     name: 'trade_lamb';     tags:[9];             gte:0.0; lt:DEAD  ;isyoung:false)]</val>
-              <val></val>
-              <val>define text animal_class_map_names[NUM_CLASSES]</val>
-              <val></val>
+              <val>define const integer TRADE_LAMBS                  = 16                          !Trade lamb flock</val>
+              <val>define const text animal_tag_names[NUM_TAGS] = ['flock1_replacement', 'flock1_ewe_maiden_dry', 'flock1_ewe_maiden', 'flock1_ewe_dry', 'flock1_ewe', 'flock1_ewe_cull', '', '', '', '', '', 'flock1_lamb_m', 'flock1_lamb_f', '', '', 'trade_lambs']</val>
               <val></val>
               <val>/*==============================================================================</val>
               <val> Management constants</val>
@@ -8758,7 +8702,7 @@
               <val>define const logical castrate_lambs               = TRUE                        ! TRUE if male lambs are to be castrated</val>
               <val>define const integer wean_age_days                = 100                         ! Age of average lambs at weaning (days)</val>
               <val>define const integer flush_length                 = 14                          ! Period before joining when extra feeding can take place</val>
-              <val>define const logical scan_ewes                    = TRUE                        ! scan ewes mid-gestation to cull empty ewews</val>
+              <val>define const logical scan_ewes                    = FALSE                       ! scan ewes mid-gestation to cull empty ewews</val>
               <val></val>
               <val>! Sales</val>
               <val>define const integer lamb_sale_policy             = 1                           !#1 = sell at weight, #2 = sell when losing weight, #3 = sell on date</val>
@@ -8780,17 +8724,17 @@
               <val>define const text    TRADE_FEEDLOT                = 'farm.trade_feedlot'</val>
               <val></val>
               <val></val>
-              <val>                                                    ! Body condition score below which to feed</val>
-              <val>                                                    ! 1        2       3       4       5       6       7       8       9</val>
-              <val>                                                    ! Ewe      Ewe     Ewe     Ewe     Ewe     Ewe     Lamb    Lamb    Lamb</val>
-              <val>                                                    ! Merino   Merino  Merino  Merino  Merino  Merino  Merino  Merino  Trade</val>
-              <val>                                                    ! Replace  Maiden  -       -       -       F       M       F  -    M</val>
-              <val>                                                    ! -        Dry     -       Dry     -       Cull    -       -       -</val>
-              <val>define const         critical_cs                  = [ [ 2.5,   2.5,    2.5,    2.5,    2.5,    2.5,    3.0,    3.0,      3.0 ],  ! Weaning to start of flushing</val>
-              <val>                                                      [ 2.5,   2.5,    2.5,    2.5,    2.5,    2.5,    3.0,    3.0,      3.0 ],  ! Flushing (pre-joining)</val>
-              <val>                                                      [ 2.5,   2.5,    2.5,    2.5,    2.5,    2.5,    3.0,    3.0,      3.0 ],  ! Early pregnancy</val>
-              <val>                                                      [ 2.5,   2.5,    2.5,    2.5,    2.5,    2.5,    3.0,    3.0,      3.0 ],  ! Late pregnancy</val>
-              <val>                                                      [ 2.5,   2.5,    2.5,    2.5,    2.5,    2.5,    3.0,    3.0,      3.0 ] ] ! Birth to weaning</val>
+              <val>                            ! Body condition score below which to feed</val>
+              <val>                            !   1        2       3       4       5       6                               12       13                16</val>
+              <val>                            !   Ewe      Ewe     Ewe     Ewe     Ewe     Ewe                             Lamb     Lamb              Lamb</val>
+              <val>                            !   Merino   Merino  Merino  Merino  Merino  Merino                          Merino   Merino            Trade</val>
+              <val>                            !   Replace  Maiden  Maiden  -       -       -                               M        F                 M</val>
+              <val>                            !   -        Dry     -       Dry     -       Cull                            -        -                 -</val>
+              <val>define const critical_cs  = [ [ 2.5,     2.5,    2.5,    2.5,    2.5,    2.5,   0.0, 0.0, 0.0, 0.0, 0.0, 3.0,     3.0,    0.0, 0.0, 3.0 ],  ! Weaning to start of flushing</val>
+              <val>                              [ 2.5,     2.5,    2.5,    2.5,    2.5,    2.5,   0.0, 0.0, 0.0, 0.0, 0.0, 3.0,     3.0,    0.0, 0.0, 3.0 ],  ! Flushing (pre-joining)</val>
+              <val>                              [ 2.5,     2.5,    2.5,    2.5,    2.5,    2.5,   0.0, 0.0, 0.0, 0.0, 0.0, 3.0,     3.0,    0.0, 0.0, 3.0 ],  ! Early pregnancy</val>
+              <val>                              [ 2.5,     2.5,    2.5,    2.5,    2.5,    2.5,   0.0, 0.0, 0.0, 0.0, 0.0, 3.0,     3.0,    0.0, 0.0, 3.0 ],  ! Late pregnancy</val>
+              <val>                              [ 2.5,     2.5,    2.5,    2.5,    2.5,    2.5,   0.0, 0.0, 0.0, 0.0, 0.0, 3.0,     3.0,    0.0, 0.0, 3.0 ] ] ! Birth to weaning</val>
               <val></val>
               <val>define const integer   SUPPT_COUNT = 11</val>
               <val>define text            suppt_name[SUPPT_COUNT] = ['wheat', 'barley', 'canola', 'oats', 'chickpea', 'fieldpea', 'lupin', 'fababean', 'hay', 'oatshay', 'vetchhay']</val>
@@ -8814,11 +8758,6 @@
               <val>define const real    trade_feedlot_feed_2_propn   = 0.2</val>
               <val>define const real    trade_feedlot_max_feed_rate  = 5.0                         ! max grain to feed kg/head</val>
               <val></val>
-              <val></val>
-              <val></val>
-              <val></val>
-              <val></val>
-              <val></val>
               <val>/*==============================================================================</val>
               <val> Copy constants across from other modules</val>
               <val>================================================================================*/</val>
@@ -8840,12 +8779,6 @@
               <val>   set no_pasture_types = constants.no_pasture_types</val>
               <val>   set pasture_module   = constants.pasture_module</val>
               <val>   set no_supplements   = length(suppt_name)</val>
-              <val></val>
-              <val>  ! store the age class names in an array for reporting</val>
-              <val>   for i = 1 to NUM_CLASSES</val>
-              <val>   {</val>
-              <val>      animal_class_map_names[i] = animal_class_map[i]:name</val>
-              <val>   }</val>
               <val>}</val>
               <val></val>
               <val></val>
@@ -8868,11 +8801,6 @@
               <val>define real          buy_weight[NUM_TAGS]</val>
               <val>define real          buy_cond_score[NUM_TAGS]</val>
               <val>define real          age_purchased[NUM_TAGS]</val>
-              <val>define integer       ac_number_sold[NUM_CLASSES]                                ! total for ageclasses</val>
-              <val>define real          ac_weight_sold[NUM_CLASSES]</val>
-              <val>define integer       ac_number_purchased[NUM_CLASSES]</val>
-              <val>define real          ac_weight_purchased[NUM_CLASSES]</val>
-              <val></val>
               <val></val>
               <val>/*==============================================================================</val>
               <val> Set up the annual livestock management cycle relative to the joining date</val>
@@ -8927,7 +8855,7 @@
               <val>   if purchase_day = 0</val>
               <val>   {</val>
               <val>      ! self replacing - no cross breeding</val>
-              <val>      set flock1_dam                  = AnimalParams.F4P_FLOCK1_DAM  </val>
+              <val>      set flock1_dam                  = AnimalParams.F4P_FLOCK1_DAM</val>
               <val>      set flock1_matedto              = flock1_dam</val>
               <val>      set flock1_young                = flock1_dam</val>
               <val>   }</val>
@@ -9112,38 +9040,25 @@
               <val>}</val>
               <val></val>
               <val>/*==============================================================================</val>
-              <val> Subroutine to sell a number of animals, first storing production data</val>
+              <val> Subroutine to sell a number of animals, first storing production data for the tag group</val>
               <val>================================================================================*/</val>
               <val></val>
-              <val>subroutine sell_animal_group( group_no : integer; report_tag : integer )</val>
+              <val>subroutine sell_animal_group( group_no : integer; sale_no: integer )</val>
               <val>{</val>
               <val>   define integer     i</val>
               <val>   define integer     t</val>
               <val></val>
               <val>   set i = group_no</val>
-              <val></val>
-              <val>   call getAnimalClass group_no = i       !determine which age class this group belongs to</val>
-              <val></val>
-              <val>   if report_tag = 0</val>
-              <val>   {</val>
-              <val>      set t = animals.tag_no[i]</val>
-              <val>   }</val>
-              <val>   else</val>
-              <val>   {</val>
-              <val>      set t = report_tag</val>
-              <val>   }</val>
+              <val>   set t = animals.tag_no[i]</val>
               <val></val>
               <val>   if animals.number[i] &gt; 0</val>
               <val>   {</val>
-              <val>      set sale_weight[t]     = (number_sold[t] * sale_weight[t]     + animals.number[i] * animals.weight[i])     / (number_sold[t] + animals.number[i])</val>
-              <val>      set sale_cond_score[t] = (number_sold[t] * sale_cond_score[t] + animals.number[i] * animals.cond_score[i]) / (number_sold[t] + animals.number[i])</val>
-              <val>      set number_sold[t]     =  number_sold[t]                      + animals.number[i]</val>
-              <val></val>
-              <val>      set ac_weight_sold[animal_class_found] = (ac_number_sold[animal_class_found] * ac_weight_sold[animal_class_found] + animals.number[i] * animals.weight[i]) / (ac_number_sold[animal_class_found] + animals.number[i])</val>
-              <val>      set ac_number_sold[animal_class_found] =  ac_number_sold[animal_class_found] + animals.number[i]</val>
+              <val>      set sale_weight[t]     = (number_sold[t] * sale_weight[t]     + sale_no * animals.weight[i])     / (number_sold[t] + sale_no)</val>
+              <val>      set sale_cond_score[t] = (number_sold[t] * sale_cond_score[t] + sale_no * animals.cond_score[i]) / (number_sold[t] + sale_no)</val>
+              <val>      set number_sold[t]     =  number_sold[t]                      + sale_no</val>
               <val>   }</val>
               <val></val>
-              <val>   animals.sell group=i, number=animals.number[i]</val>
+              <val>   animals.sell group=i, number=sale_no</val>
               <val>}</val>
               <val></val>
               <val></val>
@@ -9157,8 +9072,6 @@
               <val>   define integer     t</val>
               <val></val>
               <val>   set i = group_no</val>
-              <val></val>
-              <val>   call getAnimalClass group_no = i       !determine which age class this group belongs to</val>
               <val></val>
               <val>   if report_tag = 0</val>
               <val>   {</val>
@@ -9174,10 +9087,6 @@
               <val>      set buy_weight[t]       = (number_purchased[t] * buy_weight[t]     + animals.number[i] * animals.weight[i])     / (number_purchased[t] + animals.number[i])</val>
               <val>      set buy_cond_score[t]   = (number_purchased[t] * buy_cond_score[t] + animals.number[i] * animals.cond_score[i]) / (number_purchased[t] + animals.number[i])</val>
               <val>      set number_purchased[t] =  number_purchased[t]                     + animals.number[i]</val>
-              <val></val>
-              <val>      set ac_weight_purchased[animal_class_found] = (ac_number_purchased[animal_class_found] * ac_weight_purchased[animal_class_found] + animals.number[i] * animals.weight[i]) / (ac_number_purchased[animal_class_found] + animals.number[i])</val>
-              <val>      set ac_number_purchased[animal_class_found] =  ac_number_purchased[animal_class_found] + animals.number[i]</val>
-              <val></val>
               <val>   }</val>
               <val>}</val>
               <val></val>
@@ -9188,10 +9097,7 @@
               <val>   define integer i</val>
               <val>   for age_class_yr = 1 to 10</val>
               <val>   {</val>
-              <val>      for i = 1 to animals.no_groups</val>
-              <val>      {</val>
-              <val>         animals.split group=i, type='age', value=365*age_class_yr</val>
-              <val>      }</val>
+              <val>      animals.split_all type='age', value=365*age_class_yr</val>
               <val>   }</val>
               <val>}</val>
               <val></val>
@@ -9243,11 +9149,11 @@
               <val>   {</val>
               <val>      for i = 1 to animals.no_groups                                             ! Sell them and record their weight etc</val>
               <val>      {                                                                          ! CHECK - is this selling all old ewes??</val>
-              <val>         set merino_animals_number = animals.number[i]</val>
               <val>         set merino_animals_age    = animals.age[i]</val>
               <val></val>
               <val>         if (merino_no_sold &lt; merino_excess_ewes) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1))</val>
               <val>         {</val>
+              <val>            set merino_animals_number = animals.number[i]</val>
               <val>            set merino_no_to_sell = min( merino_animals_number, merino_excess_ewes - merino_no_sold )</val>
               <val>            call sell_animal_group group_no=i, sale_no=merino_no_to_sell</val>
               <val>            set merino_no_sold = merino_no_sold + merino_no_to_sell</val>
@@ -9334,12 +9240,12 @@
               <val>   {</val>
               <val>      for i = 1 to animals.no_groups</val>
               <val>      {</val>
-              <val>         set merino_animals_number = animals.number[i]</val>
               <val>         set merino_animals_age    = animals.age[i]</val>
               <val>         set animals_tag           = animals.tag_no[i]</val>
               <val></val>
               <val>         if (((animals_tag = REPLACEMENT_MERINO) or (animals_tag = EWE_MERINO_MAIDEN_DRY) or (animals_tag = EWE_MERINO_DRY)) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1)))</val>
               <val>         {</val>
+              <val>            set merino_animals_number = animals.number[i]</val>
               <val>            set merino_no_to_join = merino_animals_number</val>
               <val></val>
               <val>            if (animals_tag = EWE_MERINO_DRY)</val>
@@ -9372,7 +9278,7 @@
               <val>/*==============================================================================</val>
               <val> Castrate male lambs (if required)</val>
               <val>================================================================================*/</val>
-              <val></val>
+              <val>from start</val>
               <val>{</val>
               <val>   if (day = merino_castrate_day) and castrate_lambs</val>
               <val>   {</val>
@@ -9463,42 +9369,6 @@
               <val> Shearing</val>
               <val>================================================================================*/</val>
               <val></val>
-              <val>define integer   ac_no_shorn[NUM_CLASSES]</val>
-              <val>define real      ac_kg_wool[NUM_CLASSES]</val>
-              <val>define real      ac_sum_wool[NUM_CLASSES]</val>
-              <val>define real      ac_micron[NUM_CLASSES]</val>
-              <val>define real      ac_sum_micron[NUM_CLASSES]</val>
-              <val></val>
-              <val>define integer   animal_class_found     ! used as a defacto return value from the getAnimalClass() subroutine</val>
-              <val></val>
-              <val>/*=============================================================================</val>
-              <val>   Get the animal class for the specified animal group</val>
-              <val>   Uses the animal_class_map[] array defined earlier</val>
-              <val>============================================================================= */</val>
-              <val>subroutine getAnimalClass( group_no : integer )</val>
-              <val>{</val>
-              <val>   define integer a_tag</val>
-              <val>   define real    a_age</val>
-              <val>   define integer class_idx</val>
-              <val>   define integer class_tag_idx</val>
-              <val></val>
-              <val>   set a_tag = animals.tag_no[group_no]</val>
-              <val>   set a_age = animals.age[group_no]</val>
-              <val></val>
-              <val>   animal_class_found = -1</val>
-              <val>   set class_idx = 1</val>
-              <val>   while (animal_class_found = -1) and (class_idx &lt;= length(animal_class_map))</val>
-              <val>   {</val>
-              <val>      class_tag_idx = pos(a_tag, animal_class_map[class_idx]:tags)</val>
-              <val>      if class_tag_idx &gt; 0                                                      ! if the tag is in the array</val>
-              <val>      {</val>
-              <val>         if (a_age &gt;= animal_class_map[class_idx]:gte * 365.0) and (a_age &lt; animal_class_map[class_idx]:lt * 365.0)</val>
-              <val>               set animal_class_found = animal_class_map[class_idx]:class</val>
-              <val>      }</val>
-              <val>      set class_idx = class_idx + 1</val>
-              <val>   }</val>
-              <val>}</val>
-              <val></val>
               <val>! --- NUMBER SHORN, KG WOOL, MICRON ---</val>
               <val>! for tags</val>
               <val>if day = shear_day</val>
@@ -9510,37 +9380,7 @@
               <val>      set shorn_micron[t]    = animals.fibre_diam_tag[t]</val>
               <val>   }</val>
               <val></val>
-              <val>   call split_ages</val>
-              <val>   ! for animal classes</val>
-              <val>   for i = 1 to animals.no_groups</val>
-              <val>   {</val>
-              <val>      call getAnimalClass group_no = i       !determine which age class this group belongs to</val>
-              <val></val>
-              <val>      set ac_no_shorn[animal_class_found]   = ac_no_shorn[animal_class_found]   + animals.number[i]</val>
-              <val>      set ac_sum_wool[animal_class_found]   = ac_sum_wool[animal_class_found]   + (animals.number[i] * animals.fleece_wt[i])        ! for clean wool use animals.c_fleece_wt[i]</val>
-              <val>      set ac_sum_micron[animal_class_found] = ac_sum_micron[animal_class_found] + (animals.number[i] * animals.fibre_diam[i])</val>
-              <val>   } !next animal group</val>
-              <val></val>
               <val>   animals.shear                                                                 ! Shear all sheep</val>
-              <val></val>
-              <val>  ! calculate wool yield kg/head</val>
-              <val></val>
-              <val>   for i = 1 to NUM_CLASSES</val>
-              <val>   {</val>
-              <val>      if ac_no_shorn[i] &gt; 0</val>
-              <val>      {</val>
-              <val>         set ac_kg_wool[i] = ac_sum_wool[i] / ac_no_shorn[i]</val>
-              <val>      }</val>
-              <val>   }</val>
-              <val></val>
-              <val>  ! calculate average wool micron</val>
-              <val>   for i = 1 to NUM_CLASSES</val>
-              <val>   {</val>
-              <val>      if ac_no_shorn[i] &gt; 0</val>
-              <val>      {</val>
-              <val>         set ac_micron[i] = ac_sum_micron[i] / ac_no_shorn[i]</val>
-              <val>      }</val>
-              <val>   }</val>
               <val>}</val>
               <val></val>
               <val>if day = shear_day + 1</val>
@@ -9550,15 +9390,6 @@
               <val>      set number_shorn[t]    = 0</val>
               <val>      set shorn_fleece_wt[t] = 0</val>
               <val>      set shorn_micron[t]    = 0</val>
-              <val>   }</val>
-              <val></val>
-              <val>   for i = 1 to NUM_CLASSES</val>
-              <val>   {</val>
-              <val>      set ac_no_shorn[i] = 0</val>
-              <val>      set ac_sum_wool[i] = 0</val>
-              <val>      set ac_sum_micron[i] = 0</val>
-              <val>      set ac_kg_wool[i] = 0</val>
-              <val>      set ac_micron[i] = 0</val>
               <val>   }</val>
               <val>}</val>
               <val></val>
@@ -9629,7 +9460,7 @@
               <val>      {</val>
               <val>         if ( (animals.tag_no[i] = LAMB_M) or (animals.tag_no[i] = LAMB_F))</val>
               <val>         {</val>
-              <val>            call sell_animal_group group_no=i, report_tag=animals.tag_no[i]</val>
+              <val>            call sell_animal_group group_no=i, sale_no=animals.number[i]</val>
               <val>         }</val>
               <val>      }</val>
               <val>   }</val>
@@ -9686,8 +9517,6 @@
               <val>define real          suppt_fed_month[SUPPT_COUNT]</val>
               <val>define real          suppt_fed_year_kg[SUPPT_COUNT]</val>
               <val>define real          suppt_fed_year[SUPPT_COUNT]</val>
-              <val></val>
-              <val></val>
               <val></val>
               <val>on start</val>
               <val>{</val>
@@ -10007,25 +9836,12 @@
               <val>define real      stock_buy_cond_score[NUM_TAGS]</val>
               <val>define integer   stock_buy_age[NUM_TAGS]</val>
               <val></val>
-              <val>define integer   stock_ac_sale_number[NUM_CLASSES]</val>
-              <val>define real      stock_ac_sale_weight[NUM_CLASSES]</val>
-              <val>define integer   stock_ac_buy_number[NUM_CLASSES]</val>
-              <val>define real      stock_ac_buy_weight[NUM_CLASSES]</val>
-              <val></val>
               <val>define text      animal_breed[NUM_TAGS]</val>
               <val></val>
               <val>define integer   opening_number[NUM_TAGS]</val>
               <val>define real      opening_weight[NUM_TAGS]</val>
               <val>define real      opening_age[NUM_TAGS]</val>
               <val>define integer   closing_number[NUM_TAGS]</val>
-              <val></val>
-              <val>define integer   ac_opening_number[NUM_CLASSES]</val>
-              <val>define real      ac_opening_weight[NUM_CLASSES]</val>
-              <val>define real      ac_opening_age[NUM_CLASSES]</val>
-              <val>define real      ac_sum_months[NUM_CLASSES]</val>
-              <val>define real      ac_sum_kg[NUM_CLASSES]</val>
-              <val>define integer   ac_closing_number[NUM_CLASSES]</val>
-              <val></val>
               <val></val>
               <val>define integer last_day[12] = [31,28,31,30,31,30,31,31,30,31,30,31]             !days in month</val>
               <val></val>
@@ -10048,13 +9864,9 @@
               <val>   if day_no = last_day[month]</val>
               <val>   {</val>
               <val>      ! store the summary values for the month on the last day of the month</val>
-              <val>      set stock_ac_sale_number  = ac_number_sold</val>
-              <val>      set stock_ac_sale_weight  = ac_weight_sold</val>
               <val>      set stock_sale_number     = number_sold</val>
               <val>      set stock_sale_weight     = sale_weight</val>
               <val>      set stock_sale_cond_score = sale_cond_score</val>
-              <val>      set stock_ac_buy_number   = ac_number_purchased</val>
-              <val>      set stock_ac_buy_weight   = ac_weight_purchased</val>
               <val>      set stock_buy_number      = number_purchased</val>
               <val>      set stock_buy_weight      = buy_weight</val>
               <val>      set stock_buy_cond_score  = buy_cond_score</val>
@@ -10081,20 +9893,6 @@
               <val>            set stock_buy_weight[t]      = 0.0</val>
               <val>            set stock_buy_cond_score[t]  = 0.0</val>
               <val>         }</val>
-              <val>         for t = 1 to NUM_CLASSES</val>
-              <val>         {</val>
-              <val>            set ac_number_sold[t]        = 0</val>
-              <val>            set ac_weight_sold[t]        = 0.0</val>
-              <val>            set ac_number_purchased[t]   = 0</val>
-              <val>            set ac_weight_purchased[t]   = 0.0</val>
-              <val></val>
-              <val>            set stock_ac_sale_number[t]  = 0</val>
-              <val>            set stock_ac_sale_weight[t]  = 0.0</val>
-              <val>            set stock_ac_buy_number[t]   = 0</val>
-              <val>            set stock_ac_buy_weight[t]   = 0.0</val>
-              <val>         }</val>
-              <val></val>
-              <val></val>
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
@@ -10125,83 +9923,6 @@
               <val>   }</val>
               <val>}</val>
               <val></val>
-              <val>define integer tag_index</val>
-              <val>define integer current_tag</val>
-              <val>define boolean found</val>
-              <val></val>
-              <val>! for animals classes - opening count, weight, age</val>
-              <val>from start</val>
-              <val>{</val>
-              <val>   if day_no = 1</val>
-              <val>   {</val>
-              <val>      call split_ages</val>
-              <val>      for g = 1 to animals.no_groups</val>
-              <val>      {</val>
-              <val>         call getAnimalClass group_no = g       !determine which age class this group belongs to</val>
-              <val></val>
-              <val>         set animals_number = animals.number[g]</val>
-              <val></val>
-              <val>        ! calc and store the monthly opening values for the age classes (other than young)</val>
-              <val>         if animal_class_map[animal_class_found]:isyoung = false</val>
-              <val>         {</val>
-              <val>            set ac_opening_number[animal_class_found] = ac_opening_number[animal_class_found] + animals_number</val>
-              <val>            set ac_sum_kg[animal_class_found] = ac_sum_kg[animal_class_found] + (animals.weight[g] * animals_number)</val>
-              <val>            set ac_sum_months[animal_class_found] = ac_sum_months[animal_class_found] + (animals.age_months[g] * animals_number)</val>
-              <val>         }</val>
-              <val>      }  ! next animal group</val>
-              <val></val>
-              <val>     ! now go through the classes that are suckling young</val>
-              <val>      for i = 1 to NUM_CLASSES</val>
-              <val>      {</val>
-              <val>         if animal_class_map[i]:isyoung = true</val>
-              <val>         {</val>
-              <val>            for tag_index = 1 to length(animal_class_map[i]:tags)    ! for each tag in this class</val>
-              <val>            {</val>
-              <val>               set current_tag = animal_class_map[i]:tags[tag_index]</val>
-              <val>              ! now find all the groups with this tag and get the young details</val>
-              <val>               for g = 1 to animals.no_groups</val>
-              <val>               {</val>
-              <val>                  if animals.tag_no[g] = current_tag</val>
-              <val>                  {</val>
-              <val>                     if animals.number_yng[g] &gt; 0</val>
-              <val>                     {</val>
-              <val>                        set animals_number = animals.number_yng[g]</val>
-              <val>                        set ac_opening_number[i] = ac_opening_number[i] + animals_number     ! sum the numbers</val>
-              <val>                        set ac_sum_kg[i] = ac_sum_kg[i] + (animals.weight_yng[g] * animals_number)</val>
-              <val>                        set ac_sum_months[i] = ac_sum_months[i] + (animals.age_months_yng[g] * animals_number)</val>
-              <val>                     }</val>
-              <val>                  }</val>
-              <val>               }</val>
-              <val>            }</val>
-              <val>         }</val>
-              <val>      }</val>
-              <val></val>
-              <val>      for i = 1 to NUM_CLASSES</val>
-              <val>      {</val>
-              <val>         if ac_opening_number[i] &gt; 0</val>
-              <val>         {</val>
-              <val>            set ac_opening_weight[i] = ac_sum_kg[i]  / ac_opening_number[i]</val>
-              <val>            set ac_opening_age[i]  = ac_sum_months[i]  / ac_opening_number[i]</val>
-              <val>         }</val>
-              <val>      }</val>
-              <val>   } ! endif day = 1</val>
-              <val></val>
-              <val></val>
-              <val></val>
-              <val>   if day_no = 2</val>
-              <val>   {</val>
-              <val>      for i = 1 to NUM_CLASSES</val>
-              <val>      {</val>
-              <val>         set ac_opening_weight[i] = 0</val>
-              <val>         set ac_opening_number[i] = 0</val>
-              <val>         set ac_sum_kg[i] = 0</val>
-              <val>         set ac_sum_months[i] = 0</val>
-              <val>         set ac_opening_age[i] = 0</val>
-              <val>      }</val>
-              <val>   }</val>
-              <val>}</val>
-              <val></val>
-              <val></val>
               <val>! ---- CLOSING COUNT ----</val>
               <val></val>
               <val>! for all animals</val>
@@ -10211,65 +9932,18 @@
               <val>   {</val>
               <val>      for t = 1 to length(animals.number_tag)</val>
               <val>      {</val>
-              <val>         set closing_number[t]             = animals.number_tag[t]</val>
+              <val>         set closing_number[t] = animals.number_tag[t]</val>
               <val>      }</val>
               <val>   }</val>
               <val>   if day_no = 1</val>
               <val>   {</val>
               <val>      for t = 1 to length(animals.number_tag)</val>
               <val>      {</val>
-              <val>         set closing_number[t]            = 0</val>
+              <val>         set closing_number[t] = 0</val>
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
               <val></val>
-              <val>! For classes of animals - closing count</val>
-              <val>from start</val>
-              <val>{</val>
-              <val>   if day_no = last_day[month]</val>
-              <val>   {</val>
-              <val>      call split_ages</val>
-              <val>      for g = 1 to animals.no_groups</val>
-              <val>      {</val>
-              <val>         call getAnimalClass group_no = g       !determine which age class this group belongs to</val>
-              <val></val>
-              <val>         if animal_class_map[animal_class_found]:isyoung = false  ! not young</val>
-              <val>            set ac_closing_number[animal_class_found] = ac_closing_number[animal_class_found] + animals.number[g]</val>
-              <val>      }</val>
-              <val></val>
-              <val>     ! now go through the classes that are suckling young</val>
-              <val>      for i = 1 to NUM_CLASSES</val>
-              <val>      {</val>
-              <val>         if animal_class_map[i]:isyoung = true</val>
-              <val>         {</val>
-              <val>            for tag_index = 1 to length(animal_class_map[i]:tags)    ! for each tag in this class</val>
-              <val>            {</val>
-              <val>               set current_tag = animal_class_map[i]:tags[tag_index]</val>
-              <val>              ! now find all the groups with this tag and get the young details</val>
-              <val>               for g = 1 to animals.no_groups</val>
-              <val>               {</val>
-              <val>                  if animals.tag_no[g] = current_tag</val>
-              <val>                  {</val>
-              <val>                     if animals.number_yng[g] &gt; 0</val>
-              <val>                     {</val>
-              <val>                        set animals_number = animals.number_yng[g]</val>
-              <val>                        set ac_closing_number[i] = ac_closing_number[i] + animals_number</val>
-              <val>                     }</val>
-              <val>                  }</val>
-              <val>               }</val>
-              <val>            }</val>
-              <val>         }</val>
-              <val>      }</val>
-              <val>   }</val>
-              <val></val>
-              <val>   if day_no = 1</val>
-              <val>   {</val>
-              <val>      for i = 1 to NUM_CLASSES</val>
-              <val>      {</val>
-              <val>         set ac_closing_number[i] = 0</val>
-              <val>      }</val>
-              <val>   }</val>
-              <val>}</val>
             </init>
             <init name="logfile" kind="string">
               <val></val>
@@ -12764,18 +12438,19 @@
               <val> Tag values - must match "livestock" script</val>
               <val>================================================================================*/</val>
               <val></val>
-              <val>define const integer NUM_TAGS                     = 9                          ! ** number of tag groups defined below **</val>
+              <val>define const integer NUM_TAGS                     = 16                          ! ** number of tag groups defined below **</val>
               <val></val>
-              <val>define const integer REPLACEMENT_MERINO           = 1</val>
-              <val>define const integer EWE_MERINO_MAIDEN_DRY        = 2</val>
-              <val>define const integer EWE_MERINO_MAIDEN            = 3</val>
-              <val>define const integer EWE_MERINO_DRY               = 4</val>
-              <val>define const integer EWE_MERINO                   = 5</val>
-              <val>define const integer EWE_MERINO_CULL              = 6</val>
-              <val>define const integer LAMB_M                       = 7</val>
-              <val>define const integer LAMB_F                       = 8</val>
-              <val>define const integer TRADE_LAMBS                  = 9                      !</val>
+              <val>define const integer REPLACEMENT_MERINO           = 1                           !Purchased Merino ewes (purchase -&gt; joining)</val>
+              <val>define const integer EWE_MERINO_MAIDEN_DRY        = 2                           !Maiden ewes (weaning -&gt; start of mating)</val>
+              <val>define const integer EWE_MERINO_MAIDEN            = 3                           !Purchased Merino ewes (joining -&gt; weaning)</val>
+              <val>define const integer EWE_MERINO_DRY               = 4                           !Merino ewe (weaning -&gt; joining)</val>
+              <val>define const integer EWE_MERINO                   = 5                           !Merino ewe (joining -&gt; weaning)</val>
+              <val>define const integer EWE_MERINO_CULL              = 6                           !Merino ewes ready for culling at the next sale</val>
               <val></val>
+              <val>define const integer LAMB_M                       = 12                          !Weaned lambs from Merino ewes. Males all sold.</val>
+              <val>define const integer LAMB_F                       = 13                          !Weaned lambs from Merino ewes. Some females sold, some kept as replacements</val>
+              <val></val>
+              <val>define const integer TRADE_LAMBS                  = 16                          !Trade lamb flock</val>
               <val></val>
               <val>define integer padd</val>
               <val>define integer i</val>
@@ -12808,8 +12483,8 @@
               <val></val>
               <val></val>
               <val></val>
-              <val>! TAGS                                            ! 1        2       3       4       5       6       7       8       9</val>
-              <val>define integer grazing_priorities[NUM_TAGS]    =   [ 2,      2,      2,      2,      2,      2,      1,      1 ,     1]</val>
+              <val>! TAGS                                             ! 1  2  3  4  5  6  7  8  9  10  11  12  13 14 15 16</val>
+              <val>define integer grazing_priorities[NUM_TAGS]    =   [ 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0,  1,   1, 0, 0, 1]</val>
               <val></val>
               <val></val>
               <val></val>
@@ -16918,7 +16593,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>ac_opening_number</val>
+                  <val>opening_number</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -16935,7 +16610,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>ac_closing_number</val>
+                  <val>closing_number</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -16952,7 +16627,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>ac_opening_weight</val>
+                  <val>opening_weight</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -16969,7 +16644,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>ac_opening_age</val>
+                  <val>opening_age</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -16986,7 +16661,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>ac_no_shorn</val>
+                  <val>number_shorn</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -17003,7 +16678,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>ac_kg_wool</val>
+                  <val>shorn_fleece_wt</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -17020,7 +16695,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>stock_ac_sale_number</val>
+                  <val>stock_sale_number</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -17037,7 +16712,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>stock_ac_sale_weight</val>
+                  <val>stock_sale_weight</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -17054,7 +16729,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>stock_ac_buy_number</val>
+                  <val>stock_buy_number</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -17071,7 +16746,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>stock_ac_buy_weight</val>
+                  <val>stock_buy_weight</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -17105,7 +16780,7 @@
               </element>
               <element>
                 <field name="varname" kind="string">
-                  <val>animal_class_map_names</val>
+                  <val>animal_tag_names</val>
                 </field>
                 <field name="alias" kind="string">
                   <val></val>
@@ -39771,7 +39446,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>TRUE</val>
+                  <val>FALSE</val>
                 </field>
               </element>
               <element>
