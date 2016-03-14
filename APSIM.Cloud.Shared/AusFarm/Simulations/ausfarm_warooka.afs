@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/03/10 13:21:36</lastsaved>
+  <lastsaved>2016/03/15 09:27:31</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -8673,7 +8673,7 @@
               <val>define const integer LAMB_F                       = 13                          !Weaned lambs from Merino ewes. Some females sold, some kept as replacements</val>
               <val></val>
               <val>define const integer TRADE_LAMBS                  = 16                          !Trade lamb flock</val>
-              <val>define const text animal_tag_names[NUM_TAGS] = ['flock1_replacement', 'flock1_ewe_maiden_dry', 'flock1_ewe_maiden', 'flock1_ewe_dry', 'flock1_ewe', 'flock1_ewe_cull', '', '', '', '', '', 'flock1_lamb_m', 'flock1_lamb_f', '', '', 'trade_lambs']</val>
+              <val>define const text animal_tag_names[NUM_TAGS] = ['flock1_replacement', 'flock1_ewe_maiden_dry', 'flock1_ewe_maiden', 'flock1_ewe_dry', 'flock1_ewe', 'flock1_ewe_cull', 'flock2_replacement', 'flock2_ewe_maiden_dry', 'flock2_ewe_maiden', 'flock2_ewe_dry', 'flock2_ewe', 'flock1_lamb_m', 'flock1_lamb_f', 'flock2_lamb_m', 'flock2_lamb_f', 'trade_lambs']</val>
               <val></val>
               <val>/*==============================================================================</val>
               <val> Management constants</val>
