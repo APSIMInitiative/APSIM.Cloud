@@ -60,12 +60,6 @@
     <Compile Include="AusFarm\Farm4ProphetSpec.cs" />
     <Compile Include="AusFarm\Farm4ProphetToAusFarm.cs" />
     <Compile Include="AusFarm\Farm4ProphetUtility.cs" />
-    <Compile Include="CMPServices\comppsr.cs" />
-    <Compile Include="CMPServices\initpsr.cs" />
-    <Compile Include="CMPServices\sdmlpsr.cs" />
-    <Compile Include="CMPServices\sdmlval.cs" />
-    <Compile Include="CMPServices\typedval.cs" />
-    <Compile Include="CMPServices\xmlpsr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
