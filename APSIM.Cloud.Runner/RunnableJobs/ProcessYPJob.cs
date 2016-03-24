@@ -31,6 +31,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>The apsim report executable path.</summary>
         private static string archiveLocation = @"ftp://bob.apsim.info/APSIM.Cloud.Archive";
 
+        /// <summary>Should this job run APSIM or just create all necessary files.</summary>
+        private bool runAPSIM;
+
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
         public bool IsComputationallyTimeConsuming { get { return false; } }
 
@@ -48,6 +51,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
         /// <summary>Optional path to APSIM.exe</summary>
         public string ApsimExecutable { get; set; }
+
+        /// <summary>Constructor</summary>
+        /// <param name="runAPSIM">Run APSIM?</param>
+        public ProcessYPJob(bool runAPSIM)
+        {
+            this.runAPSIM = runAPSIM;
+        }
 
         /// <summary>
         /// Runs the YP job.
@@ -91,9 +101,12 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             {
                 bool runYPProcessor = JobFileName == null;
                 JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory, ApsimExecutable, runYPProcessor);
-                jobManager.AddJob(job);
-                while (!job.IsCompleted)
-                    Thread.Sleep(5 * 1000); // 5 sec
+                if (runAPSIM)
+                {
+                    jobManager.AddJob(job);
+                    while (!job.IsCompleted)
+                        Thread.Sleep(5 * 1000); // 5 sec
+                }
                 ErrorMessage = job.ErrorMessage;
             }
             catch (Exception err)

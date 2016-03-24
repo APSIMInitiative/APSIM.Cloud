@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.ServiceProcess;
+using System.IO;
+using APSIM.Shared.Utilities;
+using System.Runtime.InteropServices;
 
 namespace APSIM.Cloud.Runner
 {
@@ -13,9 +17,51 @@ namespace APSIM.Cloud.Runner
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(args));
+            //If there is one argument and it is the service argument then start as a service otherwise start as a regular application
+            if (args.Length == 1 && args[0].Equals("-Service", StringComparison.CurrentCultureIgnoreCase) == true)
+            {
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[]
+                {
+                    new RunnerService()
+                };
+                ServiceBase.Run(ServicesToRun);
+            }
+            else if (args.Length > 0)
+                RunJobFromCommandLine(args);
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainForm(args));
+            }
+        }
+
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AttachConsole(Int32 processId);
+
+        /// <summary>Runs the job (.xml file) specified on the command line.</summary>
+        private static void RunJobFromCommandLine(string[] commandLineArguments)
+        {
+            if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
+            {
+                bool runAPSIM = commandLineArguments.Length == 2 &&
+                                commandLineArguments[1] == "/DontRunAPSIM";
+                RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob(runAPSIM);
+                job.JobFileName = commandLineArguments[0];
+                if (commandLineArguments.Length > 1)
+                    job.ApsimExecutable = commandLineArguments[1];
+                JobManager jobManager = new JobManager();
+                jobManager.AddJob(job);
+                jobManager.Start(waitUntilFinished: true);
+                if (job.ErrorMessage != null)
+                {
+                    AttachConsole(-1);
+                    Console.Write(job.ErrorMessage);
+                }
+            }
         }
     }
 }

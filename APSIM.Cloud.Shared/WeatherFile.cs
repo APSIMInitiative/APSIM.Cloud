@@ -270,7 +270,13 @@ namespace APSIM.Cloud.Shared
 
             DateTime[] dates = DataTableUtilities.GetColumnAsDates(patchData, "Date");
             for (int i = 0; i < dates.Length; i++)
-                dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, dates[i].Day);
+            {
+                if (DateTime.IsLeapYear(dates[i].Year) && !DateTime.IsLeapYear(dates[i].Year + offset) &&
+                    dates[i].Month == 2 && dates[i].Day == 29)
+                    dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, 28);
+                else
+                    dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, dates[i].Day);
+            }
             DataTableUtilities.AddColumnOfObjects(patchData, "Date", dates);
         }
 

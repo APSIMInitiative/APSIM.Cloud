@@ -18,9 +18,6 @@ namespace APSIM.Cloud.Runner
     /// </summary>
     public partial class MainForm : Form
     {
-        /// <summary>The command line arguments</summary>
-        private string[] commandLineArguments;
-
         /// <summary>The job manager to send our jobs to</summary>
         private JobManager jobManager = null;
 
@@ -28,7 +25,6 @@ namespace APSIM.Cloud.Runner
         public MainForm(string[] args)
         {
             InitializeComponent();
-            this.commandLineArguments = args;
         }
 
         /// <summary>Called when the form is loaded</summary>
@@ -37,15 +33,8 @@ namespace APSIM.Cloud.Runner
         private void OnLoad(object sender, EventArgs e)
         {
             jobManager = new JobManager();
-            if (commandLineArguments != null && commandLineArguments.Length > 0)
-            {
-                RunJobFromCommandLine();
-            }
-            else
-            {
-                jobManager.AddJob(new RunJobsInDB());
-                jobManager.Start(waitUntilFinished: false);
-            }
+            jobManager.AddJob(new RunJobsInDB());
+            jobManager.Start(waitUntilFinished: false);
         }
 
         /// <summary>Called when form is closed</summary>
@@ -56,24 +45,7 @@ namespace APSIM.Cloud.Runner
             jobManager.Stop();
         }
 
-        /// <summary>Runs the job (.xml file) specified on the command line.</summary>
-        private void RunJobFromCommandLine()
-        {
-            if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
-            {
-                RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob();
-                job.JobFileName = commandLineArguments[0];
-                if (commandLineArguments.Length > 1)
-                    job.ApsimExecutable = commandLineArguments[1];
-                jobManager.AddJob(job);
-                jobManager.Start(waitUntilFinished: true);
-                if (job.ErrorMessage != null)
-                {
-                    MessageBox.Show(job.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                Close();
-            }
-        }
+        
 
     }
 }

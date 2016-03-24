@@ -79,7 +79,7 @@ namespace APSIM.Cloud.Runner
 
                 if (runningJobDescription != null)
                 {
-                    runningJob = new RunnableJobs.ProcessYPJob() { JobName = runningJobDescription.Name };
+                    runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
                     jobManager.AddJob(runningJob);
                 }
                 else
