@@ -119,6 +119,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the factors for factorial runs.</summary>
         public List<Factor> Factors { get; set; }
 
+        /// <summary>Gets or sets the date where the decile file starts from.</summary>
+        public DateTime DecileDate { get; set; }
+
         /// <summary>
         /// A factor
         /// </summary>

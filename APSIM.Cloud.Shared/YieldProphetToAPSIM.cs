@@ -101,6 +101,7 @@ namespace APSIM.Cloud.Shared
             shortSimulation.UseEC = paddock.UseEC;
             shortSimulation.WriteDepthFile = false;
             shortSimulation.TypeOfRun = paddock.RunType;
+            shortSimulation.DecileDate = paddock.StartSeasonDate;
             AddResetDatesToManagement(copyOfPaddock, shortSimulation);
             return shortSimulation;
         }

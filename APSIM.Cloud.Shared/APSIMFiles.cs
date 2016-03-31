@@ -62,7 +62,7 @@ namespace APSIM.Cloud.Shared
                     // Create a long term weather file.
                     weatherData.CreateLongTerm(rainFileName, simulation.StationNumber,
                                                 simulation.StartDate, simulation.EndDate, simulation.NowDate,
-                                                simulation.ObservedData, 30);
+                                                simulation.ObservedData, simulation.DecileDate, 30);
                 }
                 else if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTerm)
                 {
