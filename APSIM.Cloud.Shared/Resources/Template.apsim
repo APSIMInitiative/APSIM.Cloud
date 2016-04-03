@@ -400,6 +400,8 @@
       if (origmaxt != -999)
          Console.WriteLine("Using original maximum temperatures for frost/heat calculations");
       
+      if (WriteDepthFile)
+         WriteDepthFileToDisk(); 
    }
       
    // ------------------------------------------------------------------------------
@@ -775,15 +777,6 @@
          }
       }
       
-   }
-   
-   // ------------------------------------------------------------------------------
-   // The following event handler will be called at the end of the simulation
-   // ------------------------------------------------------------------------------
-   [EventHandler] public void OnEnd_simulation()
-   {
-      if (WriteDepthFile)
-         WriteDepthFileToDisk();      
    }
       
    // ------------------------------------------------------------------------------
