@@ -981,6 +981,7 @@
           <variable>SowingFertiliser</variable>
           <variable>TopDressFertiliser</variable>
           <variable>PeanutPodYield</variable>
+          <variable>Stage</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>
