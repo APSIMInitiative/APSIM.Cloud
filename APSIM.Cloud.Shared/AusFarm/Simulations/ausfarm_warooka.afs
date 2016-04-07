@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/03/15 09:27:31</lastsaved>
+  <lastsaved>2016/04/07 15:24:26</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -8744,7 +8744,7 @@
               <val>define       string  paddock_feed_2               = ''                          ! use '' if no second feed</val>
               <val>define       real    paddock_feed_1_propn         = 1.0</val>
               <val>define       real    paddock_feed_2_propn         = 0.0</val>
-              <val>define const real    paddock_max_feed_rate        = 0.5                         ! feed rate = amount fed kg fresh weight/head. Animals will not necessarily consume all feed offered</val>
+              <val>define const real    paddock_max_feed_rate        = 1.0                         ! feed rate = amount fed kg fresh weight/head. ***Animals will not necessarily consume all feed offered</val>
               <val></val>
               <val>define       string  feedlot_feed_1               = 'barley'</val>
               <val>define       string  feedlot_feed_2               = 'hay'</val>
@@ -9039,6 +9039,21 @@
               <val>   animals.draft</val>
               <val>}</val>
               <val></val>
+              <val>/* sort ewes of breeding age as maidens   */</val>
+              <val>from start</val>
+              <val>{</val>
+              <val>   call split_ages</val>
+              <val>   for i = 1 to animals.no_groups</val>
+              <val>   {</val>
+              <val>      set animals_tag = animals.tag_no[i]</val>
+              <val></val>
+              <val>      if (animals_tag = REPLACEMENT_MERINO) and (animals.age[i] &gt; merino_join_years*365)</val>
+              <val>      {</val>
+              <val>         animals.tag  group=i, value=EWE_MERINO_MAIDEN_DRY</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val>}</val>
+              <val></val>
               <val>/*==============================================================================</val>
               <val> Subroutine to sell a number of animals, first storing production data for the tag group</val>
               <val>================================================================================*/</val>
@@ -9137,7 +9152,7 @@
               <val>   }</val>
               <val></val>
               <val>   !Merino ewes</val>
-              <val>   for animals_tag = REPLACEMENT_MERINO to min(EWE_MERINO,length(tag_counts))</val>
+              <val>   for animals_tag = EWE_MERINO_MAIDEN_DRY to min(EWE_MERINO,length(tag_counts))   ! this should be maidens +</val>
               <val>   {</val>
               <val>      set merino_excess_ewes = merino_excess_ewes + tag_counts[animals_tag]</val>
               <val>   }</val>
@@ -9234,6 +9249,8 @@
               <val></val>
               <val>if day = merino_join_start</val>
               <val>{</val>
+              <val>   call split_ages</val>
+              <val></val>
               <val>   set merino_no_joined = 0</val>
               <val></val>
               <val>   for merino_age_class = merino_join_years to 10</val>
@@ -9243,7 +9260,7 @@
               <val>         set merino_animals_age    = animals.age[i]</val>
               <val>         set animals_tag           = animals.tag_no[i]</val>
               <val></val>
-              <val>         if (((animals_tag = REPLACEMENT_MERINO) or (animals_tag = EWE_MERINO_MAIDEN_DRY) or (animals_tag = EWE_MERINO_DRY)) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1)))</val>
+              <val>         if (( (animals_tag = EWE_MERINO_MAIDEN_DRY) or (animals_tag = EWE_MERINO_DRY)) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1)))</val>
               <val>         {</val>
               <val>            set merino_animals_number = animals.number[i]</val>
               <val>            set merino_no_to_join = merino_animals_number</val>
@@ -9363,7 +9380,6 @@
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
-              <val></val>
               <val></val>
               <val>/*==============================================================================</val>
               <val> Shearing</val>
@@ -39391,7 +39407,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>'2-Feb'</val>
+                  <val>'1-Oct'</val>
                 </field>
               </element>
               <element>
@@ -39446,7 +39462,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>FALSE</val>
+                  <val>TRUE</val>
                 </field>
               </element>
               <element>
@@ -39457,7 +39473,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>40.0</val>
+                  <val>50.0</val>
                 </field>
               </element>
               <element>
@@ -39468,7 +39484,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>5.5</val>
+                  <val>6.0</val>
                 </field>
               </element>
               <element>
@@ -39534,7 +39550,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>'5-Jan'</val>
+                  <val>'2-Feb'</val>
                 </field>
               </element>
             </init>
