@@ -16,10 +16,16 @@ namespace APSIM.Cloud.Runner
         /// <summary>The job manager to send our jobs to</summary>
         private JobManager jobManager;
 
-        public RunnerService()
+        /// <summary>The maximum number of CPU cores to use.</summary>
+        private int maximumNumberOfProcessors;
+
+        /// <summary>Constructor</summary>
+        /// <param name="maximumNumberOfProcessors">The maximum number of CPU cores to use.</param>
+        public RunnerService(int maximumNumberOfProcessors = -1)
         {
             InitializeComponent();
             jobManager = null;
+            this.maximumNumberOfProcessors = maximumNumberOfProcessors;
         }
 
         
@@ -28,7 +34,7 @@ namespace APSIM.Cloud.Runner
         {
             if (jobManager == null)
             {
-                jobManager = new JobManager();
+                jobManager = new JobManager(maximumNumberOfProcessors);
                 jobManager.AddJob(new RunJobsInDB());
             }
             jobManager.Start(waitUntilFinished: false);

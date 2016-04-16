@@ -17,13 +17,18 @@ namespace APSIM.Cloud.Runner
         [STAThread]
         static void Main(string[] args)
         {
-            //If there is one argument and it is the service argument then start as a service otherwise start as a regular application
-            if (args.Length == 1 && args[0].Equals("-Service", StringComparison.CurrentCultureIgnoreCase) == true)
+            Dictionary<string,string> arguments = StringUtilities.ParseCommandLine(args);
+            // If there is a -Service switch then start as a service otherwise start as a regular application
+            if (arguments.ContainsKey("-Service"))
             {
+                int maximumNumberOfCores = -1;
+                if (arguments.ContainsKey("-MaximumNumberOfCores"))
+                    maximumNumberOfCores = Convert.ToInt32(arguments["-MaximumNumberOfCores"]);
+
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[]
                 {
-                    new RunnerService()
+                    new RunnerService(maximumNumberOfCores)
                 };
                 ServiceBase.Run(ServicesToRun);
             }

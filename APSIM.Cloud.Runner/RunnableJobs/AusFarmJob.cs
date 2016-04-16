@@ -21,7 +21,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     class AusFarmJob: JobManager.IRunnable
     {
         /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return true; } }
+        public bool IsComputationallyTimeConsuming { get { return false; } }
         
         /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
         public string ErrorMessage { get; set; }
