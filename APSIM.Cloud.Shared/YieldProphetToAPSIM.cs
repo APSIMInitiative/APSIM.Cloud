@@ -80,7 +80,7 @@ namespace APSIM.Cloud.Shared
             if (paddock.RunType == Paddock.RunTypeEnum.SingleSeason)
                 shortSimulation.EndDate = copyOfPaddock.NowDate.AddDays(-1);
             else if (paddock.RunType == Paddock.RunTypeEnum.LongTermPatched)
-                shortSimulation.EndDate = shortSimulation.StartDate.AddDays(300);
+                shortSimulation.EndDate = shortSimulation.StartDate.AddDays(360);
             shortSimulation.NowDate = copyOfPaddock.NowDate.AddDays(-1);
             if (shortSimulation.NowDate == DateTime.MinValue)
                 shortSimulation.NowDate = DateTime.Now;
@@ -124,7 +124,7 @@ namespace APSIM.Cloud.Shared
             seasonSimulation.Name = "Base";
             seasonSimulation.DailyOutput = false;
             seasonSimulation.YearlyOutput = true;
-            seasonSimulation.EndDate = seasonSimulation.StartDate.AddDays(300);
+            seasonSimulation.EndDate = seasonSimulation.StartDate.AddDays(360);
             seasonSimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             simulations.Add(seasonSimulation);
 
@@ -132,7 +132,7 @@ namespace APSIM.Cloud.Shared
             NUnlimitedSimulation.Name = "NUnlimited";
             NUnlimitedSimulation.DailyOutput = false;
             NUnlimitedSimulation.YearlyOutput = true;
-            NUnlimitedSimulation.EndDate = NUnlimitedSimulation.StartDate.AddDays(300);
+            NUnlimitedSimulation.EndDate = NUnlimitedSimulation.StartDate.AddDays(360);
             NUnlimitedSimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             NUnlimitedSimulation.NUnlimited = true;
             simulations.Add(NUnlimitedSimulation);
@@ -141,7 +141,7 @@ namespace APSIM.Cloud.Shared
             NUnlimitedFromTodaySimulation.Name = "NUnlimitedFromToday";
             NUnlimitedFromTodaySimulation.DailyOutput = false;
             NUnlimitedFromTodaySimulation.YearlyOutput = true;
-            NUnlimitedFromTodaySimulation.EndDate = NUnlimitedFromTodaySimulation.StartDate.AddDays(300);
+            NUnlimitedFromTodaySimulation.EndDate = NUnlimitedFromTodaySimulation.StartDate.AddDays(360);
             NUnlimitedFromTodaySimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             NUnlimitedFromTodaySimulation.NUnlimitedFromToday = true;
             simulations.Add(NUnlimitedFromTodaySimulation);
@@ -150,7 +150,7 @@ namespace APSIM.Cloud.Shared
             Next10DaysDry.Name = "Next10DaysDry";
             Next10DaysDry.DailyOutput = false;
             Next10DaysDry.YearlyOutput = true;
-            Next10DaysDry.EndDate = Next10DaysDry.StartDate.AddDays(300);
+            Next10DaysDry.EndDate = Next10DaysDry.StartDate.AddDays(360);
             Next10DaysDry.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             Next10DaysDry.Next10DaysDry = true;
             simulations.Add(Next10DaysDry);
@@ -175,7 +175,7 @@ namespace APSIM.Cloud.Shared
                 sim.YearlyOutput = true;
                 sim.WriteDepthFile = false;
                 sim.StartDate = sowingDate;
-                sim.EndDate = sim.StartDate.AddDays(300);
+                sim.EndDate = sim.StartDate.AddDays(360);
                 sim.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
 
                 Sow simSowing = YieldProphetUtility.GetCropBeingSown(sim.Management);
