@@ -33,11 +33,6 @@ namespace APSIM.Cloud.Runner
         /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
         public bool IsCompleted { get; set; }
 
-        /// <summary>The current running job description.</summary>
-        private JobsService.Job runningJobDescription = null;
-
-        /// <summary>The current running job.</summary>
-        private JobManager.IRunnable runningJob = null;
 
         /// <summary>Entry point for this job.</summary>
         /// <param name="sender">The sender.</param>
@@ -51,9 +46,6 @@ namespace APSIM.Cloud.Runner
             {
                 try
                 {
-                    // Process jobs that have finished.
-                    ProcessCompletedJobs();
-
                     // Process that have been added.
                     ProcessAddedJobs(jobManager);
 
@@ -70,33 +62,22 @@ namespace APSIM.Cloud.Runner
         /// <param name="jobManager">The job manager.</param>
         private void ProcessAddedJobs(JobManager jobManager)
         {
-            if (runningJobDescription == null)
-            {
-                using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
-                {
-                    runningJobDescription = jobsClient.GetNextToRun();
-                }
+            JobsService.Job runningJobDescription = null;
 
-                if (runningJobDescription != null)
-                {
-                    runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
-                    jobManager.AddJob(runningJob);
-                }
-                else
-                {
-                    // No jobs to run so wait a bit.
-                    Thread.Sleep(30 * 1000); // 30 sec.
-                }
+            using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+            {
+                runningJobDescription = jobsClient.GetNextToRun();
             }
-        }
 
-        /// <summary>Processes all completed jobs.</summary>
-        private void ProcessCompletedJobs()
-        {
-            if (runningJob != null && runningJob.IsCompleted)
+            if (runningJobDescription != null)
             {
-                runningJob = null;
-                runningJobDescription = null;
+                JobManager.IRunnable runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
+                jobManager.AddJob(runningJob);
+            }
+            else
+            {
+                // No jobs to run so wait a bit.
+                Thread.Sleep(30 * 1000); // 30 sec.
             }
         }
 

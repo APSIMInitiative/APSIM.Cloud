@@ -36,7 +36,7 @@ namespace APSIM.Cloud.Portal
             }
 
             bool ypJob = true;
-            if (Path.GetExtension(tempFile) == ".xml")
+            if (Path.GetExtension(FileUpload.FileName) == ".xml")
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(tempFile);
