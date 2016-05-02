@@ -141,6 +141,12 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the total nitrogen (kg/ha) at the beginning of the simulation.</summary>
         public double InitTotalNitrogen { get; set; }
 
+        /// <summary>Gets or sets whether the paddock is N unlimited.</summary>
+        public bool NUnlimited { get; set; }
+
+        /// <summary>Gets or sets whether the paddock is N unlimited from today.</summary>
+        public bool NUnlimitedFromToday { get; set; }
+
         /// <summary>Initializes a new instance of the <see cref="Paddock"/> class.</summary>
         public Paddock()
         {

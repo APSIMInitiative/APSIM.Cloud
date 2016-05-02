@@ -21,7 +21,7 @@ namespace APSIM.Cloud.Shared
             if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.Crop)
                 return CropReport(yieldProphet);
             else if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.SowingOpportunity)
-                return SowingOpportunityReport(yieldProphet);
+                throw new Exception("Don't use the sowing opportunity report type.");
             else
                 return OtherRuns(yieldProphet);
         }
@@ -102,6 +102,8 @@ namespace APSIM.Cloud.Shared
             shortSimulation.WriteDepthFile = false;
             shortSimulation.TypeOfRun = paddock.RunType;
             shortSimulation.DecileDate = paddock.StartSeasonDate;
+            shortSimulation.NUnlimited = paddock.NUnlimited;
+            shortSimulation.NUnlimitedFromToday = paddock.NUnlimitedFromToday;
             AddResetDatesToManagement(copyOfPaddock, shortSimulation);
             return shortSimulation;
         }
@@ -154,37 +156,6 @@ namespace APSIM.Cloud.Shared
             Next10DaysDry.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             Next10DaysDry.Next10DaysDry = true;
             simulations.Add(Next10DaysDry);
-            return simulations;
-        }
-
-        /// <summary>Create a series of APSIM simulation specifications for a sowing opportunity report.</summary>
-        /// <param name="yieldProphet">The yield prophet specification.</param>
-        /// <returns>The created APSIM simulation specs.</returns>
-        private static List<APSIMSpec> SowingOpportunityReport(YieldProphet yieldProphet)
-        {
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
-            Paddock paddock = yieldProphet.Paddock[0];
-
-            DateTime sowingDate = new DateTime(paddock.StartSeasonDate.Year, 3, 15);
-            DateTime lastSowingDate = new DateTime(paddock.StartSeasonDate.Year, 7, 5);
-            while (sowingDate <= lastSowingDate)
-            {
-                APSIMSpec sim = CreateBaseSimulation(paddock);
-                sim.Name = sowingDate.ToString("ddMMM");
-                sim.DailyOutput = false;
-                sim.YearlyOutput = true;
-                sim.WriteDepthFile = false;
-                sim.StartDate = sowingDate;
-                sim.EndDate = sim.StartDate.AddDays(360);
-                sim.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
-
-                Sow simSowing = YieldProphetUtility.GetCropBeingSown(sim.Management);
-                simSowing.Date = sowingDate;
-                simulations.Add(sim);
-
-                sowingDate = sowingDate.AddDays(5);
-            }
-
             return simulations;
         }
 
