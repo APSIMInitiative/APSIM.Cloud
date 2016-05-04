@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/04/07 15:24:26</lastsaved>
+  <lastsaved>2016/05/03 12:20:58</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -11875,7 +11875,8 @@
               <val>            ! rot/soil hay yields</val>
               <val>            set rot_hay_yields[rot_system, crop_no] = rot_hay_yields[rot_system, crop_no] + hay_yields[rot_system,i]</val>
               <val>            set rot_crop_area[rot_system, crop_no]  = rot_crop_area[rot_system, crop_no]  + padd_area[padd]</val>
-              <val>            set rot_hay_av[rot_system, crop_no] = rot_hay_yields[rot_system, crop_no] / rot_crop_area[rot_system, crop_no]</val>
+              <val>            if rot_crop_area[rot_system, crop_no] &gt; 0</val>
+              <val>               set rot_hay_av[rot_system, crop_no] = rot_hay_yields[rot_system, crop_no] / rot_crop_area[rot_system, crop_no]</val>
               <val>         }</val>
               <val>         if day_no = last_day[month]</val>
               <val>         {</val>
@@ -12199,11 +12200,17 @@
               <val>      set pasture_padd = pasture_phase[rot_system, padd_year_no[padd]]</val>
               <val>      if pasture_padd</val>
               <val>      {</val>
-              <val>         set landuse_area_fract = padd_area[padd] / pasture_area</val>
+              <val>         if pasture_area &gt; 0</val>
+              <val>            set landuse_area_fract = padd_area[padd] / pasture_area</val>
+              <val>         else</val>
+              <val>            set landuse_area_fract = 0</val>
               <val>      }</val>
               <val>      else</val>
               <val>      {</val>
-              <val>         set landuse_area_fract = padd_area[padd] / crop_area</val>
+              <val>         if crop_area &gt; 0</val>
+              <val>            set landuse_area_fract = padd_area[padd] / crop_area</val>
+              <val>         else</val>
+              <val>            set landuse_area_fract = 0</val>
               <val>      }</val>
               <val></val>
               <val>      if paddock_has_translators[padd]</val>
