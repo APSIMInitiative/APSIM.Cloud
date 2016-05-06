@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/05/03 12:20:58</lastsaved>
+  <lastsaved>2016/05/06 12:16:43</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -12295,6 +12295,7 @@
               <val>   set farm_oc_profile_prev = farm_oc_profile</val>
               <val></val>
               <val>   ! daily farm co2 and co2 equivalents</val>
+              <val>   call calc_methane</val>
               <val>   set farm_co2_emission            = ((12.0+(2*16.0))/12) * (-1.0 * farm_oc_profile30_dlt)</val>
               <val>   set farm_co2_equiv               = (farm_n2o_emission * 298) + (farm_co2_emission * 1) + (farm_ch4_emission * 25)</val>
               <val>   set farm_n2o_ch4                 = (farm_n2o_emission * 298) + (farm_ch4_emission * 25)</val>
@@ -12346,8 +12347,10 @@
               <val>/*==============================================================================</val>
               <val> Methane emissions per farm hectare (in kg CH4/ha/day)</val>
               <val>================================================================================*/</val>
-              <val>from start</val>
+              <val>subroutine calc_methane()</val>
               <val>{</val>
+              <val>   define integer i</val>
+              <val>   </val>
               <val>   set farm_ch4_emission = 0.0</val>
               <val>   for i = 1 to animals.no_groups</val>
               <val>   {</val>
@@ -16908,7 +16911,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg C/ha/y</val>
@@ -16976,7 +16979,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg CO2/ha/y</val>
@@ -16993,7 +16996,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg CO2/ha/y</val>
@@ -17010,7 +17013,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg CO2/ha/y</val>
