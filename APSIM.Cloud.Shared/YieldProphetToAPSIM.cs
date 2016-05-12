@@ -7,6 +7,7 @@ namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Converts a Yield Prophet specification to an APSIM one.
@@ -105,6 +106,10 @@ namespace APSIM.Cloud.Shared
             shortSimulation.NUnlimited = paddock.NUnlimited;
             shortSimulation.NUnlimitedFromToday = paddock.NUnlimitedFromToday;
             AddResetDatesToManagement(copyOfPaddock, shortSimulation);
+
+            // Do a stable sort on management actions.
+            shortSimulation.Management = shortSimulation.Management.OrderBy(m => m.Date).ToList();
+
             return shortSimulation;
         }
 
@@ -176,19 +181,23 @@ namespace APSIM.Cloud.Shared
                 Sow sowing = YieldProphetUtility.GetCropBeingSown(paddock.Management);
                 if (sowing != null && sowing.Date != DateTime.MinValue)
                 {
+                    List<Management> resetActions = new List<Management>();
+
                     // reset at sowing if the sample dates are after sowing.
                     if (paddock.SoilWaterSampleDate > sowing.Date)
                     {
-                        simulation.Management.Add(new ResetWater() { Date = sowing.Date });
-                        simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = sowing.Date });
+                        resetActions.Add(new ResetWater() { Date = sowing.Date });
+                        resetActions.Add(new ResetSurfaceOrganicMatter() { Date = sowing.Date });
                     }
                     if (paddock.SoilNitrogenSampleDate > sowing.Date)
-                        simulation.Management.Add(new ResetNitrogen() { Date = sowing.Date });
+                        resetActions.Add(new ResetNitrogen() { Date = sowing.Date });
 
                     // reset on the sample dates.
-                    simulation.Management.Add(new ResetWater() { Date = paddock.SoilWaterSampleDate });
-                    simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = paddock.SoilWaterSampleDate });
-                    simulation.Management.Add(new ResetNitrogen() { Date = paddock.SoilNitrogenSampleDate });
+                    resetActions.Add(new ResetWater() { Date = paddock.SoilWaterSampleDate });
+                    resetActions.Add(new ResetSurfaceOrganicMatter() { Date = paddock.SoilWaterSampleDate });
+                    resetActions.Add(new ResetNitrogen() { Date = paddock.SoilNitrogenSampleDate });
+
+                    simulation.Management.InsertRange(0, resetActions);
                 }
             }
         }
