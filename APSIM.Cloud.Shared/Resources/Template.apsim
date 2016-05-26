@@ -779,7 +779,7 @@
    // ------------------------------------------------------------------------------
    // The following event handler will be called each day at the END of the day
    // ------------------------------------------------------------------------------
-   [EventHandler] public void OnEnd_simulation()
+   [EventHandler] public void OnSowing()
    {
       if (WriteDepthFile)
          WriteDepthFileToDisk(); 
