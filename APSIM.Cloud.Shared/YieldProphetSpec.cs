@@ -40,8 +40,7 @@ namespace APSIM.Cloud.Shared
             SowingOpportunity,
 
             /// <summary>The Farm4Prophet report type</summary>
-            F4P,
-
+            F4P
         }
 
         /// <summary>Gets or sets the type of the report the user has requested.</summary>
