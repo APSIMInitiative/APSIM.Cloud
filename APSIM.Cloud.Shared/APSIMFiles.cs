@@ -353,6 +353,7 @@ namespace APSIM.Cloud.Shared
             soil.SoilTemperature.InitialSoilTemperature = new double[] { 22 };
             if (soil.Analysis.ParticleSizeClay == null)
                 soil.Analysis.ParticleSizeClay = MathUtilities.CreateArrayOfValues(60, soil.Analysis.Thickness.Length);
+            InFillMissingValues(soil.Analysis.ParticleSizeClay);
 
             foreach (Sample sample in soil.Samples)
                 CheckSample(soil, sample);
@@ -368,6 +369,29 @@ namespace APSIM.Cloud.Shared
             return soil;
         }
 
+        /// <summary>
+        /// In fill missing values in the specified array, taking the bottom
+        /// values and copying it down the layers.
+        /// </summary>
+        /// <param name="values">The values to check</param>
+        private static void InFillMissingValues(double[] values)
+        {
+            // find the last non missing value.
+            double lastValue = double.NaN;
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (!Double.IsNaN(values[i]))
+                    lastValue = values[i];
+            }
+
+            // replace all missing values.
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (Double.IsNaN(values[i]))
+                    values[i] = lastValue;
+            }
+        }
+
         /// <summary>Checks the soil sample.</summary>
         /// <param name="parentSoil">The parent soil.</param>
         /// <param name="sample">The sample.</param>
@@ -377,8 +401,6 @@ namespace APSIM.Cloud.Shared
                 sample.SW = null;
             if (!MathUtilities.ValuesInArray(sample.NO3))
                 sample.NO3 = null;
-            if (!MathUtilities.ValuesInArray(sample.NH4))
-                sample.NH4 = null;
             if (!MathUtilities.ValuesInArray(sample.OC))
                 sample.OC = null;
             if (!MathUtilities.ValuesInArray(sample.EC))
@@ -419,6 +441,12 @@ namespace APSIM.Cloud.Shared
 
             if (sample.PH != null)
                 sample.PH = FixArrayLength(sample.PH, sample.Thickness.Length);
+
+            // For some reason there are zero PH values sometimes e.g. 2012 validation.
+            if (sample.PH != null)
+                for (int i = 0; i < sample.PH.Length; i++)
+                    if (sample.PH[i] == 0)
+                        sample.PH[i] = 7;
         }
 
         /// <summary>
