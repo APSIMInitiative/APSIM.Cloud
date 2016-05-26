@@ -122,6 +122,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the date where the decile file starts from.</summary>
         public DateTime DecileDate { get; set; }
 
+        /// <summary>Errors that occurred during creation of the simulation. Null if no error.</summary>
+        public string ErrorMessage { get; set; }
+
         /// <summary>
         /// A factor
         /// </summary>

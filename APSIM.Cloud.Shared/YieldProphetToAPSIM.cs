@@ -38,7 +38,24 @@ namespace APSIM.Cloud.Shared
 
             foreach (Paddock paddock in yieldProphet.Paddock)
             {
-                APSIMSpec simulation = CreateBaseSimulation(paddock);
+                APSIMSpec simulation;
+                try
+                {
+                    simulation = CreateBaseSimulation(paddock);
+                    if (paddock.RunType == Paddock.RunTypeEnum.Validation)
+                    {
+                        simulation.EndDate = simulation.StartDate.AddDays(360);
+                        simulation.DailyOutput = false;
+                        simulation.YearlyOutput = true;
+                    }
+                }
+                catch (Exception err)
+                {
+                    simulation = new APSIMSpec();
+                    simulation.ErrorMessage = err.Message;
+
+                }
+
                 simulation.Name = paddock.Name;
                 simulation.WriteDepthFile = false;
                 apsimSpecs.Add(simulation);

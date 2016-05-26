@@ -99,8 +99,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             // Create and run a job.
             try
             {
-                bool runYPProcessor = JobFileName == null;
-                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory, ApsimExecutable, runYPProcessor);
+                JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory, ApsimExecutable);
                 if (runAPSIM)
                 {
                     jobManager.AddJob(job);
@@ -152,7 +151,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <param name="FilesToRun">The files to run.</param>
         /// <param name="ApsimExecutable">APSIM.exe path. Can be null.</param>
         /// <returns>A runnable job for all simulations</returns>
-        private static JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory, string ApsimExecutable, bool runYPProcessor)
+        private static JobManager.IRunnable CreateRunnableJob(string jobName, string jobXML, string workingDirectory, string ApsimExecutable)
         {
             // Create a sequential job.
             JobSequence completeJob = new JobSequence();
@@ -218,7 +217,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
                 completeJob.Jobs.Add(new RunnableJobs.APSIMJob(apsimFileName, workingDirectory, ApsimExecutable));
                 completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
-                if (runYPProcessor)
+                if (spec.Paddock.Count > 0 && spec.Paddock[0].RunType != Paddock.RunTypeEnum.Validation)
                     completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
             }
             return completeJob;

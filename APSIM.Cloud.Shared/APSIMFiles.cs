@@ -20,38 +20,77 @@ namespace APSIM.Cloud.Shared
     /// <summary>TODO: Update summary.</summary>
     public class APSIMFiles
     {
-        private static int APSIMVerionNumber = 36;
+        public static int APSIMVerionNumber = 36;
 
         /// <summary>Create all necessary YP files (.apsim and .met) from a YieldProphet spec.</summary>
         /// <param name="simulations">The simulations to write.</param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="fileNameToWrite">The name of a file to write.</param>
         /// <returns>The name of the created .apsim file.</returns>
-        public static string Create(IEnumerable<APSIMSpec> simulations, string workingFolder, string fileNameToWrite)
+        public static string Create(List<APSIMSpec> simulations, string workingFolder, string fileNameToWrite)
         {
-            // Create all necessary weather files.
-            CreateWeatherFilesForSimulations(simulations, workingFolder);
-
             // Create the .apsim XML
-            XmlNode apsimNode = CreateApsimFile(simulations);
+            XmlDocument doc = new XmlDocument();
+            doc.AppendChild(doc.CreateElement("folder"));
+            XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
+            XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
+            foreach (APSIMSpec simulation in simulations)
+            {
+                try
+                {
+                    CreateWeatherFilesForSimulations(simulation, workingFolder);
 
+                    CreateApsimFile(simulation, doc.DocumentElement);
+                }
+                catch (Exception err)
+                {
+                    simulation.ErrorMessage += err.ToString();
+                }
+            }
+            
+            // Apply factors.
+            foreach (APSIMSpec simulation in simulations)
+            {
+                if (simulation.Factors != null)
+                    foreach (APSIMSpec.Factor factor in simulation.Factors)
+                        APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
+            }
+            
             // Write the .apsim file.
             string apsimFileName = Path.Combine(workingFolder, fileNameToWrite);
-            
-            StreamWriter writer = new StreamWriter(apsimFileName);
-            writer.Write(XmlUtilities.FormattedXML(apsimNode.OuterXml));
-            writer.Close();
+            File.WriteAllText(apsimFileName, XmlUtilities.FormattedXML(doc.DocumentElement.OuterXml));
+
+            // Write a .apsimrun file.
+            string apsimRunFileName = Path.Combine(workingFolder, Path.ChangeExtension(fileNameToWrite, ".spec"));
+            string xml = XmlUtilities.Serialise(simulations, false);
+            File.WriteAllText(apsimRunFileName, xml);
 
             return apsimFileName;
+        }
+
+        /// <summary>
+        /// Create all necessary YP files (.apsim and .met) from a YieldProphet spec and 
+        /// append a simulation node to the specified parent node.
+        /// </summary>
+        /// <param name="simulations">The simulations to write.</param>
+        /// <param name="workingFolder">The folder where files shoud be created.</param>
+        /// <param name="fileNameToWrite">The name of a file to write.</param>
+        /// <returns>The name of the created .apsim file.</returns>
+        public static void Create(APSIMSpec simulation, XmlNode parentNode, string workingFolder)
+        {
+            // Create all necessary weather files.
+            CreateWeatherFilesForSimulations(simulation, workingFolder);
+
+            // Create the .apsim XML
+            CreateApsimFile(simulation, parentNode);
         }
 
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
-        private static void CreateWeatherFilesForSimulations(IEnumerable<APSIMSpec> simulations, string workingFolder)
+        private static void CreateWeatherFilesForSimulations(APSIMSpec simulation, string workingFolder)
         {
-            // Write the .met files for each paddock.
-            foreach (APSIMSpec simulation in simulations)
+            if (simulation.ErrorMessage == null)
             {
                 string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
@@ -69,11 +108,13 @@ namespace APSIM.Cloud.Shared
                 else if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTerm)
                 {
                     weatherData.CreateSimplePeriod(rainFileName, simulation.StationNumber,
-                                                   longTermStartDate, DateTime.Now, null);  
+                                                    longTermStartDate, DateTime.Now, null);
                     simulation.StartDate = weatherData.FirstSILODateFound;
                     simulation.EndDate = weatherData.LastSILODateFound;
+                    simulation.WeatherFileName = rainFileName;
                 }
-                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason)
+                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason ||
+                         simulation.TypeOfRun == Paddock.RunTypeEnum.Validation)
                 {
                     // short term.
                     // Create a short term weather file.
@@ -83,56 +124,31 @@ namespace APSIM.Cloud.Shared
                     simulation.WeatherFileName = Path.GetFileName(rainFileName);
                 }
 
-                APSIMSpec.Factor factor = new APSIMSpec.Factor();
-                factor.Name = "Met";
-                factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
-                factor.ComponentVariableName = "filename";
-                factor.ComponentVariableValues = weatherData.FilesCreated;
-                if (simulation.Factors == null)
-                    simulation.Factors = new List<APSIMSpec.Factor>();
-                simulation.Factors.Add(factor);
+                if (simulation.TypeOfRun != Paddock.RunTypeEnum.Validation)
+                {
+                    APSIMSpec.Factor factor = new APSIMSpec.Factor();
+                    factor.Name = "Met";
+                    factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
+                    factor.ComponentVariableName = "filename";
+                    factor.ComponentVariableValues = weatherData.FilesCreated;
+                    if (simulation.Factors == null)
+                        simulation.Factors = new List<APSIMSpec.Factor>();
+                    simulation.Factors.Add(factor);
+                }
             }
         }
 
-        /// <summary>Create a .apsim file for the job</summary>
-        /// <param name="yieldProphetSpec">The specification to use</param>
-        /// <param name="filterFileName">Name of the filter file.</param>
-        /// <returns>The root XML node for the file</returns>
-        /// <exception cref="System.Exception"></exception>
-        private static XmlNode CreateApsimFile(IEnumerable<APSIMSpec> simulations)
+        /// <summary>Create a .apsim file node for the job and append it to the parentNode</summary>
+        /// <param name="simulation">The specification to use</param>
+        /// <param name="parentNode">Parent XmlNode to append the simulation to.</param>
+        private static void CreateApsimFile(APSIMSpec simulation, XmlNode parentNode)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.AppendChild(doc.CreateElement("folder"));
-            XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
-            XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
-
-            string errorMessages = null;
-            foreach (APSIMSpec simulation in simulations)
+            if (simulation.ErrorMessage == null)
             {
-                try
-                {
-                    XmlNode simulationXML = CreateSimulationXML(simulation);
-                    if (simulationXML != null)
-                        doc.DocumentElement.AppendChild(doc.ImportNode(simulationXML, true));
-                }
-                catch (Exception err)
-                {
-                    errorMessages += err.Message + "\r\nPaddock name: " + simulation.Name + "\r\n";
-                }
+                XmlNode simulationXML = CreateSimulationXML(simulation);
+                if (simulationXML != null)
+                    parentNode.AppendChild(parentNode.OwnerDocument.ImportNode(simulationXML, true));
             }
-
-            if (errorMessages != null)
-                throw new Exception(errorMessages);
-
-            // Apply factors.
-            foreach (APSIMSpec simulation in simulations)
-            {
-                if (simulation.Factors != null)
-                    foreach (APSIMSpec.Factor factor in simulation.Factors)
-                        APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
-            }
-
-            return doc.DocumentElement;
         }
 
         /// <summary>
@@ -239,23 +255,23 @@ namespace APSIM.Cloud.Shared
             else
             {
                 // Convert webservice proxy soil to a real soil.
-                XmlDocument soilDoc = new XmlDocument();
-                soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Soil, false));
-                soil = XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(Soil)) as Soil;
+                //XmlDocument soilDoc = new XmlDocument();
+                //soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Soil, false));
+                soil = simulation.Soil; // XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(Soil)) as Soil;
 
                 // The crops aren't being Serialised correctly. They are put under a <Crops> node
                 // which isn't right. Do them manually.
-                foreach (SoilCrop oldCrop in simulation.Soil.Water.Crops)
-                {
-                    soil.Water.Crops.Add(new SoilCrop()
-                    {
-                        Name = oldCrop.Name,
-                        Thickness = oldCrop.Thickness,
-                        LL = oldCrop.LL,
-                        KL = oldCrop.KL,
-                        XF = oldCrop.XF
-                    });
-                }
+                //foreach (SoilCrop oldCrop in simulation.Soil.Water.Crops)
+                //{
+                //    soil.Water.Crops.Add(new SoilCrop()
+                //    {
+                //        Name = oldCrop.Name,
+                //        Thickness = oldCrop.Thickness,
+                //        LL = oldCrop.LL,
+                //        KL = oldCrop.KL,
+                //        XF = oldCrop.XF
+                //    });
+                //}
             }
 
             // Make sure we have a soil crop parameterisation. If not then try creating one
@@ -333,6 +349,8 @@ namespace APSIM.Cloud.Shared
             // Add in soil temperature. Needed for Aflatoxin risk.
             soil.SoilTemperature = new SoilTemperature();
             soil.SoilTemperature.BoundaryLayerConductance = 15;
+            soil.SoilTemperature.Thickness = new double[] { 2000 };
+            soil.SoilTemperature.InitialSoilTemperature = new double[] { 22 };
             if (soil.Analysis.ParticleSizeClay == null)
                 soil.Analysis.ParticleSizeClay = MathUtilities.CreateArrayOfValues(60, soil.Analysis.Thickness.Length);
 
@@ -342,7 +360,7 @@ namespace APSIM.Cloud.Shared
             // get rid of <soiltype> from the soil
             // this is necessary because NPD uses this field and puts in really long
             // descriptive classifications. Soiln2 bombs with an FString internal error.
-            soil.SoilType = "";
+            soil.SoilType = null;
 
             // Set the soil name to 'soil'
             soil.Name = "Soil";
@@ -355,6 +373,23 @@ namespace APSIM.Cloud.Shared
         /// <param name="sample">The sample.</param>
         private static void CheckSample(Soil parentSoil, Sample sample)
         {
+            if (!MathUtilities.ValuesInArray(sample.SW))
+                sample.SW = null;
+            if (!MathUtilities.ValuesInArray(sample.NO3))
+                sample.NO3 = null;
+            if (!MathUtilities.ValuesInArray(sample.NH4))
+                sample.NH4 = null;
+            if (!MathUtilities.ValuesInArray(sample.OC))
+                sample.OC = null;
+            if (!MathUtilities.ValuesInArray(sample.EC))
+                sample.EC = null;
+            if (!MathUtilities.ValuesInArray(sample.CL))
+                sample.CL = null;
+            if (!MathUtilities.ValuesInArray(sample.ESP))
+                sample.ESP = null;
+            if (!MathUtilities.ValuesInArray(sample.PH))
+                sample.PH = null;
+
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);
             CheckMissingValuesAreNaN(sample.NH4);

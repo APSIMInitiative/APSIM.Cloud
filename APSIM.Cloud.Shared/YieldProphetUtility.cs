@@ -92,12 +92,29 @@ namespace APSIM.Cloud.Shared
             if (XmlUtilities.Value(doc.DocumentElement, "Version") != "9")
                 return YieldProphetOld.YieldProphetFromXML(doc.DocumentElement, workingFolder);
             else
-            {
-                XmlReader reader = new XmlNodeReader(doc.DocumentElement);
-                reader.Read();
-                XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
-                return (YieldProphet)serial.Deserialize(reader);
-            }
+                return YieldProphetFromXML(doc.DocumentElement);
+        }
+
+        /// <summary>Factory method for creating a YieldProphet object from an XmlNode</summary>
+        /// <param name="xml">The XML node to use to create the object</param>
+        /// <returns>The newly created object.</returns>
+        public static YieldProphet YieldProphetFromXML(XmlNode node)
+        {
+            XmlReader reader = new XmlNodeReader(node);
+            reader.Read();
+            XmlSerializer serial = new XmlSerializer(typeof(YieldProphet));
+            return (YieldProphet)serial.Deserialize(reader);
+        }
+
+        /// <summary>Factory method for creating a Paddock object from an XmlNode</summary>
+        /// <param name="xml">The XML node to use to create the object</param>
+        /// <returns>The newly created object.</returns>
+        public static Paddock PaddockFromXML(XmlNode node)
+        {
+            XmlReader reader = new XmlNodeReader(node);
+            reader.Read();
+            XmlSerializer serial = new XmlSerializer(typeof(Paddock));
+            return (Paddock)serial.Deserialize(reader);
         }
 
         /// <summary>Convert the YieldProphet spec to XML.</summary>

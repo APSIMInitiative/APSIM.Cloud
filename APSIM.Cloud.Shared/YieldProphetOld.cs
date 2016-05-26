@@ -17,7 +17,7 @@ namespace APSIM.Cloud.Shared
     using APSIM.Shared.Utilities;
     using APSIM.Shared.OldAPSIM;
 
-    class YieldProphetOld
+    public class YieldProphetOld
     {
         /// <summary>Converts the old Yield Prophet XML to new XML format capable of deserialisation</summary>
         /// <param name="yieldProphetXML">The old Yield Prophet XML</param>
@@ -67,9 +67,7 @@ namespace APSIM.Cloud.Shared
             Paddock simulation = new Paddock();
 
             string name = XmlUtilities.NameAttr(paddock);
-            string delimiter = ";";
-            if (!name.Contains(delimiter))
-                delimiter = "^";
+            string delimiter = "^";
             int posCaret = name.IndexOf(delimiter);
 
             if (posCaret == -1)
@@ -98,24 +96,26 @@ namespace APSIM.Cloud.Shared
                 simulation.NowDate = DateTime.Now;
 
             // Store any rainfall data in the simulation.
-            string rainFileName = GetString(paddock, "RainfallFilename");
-            if (rainFileName != string.Empty)
+            simulation.RainfallSource = GetString(paddock, "RainfallSource");
+            if (simulation.RainfallSource != "Weather station")
             {
-                string fullFileName = Path.Combine(baseFolder, rainFileName);
-                if (!File.Exists(fullFileName))
-                    throw new Exception("Cannot find file: " + fullFileName);
-                simulation.ObservedData = ApsimTextFile.ToTable(fullFileName);
-                if (simulation.ObservedData.Rows.Count == 0)
-                    simulation.ObservedData = null;
+                string rainFileName = GetString(paddock, "RainfallFilename");
+                if (rainFileName != string.Empty)
+                {
+                    string fullFileName = Path.Combine(baseFolder, rainFileName);
+                    if (!File.Exists(fullFileName))
+                        throw new Exception("Cannot find file: " + fullFileName);
+                    simulation.ObservedData = ApsimTextFile.ToTable(fullFileName);
+                    if (simulation.ObservedData.Rows.Count == 0)
+                        simulation.ObservedData = null;
+                }
             }
-
             // Set the reset dates
             simulation.SoilWaterSampleDate = GetDate(paddock, "ResetDateFull");
             simulation.SoilNitrogenSampleDate = GetDate(paddock, "SoilNitrogenSampleDateFull");
 
             simulation.StationNumber = GetInteger(paddock, "StationNumber");
             simulation.StationName = GetString(paddock, "StationName");
-            simulation.RainfallSource = GetString(paddock, "RainfallSource");
             
             // Create a sowing management
             Sow sowing = new Sow();
