@@ -1061,6 +1061,7 @@
           <variable>PercentCover</variable>
           <variable>FASW</variable>
           <variable>ave_soil_temp(1) as SoilTemp</variable>
+          <variable>sw</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>post</event>
