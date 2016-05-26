@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/05/06 13:34:52</lastsaved>
+  <lastsaved>2016/05/23 13:57:40</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -108,14 +108,6 @@
                 </field>
                 <field name="order" kind="integer4">
                   <val>1000</val>
-                </field>
-              </element>
-              <element>
-                <field name="event" kind="string">
-                  <val>daily_01.update_outputs</val>
-                </field>
-                <field name="order" kind="integer4">
-                  <val>9999</val>
                 </field>
               </element>
               <element>
@@ -12144,6 +12136,14 @@
               <val>   set fert_n_applied = constants.rotation_template</val>
               <val>   set phase_crop     = constants.rotation_template_text</val>
               <val></val>
+              <val>   for rot_system = 1 to length(phase_crop)</val>
+              <val>   {</val>
+              <val>      for i = 1 to length(phase_crop[rot_system])</val>
+              <val>      {</val>
+              <val>         set phase_crop[rot_system,i] = '-'</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val></val>
               <val>   set crop_type_yields = all_crops_zero</val>
               <val>   set hay_type_yields = all_crops_zero</val>
               <val>   set crop_type_area = all_crops_zero</val>
@@ -19140,6 +19140,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -20477,6 +20483,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -21814,6 +21826,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -23151,6 +23169,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -24488,6 +24512,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -25825,6 +25855,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -27162,6 +27198,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -28499,6 +28541,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -29836,6 +29884,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -31173,6 +31227,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -32498,6 +32558,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -33823,6 +33889,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -35148,6 +35220,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -36473,6 +36551,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -37798,6 +37882,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.60</val>
+                  <val>0.40</val>
+                  <val>0.30</val>
+                  <val>0.20</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
