@@ -399,9 +399,6 @@
 
       if (origmaxt != -999)
          Console.WriteLine("Using original maximum temperatures for frost/heat calculations");
-      
-      if (WriteDepthFile)
-         WriteDepthFileToDisk(); 
    }
       
    // ------------------------------------------------------------------------------
@@ -572,7 +569,6 @@
       
       dsli = dsli + 1;
    }
-   
    
    
    // ------------------------------------------------------------------------------
@@ -779,6 +775,16 @@
       
    }
       
+  
+   // ------------------------------------------------------------------------------
+   // The following event handler will be called each day at the END of the day
+   // ------------------------------------------------------------------------------
+   [EventHandler] public void OnEnd_simulation()
+   {
+      if (WriteDepthFile)
+         WriteDepthFileToDisk(); 
+   }
+   
    // ------------------------------------------------------------------------------
    // The following function will create a depth output file.
    // ------------------------------------------------------------------------------
