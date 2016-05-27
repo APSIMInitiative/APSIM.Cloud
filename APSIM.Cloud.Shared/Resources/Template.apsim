@@ -845,6 +845,299 @@
        </text>
         <Reference>ApsimFile.dll</Reference>
       </manager2>
+      <manager name="WheatFrostHeat" enabled="no">
+        <script>
+          <text>
+            frost_multiplier=1
+            heat_multiplier=1
+            frost_multiplier = 1
+            cum_frost_multiplier=1
+            cum_heat_multiplier=1
+
+            heat_exposure= 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+
+            mild_exposure = 0
+            moderate_exposure = 0
+            severe_exposure = 0
+
+
+
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            frost_days = 0
+
+            FrostHeatYield = 0
+            FrostHeatYieldWet = 0
+            MoistureContent = 12.0;
+            wheat_in = 0
+
+
+
+            ! This work comes from:
+            !   Lindsay W. Bell, Julianne M. Lilley, James R. Hunt, and John A. Kirkegaard
+            !     (2015) Optimising grain yield and grazing potential of crops across Australia’s
+            !      high-rainfall zone: a simulation analysis. 1. Wheat, Crop &amp; Pasture Science, 66, 332-348.
+          </text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+            if (stagename = 'out') then
+            cum_frost_multiplier=1
+            cum_heat_multiplier=1
+            FrostHeatYield = 0
+            wheat_in = 0
+            else
+            wheat_in = 1
+            frost_multiplier = 1
+            heat_multiplier = 1
+            frost_days = 0
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+            endif
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
+            heat_exposure= 1
+            else
+            heat_exposure= 0
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 32 AND maxt &lt; 34) then
+            heat_multiplier = 0.9
+            mild_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 34 AND maxt &lt; 36) then
+            heat_multiplier = 0.8
+            mod_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 36) then
+            heat_multiplier = 0.7
+            sev_heat_stress_days = 1
+            endif
+
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 69) then
+            mild_exposure = 1
+            else
+            mild_exposure = 0
+            endif
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 75) then
+            moderate_exposure = 1
+            else
+            moderate_exposure = 0
+            endif
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
+            severe_exposure = 1
+            else
+            severe_exposure = 0
+            endif
+
+            if (mild_exposure = 1 AND mint &lt;= 2 AND mint &gt; 0) then
+            frost_multiplier = 0.9
+            mild_frost_days = 1
+            endif
+
+            if (moderate_exposure = 1 AND mint &lt;= 0 AND mint &gt; -2) then
+            frost_multiplier = 0.8
+            mod_frost_days = 1
+            endif
+
+            if (severe_exposure = 1 AND mint &lt;= -2) then
+            frost_multiplier = 0.1
+            sev_frost_days = 1
+            endif
+
+            frost_days = mild_frost_days + mod_frost_days + sev_frost_days
+            heat_stress_days =  mild_heat_stress_days + mod_heat_stress_days + sev_heat_stress_days
+
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
+            cum_frost_multiplier = cum_frost_multiplier * frost_multiplier
+            cum_heat_multiplier = cum_heat_multiplier * heat_multiplier
+            endif
+
+            FrostHeatYield = Yield * cum_frost_multiplier * cum_heat_multiplier
+            FrostHeatYieldWet = Yield / (1 - MoistureContent / 100.0) / 1000;
+          </text>
+          <event>start_of_day</event>
+        </script>
+      </manager>
+      <manager name="CanolaFrostHeat" enabled="no">
+        <script>
+          <text>
+            frost_multiplier=1
+            heat_multiplier=1
+            frost_multiplier = 1
+            cum_frost_multiplier=1
+            cum_heat_multiplier=1
+            heat_exposure= 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+
+            frost_exposure = 0
+
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            frost_days = 0
+
+            FrostHeatYield = 0
+            FrostHeatYieldWet = 0
+            FrostHeatGrain_Wt = 0
+
+            FrostHeatGrain_Wt3 = 0
+
+            canola_in = 0
+
+
+            ! This work comes from:
+            !   Julianne M. Lilley, Lindsay W. Bell, and John A. Kirkegaard
+            !     (2015) Optimising grain yield and grazing potential of crops across Australia’s
+            !     high-rainfall zone: a simulation analysis. 2. Canola,
+            !     Crop &amp; Pasture Science, 66, 349-364
+          </text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+            !Rules for calculation of heat and frost risk
+
+            degree_days = (mint + maxt) / 2
+            if (canola.stage &gt;= 6) then
+            cum_degree_days = degree_days + cum_degree_days
+            else
+            cum_degree_days = 0
+            endif
+
+            if (cum_degree_days &gt; 0 and cum_degree_days &lt; 630 then ! 630 degree days approx 6 weeks @ 15 dd / day; approx flowering window
+            heat_exposure = 1
+            else
+            heat_exposure = 0
+            endif
+
+            if (cum_degree_days &gt; 140 and cum_degree_days &lt; 800) then ! 140 degree days approx 2 weeks @ 10 dd / day, to 6weeks after that
+            ! approx water pod window
+            frost_exposure = 1
+            else
+            frost_exposure = 0
+            endif
+
+            if (heat_exposure = 1 and maxt &gt;= 30) then
+            heat_stress = 1
+            else
+            heat_stress = 0
+            endif
+
+            if (frost_exposure = 1 and mint &lt;= 2) then
+            light_frost_stress = 1
+            else
+            light_frost_stress = 0
+            endif
+
+            if (frost_exposure = 1 and mint &lt;= 0) then
+            heavy_frost_stress = 1
+            else
+            heavy_frost_stress = 0
+            endif
+
+
+            if (canola.stage &gt; 0) then  ! reset  each day
+            canola_in = 1
+            frost_multiplier = 1
+            heat_multiplier = 1
+            frost_days = 0
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+            else
+            canola_in = 0
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 30 AND maxt &lt; 33) then
+            heat_multiplier = 0.9
+            mild_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 33 AND maxt &lt; 36) then
+            heat_multiplier = 0.82
+            mod_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 36) then
+            heat_multiplier = 0.65
+            sev_heat_stress_days = 1
+            endif
+
+
+
+            if (frost_exposure = 1 AND mint &lt;= 2 AND mint &gt; 0) then
+            frost_multiplier = 1.0
+            mild_frost_days = 1
+            endif
+
+            if (frost_exposure = 1 AND mint &lt;= 0 AND mint &gt; -2) then
+            frost_multiplier = 0.98
+            mod_frost_days = 1
+            endif
+
+            if (frost_exposure = 1 AND mint &lt;= -2) then
+            frost_multiplier = 0.90
+            sev_frost_days = 1
+            endif
+
+            frost_days = mild_frost_days + mod_frost_days + sev_frost_days
+            heat_stress_days =  mild_heat_stress_days + mod_heat_stress_days + sev_heat_stress_days
+
+            if (canola.stagename = 'out') then
+            cum_heat_stress = 0
+            cum_light_frost_stress = 0
+            cum_heavy_frost_stress = 0
+            cum_frost_multiplier=1
+            cum_heat_multiplier=1
+            FrostHeatYield = 0
+            FrostHeatYieldWet = 0
+            FrostHeatGrain_wt = 0
+            endif
+
+            if (cum_degree_days &gt; 0 and cum_degree_days &lt; 630) then
+            cum_heat_stress=cum_heat_stress + heat_stress
+            cum_light_frost_stress=cum_light_frost_stress + light_frost_stress
+            cum_heavy_frost_stress=cum_heavy_frost_stress + heavy_frost_stress
+            cum_frost_multiplier=cum_frost_multiplier * frost_multiplier
+            cum_heat_multiplier=cum_heat_multiplier * heat_multiplier
+            endif
+
+            if (canola.yield &gt; 0) then
+            FrostHeatGrain_wt=canola.Grain_wt*cum_frost_multiplier*cum_heat_multiplier
+            FrostHeatYield=canola.Yield*cum_frost_multiplier*cum_heat_multiplier
+            FrostHeatYieldWet=canola.Yieldwet*cum_frost_multiplier*cum_heat_multiplier
+            HIfh = FrostheatGrain_wt /  canola.biomass_wt
+            HI = grain_wt / biomass_wt
+            endif
+          </text>
+          <event>start_of_day</event>
+        </script>
+      </manager>
       <operations name="Operations" />
       <fertiliser name="Fertiliser" />
       <irrigation name="Irrigation">
@@ -988,6 +1281,7 @@
           <variable>TopDressFertiliser</variable>
           <variable>PeanutPodYield</variable>
           <variable>Stage</variable>
+          <variable>FrostHeatYieldWet</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>

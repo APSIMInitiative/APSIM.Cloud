@@ -184,9 +184,12 @@ namespace APSIM.Cloud.Shared
                 }
 
                 if (sowing.IrrigationAmount > 0)
-                {
                     AddOperation(sowing.Date, "Irrigation apply amount = " + sowing.IrrigationAmount.ToString());
-                }
+
+                if (sowing.Crop == "Wheat")
+                    XmlUtilities.SetAttribute(simulationXML, "Paddock/WheatFrostHeat/enabled", "yes");
+                if (sowing.Crop == "Canola")
+                    XmlUtilities.SetAttribute(simulationXML, "Paddock/CanolaFrostHeat/enabled", "yes");
             }
 
             return operationsXML;
