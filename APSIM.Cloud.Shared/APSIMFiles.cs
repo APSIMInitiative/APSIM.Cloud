@@ -47,15 +47,15 @@ namespace APSIM.Cloud.Shared
                     simulation.ErrorMessage += err.ToString();
                 }
             }
-            
+
             // Apply factors.
             foreach (APSIMSpec simulation in simulations)
             {
-                if (simulation.Factors != null)
+                if (simulation.ErrorMessage == null && simulation.Factors != null)
                     foreach (APSIMSpec.Factor factor in simulation.Factors)
                         APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
             }
-            
+
             // Write the .apsim file.
             string apsimFileName = Path.Combine(workingFolder, fileNameToWrite);
             File.WriteAllText(apsimFileName, XmlUtilities.FormattedXML(doc.DocumentElement.OuterXml));
@@ -64,6 +64,19 @@ namespace APSIM.Cloud.Shared
             string apsimRunFileName = Path.Combine(workingFolder, Path.ChangeExtension(fileNameToWrite, ".spec"));
             string xml = XmlUtilities.Serialise(simulations, false);
             File.WriteAllText(apsimRunFileName, xml);
+
+            // If this isn't a validation run (i.e. a YP run) then look for errors and throw if found.
+            if (simulations.Count > 0 && simulations[0].TypeOfRun != Paddock.RunTypeEnum.Validation)
+            {
+                string errors = null;
+                foreach (APSIMSpec simulation in simulations)
+                {
+                    if (simulation.ErrorMessage != null)
+                        errors += simulation.ErrorMessage + Environment.NewLine;
+                }
+                if (errors != null)
+                    throw new Exception(errors);
+            }
 
             return apsimFileName;
         }
