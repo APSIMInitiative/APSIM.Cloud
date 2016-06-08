@@ -1129,8 +1129,8 @@
 
             if (canola.yield &gt; 0) then
             FrostHeatGrain_wt=canola.Grain_wt*cum_frost_multiplier*cum_heat_multiplier
-            FrostHeatYield=canola.Yield*cum_frost_multiplier*cum_heat_multiplier
-            FrostHeatYieldWet=canola.Yieldwet*cum_frost_multiplier*cum_heat_multiplier
+            FrostHeatYield=canola.Yield*cum_frost_multiplier*cum_heat_multiplier / 1000
+            FrostHeatYieldWet=canola.Yieldwet*cum_frost_multiplier*cum_heat_multiplier / 1000
             HIfh = FrostheatGrain_wt /  canola.biomass_wt
             HI = grain_wt / biomass_wt
             endif
