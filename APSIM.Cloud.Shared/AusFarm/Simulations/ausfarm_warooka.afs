@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/05/23 13:51:55</lastsaved>
+  <lastsaved>2016/06/02 16:38:49</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -15,7 +15,7 @@
               <val>1980/01/01</val>
             </init>
             <init name="finish" kind="string">
-              <val>2010/12/31</val>
+              <val>1984/12/31</val>
             </init>
             <init name="timestep" kind="integer4">
               <val>1</val>
@@ -9879,28 +9879,25 @@
               <val>      set stock_buy_weight      = buy_weight</val>
               <val>      set stock_buy_cond_score  = buy_cond_score</val>
               <val></val>
+              <val>      ! reset the working values</val>
+              <val>      set number_purchased = [0] * NUM_TAGS</val>
+              <val>      set buy_weight       = [0.0] * NUM_TAGS</val>
+              <val>      set buy_cond_score   = [0.0] * NUM_TAGS</val>
+              <val>      set sale_weight      = [0.0] * NUM_TAGS</val>
+              <val>      set sale_cond_score  = [0.0] * NUM_TAGS</val>
+              <val>      set number_sold      = [0] * NUM_TAGS</val>
               <val>   }</val>
               <val>   else</val>
               <val>   {</val>
               <val>      if day_no = 1</val>
               <val>      {</val>
-              <val>         ! initialise the montly working values for each tag</val>
-              <val>         for t = 1 to NUM_TAGS</val>
-              <val>         {</val>
-              <val>            set number_purchased[t]      = 0</val>
-              <val>            set buy_weight[t]            = 0.0</val>
-              <val>            set buy_cond_score[t]        = 0.0</val>
-              <val>            set sale_weight[t]           = 0.0</val>
-              <val>            set sale_cond_score[t]       = 0.0</val>
-              <val>            set number_sold[t]           = 0</val>
-              <val></val>
-              <val>            set stock_sale_number[t]     = 0</val>
-              <val>            set stock_sale_weight[t]     = 0.0</val>
-              <val>            set stock_sale_cond_score[t] = 0.0</val>
-              <val>            set stock_buy_number[t]      = 0</val>
-              <val>            set stock_buy_weight[t]      = 0.0</val>
-              <val>            set stock_buy_cond_score[t]  = 0.0</val>
-              <val>         }</val>
+              <val>         ! initialise the montly summary values for each tag</val>
+              <val>         set stock_sale_number      = [0] * NUM_TAGS</val>
+              <val>         set stock_sale_weight      = [0.0] * NUM_TAGS</val>
+              <val>         set stock_sale_cond_score  = [0.0] * NUM_TAGS</val>
+              <val>         set stock_buy_number       = [0] * NUM_TAGS</val>
+              <val>         set stock_buy_weight       = [0.0] * NUM_TAGS</val>
+              <val>         set stock_buy_cond_score   = [0.0] * NUM_TAGS</val>
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
@@ -17765,7 +17762,6 @@
 <SummerDate>1-Nov</SummerDate>
 <WinterDate>1-Apr</WinterDate>
 </initdata>
-
         </component>
 
 
@@ -18020,7 +18016,6 @@
 <xf>1.000 1.000 1.000 1.000 1.000 1.000 0.000 0.000</xf>
 <ModifyKL></ModifyKL>
 </initdata>
-
         </component>
 
 
