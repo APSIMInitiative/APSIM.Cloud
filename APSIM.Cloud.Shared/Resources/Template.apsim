@@ -888,77 +888,77 @@
         <script>
           <text>
             if (stagename = 'out') then
-            cum_frost_multiplier=1
-            cum_heat_multiplier=1
-            FrostHeatYield = 0
-            wheat_in = 0
+              cum_frost_multiplier=1
+              cum_heat_multiplier=1
+              FrostHeatYield = 0
+              wheat_in = 0
             else
-            wheat_in = 1
-            frost_multiplier = 1
-            heat_multiplier = 1
-            frost_days = 0
-            mild_frost_days = 0
-            mod_frost_days = 0
-            sev_frost_days = 0
-            heat_stress_days = 0
-            mild_heat_stress_days = 0
-            mod_heat_stress_days = 0
-            sev_heat_stress_days = 0
+              wheat_in = 1
+              frost_multiplier = 1
+              heat_multiplier = 1
+              frost_days = 0
+              mild_frost_days = 0
+              mod_frost_days = 0
+              sev_frost_days = 0
+              heat_stress_days = 0
+              mild_heat_stress_days = 0
+              mod_heat_stress_days = 0
+              sev_heat_stress_days = 0
             endif
 
             if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
-            heat_exposure= 1
+              heat_exposure= 1
             else
-            heat_exposure= 0
+              heat_exposure= 0
             endif
 
             if (heat_exposure = 1 AND maxt &gt;= 32 AND maxt &lt; 34) then
-            heat_multiplier = 0.9
-            mild_heat_stress_days = 1
+              heat_multiplier = 0.9
+              mild_heat_stress_days = 1
             endif
 
             if (heat_exposure = 1 AND maxt &gt;= 34 AND maxt &lt; 36) then
-            heat_multiplier = 0.8
-            mod_heat_stress_days = 1
+              heat_multiplier = 0.8
+              mod_heat_stress_days = 1
             endif
 
             if (heat_exposure = 1 AND maxt &gt;= 36) then
-            heat_multiplier = 0.7
-            sev_heat_stress_days = 1
+              heat_multiplier = 0.7
+              sev_heat_stress_days = 1
             endif
 
 
             if (zadok_stage &gt; 60 and zadok_stage &lt; 69) then
-            mild_exposure = 1
+              mild_exposure = 1
             else
-            mild_exposure = 0
+              mild_exposure = 0
             endif
 
             if (zadok_stage &gt; 60 and zadok_stage &lt; 75) then
-            moderate_exposure = 1
+              moderate_exposure = 1
             else
-            moderate_exposure = 0
+              moderate_exposure = 0
             endif
 
             if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
-            severe_exposure = 1
+              severe_exposure = 1
             else
-            severe_exposure = 0
+              severe_exposure = 0
             endif
 
             if (mild_exposure = 1 AND mint &lt;= 2 AND mint &gt; 0) then
-            frost_multiplier = 0.9
-            mild_frost_days = 1
+              frost_multiplier = 0.9
+              mild_frost_days = 1
             endif
 
             if (moderate_exposure = 1 AND mint &lt;= 0 AND mint &gt; -2) then
-            frost_multiplier = 0.8
-            mod_frost_days = 1
+              frost_multiplier = 0.8
+              mod_frost_days = 1
             endif
 
             if (severe_exposure = 1 AND mint &lt;= -2) then
-            frost_multiplier = 0.1
-            sev_frost_days = 1
+              frost_multiplier = 0.1
+              sev_frost_days = 1
             endif
 
             frost_days = mild_frost_days + mod_frost_days + sev_frost_days
@@ -971,7 +971,7 @@
             endif
 
             FrostHeatYield = Yield * cum_frost_multiplier * cum_heat_multiplier
-            FrostHeatYieldWet = Yield / (1 - MoistureContent / 100.0) / 1000;
+            FrostHeatYieldWet = WetYield * cum_frost_multiplier * cum_heat_multiplier
           </text>
           <event>start_of_day</event>
         </script>
