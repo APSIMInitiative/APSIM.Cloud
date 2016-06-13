@@ -145,6 +145,14 @@
           [Output] int Zadok55Das;
           [Output] int Zadok65Das;
           [Output] int Zadok75Das;
+          [Output] int Stage2Das;
+          [Output] int Stage3Das;
+          [Output] int Stage4Das;
+          [Output] int Stage5Das;
+          [Output] int Stage6Das;
+          [Output] int Stage7Das;
+          [Output] int Stage8Das;
+          [Output] int Stage9Das;
           [Output] int MildHeatShockCount = 0;
           [Output] int ModerateHeatShockCount = 0;
           [Output] int SevereHeatShockCount = 0;
@@ -637,7 +645,8 @@
          Zadok65Das = DaysAfterSowing;
       else if(Z &gt;= 75 &amp;&amp; Zadok75Das == 0) 
          Zadok75Das = DaysAfterSowing;
-      
+         
+      CalculateStageVariables();
 
       // Count waterlogging events in crop
       double swTop2Layers = sw_dep[0] + sw_dep[1];
@@ -784,7 +793,42 @@
       if (WriteDepthFile)
          WriteDepthFileToDisk(); 
    }
-   
+  
+   // ------------------------------------------------------------------------------
+   // Calculate STAGE variables.
+   // ------------------------------------------------------------------------------
+   private void CalculateStageVariables()
+   {
+      if (DaysAfterSowing == 1)
+      {
+         Stage2Das = 0;
+         Stage3Das = 0;
+         Stage4Das = 0;
+         Stage5Das = 0;
+         Stage6Das = 0;
+         Stage7Das = 0;
+         Stage8Das = 0;
+         Stage9Das = 0;
+      }
+      
+      if (Stage &gt;= 2 &amp;&amp; Stage2Das == 0) 
+         Stage2Das = DaysAfterSowing;
+      else if (Stage &gt;= 3 &amp;&amp; Stage3Das == 0) 
+         Stage3Das = DaysAfterSowing;
+      else if (Stage &gt;= 4 &amp;&amp; Stage4Das == 0) 
+         Stage4Das = DaysAfterSowing;
+      else if (Stage &gt;= 5 &amp;&amp; Stage5Das == 0) 
+         Stage5Das = DaysAfterSowing;
+      else if (Stage &gt;= 6 &amp;&amp; Stage6Das == 0) 
+         Stage6Das = DaysAfterSowing;
+      else if (Stage &gt;= 7 &amp;&amp; Stage7Das == 0) 
+         Stage7Das = DaysAfterSowing;
+      else if (Stage &gt;= 8 &amp;&amp; Stage8Das == 0) 
+         Stage8Das = DaysAfterSowing;
+      else if (Stage &gt;= 9 &amp;&amp; Stage9Das == 0) 
+         Stage9Das = DaysAfterSowing;
+   }
+  
    // ------------------------------------------------------------------------------
    // The following function will create a depth output file.
    // ------------------------------------------------------------------------------
@@ -1281,6 +1325,14 @@
           <variable>TopDressFertiliser</variable>
           <variable>PeanutPodYield</variable>
           <variable>Stage</variable>
+          <variable>Stage2Das</variable>
+          <variable>Stage3Das</variable>
+          <variable>Stage4Das</variable>
+          <variable>Stage5Das</variable>
+          <variable>Stage6Das</variable>
+          <variable>Stage7Das</variable>
+          <variable>Stage8Das</variable>
+          <variable>Stage9Das</variable>
           <variable>FrostHeatYieldWet</variable>
         </variables>
         <events name="Reporting Frequency">
