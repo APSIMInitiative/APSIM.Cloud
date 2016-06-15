@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/06/02 16:39:35</lastsaved>
+  <lastsaved>2016/06/15 15:26:16</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -12,10 +12,10 @@
             <init name="driver_connections" array="T">
             </init>
             <init name="start" kind="string">
-              <val>1980/01/01</val>
+              <val>1985/01/01</val>
             </init>
             <init name="finish" kind="string">
-              <val>1989/12/31</val>
+              <val>2013/12/31</val>
             </init>
             <init name="timestep" kind="integer4">
               <val>1</val>
@@ -8293,8 +8293,8 @@
               <val></val>
               <val></val>
               <val></val>
-              <val>define integer max_stubble_days                = 50                             ! Length of stubble grazing period</val>
-              <val>define real    stubble_cover_threshold         = 0.65                           ! Threshold cover to abandon summer grazing</val>
+              <val>define integer max_stubble_days                = 200                             ! Length of stubble grazing period</val>
+              <val>define real    stubble_cover_threshold         = 0.5                           ! Threshold cover to abandon summer grazing</val>
               <val>define real    stubble_green_pasture_threshold = 500.0                          ! kg/ha; end of stubble grazing because we have green forage</val>
               <val>define real    pasture_cover_threshold         = 0.70</val>
               <val></val>
@@ -9330,8 +9330,75 @@
               <val>   set merino_excess_ewes = - merino_replace_flock_size</val>
               <val>   set DohneX_excess_ewes = - DohneX_replace_flock_size</val>
               <val></val>
+              <val>   set merino_no_sold    = 0</val>
+              <val>   set dohneX_no_sold    = 0</val>
+              <val></val>
+              <val>   call split_ages</val>
+              <val>   for i = 1 to animals.no_groups</val>
+              <val>   {</val>
+              <val>      set animals_tag = animals.tag_no[i]</val>
+              <val>      ! sell off any animals tagged as culls</val>
+              <val>      if animals_tag = EWE_MERINO_CULL</val>
+              <val>      {</val>
+              <val>         set merino_cull_ewes = animals.number[i]</val>
+              <val>         call sell_animal_group group_no=i, sale_no=merino_cull_ewes</val>
+              <val>         set merino_no_sold = merino_no_sold + merino_cull_ewes</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val></val>
               <val>   !Merino ewes</val>
               <val>   for animals_tag = EWE_MERINO_MAIDEN_DRY to min(EWE_MERINO,length(tag_counts))   ! this should be maidens +</val>
+              <val>   {</val>
+              <val>      set merino_excess_ewes = merino_excess_ewes + tag_counts[animals_tag]</val>
+              <val>   }</val>
+              <val></val>
+              <val>   call split_ages</val>
+              <val></val>
+              <val>   ! sell animals from the oldest age classes down to the required ewe flock size</val>
+              <val>   for merino_age_class = 10 to 1 step -1</val>
+              <val>   {</val>
+              <val>      for i = 1 to animals.no_groups                                             ! Sell them and record their weight etc</val>
+              <val>      {                                                                          ! CHECK - is this selling all old ewes??</val>
+              <val>         set merino_animals_age    = animals.age[i]</val>
+              <val></val>
+              <val>         if (merino_no_sold &lt; merino_excess_ewes) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1))</val>
+              <val>         {</val>
+              <val>            set merino_animals_number = animals.number[i]</val>
+              <val>            set merino_no_to_sell = min( merino_animals_number, merino_excess_ewes - merino_no_sold )</val>
+              <val>            call sell_animal_group group_no=i, sale_no=merino_no_to_sell</val>
+              <val>            set merino_no_sold = merino_no_sold + merino_no_to_sell</val>
+              <val>         }</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val></val>
+              <val>   for animals_tag = EWE_DOHNEX_MAIDEN_DRY to min(EWE_DOHNEX,length(tag_counts))   ! this should be maidens +</val>
+              <val>   {</val>
+              <val>      set DOHNEX_excess_ewes = DOHNEX_excess_ewes + tag_counts[animals_tag]</val>
+              <val>   }</val>
+              <val></val>
+              <val>   call split_ages</val>
+              <val></val>
+              <val>   ! sell animals from the oldest age classes down to the required ewe flock size</val>
+              <val>   for DOHNEX_age_class = 10 to 1 step -1</val>
+              <val>   {</val>
+              <val>      for i = 1 to animals.no_groups                                             ! Sell them and record their weight etc</val>
+              <val>      {                                                                          ! CHECK - is this selling all old ewes??</val>
+              <val>         set DOHNEX_animals_age    = animals.age[i]</val>
+              <val></val>
+              <val>         if (DOHNEX_no_sold &lt; DOHNEX_excess_ewes) and (DOHNEX_animals_age &gt; 365*DOHNEX_age_class) and (DOHNEX_animals_age &lt;= 365*(DOHNEX_age_class+1))</val>
+              <val>         {</val>
+              <val>            set DOHNEX_animals_number = animals.number[i]</val>
+              <val>            set DOHNEX_no_to_sell = min( DOHNEX_animals_number, DOHNEX_excess_ewes - DOHNEX_no_sold )</val>
+              <val>            call sell_animal_group group_no=i, sale_no=DOHNEX_no_to_sell</val>
+              <val>            set DOHNEX_no_sold = DOHNEX_no_sold + DOHNEX_no_to_sell</val>
+              <val>         }</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val></val>
+              <val>}</val>
+              <val></val>
+              <val></val>
+              <val>/*   for animals_tag = EWE_MERINO_MAIDEN_DRY to min(EWE_MERINO,length(tag_counts))   ! this should be maidens +</val>
               <val>   {</val>
               <val>      set merino_excess_ewes = merino_excess_ewes + tag_counts[animals_tag]</val>
               <val>   }</val>
@@ -9386,7 +9453,7 @@
               <val>         }</val>
               <val>      }</val>
               <val>   }</val>
-              <val>}</val>
+              <val>}     */</val>
               <val></val>
               <val></val>
               <val>/*==============================================================================</val>
@@ -9583,6 +9650,12 @@
               <val>{</val>
               <val>   if day = merino_wean_day</val>
               <val>   {</val>
+              <val>      set merino_survival_rate       = min( 1.0 - animals.genotypes[1]:death_rate, 0.999999 )</val>
+              <val>      set merino_years_wean_to_cull  = ((cull_day - merino_wean_day + 365) mod 365) / 365</val>
+              <val>      set merino_replace_age_years   = merino_replace_age_days div 365</val>
+              <val>      set merino_replace_flock_size  = merino_ewe_number</val>
+              <val>      set merino_replace_cohort_size = merino_replace_flock_size * (1.0 - merino_survival_rate) / (1.0 - merino_survival_rate ^ (merino_cull_years - merino_replace_age_years + merino_years_wean_to_cull))</val>
+              <val></val>
               <val>      set main_groups = animals.no_groups                                        ! store the range of original animal groups</val>
               <val>      for g = 1 to main_groups                                                   ! for each animal group</val>
               <val>      {</val>
@@ -9641,6 +9714,13 @@
               <val>{</val>
               <val>   if day = DohneX_wean_day</val>
               <val>   {</val>
+              <val>      set DohneX_survival_rate       = min( 1.0 - animals.genotypes[1]:death_rate, 0.999999 )</val>
+              <val>      set DohneX_years_wean_to_cull  = ((cull_day - DohneX_wean_day + 365) mod 365) / 365</val>
+              <val>      set DohneX_replace_age_years   = DohneX_replace_age_days div 365</val>
+              <val>      set DohneX_replace_flock_size  = DohneX_ewe_number</val>
+              <val>      set DohneX_replace_cohort_size = DohneX_replace_flock_size * (1.0 - DohneX_survival_rate) / (1.0 - DohneX_survival_rate ^ (DohneX_cull_years - DohneX_replace_age_years + DohneX_years_wean_to_cull))</val>
+              <val></val>
+              <val></val>
               <val>      set main_groups = animals.no_groups                                        ! store the range of original animal groups</val>
               <val>      for g = 1 to main_groups                                                   ! for each group</val>
               <val>      {</val>
@@ -13552,7 +13632,7 @@
               <val>silo</val>
             </init>
             <init name="filename" kind="string">
-              <val>C:\Users\her123\Documents\AusFarm\DAFF_BCG\Simulations\marlbed.met</val>
+              <val>C:\Users\her123\Documents\AusFarm\DAFF_BCG\Simulations\Marlbed.met</val>
             </init>
             <init name="locality" kind="string">
               <val></val>
@@ -39605,7 +39685,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>'\temp\results'</val>
+                  <val>'results'</val>
                 </field>
               </element>
               <element>

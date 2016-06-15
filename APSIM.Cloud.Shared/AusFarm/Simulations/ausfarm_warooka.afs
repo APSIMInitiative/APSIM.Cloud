@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/06/02 16:38:49</lastsaved>
+  <lastsaved>2016/06/15 15:22:02</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -8294,8 +8294,8 @@
               <val></val>
               <val></val>
               <val></val>
-              <val>define integer max_stubble_days                = 50                             ! Length of stubble grazing period</val>
-              <val>define real    stubble_cover_threshold         = 0.65                           ! Threshold cover to abandon summer grazing</val>
+              <val>define integer max_stubble_days                = 200                             ! Length of stubble grazing period</val>
+              <val>define real    stubble_cover_threshold         = 0.5                           ! Threshold cover to abandon summer grazing</val>
               <val>define real    stubble_green_pasture_threshold = 500.0                          ! kg/ha; end of stubble grazing because we have green forage</val>
               <val>define real    pasture_cover_threshold         = 0.70</val>
               <val></val>
