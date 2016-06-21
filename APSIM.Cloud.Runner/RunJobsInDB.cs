@@ -64,25 +64,27 @@ namespace APSIM.Cloud.Runner
         {
             JobsService.Job runningJobDescription = null;
 
-            using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
-            {
-                runningJobDescription = jobsClient.GetNextToRun();
-            }
-
-            if (runningJobDescription != null)
-            {
-                JobManager.IRunnable runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
-                jobManager.AddJob(runningJob);
-            }
-            else
+            if (jobManager.JobCount == 0)
             {
                 // Remove completed jobs if nothing is running. Otherwise, completedjobs will
                 // grow and grow.
-                if (jobManager.JobCount == 0)
-                    jobManager.CompletedJobs.Clear();
+                jobManager.CompletedJobs.Clear();
 
-                // No jobs to run so wait a bit.
-                Thread.Sleep(30 * 1000); // 30 sec.
+                using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+                {
+                    runningJobDescription = jobsClient.GetNextToRun();
+                }
+
+                if (runningJobDescription != null)
+                {
+                    JobManager.IRunnable runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
+                    jobManager.AddJob(runningJob);
+                }
+                else
+                {
+                    // No jobs to run so wait a bit.
+                    Thread.Sleep(15 * 1000); // 15 sec.
+                }
             }
         }
 
