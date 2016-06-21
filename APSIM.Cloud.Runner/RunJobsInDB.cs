@@ -64,7 +64,7 @@ namespace APSIM.Cloud.Runner
         {
             JobsService.Job runningJobDescription = null;
 
-            if (jobManager.JobCount == 0)
+            if (jobManager.JobCount == 1)
             {
                 // Remove completed jobs if nothing is running. Otherwise, completedjobs will
                 // grow and grow.
