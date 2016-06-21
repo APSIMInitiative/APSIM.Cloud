@@ -215,7 +215,16 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 doc.LoadXml(YieldProphetUtility.YieldProphetToXML(spec));
                 doc.Save(Path.Combine(workingDirectory, fileBaseToWrite + ".xml"));
 
-                completeJob.Jobs.Add(new RunnableJobs.APSIMJob(apsimFileName, workingDirectory, ApsimExecutable));
+                // Convert .apsim file to sims so that we can run ApsimModel.exe rather than Apsim.exe
+                // This will avoid using the old APSIM job runner. It assumes though that there are 
+                // no other APSIMJob instances running in the workingDirectory. This is because it
+                // looks and runs all .sim files it finds in the workingDirectory.
+                JobParallel simJobs = new JobParallel();
+                simJobs.Jobs = new List<JobManager.IRunnable>();
+                string[] simFileNames = CreateSimFiles(apsimFileName, workingDirectory);
+                foreach (string simFileName in simFileNames)
+                    simJobs.Jobs.Add(new RunnableJobs.APSIMJob(simFileName, workingDirectory, ApsimExecutable, true));
+                completeJob.Jobs.Add(simJobs);
                 completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
                 if (spec.Paddock.Count > 0 && spec.Paddock[0].RunType != Paddock.RunTypeEnum.Validation)
                     completeJob.Jobs.Add(new RunnableJobs.YPPostSimulationJob(jobName, spec.Paddock[0].NowDate, workingDirectory));
@@ -223,5 +232,18 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             return completeJob;
         }
 
+        /// <summary>Convert .apsim file to .sim files</summary>
+        /// <param name="apsimFileName">The .apsim file name.</param>
+        /// <param name="workingDirectory">The working directory</param>
+        /// <returns>A list of filenames for all created .sim files.</returns>
+        private static string[] CreateSimFiles(string apsimFileName, string workingDirectory)
+        {
+            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string executable = Path.Combine(binDirectory, @"APSIM\Model\ApsimToSim.exe");
+
+            RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(apsimFileName, workingDirectory, executable);
+            job.Run(null, null);
+            return Directory.GetFiles(workingDirectory, "*.sim");
+        }
     }
 }

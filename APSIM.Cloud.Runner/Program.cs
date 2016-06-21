@@ -36,13 +36,14 @@ namespace APSIM.Cloud.Runner
                 };
                 ServiceBase.Run(ServicesToRun);
             }
-            else if (args.Length > 0)
-                RunJobFromCommandLine(args);
             else
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new MainForm(args));
+                if (!RunJobFromCommandLine(args))
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new MainForm(args));
+                }
             }
         }
 
@@ -69,7 +70,8 @@ namespace APSIM.Cloud.Runner
         static extern bool AttachConsole(Int32 processId);
 
         /// <summary>Runs the job (.xml file) specified on the command line.</summary>
-        private static void RunJobFromCommandLine(string[] commandLineArguments)
+        /// <returns>True if something was run.</returns>
+        private static bool RunJobFromCommandLine(string[] commandLineArguments)
         {
             if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
             {
@@ -87,7 +89,9 @@ namespace APSIM.Cloud.Runner
                     AttachConsole(-1);
                     Console.Write(job.ErrorMessage);
                 }
+                return true;
             }
+            return false;
         }
     }
 }

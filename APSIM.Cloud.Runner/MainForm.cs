@@ -21,10 +21,14 @@ namespace APSIM.Cloud.Runner
         /// <summary>The job manager to send our jobs to</summary>
         private JobManager jobManager = null;
 
+        /// <summary>Command line arguments</summary>
+        private Dictionary<string, string> arguments;
+
         /// <summary>Initializes a new instance of the <see cref="MainForm"/> class.</summary>
         public MainForm(string[] args)
         {
             InitializeComponent();
+            arguments = StringUtilities.ParseCommandLine(args);
         }
 
         /// <summary>Called when the form is loaded</summary>
@@ -32,7 +36,11 @@ namespace APSIM.Cloud.Runner
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void OnLoad(object sender, EventArgs e)
         {
-            jobManager = new JobManager();
+            int maximumNumberOfCores = -1;
+            if (arguments.ContainsKey("-MaximumNumberOfCores"))
+                maximumNumberOfCores = Convert.ToInt32(arguments["-MaximumNumberOfCores"]);
+
+            jobManager = new JobManager(maximumNumberOfCores);
             jobManager.AddJob(new RunJobsInDB());
             jobManager.Start(waitUntilFinished: false);
         }

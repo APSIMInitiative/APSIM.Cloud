@@ -42,7 +42,7 @@
             // 
             this.serviceInstaller1.Description = "Service that processes APSIM jobs";
             this.serviceInstaller1.DisplayName = "APSIM Runner";
-            this.serviceInstaller1.ServiceName = "ASPSIMRunner";
+            this.serviceInstaller1.ServiceName = "APSIMRunner";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // RunnerServiceInstaller

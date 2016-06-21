@@ -76,6 +76,11 @@ namespace APSIM.Cloud.Runner
             }
             else
             {
+                // Remove completed jobs if nothing is running. Otherwise, completedjobs will
+                // grow and grow.
+                if (jobManager.JobCount == 0)
+                    jobManager.CompletedJobs.Clear();
+
                 // No jobs to run so wait a bit.
                 Thread.Sleep(30 * 1000); // 30 sec.
             }

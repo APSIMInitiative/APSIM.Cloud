@@ -34,18 +34,23 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Path to apsim.exe.</summary>
         private string ApsimExecutable;
 
+        /// <summary>Create a summary file?</summary>
+        private bool createSumFile;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMJob"/> class.</summary>
         /// <param name="apsimFileName">Name of the apsim file.</param>
         /// <param name="arguments">The arguments.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable)
+        /// <param name="createSumFile">Create a summary file?</param>
+        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable, bool createSumFile = false)
         {
             this.fileName = fileName;
             this.workingDirectory = workingDirectory;
+            this.createSumFile = createSumFile;
             if (apsimExecutable == null)
             {
                 string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                this.ApsimExecutable = Path.Combine(binDirectory, @"APSIM\Model\Apsim.exe");
+                this.ApsimExecutable = Path.Combine(binDirectory, @"APSIM\Model\ApsimModel.exe");
             }
             else
                 this.ApsimExecutable = apsimExecutable;
@@ -66,7 +71,19 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             p.StartInfo.Arguments = StringUtilities.DQuote(fileName);
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;
+            if (createSumFile)
+                p.StartInfo.RedirectStandardOutput = true;
             p.Start();
+
+            if (createSumFile)
+            {
+                string sumFileName = Path.ChangeExtension(fileName, ".sum");
+                using (FileStream str = new FileStream(sumFileName, FileMode.Create))
+                {
+                    p.StandardOutput.BaseStream.CopyTo(str);
+                }
+            }
+
             p.WaitForExit();
         }
     }
