@@ -649,10 +649,10 @@
       CalculateStageVariables();
 
       // Count waterlogging events in crop
-      double swTop2Layers = sw_dep[0] + sw_dep[1];
-      double satTop2Layers = sat_dep[0] + sat_dep[1];
-      // Is soil water in top two layers within 2mm of sat?
-      if (swTop2Layers &gt;= satTop2Layers - 2 &amp;&amp; 
+      //double swTop2Layers = sw_dep[0] + sw_dep[1];
+      //double satTop2Layers = sat_dep[0] + sat_dep[1];
+      // Is soil water in top layer greather than DUL?
+      if (sw_dep[0] &gt;= dul_dep[0] &amp;&amp; 
          DaysAfterSowing &gt; 0 &amp;&amp; 
          Today.DayOfYear &gt;= DateReportWasGenerated.DayOfYear)
          NumConsecWaterLoggedDays++;
