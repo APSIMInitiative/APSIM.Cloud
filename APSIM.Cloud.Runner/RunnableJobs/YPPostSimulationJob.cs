@@ -66,31 +66,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromXML(reader.ReadToEnd(), workingDirectory);
             reader.Close();
 
-            // copy in the report file.
-            string reportFileName = Path.Combine(workingDirectory, yieldProphet.ReportType + ".report");
-            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Runner.Resources." + yieldProphet.ReportType + ".report");
-            if (s != null)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(s);
-                doc.Save(reportFileName);
-
-                // run ApsimReport to generate .GIF files and a .PDF
-                string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                string archiveBaseFileName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
-                startInfo.Arguments = StringUtilities.DQuote(reportFileName) + " " +
-                                        StringUtilities.DQuote(archiveBaseFileName + ".gif");
-                startInfo.WorkingDirectory = workingDirectory;
-                Process process = Process.Start(startInfo);
-                process.WaitForExit();
-                startInfo.Arguments = startInfo.Arguments.Replace(".gif", ".pdf");
-                process = Process.Start(startInfo);
-                process.WaitForExit();
-            }
-
             // Call the YP reporting webservice.
             DataSet dataSet = new DataSet("ReportData");
             foreach (string outFileName in Directory.GetFiles(workingDirectory, "*.csv"))
