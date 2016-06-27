@@ -64,7 +64,8 @@ namespace APSIM.Cloud.Runner
         {
             JobsService.Job runningJobDescription = null;
 
-            if (jobManager.JobCount == 1)
+            //If there is no YP job running, then add a new job.  Once a YP job is running don't add any more jobs (regardless of type).
+            if (jobManager.IsJobTypeInQueue<RunnableJobs.ProcessYPJob>() == false)
             {
                 // Remove completed jobs if nothing is running. Otherwise, completedjobs will
                 // grow and grow.
@@ -77,8 +78,14 @@ namespace APSIM.Cloud.Runner
 
                 if (runningJobDescription != null)
                 {
-                    JobManager.IRunnable runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
-                    jobManager.AddJob(runningJob);
+                    if (RunnableJobs.ProcessYPJob.IsF4PJob(runningJobDescription.Name) == true)
+                    {
+                        jobManager.AddJob(new RunnableJobs.ProcessF4PJob(true) { JobName = runningJobDescription.Name });
+                    }
+                    else
+                    {
+                        jobManager.AddJob(new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name });
+                    }
                 }
                 else
                 {

@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunnableJobs\ProcessF4PJob.cs" />
+    <Compile Include="RunnableJobs\ProcessJob.cs" />
     <Compile Include="RunnerServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
