@@ -379,7 +379,8 @@ namespace APSIM.Cloud.Shared
             // Set the soil name to 'soil'
             soil.Name = "Soil";
 
-            return soil;
+            // Make sure soil is apsim ready ie. convert units, infill missing values etc.
+            return APSIMReadySoil.Create(soil);
         }
 
         /// <summary>
