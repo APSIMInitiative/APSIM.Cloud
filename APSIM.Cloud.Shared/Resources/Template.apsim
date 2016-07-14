@@ -153,12 +153,12 @@
           [Output] int Stage7Das;
           [Output] int Stage8Das;
           [Output] int Stage9Das;
-          [Output] int MildHeatShockCount = 0;
-          [Output] int ModerateHeatShockCount = 0;
-          [Output] int SevereHeatShockCount = 0;
-          [Output] int MildFrostCount = 0;
-          [Output] int ModerateFrostCount = 0;
-          [Output] int SevereFrostCount = 0;
+          [Output] int MildHeatShockCount { get; set; }
+          [Output] int ModerateHeatShockCount { get; set; }
+          [Output] int SevereHeatShockCount { get; set; }
+          [Output] int MildFrostCount { get; set; }
+          [Output] int ModerateFrostCount { get; set; }
+          [Output] int SevereFrostCount { get; set; }
           [Output] double[] VirtualProbeSW = null;
           [Output] double Zero { get { return 0.0; } }
           [Output] DateTime SowDate;
@@ -701,32 +701,7 @@
       }
       else
       {
-         double tempmin = mint;
-         if (origmint != -999)
-            tempmin = origmint;
-         
-         double tempmax = maxt;
-         if (origmaxt != -999)
-            tempmax = origmaxt;
-         
-         if (Z &gt;= 60 &amp;&amp; Z &lt; 75.99)
-         {
-            if (tempmin &gt;= 0 &amp;&amp; tempmin &lt; 2)
-               MildFrostCount++;
-            else if (tempmin &gt;= -2 &amp;&amp; tempmin &lt; 0)
-               ModerateFrostCount++;
-            else if (tempmin &lt; -2)
-               SevereFrostCount++;
-         }
-         if (Z &gt;= 70 &amp;&amp; Z &lt; 79.99)
-         {
-            if (tempmax &gt;= 32 &amp;&amp; tempmax &lt; 34)
-               MildHeatShockCount++;
-            else if (tempmax &gt;= 34 &amp;&amp; tempmax &lt; 36)
-               ModerateHeatShockCount++;
-            else if (tempmax &gt;= 36)
-               SevereHeatShockCount++;
-         }
+         CalculateWheatFrostRisk();
       }
       
       // Send out a CurrentDay event if today is the DateReportWasGenerated.
@@ -792,6 +767,36 @@
    {
       if (WriteDepthFile)
          WriteDepthFileToDisk(); 
+   }
+   
+   private void CalculateWheatFrostRisk()
+   {
+         double tempmin = mint;
+         if (origmint != -999)
+            tempmin = origmint;
+         
+         double tempmax = maxt;
+         if (origmaxt != -999)
+            tempmax = origmaxt;
+         
+         if (Z &gt;= 60 &amp;&amp; Z &lt; 75.99)
+         {
+            if (tempmin &gt;= 0 &amp;&amp; tempmin &lt; 2)
+               MildFrostCount++;
+            else if (tempmin &gt;= -2 &amp;&amp; tempmin &lt; 0)
+               ModerateFrostCount++;
+            else if (tempmin &lt; -2)
+               SevereFrostCount++;
+         }
+         if (Z &gt;= 70 &amp;&amp; Z &lt; 79.99)
+         {
+            if (tempmax &gt;= 32 &amp;&amp; tempmax &lt; 34)
+               MildHeatShockCount++;
+            else if (tempmax &gt;= 34 &amp;&amp; tempmax &lt; 36)
+               ModerateHeatShockCount++;
+            else if (tempmax &gt;= 36)
+               SevereHeatShockCount++;
+         }
    }
   
    // ------------------------------------------------------------------------------
@@ -1153,30 +1158,46 @@
             heat_stress_days =  mild_heat_stress_days + mod_heat_stress_days + sev_heat_stress_days
 
             if (canola.stagename = 'out') then
-            cum_heat_stress = 0
-            cum_light_frost_stress = 0
-            cum_heavy_frost_stress = 0
-            cum_frost_multiplier=1
-            cum_heat_multiplier=1
-            FrostHeatYield = 0
-            FrostHeatYieldWet = 0
-            FrostHeatGrain_wt = 0
-            endif
+              cum_heat_stress = 0
+              cum_light_frost_stress = 0
+              cum_heavy_frost_stress = 0
+              cum_frost_multiplier=1
+              cum_heat_multiplier=1
+              FrostHeatYield = 0
+              FrostHeatYieldWet = 0
+              FrostHeatGrain_wt = 0
+              endif
 
             if (cum_degree_days &gt; 0 and cum_degree_days &lt; 630) then
-            cum_heat_stress=cum_heat_stress + heat_stress
-            cum_light_frost_stress=cum_light_frost_stress + light_frost_stress
-            cum_heavy_frost_stress=cum_heavy_frost_stress + heavy_frost_stress
-            cum_frost_multiplier=cum_frost_multiplier * frost_multiplier
-            cum_heat_multiplier=cum_heat_multiplier * heat_multiplier
+               cum_heat_stress=cum_heat_stress + heat_stress
+               cum_light_frost_stress=cum_light_frost_stress + light_frost_stress
+               cum_heavy_frost_stress=cum_heavy_frost_stress + heavy_frost_stress
+               cum_frost_multiplier=cum_frost_multiplier * frost_multiplier
+               cum_heat_multiplier=cum_heat_multiplier * heat_multiplier
+               
+               if (sev_frost_days = 1) then
+                  SevereFrostCount = SevereFrostCount + 1
+               elseif (mod_frost_days = 1) then
+                  ModerateFrostCount = ModerateFrostCount + 1
+               elseif (mild_frost_days = 1) then
+                  MildFrostCount = MildFrostCount + 1
+               endif
+
+               if (sev_heat_stress_days = 1) then
+                  SevereHeatShockCount = SevereHeatShockCount + 1
+               elseif (mod_heat_stress_days = 1) then
+                  ModerateHeatShockCount = ModerateHeatShockCount + 1
+               elseif (mild_heat_stress_days = 1) then
+                  MildHeatShockCount = MildHeatShockCount + 1
+               endif
             endif
 
             if (canola.yield &gt; 0) then
-            FrostHeatGrain_wt=canola.Grain_wt*cum_frost_multiplier*cum_heat_multiplier
-            FrostHeatYield=canola.Yield*cum_frost_multiplier*cum_heat_multiplier / 1000
-            FrostHeatYieldWet=canola.Yieldwet*cum_frost_multiplier*cum_heat_multiplier / 1000
-            HIfh = FrostheatGrain_wt /  canola.biomass_wt
-            HI = grain_wt / biomass_wt
+               FrostHeatGrain_wt=canola.Grain_wt*cum_frost_multiplier*cum_heat_multiplier
+               FrostHeatYield=canola.Yield*cum_frost_multiplier*cum_heat_multiplier / 1000
+               FrostHeatYieldWet=canola.Yieldwet*cum_frost_multiplier*cum_heat_multiplier / 1000
+               HIfh = FrostheatGrain_wt /  canola.biomass_wt
+               HI = grain_wt / biomass_wt
             endif
           </text>
           <event>start_of_day</event>
