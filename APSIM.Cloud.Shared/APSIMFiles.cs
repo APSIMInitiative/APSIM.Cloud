@@ -368,6 +368,9 @@ namespace APSIM.Cloud.Shared
                 soil.Analysis.ParticleSizeClay = MathUtilities.CreateArrayOfValues(60, soil.Analysis.Thickness.Length);
             InFillMissingValues(soil.Analysis.ParticleSizeClay);
 
+            // Fill in missing values and standardise layer structure.
+            LayerStructure.Standardise(soil);
+
             foreach (Sample sample in soil.Samples)
                 CheckSample(soil, sample);
 
@@ -380,7 +383,7 @@ namespace APSIM.Cloud.Shared
             soil.Name = "Soil";
 
             // Make sure soil is apsim ready ie. convert units, infill missing values etc.
-            return APSIMReadySoil.Create(soil);
+            return soil;
         }
 
         /// <summary>
@@ -461,6 +464,17 @@ namespace APSIM.Cloud.Shared
                 for (int i = 0; i < sample.PH.Length; i++)
                     if (sample.PH[i] == 0)
                         sample.PH[i] = 7;
+
+            // Check for missing values.
+            for (int i = 0; i < sample.Thickness.Length; i++)
+            {
+                if (double.IsNaN(sample.SW[i]))
+                    sample.SW[i] = parentSoil.Water.LL15[i];
+                if (double.IsNaN(sample.NO3[i]))
+                    sample.NO3[i] = 1.0;
+                if (double.IsNaN(sample.NH4[i]))
+                    sample.NH4[i] = 0.1;
+            }
         }
 
         /// <summary>
