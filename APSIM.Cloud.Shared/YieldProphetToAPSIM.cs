@@ -52,6 +52,7 @@ namespace APSIM.Cloud.Shared
                 catch (Exception err)
                 {
                     simulation = new APSIMSpec();
+                    simulation.TypeOfRun = paddock.RunType;
                     simulation.ErrorMessage = err.Message;
 
                 }
@@ -82,6 +83,9 @@ namespace APSIM.Cloud.Shared
 
             if (sow.Date == DateTime.MinValue)
                 throw new Exception("No sowing DATE specified for paddock: " + paddock.Name);
+
+            if (sow.Crop == null || sow.Crop == "" || sow.Crop == "None")
+                throw new Exception("No sowing CROP specified for paddock: " + paddock.Name);
 
             shortSimulation.StartDate = DateTime.MaxValue;
             if (paddock.SoilWaterSampleDate != DateTime.MinValue &&

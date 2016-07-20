@@ -368,11 +368,10 @@ namespace APSIM.Cloud.Shared
                 soil.Analysis.ParticleSizeClay = MathUtilities.CreateArrayOfValues(60, soil.Analysis.Thickness.Length);
             InFillMissingValues(soil.Analysis.ParticleSizeClay);
 
-            // Fill in missing values and standardise layer structure.
-            LayerStructure.Standardise(soil);
-
             foreach (Sample sample in soil.Samples)
                 CheckSample(soil, sample);
+
+            Defaults.FillInMissingValues(soil);
 
             // get rid of <soiltype> from the soil
             // this is necessary because NPD uses this field and puts in really long
@@ -414,90 +413,15 @@ namespace APSIM.Cloud.Shared
         /// <param name="sample">The sample.</param>
         private static void CheckSample(Soil parentSoil, Sample sample)
         {
-            if (!MathUtilities.ValuesInArray(sample.SW))
-                sample.SW = null;
-            if (!MathUtilities.ValuesInArray(sample.NO3))
-                sample.NO3 = null;
-            if (!MathUtilities.ValuesInArray(sample.OC))
-                sample.OC = null;
-            if (!MathUtilities.ValuesInArray(sample.EC))
-                sample.EC = null;
-            if (!MathUtilities.ValuesInArray(sample.CL))
-                sample.CL = null;
-            if (!MathUtilities.ValuesInArray(sample.ESP))
-                sample.ESP = null;
-            if (!MathUtilities.ValuesInArray(sample.PH))
-                sample.PH = null;
-
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);
             CheckMissingValuesAreNaN(sample.NH4);
             CheckMissingValuesAreNaN(sample.OC);
             CheckMissingValuesAreNaN(sample.EC);
             CheckMissingValuesAreNaN(sample.PH);
-
-            if (sample.NO3 != null)
-                sample.NO3 = FixArrayLength(sample.NO3, sample.Thickness.Length);
-            if (sample.NH4 != null)
-                sample.NH4 = FixArrayLength(sample.NH4, sample.Thickness.Length);
-
-            // NH4 can be null so give default values if that is the case.
-            if (sample.NH4 != null)
-            {
-                for (int i = 0; i < sample.NH4.Length; i++)
-                    if (double.IsNaN(sample.NH4[i]))
-                        sample.NH4[i] = 0.1;
-            }
-
-            sample.OCUnits = SoilOrganicMatter.OCUnitsEnum.WalkleyBlack;
-            if (sample.OC != null)
-                sample.OC = FixArrayLength(sample.OC, sample.Thickness.Length);
-
-            if (sample.EC != null)
-                sample.EC = FixArrayLength(sample.EC, sample.Thickness.Length);
-
-            if (sample.PH != null)
-                sample.PH = FixArrayLength(sample.PH, sample.Thickness.Length);
-
-            // For some reason there are zero PH values sometimes e.g. 2012 validation.
-            if (sample.PH != null)
-                for (int i = 0; i < sample.PH.Length; i++)
-                    if (sample.PH[i] == 0)
-                        sample.PH[i] = 7;
-
-            // Check for missing values.
-            for (int i = 0; i < sample.Thickness.Length; i++)
-            {
-                if (double.IsNaN(sample.SW[i]))
-                    sample.SW[i] = parentSoil.Water.LL15[i];
-                if (double.IsNaN(sample.NO3[i]))
-                    sample.NO3[i] = 1.0;
-                if (double.IsNaN(sample.NH4[i]))
-                    sample.NH4[i] = 0.1;
-            }
         }
 
-        /// <summary>
-        /// Make sure the specified array is of the specified length. Will pad
-        /// with double.NaN to make it the required length.
-        /// </summary>
-        /// <param name="values">The array of values to resize.</param>
-        /// <param name="length">The new size of the array.</param>
-        /// <returns>The new array.</returns>
-        private static double[] FixArrayLength(double[] values, int length)
-        {
-            if (values.Length != length)
-            {
-                int i = values.Length;
-                Array.Resize(ref values, length);
-                while (i < length)
-                {
-                    values[i] = double.NaN;
-                    i++;
-                }
-            }
-            return values;
-        }
+
 
         /// <summary>
         /// Make sure that the values passed in don't have -999999. Throw exception

@@ -87,7 +87,7 @@ namespace APSIM.Cloud.Shared
             simulation.StartSeasonDate = GetDate(paddock, "StartSeasonDateFull");
 
             // Give the paddock a name.
-            string fullName = string.Format("{0};{1};{2}", simulation.StartSeasonDate.Year, growerName, paddockName);
+            string fullName = string.Format("{0}^{1}^{2}", simulation.StartSeasonDate.Year, growerName, paddockName);
             simulation.Name = fullName;
 
             // Set the report date.
