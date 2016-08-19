@@ -93,7 +93,10 @@ namespace APSIM.Cloud.Shared
             LongTerm,
 
             /// <summary>Run a longterm simulation, patched with data from this year.</summary>
-            LongTermPatched
+            LongTermPatched,
+
+            /// <summary>A single season, validation run.</summary>
+            Validation
         }
 
         /// <summary>Type of run to perform.</summary>
@@ -141,6 +144,12 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the total nitrogen (kg/ha) at the beginning of the simulation.</summary>
         public double InitTotalNitrogen { get; set; }
 
+        /// <summary>Gets or sets whether the paddock is N unlimited.</summary>
+        public bool NUnlimited { get; set; }
+
+        /// <summary>Gets or sets whether the paddock is N unlimited from today.</summary>
+        public bool NUnlimitedFromToday { get; set; }
+
         /// <summary>Initializes a new instance of the <see cref="Paddock"/> class.</summary>
         public Paddock()
         {
@@ -154,6 +163,9 @@ namespace APSIM.Cloud.Shared
         /// after this date.
         /// </summary>
         public DateTime NowDate { get; set; }
+
+        /// <summary>Gets or sets the first year for long term simulations</summary>
+        public int LongtermStartYear { get; set; }
 
         // ****************************************************
         // Auto calculated variables 

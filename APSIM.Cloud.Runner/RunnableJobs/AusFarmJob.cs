@@ -14,21 +14,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.ComponentModel;
 
     /// <summary>
     /// A runnable class for a single AusFarm simulation run.
     /// </summary>
-    class AusFarmJob: JobManager.IRunnable
+    class AusFarmJob: JobManager.IRunnable, JobManager.IComputationalyTimeConsuming
     {
-        /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return true; } }
-        
-        /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
-        public bool IsCompleted { get; set; }
-
         /// <summary>Gets or sets the name of the APSIM file.</summary>
         private string fileName;
 
@@ -57,9 +49,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         }
 
         /// <summary>Called to start the job.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DoWorkEventArgs" /> instance containing the event data.</param>
-        public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <param name="jobManager">Job manager</param>
+        /// <param name="worker">Background worker</param>
+        public void Run(JobManager jobManager, BackgroundWorker worker)
         {
 
             // Sort out the command arguments.

@@ -17,6 +17,7 @@ namespace APSIM.Cloud.Runner
     using System.Reflection;
     using System.Diagnostics;
     using APSIM.Shared.Utilities;
+    using System.ComponentModel;
 
     /// <summary>
     /// This runnable job will periodically check the DB for new jobs that
@@ -24,36 +25,15 @@ namespace APSIM.Cloud.Runner
     /// </summary>
     public class RunJobsInDB : JobManager.IRunnable
     {
-        /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return false; } }
-
-        /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
-        public bool IsCompleted { get; set; }
-
-        /// <summary>The current running job description.</summary>
-        private JobsService.Job runningJobDescription = null;
-
-        /// <summary>The current running job.</summary>
-        private JobManager.IRunnable runningJob = null;
-
-        /// <summary>Entry point for this job.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-        public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <summary>Called to start the job.</summary>
+        /// <param name="jobManager">Job manager</param>
+        /// <param name="worker">Background worker</param>
+        public void Run(JobManager jobManager, BackgroundWorker worker)
         {
-            // Get our job manager.
-            JobManager jobManager = (JobManager)e.Argument;
-
-            while (!e.Cancel)
+            while (!worker.CancellationPending)
             {
                 try
                 {
-                    // Process jobs that have finished.
-                    ProcessCompletedJobs();
-
                     // Process that have been added.
                     ProcessAddedJobs(jobManager);
 
@@ -70,8 +50,15 @@ namespace APSIM.Cloud.Runner
         /// <param name="jobManager">The job manager.</param>
         private void ProcessAddedJobs(JobManager jobManager)
         {
-            if (runningJobDescription == null)
+            JobsService.Job runningJobDescription = null;
+
+            //If there is no YP job running, then add a new job.  Once a YP job is running don't add any more jobs (regardless of type).
+            if (jobManager.IsJobTypeInQueue<RunnableJobs.ProcessYPJob>() == false)
             {
+                // Remove completed jobs if nothing is running. Otherwise, completedjobs will
+                // grow and grow.
+                jobManager.ClearCompletedJobs();
+
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
                     runningJobDescription = jobsClient.GetNextToRun();
@@ -79,24 +66,20 @@ namespace APSIM.Cloud.Runner
 
                 if (runningJobDescription != null)
                 {
-                    runningJob = new RunnableJobs.ProcessYPJob() { JobName = runningJobDescription.Name };
-                    jobManager.AddJob(runningJob);
+                    if (RunnableJobs.ProcessYPJob.IsF4PJob(runningJobDescription.Name) == true)
+                    {
+                        jobManager.AddJob(new RunnableJobs.ProcessF4PJob(true) { JobName = runningJobDescription.Name });
+                    }
+                    else
+                    {
+                        jobManager.AddJob(new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name });
+                    }
                 }
                 else
                 {
                     // No jobs to run so wait a bit.
-                    Thread.Sleep(30 * 1000); // 30 sec.
+                    Thread.Sleep(15 * 1000); // 15 sec.
                 }
-            }
-        }
-
-        /// <summary>Processes all completed jobs.</summary>
-        private void ProcessCompletedJobs()
-        {
-            if (runningJob != null && runningJob.IsCompleted)
-            {
-                runningJob = null;
-                runningJobDescription = null;
             }
         }
 

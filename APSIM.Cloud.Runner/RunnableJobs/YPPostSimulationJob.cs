@@ -16,21 +16,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.Data;
     using APSIM.Cloud.Shared;
     using APSIM.Shared.Utilities;
+    using System.ComponentModel;
 
     /// <summary>
     /// A runnable class for Yield Prophet cleanup
     /// </summary>
-    public class YPPostSimulationJob : JobManager.IRunnable
+    public class YPPostSimulationJob : JobManager.IRunnable, JobManager.IComputationalyTimeConsuming
     {
-        /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return true; } }
-        
-        /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
-        public bool IsCompleted { get; set; }
-            
         /// <summary>Gets or sets the working directory.</summary>
         private string workingDirectory;
 
@@ -52,9 +44,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         }
 
         /// <summary>Called to start the job.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DoWorkEventArgs" /> instance containing the event data.</param>
-        public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <param name="jobManager">Job manager</param>
+        /// <param name="worker">Background worker</param>
+        public void Run(JobManager jobManager, BackgroundWorker worker)
         {
             // Read in the yield prophet specification.
             string[] xmlFiles = Directory.GetFiles(workingDirectory, "*.xml");
@@ -65,31 +57,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             StreamReader reader = new StreamReader(yieldProphetFileName);
             YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromXML(reader.ReadToEnd(), workingDirectory);
             reader.Close();
-
-            // copy in the report file.
-            string reportFileName = Path.Combine(workingDirectory, yieldProphet.ReportType + ".report");
-            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("APSIM.Cloud.Runner.Resources." + yieldProphet.ReportType + ".report");
-            if (s != null)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(s);
-                doc.Save(reportFileName);
-
-                // run ApsimReport to generate .GIF files and a .PDF
-                string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                string archiveBaseFileName = nowDate.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = Path.Combine(binDirectory, @"ApsimReport\ApsimReport.exe");
-                startInfo.Arguments = StringUtilities.DQuote(reportFileName) + " " +
-                                        StringUtilities.DQuote(archiveBaseFileName + ".gif");
-                startInfo.WorkingDirectory = workingDirectory;
-                Process process = Process.Start(startInfo);
-                process.WaitForExit();
-                startInfo.Arguments = startInfo.Arguments.Replace(".gif", ".pdf");
-                process = Process.Start(startInfo);
-                process.WaitForExit();
-            }
 
             // Call the YP reporting webservice.
             DataSet dataSet = new DataSet("ReportData");

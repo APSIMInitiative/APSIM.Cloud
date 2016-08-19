@@ -7,6 +7,7 @@ namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Converts a Yield Prophet specification to an APSIM one.
@@ -21,7 +22,7 @@ namespace APSIM.Cloud.Shared
             if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.Crop)
                 return CropReport(yieldProphet);
             else if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.SowingOpportunity)
-                return SowingOpportunityReport(yieldProphet);
+                throw new Exception("Don't use the sowing opportunity report type.");
             else
                 return OtherRuns(yieldProphet);
         }
@@ -37,7 +38,25 @@ namespace APSIM.Cloud.Shared
 
             foreach (Paddock paddock in yieldProphet.Paddock)
             {
-                APSIMSpec simulation = CreateBaseSimulation(paddock);
+                APSIMSpec simulation;
+                try
+                {
+                    simulation = CreateBaseSimulation(paddock);
+                    if (paddock.RunType == Paddock.RunTypeEnum.Validation)
+                    {
+                        simulation.EndDate = simulation.StartDate.AddDays(360);
+                        simulation.DailyOutput = false;
+                        simulation.YearlyOutput = true;
+                    }
+                }
+                catch (Exception err)
+                {
+                    simulation = new APSIMSpec();
+                    simulation.TypeOfRun = paddock.RunType;
+                    simulation.ErrorMessage = err.Message;
+
+                }
+
                 simulation.Name = paddock.Name;
                 simulation.WriteDepthFile = false;
                 apsimSpecs.Add(simulation);
@@ -65,6 +84,9 @@ namespace APSIM.Cloud.Shared
             if (sow.Date == DateTime.MinValue)
                 throw new Exception("No sowing DATE specified for paddock: " + paddock.Name);
 
+            if (sow.Crop == null || sow.Crop == "" || sow.Crop == "None")
+                throw new Exception("No sowing CROP specified for paddock: " + paddock.Name);
+
             shortSimulation.StartDate = DateTime.MaxValue;
             if (paddock.SoilWaterSampleDate != DateTime.MinValue &&
                 paddock.SoilWaterSampleDate < shortSimulation.StartDate)
@@ -77,10 +99,15 @@ namespace APSIM.Cloud.Shared
             if (paddock.StartSeasonDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.StartSeasonDate;
 
+            if (paddock.LongtermStartYear == 0)
+                shortSimulation.LongtermStartYear = 1957;
+            else
+                shortSimulation.LongtermStartYear = paddock.LongtermStartYear;
+
             if (paddock.RunType == Paddock.RunTypeEnum.SingleSeason)
                 shortSimulation.EndDate = copyOfPaddock.NowDate.AddDays(-1);
             else if (paddock.RunType == Paddock.RunTypeEnum.LongTermPatched)
-                shortSimulation.EndDate = shortSimulation.StartDate.AddDays(300);
+                shortSimulation.EndDate = shortSimulation.StartDate.AddDays(360);
             shortSimulation.NowDate = copyOfPaddock.NowDate.AddDays(-1);
             if (shortSimulation.NowDate == DateTime.MinValue)
                 shortSimulation.NowDate = DateTime.Now;
@@ -101,7 +128,14 @@ namespace APSIM.Cloud.Shared
             shortSimulation.UseEC = paddock.UseEC;
             shortSimulation.WriteDepthFile = false;
             shortSimulation.TypeOfRun = paddock.RunType;
+            shortSimulation.DecileDate = paddock.StartSeasonDate;
+            shortSimulation.NUnlimited = paddock.NUnlimited;
+            shortSimulation.NUnlimitedFromToday = paddock.NUnlimitedFromToday;
             AddResetDatesToManagement(copyOfPaddock, shortSimulation);
+
+            // Do a stable sort on management actions.
+            shortSimulation.Management = shortSimulation.Management.OrderBy(m => m.Date).ToList();
+
             return shortSimulation;
         }
 
@@ -123,7 +157,7 @@ namespace APSIM.Cloud.Shared
             seasonSimulation.Name = "Base";
             seasonSimulation.DailyOutput = false;
             seasonSimulation.YearlyOutput = true;
-            seasonSimulation.EndDate = seasonSimulation.StartDate.AddDays(300);
+            seasonSimulation.EndDate = seasonSimulation.StartDate.AddDays(360);
             seasonSimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             simulations.Add(seasonSimulation);
 
@@ -131,7 +165,7 @@ namespace APSIM.Cloud.Shared
             NUnlimitedSimulation.Name = "NUnlimited";
             NUnlimitedSimulation.DailyOutput = false;
             NUnlimitedSimulation.YearlyOutput = true;
-            NUnlimitedSimulation.EndDate = NUnlimitedSimulation.StartDate.AddDays(300);
+            NUnlimitedSimulation.EndDate = NUnlimitedSimulation.StartDate.AddDays(360);
             NUnlimitedSimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             NUnlimitedSimulation.NUnlimited = true;
             simulations.Add(NUnlimitedSimulation);
@@ -140,7 +174,7 @@ namespace APSIM.Cloud.Shared
             NUnlimitedFromTodaySimulation.Name = "NUnlimitedFromToday";
             NUnlimitedFromTodaySimulation.DailyOutput = false;
             NUnlimitedFromTodaySimulation.YearlyOutput = true;
-            NUnlimitedFromTodaySimulation.EndDate = NUnlimitedFromTodaySimulation.StartDate.AddDays(300);
+            NUnlimitedFromTodaySimulation.EndDate = NUnlimitedFromTodaySimulation.StartDate.AddDays(360);
             NUnlimitedFromTodaySimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             NUnlimitedFromTodaySimulation.NUnlimitedFromToday = true;
             simulations.Add(NUnlimitedFromTodaySimulation);
@@ -149,41 +183,10 @@ namespace APSIM.Cloud.Shared
             Next10DaysDry.Name = "Next10DaysDry";
             Next10DaysDry.DailyOutput = false;
             Next10DaysDry.YearlyOutput = true;
-            Next10DaysDry.EndDate = Next10DaysDry.StartDate.AddDays(300);
+            Next10DaysDry.EndDate = Next10DaysDry.StartDate.AddDays(360);
             Next10DaysDry.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
             Next10DaysDry.Next10DaysDry = true;
             simulations.Add(Next10DaysDry);
-            return simulations;
-        }
-
-        /// <summary>Create a series of APSIM simulation specifications for a sowing opportunity report.</summary>
-        /// <param name="yieldProphet">The yield prophet specification.</param>
-        /// <returns>The created APSIM simulation specs.</returns>
-        private static List<APSIMSpec> SowingOpportunityReport(YieldProphet yieldProphet)
-        {
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
-            Paddock paddock = yieldProphet.Paddock[0];
-
-            DateTime sowingDate = new DateTime(paddock.StartSeasonDate.Year, 3, 15);
-            DateTime lastSowingDate = new DateTime(paddock.StartSeasonDate.Year, 7, 5);
-            while (sowingDate <= lastSowingDate)
-            {
-                APSIMSpec sim = CreateBaseSimulation(paddock);
-                sim.Name = sowingDate.ToString("ddMMM");
-                sim.DailyOutput = false;
-                sim.YearlyOutput = true;
-                sim.WriteDepthFile = false;
-                sim.StartDate = sowingDate;
-                sim.EndDate = sim.StartDate.AddDays(300);
-                sim.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
-
-                Sow simSowing = YieldProphetUtility.GetCropBeingSown(sim.Management);
-                simSowing.Date = sowingDate;
-                simulations.Add(sim);
-
-                sowingDate = sowingDate.AddDays(5);
-            }
-
             return simulations;
         }
 
@@ -204,19 +207,23 @@ namespace APSIM.Cloud.Shared
                 Sow sowing = YieldProphetUtility.GetCropBeingSown(paddock.Management);
                 if (sowing != null && sowing.Date != DateTime.MinValue)
                 {
+                    List<Management> resetActions = new List<Management>();
+
                     // reset at sowing if the sample dates are after sowing.
                     if (paddock.SoilWaterSampleDate > sowing.Date)
                     {
-                        simulation.Management.Add(new ResetWater() { Date = sowing.Date });
-                        simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = sowing.Date });
+                        resetActions.Add(new ResetWater() { Date = sowing.Date });
+                        resetActions.Add(new ResetSurfaceOrganicMatter() { Date = sowing.Date });
                     }
                     if (paddock.SoilNitrogenSampleDate > sowing.Date)
-                        simulation.Management.Add(new ResetNitrogen() { Date = sowing.Date });
+                        resetActions.Add(new ResetNitrogen() { Date = sowing.Date });
 
                     // reset on the sample dates.
-                    simulation.Management.Add(new ResetWater() { Date = paddock.SoilWaterSampleDate });
-                    simulation.Management.Add(new ResetSurfaceOrganicMatter() { Date = paddock.SoilWaterSampleDate });
-                    simulation.Management.Add(new ResetNitrogen() { Date = paddock.SoilNitrogenSampleDate });
+                    resetActions.Add(new ResetWater() { Date = paddock.SoilWaterSampleDate });
+                    resetActions.Add(new ResetSurfaceOrganicMatter() { Date = paddock.SoilWaterSampleDate });
+                    resetActions.Add(new ResetNitrogen() { Date = paddock.SoilNitrogenSampleDate });
+
+                    simulation.Management.InsertRange(0, resetActions);
                 }
             }
         }

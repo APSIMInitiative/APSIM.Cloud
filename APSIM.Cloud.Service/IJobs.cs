@@ -50,6 +50,14 @@ namespace APSIM.Cloud.Service
         [OperationContract]
         void AddAsXML(string name, string jobXML);
 
+        /// <summary>
+        /// Adds a YieldProphet job to the APSIM cloud. Job is zipped.
+        /// </summary>
+        /// <param name="job">The job bytes.</param>
+        /// <returns>The unique job name.</returns>
+        [OperationContract]
+        string AddAsZIP(byte[] job);
+
         /// <summary>Delete the specified job from the database.</summary>
         /// <param name="Name">The name of the job.</param>
         [OperationContract]

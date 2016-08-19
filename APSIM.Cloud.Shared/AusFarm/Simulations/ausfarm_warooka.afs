@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/03/15 09:27:31</lastsaved>
+  <lastsaved>2016/06/15 15:22:02</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -15,7 +15,7 @@
               <val>1980/01/01</val>
             </init>
             <init name="finish" kind="string">
-              <val>1985/12/31</val>
+              <val>1984/12/31</val>
             </init>
             <init name="timestep" kind="integer4">
               <val>1</val>
@@ -108,14 +108,6 @@
                 </field>
                 <field name="order" kind="integer4">
                   <val>1000</val>
-                </field>
-              </element>
-              <element>
-                <field name="event" kind="string">
-                  <val>daily_01.update_outputs</val>
-                </field>
-                <field name="order" kind="integer4">
-                  <val>9999</val>
                 </field>
               </element>
               <element>
@@ -8302,8 +8294,8 @@
               <val></val>
               <val></val>
               <val></val>
-              <val>define integer max_stubble_days                = 50                             ! Length of stubble grazing period</val>
-              <val>define real    stubble_cover_threshold         = 0.65                           ! Threshold cover to abandon summer grazing</val>
+              <val>define integer max_stubble_days                = 200                             ! Length of stubble grazing period</val>
+              <val>define real    stubble_cover_threshold         = 0.5                           ! Threshold cover to abandon summer grazing</val>
               <val>define real    stubble_green_pasture_threshold = 500.0                          ! kg/ha; end of stubble grazing because we have green forage</val>
               <val>define real    pasture_cover_threshold         = 0.70</val>
               <val></val>
@@ -8744,7 +8736,7 @@
               <val>define       string  paddock_feed_2               = ''                          ! use '' if no second feed</val>
               <val>define       real    paddock_feed_1_propn         = 1.0</val>
               <val>define       real    paddock_feed_2_propn         = 0.0</val>
-              <val>define const real    paddock_max_feed_rate        = 0.5                         ! feed rate = amount fed kg fresh weight/head. Animals will not necessarily consume all feed offered</val>
+              <val>define const real    paddock_max_feed_rate        = 1.0                         ! feed rate = amount fed kg fresh weight/head. ***Animals will not necessarily consume all feed offered</val>
               <val></val>
               <val>define       string  feedlot_feed_1               = 'barley'</val>
               <val>define       string  feedlot_feed_2               = 'hay'</val>
@@ -9039,6 +9031,21 @@
               <val>   animals.draft</val>
               <val>}</val>
               <val></val>
+              <val>/* sort ewes of breeding age as maidens   */</val>
+              <val>from start</val>
+              <val>{</val>
+              <val>   call split_ages</val>
+              <val>   for i = 1 to animals.no_groups</val>
+              <val>   {</val>
+              <val>      set animals_tag = animals.tag_no[i]</val>
+              <val></val>
+              <val>      if (animals_tag = REPLACEMENT_MERINO) and (animals.age[i] &gt; merino_join_years*365)</val>
+              <val>      {</val>
+              <val>         animals.tag  group=i, value=EWE_MERINO_MAIDEN_DRY</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val>}</val>
+              <val></val>
               <val>/*==============================================================================</val>
               <val> Subroutine to sell a number of animals, first storing production data for the tag group</val>
               <val>================================================================================*/</val>
@@ -9137,7 +9144,7 @@
               <val>   }</val>
               <val></val>
               <val>   !Merino ewes</val>
-              <val>   for animals_tag = REPLACEMENT_MERINO to min(EWE_MERINO,length(tag_counts))</val>
+              <val>   for animals_tag = EWE_MERINO_MAIDEN_DRY to min(EWE_MERINO,length(tag_counts))   ! this should be maidens +</val>
               <val>   {</val>
               <val>      set merino_excess_ewes = merino_excess_ewes + tag_counts[animals_tag]</val>
               <val>   }</val>
@@ -9234,6 +9241,8 @@
               <val></val>
               <val>if day = merino_join_start</val>
               <val>{</val>
+              <val>   call split_ages</val>
+              <val></val>
               <val>   set merino_no_joined = 0</val>
               <val></val>
               <val>   for merino_age_class = merino_join_years to 10</val>
@@ -9243,7 +9252,7 @@
               <val>         set merino_animals_age    = animals.age[i]</val>
               <val>         set animals_tag           = animals.tag_no[i]</val>
               <val></val>
-              <val>         if (((animals_tag = REPLACEMENT_MERINO) or (animals_tag = EWE_MERINO_MAIDEN_DRY) or (animals_tag = EWE_MERINO_DRY)) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1)))</val>
+              <val>         if (( (animals_tag = EWE_MERINO_MAIDEN_DRY) or (animals_tag = EWE_MERINO_DRY)) and (merino_animals_age &gt; 365*merino_age_class) and (merino_animals_age &lt;= 365*(merino_age_class+1)))</val>
               <val>         {</val>
               <val>            set merino_animals_number = animals.number[i]</val>
               <val>            set merino_no_to_join = merino_animals_number</val>
@@ -9363,7 +9372,6 @@
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
-              <val></val>
               <val></val>
               <val>/*==============================================================================</val>
               <val> Shearing</val>
@@ -9871,28 +9879,25 @@
               <val>      set stock_buy_weight      = buy_weight</val>
               <val>      set stock_buy_cond_score  = buy_cond_score</val>
               <val></val>
+              <val>      ! reset the working values</val>
+              <val>      set number_purchased = [0] * NUM_TAGS</val>
+              <val>      set buy_weight       = [0.0] * NUM_TAGS</val>
+              <val>      set buy_cond_score   = [0.0] * NUM_TAGS</val>
+              <val>      set sale_weight      = [0.0] * NUM_TAGS</val>
+              <val>      set sale_cond_score  = [0.0] * NUM_TAGS</val>
+              <val>      set number_sold      = [0] * NUM_TAGS</val>
               <val>   }</val>
               <val>   else</val>
               <val>   {</val>
               <val>      if day_no = 1</val>
               <val>      {</val>
-              <val>         ! initialise the montly working values for each tag</val>
-              <val>         for t = 1 to NUM_TAGS</val>
-              <val>         {</val>
-              <val>            set number_purchased[t]      = 0</val>
-              <val>            set buy_weight[t]            = 0.0</val>
-              <val>            set buy_cond_score[t]        = 0.0</val>
-              <val>            set sale_weight[t]           = 0.0</val>
-              <val>            set sale_cond_score[t]       = 0.0</val>
-              <val>            set number_sold[t]           = 0</val>
-              <val></val>
-              <val>            set stock_sale_number[t]     = 0</val>
-              <val>            set stock_sale_weight[t]     = 0.0</val>
-              <val>            set stock_sale_cond_score[t] = 0.0</val>
-              <val>            set stock_buy_number[t]      = 0</val>
-              <val>            set stock_buy_weight[t]      = 0.0</val>
-              <val>            set stock_buy_cond_score[t]  = 0.0</val>
-              <val>         }</val>
+              <val>         ! initialise the montly summary values for each tag</val>
+              <val>         set stock_sale_number      = [0] * NUM_TAGS</val>
+              <val>         set stock_sale_weight      = [0.0] * NUM_TAGS</val>
+              <val>         set stock_sale_cond_score  = [0.0] * NUM_TAGS</val>
+              <val>         set stock_buy_number       = [0] * NUM_TAGS</val>
+              <val>         set stock_buy_weight       = [0.0] * NUM_TAGS</val>
+              <val>         set stock_buy_cond_score   = [0.0] * NUM_TAGS</val>
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
@@ -11774,6 +11779,14 @@
               <val>   set fert_n_applied = constants.rotation_template</val>
               <val>   set phase_crop     = constants.rotation_template_text</val>
               <val></val>
+              <val>   for rot_system = 1 to length(phase_crop)</val>
+              <val>   {</val>
+              <val>      for i = 1 to length(phase_crop[rot_system])</val>
+              <val>      {</val>
+              <val>         set phase_crop[rot_system,i] = '-'</val>
+              <val>      }</val>
+              <val>   }</val>
+              <val></val>
               <val>   set crop_type_yields = all_crops_zero</val>
               <val>   set hay_type_yields = all_crops_zero</val>
               <val>   set crop_type_area = all_crops_zero</val>
@@ -11859,7 +11872,8 @@
               <val>            ! rot/soil hay yields</val>
               <val>            set rot_hay_yields[rot_system, crop_no] = rot_hay_yields[rot_system, crop_no] + hay_yields[rot_system,i]</val>
               <val>            set rot_crop_area[rot_system, crop_no]  = rot_crop_area[rot_system, crop_no]  + padd_area[padd]</val>
-              <val>            set rot_hay_av[rot_system, crop_no] = rot_hay_yields[rot_system, crop_no] / rot_crop_area[rot_system, crop_no]</val>
+              <val>            if rot_crop_area[rot_system, crop_no] &gt; 0</val>
+              <val>               set rot_hay_av[rot_system, crop_no] = rot_hay_yields[rot_system, crop_no] / rot_crop_area[rot_system, crop_no]</val>
               <val>         }</val>
               <val>         if day_no = last_day[month]</val>
               <val>         {</val>
@@ -12183,11 +12197,17 @@
               <val>      set pasture_padd = pasture_phase[rot_system, padd_year_no[padd]]</val>
               <val>      if pasture_padd</val>
               <val>      {</val>
-              <val>         set landuse_area_fract = padd_area[padd] / pasture_area</val>
+              <val>         if pasture_area &gt; 0</val>
+              <val>            set landuse_area_fract = padd_area[padd] / pasture_area</val>
+              <val>         else</val>
+              <val>            set landuse_area_fract = 0</val>
               <val>      }</val>
               <val>      else</val>
               <val>      {</val>
-              <val>         set landuse_area_fract = padd_area[padd] / crop_area</val>
+              <val>         if crop_area &gt; 0</val>
+              <val>            set landuse_area_fract = padd_area[padd] / crop_area</val>
+              <val>         else</val>
+              <val>            set landuse_area_fract = 0</val>
               <val>      }</val>
               <val></val>
               <val>      if paddock_has_translators[padd]</val>
@@ -12272,6 +12292,7 @@
               <val>   set farm_oc_profile_prev = farm_oc_profile</val>
               <val></val>
               <val>   ! daily farm co2 and co2 equivalents</val>
+              <val>   call calc_methane</val>
               <val>   set farm_co2_emission            = ((12.0+(2*16.0))/12) * (-1.0 * farm_oc_profile30_dlt)</val>
               <val>   set farm_co2_equiv               = (farm_n2o_emission * 298) + (farm_co2_emission * 1) + (farm_ch4_emission * 25)</val>
               <val>   set farm_n2o_ch4                 = (farm_n2o_emission * 298) + (farm_ch4_emission * 25)</val>
@@ -12323,8 +12344,10 @@
               <val>/*==============================================================================</val>
               <val> Methane emissions per farm hectare (in kg CH4/ha/day)</val>
               <val>================================================================================*/</val>
-              <val>from start</val>
+              <val>subroutine calc_methane()</val>
               <val>{</val>
+              <val>   define integer i</val>
+              <val></val>
               <val>   set farm_ch4_emission = 0.0</val>
               <val>   for i = 1 to animals.no_groups</val>
               <val>   {</val>
@@ -16885,7 +16908,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg C/ha/y</val>
@@ -16953,7 +16976,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg CO2/ha/y</val>
@@ -16970,7 +16993,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg CO2/ha/y</val>
@@ -16987,7 +17010,7 @@
                   <val>total</val>
                 </field>
                 <field name="decplaces" kind="integer4">
-                  <val>0</val>
+                  <val>2</val>
                 </field>
                 <field name="units" kind="string">
                   <val>kg CO2/ha/y</val>
@@ -18699,7 +18722,7 @@
                   <val>N</val>
                 </init>
                 <init name="fertility" kind="double">
-                  <val>-3.33332996223148E33</val>
+                  <val>0.800000011920929</val>
                 </init>
                 <init name="layers" kind="double" array="T" unit="mm">
                 </init>
@@ -18750,6 +18773,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -20036,7 +20065,7 @@
                   <val>N</val>
                 </init>
                 <init name="fertility" kind="double">
-                  <val>-3.33332996223148E33</val>
+                  <val>0.8</val>
                 </init>
                 <init name="layers" kind="double" array="T" unit="mm">
                 </init>
@@ -20087,6 +20116,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -21424,6 +21459,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -22761,6 +22802,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -24098,6 +24145,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -25435,6 +25488,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -26772,6 +26831,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -28109,6 +28174,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -29446,6 +29517,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -30783,6 +30860,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -32108,6 +32191,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -33433,6 +33522,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -34758,6 +34853,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -36083,6 +36184,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -37408,6 +37515,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -39074,7 +39187,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>['vetchhay', 'canola', 'anngrass', 'pgrass','wheat']</val>
+                  <val>['vetchhay', 'lucerne', 'anngrass', 'pgrass','wheat']</val>
                 </field>
               </element>
               <element>
@@ -39391,7 +39504,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>'2-Feb'</val>
+                  <val>'1-Oct'</val>
                 </field>
               </element>
               <element>
@@ -39446,7 +39559,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>FALSE</val>
+                  <val>TRUE</val>
                 </field>
               </element>
               <element>
@@ -39457,7 +39570,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>40.0</val>
+                  <val>50.0</val>
                 </field>
               </element>
               <element>
@@ -39468,7 +39581,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>5.5</val>
+                  <val>6.0</val>
                 </field>
               </element>
               <element>
@@ -39534,7 +39647,7 @@
                   <val></val>
                 </field>
                 <field name="value" kind="string">
-                  <val>'5-Jan'</val>
+                  <val>'2-Feb'</val>
                 </field>
               </element>
             </init>

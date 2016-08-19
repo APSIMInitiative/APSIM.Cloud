@@ -145,12 +145,20 @@
           [Output] int Zadok55Das;
           [Output] int Zadok65Das;
           [Output] int Zadok75Das;
-          [Output] int MildHeatShockCount = 0;
-          [Output] int ModerateHeatShockCount = 0;
-          [Output] int SevereHeatShockCount = 0;
-          [Output] int MildFrostCount = 0;
-          [Output] int ModerateFrostCount = 0;
-          [Output] int SevereFrostCount = 0;
+          [Output] int Stage2Das;
+          [Output] int Stage3Das;
+          [Output] int Stage4Das;
+          [Output] int Stage5Das;
+          [Output] int Stage6Das;
+          [Output] int Stage7Das;
+          [Output] int Stage8Das;
+          [Output] int Stage9Das;
+          [Output] int MildHeatShockCount { get; set; }
+          [Output] int ModerateHeatShockCount { get; set; }
+          [Output] int SevereHeatShockCount { get; set; }
+          [Output] int MildFrostCount { get; set; }
+          [Output] int ModerateFrostCount { get; set; }
+          [Output] int SevereFrostCount { get; set; }
           [Output] double[] VirtualProbeSW = null;
           [Output] double Zero { get { return 0.0; } }
           [Output] DateTime SowDate;
@@ -399,7 +407,6 @@
 
       if (origmaxt != -999)
          Console.WriteLine("Using original maximum temperatures for frost/heat calculations");
-      
    }
       
    // ------------------------------------------------------------------------------
@@ -572,7 +579,6 @@
    }
    
    
-   
    // ------------------------------------------------------------------------------
    // The following event handler will be called each day at the END of the day
    // ------------------------------------------------------------------------------
@@ -639,13 +645,14 @@
          Zadok65Das = DaysAfterSowing;
       else if(Z &gt;= 75 &amp;&amp; Zadok75Das == 0) 
          Zadok75Das = DaysAfterSowing;
-      
+         
+      CalculateStageVariables();
 
       // Count waterlogging events in crop
-      double swTop2Layers = sw_dep[0] + sw_dep[1];
-      double satTop2Layers = sat_dep[0] + sat_dep[1];
-      // Is soil water in top two layers within 2mm of sat?
-      if (swTop2Layers &gt;= satTop2Layers - 2 &amp;&amp; 
+      //double swTop2Layers = sw_dep[0] + sw_dep[1];
+      //double satTop2Layers = sat_dep[0] + sat_dep[1];
+      // Is soil water in top layer greather than DUL?
+      if (sw_dep[0] &gt;= dul_dep[0] &amp;&amp; 
          DaysAfterSowing &gt; 0 &amp;&amp; 
          Today.DayOfYear &gt;= DateReportWasGenerated.DayOfYear)
          NumConsecWaterLoggedDays++;
@@ -694,32 +701,7 @@
       }
       else
       {
-         double tempmin = mint;
-         if (origmint != -999)
-            tempmin = origmint;
-         
-         double tempmax = maxt;
-         if (origmaxt != -999)
-            tempmax = origmaxt;
-         
-         if (Z &gt;= 60 &amp;&amp; Z &lt; 75.99)
-         {
-            if (tempmin &gt;= 0 &amp;&amp; tempmin &lt; 2)
-               MildFrostCount++;
-            else if (tempmin &gt;= -2 &amp;&amp; tempmin &lt; 0)
-               ModerateFrostCount++;
-            else if (tempmin &lt; -2)
-               SevereFrostCount++;
-         }
-         if (Z &gt;= 70 &amp;&amp; Z &lt; 79.99)
-         {
-            if (tempmax &gt;= 32 &amp;&amp; tempmax &lt; 34)
-               MildHeatShockCount++;
-            else if (tempmax &gt;= 34 &amp;&amp; tempmax &lt; 36)
-               ModerateHeatShockCount++;
-            else if (tempmax &gt;= 36)
-               SevereHeatShockCount++;
-         }
+         CalculateWheatFrostRisk();
       }
       
       // Send out a CurrentDay event if today is the DateReportWasGenerated.
@@ -776,16 +758,82 @@
       }
       
    }
-   
+      
+  
    // ------------------------------------------------------------------------------
-   // The following event handler will be called at the end of the simulation
+   // The following event handler will be called each day at the END of the day
    // ------------------------------------------------------------------------------
-   [EventHandler] public void OnEnd_simulation()
+   [EventHandler] public void OnSowing()
    {
       if (WriteDepthFile)
-         WriteDepthFileToDisk();      
+         WriteDepthFileToDisk(); 
    }
+   
+   private void CalculateWheatFrostRisk()
+   {
+         double tempmin = mint;
+         if (origmint != -999)
+            tempmin = origmint;
+         
+         double tempmax = maxt;
+         if (origmaxt != -999)
+            tempmax = origmaxt;
+         
+         if (Z &gt;= 60 &amp;&amp; Z &lt; 75.99)
+         {
+            if (tempmin &gt;= 0 &amp;&amp; tempmin &lt; 2)
+               MildFrostCount++;
+            else if (tempmin &gt;= -2 &amp;&amp; tempmin &lt; 0)
+               ModerateFrostCount++;
+            else if (tempmin &lt; -2)
+               SevereFrostCount++;
+         }
+         if (Z &gt;= 70 &amp;&amp; Z &lt; 79.99)
+         {
+            if (tempmax &gt;= 32 &amp;&amp; tempmax &lt; 34)
+               MildHeatShockCount++;
+            else if (tempmax &gt;= 34 &amp;&amp; tempmax &lt; 36)
+               ModerateHeatShockCount++;
+            else if (tempmax &gt;= 36)
+               SevereHeatShockCount++;
+         }
+   }
+  
+   // ------------------------------------------------------------------------------
+   // Calculate STAGE variables.
+   // ------------------------------------------------------------------------------
+   private void CalculateStageVariables()
+   {
+      if (DaysAfterSowing == 1)
+      {
+         Stage2Das = 0;
+         Stage3Das = 0;
+         Stage4Das = 0;
+         Stage5Das = 0;
+         Stage6Das = 0;
+         Stage7Das = 0;
+         Stage8Das = 0;
+         Stage9Das = 0;
+      }
       
+      if (Stage &gt;= 2 &amp;&amp; Stage2Das == 0) 
+         Stage2Das = DaysAfterSowing;
+      else if (Stage &gt;= 3 &amp;&amp; Stage3Das == 0) 
+         Stage3Das = DaysAfterSowing;
+      else if (Stage &gt;= 4 &amp;&amp; Stage4Das == 0) 
+         Stage4Das = DaysAfterSowing;
+      else if (Stage &gt;= 5 &amp;&amp; Stage5Das == 0) 
+         Stage5Das = DaysAfterSowing;
+      else if (Stage &gt;= 6 &amp;&amp; Stage6Das == 0) 
+         Stage6Das = DaysAfterSowing;
+      else if (Stage &gt;= 7 &amp;&amp; Stage7Das == 0) 
+         Stage7Das = DaysAfterSowing;
+      else if (Stage &gt;= 8 &amp;&amp; Stage8Das == 0) 
+         Stage8Das = DaysAfterSowing;
+      else if (Stage &gt;= 9 &amp;&amp; Stage9Das == 0) 
+         Stage9Das = DaysAfterSowing;
+   }
+  
    // ------------------------------------------------------------------------------
    // The following function will create a depth output file.
    // ------------------------------------------------------------------------------
@@ -846,6 +894,315 @@
        </text>
         <Reference>ApsimFile.dll</Reference>
       </manager2>
+      <manager name="WheatFrostHeat" enabled="no">
+        <script>
+          <text>
+            frost_multiplier=1
+            heat_multiplier=1
+            frost_multiplier = 1
+            cum_frost_multiplier=1
+            cum_heat_multiplier=1
+
+            heat_exposure= 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+
+            mild_exposure = 0
+            moderate_exposure = 0
+            severe_exposure = 0
+
+
+
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            frost_days = 0
+
+            FrostHeatYield = 0
+            FrostHeatYieldWet = 0
+            MoistureContent = 12.0;
+            wheat_in = 0
+
+
+
+            ! This work comes from:
+            !   Lindsay W. Bell, Julianne M. Lilley, James R. Hunt, and John A. Kirkegaard
+            !     (2015) Optimising grain yield and grazing potential of crops across Australia’s
+            !      high-rainfall zone: a simulation analysis. 1. Wheat, Crop &amp; Pasture Science, 66, 332-348.
+          </text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+            if (stagename = 'out') then
+              cum_frost_multiplier=1
+              cum_heat_multiplier=1
+              FrostHeatYield = 0
+              wheat_in = 0
+            else
+              wheat_in = 1
+              frost_multiplier = 1
+              heat_multiplier = 1
+              frost_days = 0
+              mild_frost_days = 0
+              mod_frost_days = 0
+              sev_frost_days = 0
+              heat_stress_days = 0
+              mild_heat_stress_days = 0
+              mod_heat_stress_days = 0
+              sev_heat_stress_days = 0
+            endif
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
+              heat_exposure= 1
+            else
+              heat_exposure= 0
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 32 AND maxt &lt; 34) then
+              heat_multiplier = 0.9
+              mild_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 34 AND maxt &lt; 36) then
+              heat_multiplier = 0.8
+              mod_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 36) then
+              heat_multiplier = 0.7
+              sev_heat_stress_days = 1
+            endif
+
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 69) then
+              mild_exposure = 1
+            else
+              mild_exposure = 0
+            endif
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 75) then
+              moderate_exposure = 1
+            else
+              moderate_exposure = 0
+            endif
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
+              severe_exposure = 1
+            else
+              severe_exposure = 0
+            endif
+
+            if (mild_exposure = 1 AND mint &lt;= 2 AND mint &gt; 0) then
+              frost_multiplier = 0.9
+              mild_frost_days = 1
+            endif
+
+            if (moderate_exposure = 1 AND mint &lt;= 0 AND mint &gt; -2) then
+              frost_multiplier = 0.8
+              mod_frost_days = 1
+            endif
+
+            if (severe_exposure = 1 AND mint &lt;= -2) then
+              frost_multiplier = 0.1
+              sev_frost_days = 1
+            endif
+
+            frost_days = mild_frost_days + mod_frost_days + sev_frost_days
+            heat_stress_days =  mild_heat_stress_days + mod_heat_stress_days + sev_heat_stress_days
+
+
+            if (zadok_stage &gt; 60 and zadok_stage &lt; 79) then
+            cum_frost_multiplier = cum_frost_multiplier * frost_multiplier
+            cum_heat_multiplier = cum_heat_multiplier * heat_multiplier
+            endif
+
+            FrostHeatYield = Yield * cum_frost_multiplier * cum_heat_multiplier
+            FrostHeatYieldWet = WetYield * cum_frost_multiplier * cum_heat_multiplier
+          </text>
+          <event>start_of_day</event>
+        </script>
+      </manager>
+      <manager name="CanolaFrostHeat" enabled="no">
+        <script>
+          <text>
+            frost_multiplier=1
+            heat_multiplier=1
+            frost_multiplier = 1
+            cum_frost_multiplier=1
+            cum_heat_multiplier=1
+            heat_exposure= 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+
+            frost_exposure = 0
+
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            frost_days = 0
+
+            FrostHeatYield = 0
+            FrostHeatYieldWet = 0
+            FrostHeatGrain_Wt = 0
+
+            FrostHeatGrain_Wt3 = 0
+
+            canola_in = 0
+
+
+            ! This work comes from:
+            !   Julianne M. Lilley, Lindsay W. Bell, and John A. Kirkegaard
+            !     (2015) Optimising grain yield and grazing potential of crops across Australia’s
+            !     high-rainfall zone: a simulation analysis. 2. Canola,
+            !     Crop &amp; Pasture Science, 66, 349-364
+          </text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+            !Rules for calculation of heat and frost risk
+
+            degree_days = (mint + maxt) / 2
+            if (canola.stage &gt;= 6) then
+            cum_degree_days = degree_days + cum_degree_days
+            else
+            cum_degree_days = 0
+            endif
+
+            if (cum_degree_days &gt; 0 and cum_degree_days &lt; 630 then ! 630 degree days approx 6 weeks @ 15 dd / day; approx flowering window
+            heat_exposure = 1
+            else
+            heat_exposure = 0
+            endif
+
+            if (cum_degree_days &gt; 140 and cum_degree_days &lt; 800) then ! 140 degree days approx 2 weeks @ 10 dd / day, to 6weeks after that
+            ! approx water pod window
+            frost_exposure = 1
+            else
+            frost_exposure = 0
+            endif
+
+            if (heat_exposure = 1 and maxt &gt;= 30) then
+            heat_stress = 1
+            else
+            heat_stress = 0
+            endif
+
+            if (frost_exposure = 1 and mint &lt;= 2) then
+            light_frost_stress = 1
+            else
+            light_frost_stress = 0
+            endif
+
+            if (frost_exposure = 1 and mint &lt;= 0) then
+            heavy_frost_stress = 1
+            else
+            heavy_frost_stress = 0
+            endif
+
+
+            if (canola.stage &gt; 0) then  ! reset  each day
+            canola_in = 1
+            frost_multiplier = 1
+            heat_multiplier = 1
+            frost_days = 0
+            mild_frost_days = 0
+            mod_frost_days = 0
+            sev_frost_days = 0
+            heat_stress_days = 0
+            mild_heat_stress_days = 0
+            mod_heat_stress_days = 0
+            sev_heat_stress_days = 0
+            else
+            canola_in = 0
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 30 AND maxt &lt; 33) then
+            heat_multiplier = 0.9
+            mild_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 33 AND maxt &lt; 36) then
+            heat_multiplier = 0.82
+            mod_heat_stress_days = 1
+            endif
+
+            if (heat_exposure = 1 AND maxt &gt;= 36) then
+            heat_multiplier = 0.65
+            sev_heat_stress_days = 1
+            endif
+
+
+
+            if (frost_exposure = 1 AND mint &lt;= 2 AND mint &gt; 0) then
+            frost_multiplier = 1.0
+            mild_frost_days = 1
+            endif
+
+            if (frost_exposure = 1 AND mint &lt;= 0 AND mint &gt; -2) then
+            frost_multiplier = 0.98
+            mod_frost_days = 1
+            endif
+
+            if (frost_exposure = 1 AND mint &lt;= -2) then
+            frost_multiplier = 0.90
+            sev_frost_days = 1
+            endif
+
+            frost_days = mild_frost_days + mod_frost_days + sev_frost_days
+            heat_stress_days =  mild_heat_stress_days + mod_heat_stress_days + sev_heat_stress_days
+
+            if (canola.stagename = 'out') then
+              cum_heat_stress = 0
+              cum_light_frost_stress = 0
+              cum_heavy_frost_stress = 0
+              cum_frost_multiplier=1
+              cum_heat_multiplier=1
+              FrostHeatYield = 0
+              FrostHeatYieldWet = 0
+              FrostHeatGrain_wt = 0
+              endif
+
+            if (cum_degree_days &gt; 0 and cum_degree_days &lt; 630) then
+               cum_heat_stress=cum_heat_stress + heat_stress
+               cum_light_frost_stress=cum_light_frost_stress + light_frost_stress
+               cum_heavy_frost_stress=cum_heavy_frost_stress + heavy_frost_stress
+               cum_frost_multiplier=cum_frost_multiplier * frost_multiplier
+               cum_heat_multiplier=cum_heat_multiplier * heat_multiplier
+               
+               if (sev_frost_days = 1) then
+                  SevereFrostCount = SevereFrostCount + 1
+               elseif (mod_frost_days = 1) then
+                  ModerateFrostCount = ModerateFrostCount + 1
+               elseif (mild_frost_days = 1) then
+                  MildFrostCount = MildFrostCount + 1
+               endif
+
+               if (sev_heat_stress_days = 1) then
+                  SevereHeatShockCount = SevereHeatShockCount + 1
+               elseif (mod_heat_stress_days = 1) then
+                  ModerateHeatShockCount = ModerateHeatShockCount + 1
+               elseif (mild_heat_stress_days = 1) then
+                  MildHeatShockCount = MildHeatShockCount + 1
+               endif
+            endif
+
+            if (canola.yield &gt; 0) then
+               FrostHeatGrain_wt=canola.Grain_wt*cum_frost_multiplier*cum_heat_multiplier
+               FrostHeatYield=canola.Yield*cum_frost_multiplier*cum_heat_multiplier / 1000
+               FrostHeatYieldWet=canola.Yieldwet*cum_frost_multiplier*cum_heat_multiplier / 1000
+               HIfh = FrostheatGrain_wt /  canola.biomass_wt
+               HI = grain_wt / biomass_wt
+            endif
+          </text>
+          <event>start_of_day</event>
+        </script>
+      </manager>
       <operations name="Operations" />
       <fertiliser name="Fertiliser" />
       <irrigation name="Irrigation">
@@ -988,6 +1345,16 @@
           <variable>SowingFertiliser</variable>
           <variable>TopDressFertiliser</variable>
           <variable>PeanutPodYield</variable>
+          <variable>Stage</variable>
+          <variable>Stage2Das</variable>
+          <variable>Stage3Das</variable>
+          <variable>Stage4Das</variable>
+          <variable>Stage5Das</variable>
+          <variable>Stage6Das</variable>
+          <variable>Stage7Das</variable>
+          <variable>Stage8Das</variable>
+          <variable>Stage9Das</variable>
+          <variable>FrostHeatYieldWet</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>harvesting</event>
@@ -1061,6 +1428,7 @@
           <variable>PercentCover</variable>
           <variable>FASW</variable>
           <variable>ave_soil_temp(1) as SoilTemp</variable>
+          <variable>sw</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>post</event>

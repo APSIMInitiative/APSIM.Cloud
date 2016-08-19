@@ -145,12 +145,14 @@ namespace APSIM.Cloud.Shared
         /// <param name="startDate">The start date of the weather file.</param>
         /// <param name="nowDate">The end date for using observed data.</param>
         /// <param name="observedData">The observed data to use. Can be null.</param>
+        /// <param name="decileDate">The date to start the decile file.</param>
         /// <param name="numYears">Number of years for create weather file for.</param>
         public void CreateLongTerm(string fileName, int stationNumber,
                                    DateTime startDate,
                                    DateTime endDate,
                                    DateTime nowDate,
                                    DataTable observedData,
+                                   DateTime decileDate,
                                    int numYears)
         {
 
@@ -182,7 +184,7 @@ namespace APSIM.Cloud.Shared
                     AddCodesColumn(observedData, 'O');
 
                 string workingFolder = Path.GetDirectoryName(fileName);
-                WriteDecileFile(weatherData, startDate, Path.Combine(workingFolder, "Decile.out"));
+                WriteDecileFile(weatherData, decileDate, Path.Combine(workingFolder, "Decile.out"));
 
 
                 // Need to create a patch data table from the observed data and the SILO data 
@@ -270,7 +272,13 @@ namespace APSIM.Cloud.Shared
 
             DateTime[] dates = DataTableUtilities.GetColumnAsDates(patchData, "Date");
             for (int i = 0; i < dates.Length; i++)
-                dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, dates[i].Day);
+            {
+                if (DateTime.IsLeapYear(dates[i].Year) && !DateTime.IsLeapYear(dates[i].Year + offset) &&
+                    dates[i].Month == 2 && dates[i].Day == 29)
+                    dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, 28);
+                else
+                    dates[i] = new DateTime(dates[i].Year + offset, dates[i].Month, dates[i].Day);
+            }
             DataTableUtilities.AddColumnOfObjects(patchData, "Date", dates);
         }
 

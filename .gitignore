@@ -31,3 +31,7 @@ APSIM.Cloud.Test/Generated/
 /Backup
 /NH_TestYP_AusFarm
 APSIM.Cloud.Service/obj/
+.vs/
+APSIM.Cloud.Portal/Properties/PublishProfiles/
+APSIM.Cloud.Service/Properties/PublishProfiles/
+APSIM.Cloud.Shared/obj/

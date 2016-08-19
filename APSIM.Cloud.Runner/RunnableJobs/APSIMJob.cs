@@ -10,21 +10,13 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using System.Reflection;
     using APSIM.Shared.Utilities;
     using System;
+    using System.ComponentModel;
 
     /// <summary>
     /// A runnable class for a single APSIM simulation run.
     /// </summary>
-    public class APSIMJob : JobManager.IRunnable
+    public class APSIMJob : JobManager.IRunnable, JobManager.IComputationalyTimeConsuming
     {
-        /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return true; } }
-        
-        /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
-        public bool IsCompleted { get; set; }
-
         /// <summary>Gets or sets the name of the APSIM file.</summary>
         private string fileName;
 
@@ -34,27 +26,32 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Path to apsim.exe.</summary>
         private string ApsimExecutable;
 
+        /// <summary>Create a summary file?</summary>
+        private bool createSumFile;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMJob"/> class.</summary>
         /// <param name="apsimFileName">Name of the apsim file.</param>
         /// <param name="arguments">The arguments.</param>
         /// <param name="workingDirectory">The working directory.</param>
-        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable)
+        /// <param name="createSumFile">Create a summary file?</param>
+        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable, bool createSumFile = false)
         {
             this.fileName = fileName;
             this.workingDirectory = workingDirectory;
+            this.createSumFile = createSumFile;
             if (apsimExecutable == null)
             {
                 string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                this.ApsimExecutable = Path.Combine(binDirectory, @"APSIM\Model\Apsim.exe");
+                this.ApsimExecutable = Path.Combine(binDirectory, @"APSIM\Model\ApsimModel.exe");
             }
             else
                 this.ApsimExecutable = apsimExecutable;
         }
 
         /// <summary>Called to start the job.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="DoWorkEventArgs" /> instance containing the event data.</param>
-        public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <param name="jobManager">Job manager</param>
+        /// <param name="worker">Background worker</param>
+        public void Run(JobManager jobManager, BackgroundWorker worker)
         {
 
             // Start the external process to run APSIM and wait for it to finish.
@@ -66,7 +63,19 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             p.StartInfo.Arguments = StringUtilities.DQuote(fileName);
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;
+            if (createSumFile)
+                p.StartInfo.RedirectStandardOutput = true;
             p.Start();
+
+            if (createSumFile)
+            {
+                string sumFileName = Path.ChangeExtension(fileName, ".sum");
+                using (FileStream str = new FileStream(sumFileName, FileMode.Create))
+                {
+                    p.StandardOutput.BaseStream.CopyTo(str);
+                }
+            }
+
             p.WaitForExit();
         }
     }

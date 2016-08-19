@@ -44,7 +44,7 @@ namespace APSIM.Cloud.Service
 
             foreach (Paddock paddock in yieldProphet.Paddock)
                 paddock.NowDate = nowDate;
-            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + yieldProphet.ReportName;
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (HH-mm-ss) ") + yieldProphet.ReportName;
 
             string xml = YieldProphetUtility.YieldProphetToXML(yieldProphet);
 
@@ -59,7 +59,7 @@ namespace APSIM.Cloud.Service
         /// <returns>The unique job name.</returns>
         public string AddFarm4Prophet(Farm4Prophet f4p)
         {
-            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (h-mm-ss tt) ") + f4p.TaskName + "_F4P";
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (HH-mm-ss) ") + f4p.TaskName + "_F4P";
 
             string xml = Farm4ProphetUtility.Farm4ProphetToXML(f4p);
 
@@ -139,6 +139,24 @@ namespace APSIM.Cloud.Service
                     command.ExecuteNonQuery();
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds a YieldProphet job to the APSIM cloud. Job is zipped.
+        /// </summary>
+        /// <param name="job">The job bytes.</param>
+        /// <returns>The unique job name.</returns>
+        public string AddAsZIP(byte[] job)
+        {
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (HH-mm-ss)");
+
+            string tempZipFile = Path.GetTempFileName() + ".zip";
+            File.WriteAllBytes(tempZipFile, job);
+            YieldProphet yieldProphet = YieldProphetUtility.YieldProphetFromFile(tempZipFile);
+            string xml = YieldProphetUtility.YieldProphetToXML(yieldProphet);
+
+            AddAsXML(newJobName, xml);
+            return newJobName;
         }
 
         /// <summary>Delete the specified job from the database.</summary>
