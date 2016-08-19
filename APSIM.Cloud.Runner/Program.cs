@@ -84,10 +84,12 @@ namespace APSIM.Cloud.Runner
                 JobManager jobManager = new JobManager();
                 jobManager.AddJob(job);
                 jobManager.Start(waitUntilFinished: true);
-                if (job.ErrorMessage != null)
+                List<Exception> errors = jobManager.Errors(job);
+                if (errors != null || errors.Count > 0)
                 {
                     AttachConsole(-1);
-                    Console.Write(job.ErrorMessage);
+                    foreach (Exception error in errors)
+                        Console.Write(error.ToString());
                 }
                 return true;
             }

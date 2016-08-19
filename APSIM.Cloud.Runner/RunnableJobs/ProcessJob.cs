@@ -18,6 +18,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
     using APSIM.Cloud.Shared.AusFarm;
     using APSIM.Shared.Utilities;
     using APSIM.Shared.OldAPSIM;
+    using System.ComponentModel;
+
     //using ApsimFile;
 
     /// <summary>
@@ -33,15 +35,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
         /// <summary>Should this job run APSIM or just create all necessary files.</summary>
         private bool runAPSIM;
-
-        /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return false; } }
-
-        /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
-        public bool IsCompleted { get; set; }
 
         /// <summary>Gets or sets the name of the job. If null, JobFileName will be used.</summary>
         public string JobName { get; set; }
@@ -59,16 +52,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             this.runAPSIM = runAPSIM;
         }
 
-        /// <summary>
-        /// Runs the job.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-        public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <summary>Called to start the job.</summary>
+        /// <param name="jobManager">Job manager</param>
+        /// <param name="worker">Background worker</param>
+        public void Run(JobManager jobManager, BackgroundWorker worker)
         {
-            // Get our job manager.
-            JobManager jobManager = (JobManager)e.Argument;
-
             // Create a working directory.
             workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(workingDirectory);
@@ -97,16 +85,19 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             }
 
             // Create and run a job.
+            string ErrorMessage = null;
             try
             {
                 JobManager.IRunnable job = CreateRunnableJob(JobName, jobXML, workingDirectory, ApsimExecutable);
                 if (runAPSIM)
                 {
-                    jobManager.AddJob(job);
-                    while (!job.IsCompleted)
+                    jobManager.AddChildJob(this, job);
+                    while (!jobManager.IsJobCompleted(job))
                         Thread.Sleep(5 * 1000); // 5 sec
                 }
-                ErrorMessage = job.ErrorMessage;
+                List<Exception> errors = jobManager.Errors(job);
+                if (errors.Count > 0)
+                    ErrorMessage = errors[0].ToString();
             }
             catch (Exception err)
             {

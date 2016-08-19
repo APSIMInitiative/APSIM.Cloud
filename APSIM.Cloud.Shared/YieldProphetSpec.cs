@@ -164,6 +164,9 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public DateTime NowDate { get; set; }
 
+        /// <summary>Gets or sets the first year for long term simulations</summary>
+        public int LongtermStartYear { get; set; }
+
         // ****************************************************
         // Auto calculated variables 
         // ****************************************************

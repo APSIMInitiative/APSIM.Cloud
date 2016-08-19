@@ -99,6 +99,11 @@ namespace APSIM.Cloud.Shared
             if (paddock.StartSeasonDate < shortSimulation.StartDate)
                 shortSimulation.StartDate = paddock.StartSeasonDate;
 
+            if (paddock.LongtermStartYear == 0)
+                shortSimulation.LongtermStartYear = 1957;
+            else
+                shortSimulation.LongtermStartYear = paddock.LongtermStartYear;
+
             if (paddock.RunType == Paddock.RunTypeEnum.SingleSeason)
                 shortSimulation.EndDate = copyOfPaddock.NowDate.AddDays(-1);
             else if (paddock.RunType == Paddock.RunTypeEnum.LongTermPatched)

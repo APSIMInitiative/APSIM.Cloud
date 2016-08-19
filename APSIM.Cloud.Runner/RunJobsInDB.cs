@@ -17,6 +17,7 @@ namespace APSIM.Cloud.Runner
     using System.Reflection;
     using System.Diagnostics;
     using APSIM.Shared.Utilities;
+    using System.ComponentModel;
 
     /// <summary>
     /// This runnable job will periodically check the DB for new jobs that
@@ -24,25 +25,12 @@ namespace APSIM.Cloud.Runner
     /// </summary>
     public class RunJobsInDB : JobManager.IRunnable
     {
-        /// <summary>Gets a value indicating whether this instance is computationally time consuming.</summary>
-        public bool IsComputationallyTimeConsuming { get { return false; } }
-
-        /// <summary>Gets or sets the error message. Set by the JobManager.</summary>
-        public string ErrorMessage { get; set; }
-
-        /// <summary>Gets or sets a value indicating whether this job is completed. Set by the JobManager.</summary>
-        public bool IsCompleted { get; set; }
-
-
-        /// <summary>Entry point for this job.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-        public void Run(object sender, System.ComponentModel.DoWorkEventArgs e)
+        /// <summary>Called to start the job.</summary>
+        /// <param name="jobManager">Job manager</param>
+        /// <param name="worker">Background worker</param>
+        public void Run(JobManager jobManager, BackgroundWorker worker)
         {
-            // Get our job manager.
-            JobManager jobManager = (JobManager)e.Argument;
-
-            while (!e.Cancel)
+            while (!worker.CancellationPending)
             {
                 try
                 {
@@ -69,7 +57,7 @@ namespace APSIM.Cloud.Runner
             {
                 // Remove completed jobs if nothing is running. Otherwise, completedjobs will
                 // grow and grow.
-                jobManager.CompletedJobs.Clear();
+                jobManager.ClearCompletedJobs();
 
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {

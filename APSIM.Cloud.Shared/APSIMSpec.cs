@@ -26,6 +26,9 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the end date of the simulation</summary>
         public DateTime EndDate { get; set; }
 
+        /// <summary>Gets or sets the first year for long term simulations</summary>
+        public int LongtermStartYear { get; set; }
+
         /// <summary>
         /// Gets or sets the 'now' date. When creating weather files anything after this
         /// date will assumed to be in the future so historical weather data will be used

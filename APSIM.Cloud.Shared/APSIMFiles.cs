@@ -107,7 +107,7 @@ namespace APSIM.Cloud.Shared
             {
                 string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
-                DateTime longTermStartDate = new DateTime(1957, 1, 1);
+                DateTime longTermStartDate = new DateTime(simulation.LongtermStartYear, 1, 1);
                 WeatherFile weatherData = new WeatherFile();
                 if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTermPatched)
                 {
