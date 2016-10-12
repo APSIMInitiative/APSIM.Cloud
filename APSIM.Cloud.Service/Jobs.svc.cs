@@ -95,11 +95,15 @@ namespace APSIM.Cloud.Service
 
             // Write the weather file.
             string weatherFileName = Path.Combine(workingDirectory, "observed.csv");
-            File.WriteAllText(weatherFileName, DataTableUtilities.DataTableToText(weatherData, 0, ",", true));
+            StreamWriter writer = new StreamWriter(weatherFileName);
+            DataTableUtilities.DataTableToText(weatherData, 0, ",", true, writer);
+            writer.Close();
 
             // Write the soil probe file.
             string soilProbeFileName = Path.Combine(workingDirectory, "soilprobe.csv");
-            File.WriteAllText(soilProbeFileName, DataTableUtilities.DataTableToText(soilProbeData, 0, ",", true));
+            writer = new StreamWriter(soilProbeFileName);
+            DataTableUtilities.DataTableToText(soilProbeData, 0, ",", true, writer);
+            writer.Close();
 
             // Send email to run machine.
             MailMessage mail = new MailMessage();

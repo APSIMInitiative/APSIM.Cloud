@@ -165,7 +165,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     string singleOutputFileName = Path.Combine(workingFolder, fileName);
                     StreamWriter outWriter = new StreamWriter(singleOutputFileName);
 
-                    outWriter.Write(DataTableUtilities.DataTableToText(allData, 0, ",  ", true));
+                    DataTableUtilities.DataTableToText(allData, 0, ",  ", true, outWriter);
 
                     outWriter.Close();
                 }
