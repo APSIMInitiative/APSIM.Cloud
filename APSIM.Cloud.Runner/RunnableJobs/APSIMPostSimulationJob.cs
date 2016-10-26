@@ -33,9 +33,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         public void Run(JobManager jobManager, BackgroundWorker worker)
         {
             // Delete the .sim files.
-            string[] simFiles = Directory.GetFiles(workingFolder, "*.sim");
-            foreach (string simFile in simFiles)
-                File.Delete(simFile);
+            //string[] simFiles = Directory.GetFiles(workingFolder, "*.sim");
+            //foreach (string simFile in simFiles)
+            //    File.Delete(simFile);
 
             bool longtermOutputsFound = false;
 

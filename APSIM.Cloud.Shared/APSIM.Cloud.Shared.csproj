@@ -78,7 +78,7 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="YieldProphetUtility.cs" />
-    <Compile Include="WeatherFile.cs" />
+    <Compile Include="Weather.cs" />
     <Compile Include="YieldProphetSpec.cs" />
     <Compile Include="YieldProphetOld.cs" />
     <Compile Include="YieldProphetToAPSIM.cs" />

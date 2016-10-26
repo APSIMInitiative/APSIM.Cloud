@@ -81,23 +81,6 @@ namespace APSIM.Cloud.Shared
             return apsimFileName;
         }
 
-        /// <summary>
-        /// Create all necessary YP files (.apsim and .met) from a YieldProphet spec and 
-        /// append a simulation node to the specified parent node.
-        /// </summary>
-        /// <param name="simulations">The simulations to write.</param>
-        /// <param name="workingFolder">The folder where files shoud be created.</param>
-        /// <param name="fileNameToWrite">The name of a file to write.</param>
-        /// <returns>The name of the created .apsim file.</returns>
-        public static void Create(APSIMSpec simulation, XmlNode parentNode, string workingFolder)
-        {
-            // Create all necessary weather files.
-            CreateWeatherFilesForSimulations(simulation, workingFolder);
-
-            // Create the .apsim XML
-            CreateApsimFile(simulation, parentNode);
-        }
-
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
@@ -108,22 +91,37 @@ namespace APSIM.Cloud.Shared
                 string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
                 DateTime longTermStartDate = new DateTime(simulation.LongtermStartYear, 1, 1);
-                WeatherFile weatherData = new WeatherFile();
+                string[] filesCreated = null;
+
+                // Make sure the observed data has a codes column.
+                if (simulation.ObservedData != null)
+                    Weather.AddCodesColumn(simulation.ObservedData, 'O');
+
                 if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTermPatched)
                 {
                     // long term.
                     // Create a long term weather file.
                     int numYears = simulation.StartDate.Year - longTermStartDate.Year + 1;
-                    weatherData.CreateLongTerm(rainFileName, simulation.StationNumber,
-                                                simulation.StartDate, simulation.EndDate, simulation.NowDate,
-                                                simulation.ObservedData, simulation.DecileDate, numYears);
+                    filesCreated = Weather.CreateLongTerm(rainFileName, simulation.StationNumber,
+                                                            simulation.StartDate, simulation.NowDate,
+                                                            simulation.ObservedData, simulation.DecileDate, numYears);
+                }
+                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.POAMA)
+                {
+                    // Create a long term POAMA weather file.
+                    Weather.CreatePOAMA(rainFileName, simulation.StationNumber,
+                                        simulation.StartDate, simulation.NowDate,
+                                        simulation.ObservedData);
                 }
                 else if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTerm)
                 {
-                    weatherData.CreateSimplePeriod(rainFileName, simulation.StationNumber,
-                                                    longTermStartDate, DateTime.Now, null);
-                    simulation.StartDate = weatherData.FirstSILODateFound;
-                    simulation.EndDate = weatherData.LastSILODateFound;
+                    // Currently no patching is performed - bug?
+                    Weather.Data weatherFile = Weather.ExtractDataFromSILO(simulation.StationNumber, longTermStartDate, DateTime.Now);
+                    Weather.WriteWeatherFile(weatherFile.Table, rainFileName, weatherFile.Latitude, weatherFile.Longitude,
+                                                 weatherFile.TAV, weatherFile.AMP);
+                    filesCreated = new string[] { rainFileName };
+                    simulation.StartDate = weatherFile.FirstDate;
+                    simulation.EndDate = weatherFile.LastDate;
                     simulation.WeatherFileName = rainFileName;
                 }
                 else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason ||
@@ -131,10 +129,12 @@ namespace APSIM.Cloud.Shared
                 {
                     // short term.
                     // Create a short term weather file.
-                    weatherData.CreateOneSeason(rainFileName, simulation.StationNumber,
-                                                simulation.StartDate, simulation.NowDate,
-                                                simulation.ObservedData);
+                    Weather.Data weatherFile = Weather.ExtractDataFromSILO(simulation.StationNumber, simulation.StartDate, simulation.NowDate);
+                    Weather.OverlayData(simulation.ObservedData, weatherFile.Table);
+                    Weather.WriteWeatherFile(weatherFile.Table, rainFileName, weatherFile.Latitude, weatherFile.Longitude,
+                                                 weatherFile.TAV, weatherFile.AMP);
                     simulation.WeatherFileName = Path.GetFileName(rainFileName);
+                    filesCreated = new string[] { rainFileName };
                 }
 
                 if (simulation.TypeOfRun != Paddock.RunTypeEnum.Validation)
@@ -143,7 +143,7 @@ namespace APSIM.Cloud.Shared
                     factor.Name = "Met";
                     factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
                     factor.ComponentVariableName = "filename";
-                    factor.ComponentVariableValues = weatherData.FilesCreated;
+                    factor.ComponentVariableValues = filesCreated;
                     if (simulation.Factors == null)
                         simulation.Factors = new List<APSIMSpec.Factor>();
                     simulation.Factors.Add(factor);

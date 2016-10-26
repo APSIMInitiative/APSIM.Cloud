@@ -62,8 +62,6 @@ namespace APSIM.Cloud.Shared.AusFarm
         private static void CreateWeatherFileForSimulation(AusFarmSpec simulation, string workingFolder)
         {
             // Write the .met file for the simulation
-            WeatherFile weatherData = new WeatherFile();
-
             DateTime earliestStartDate = DateTime.MaxValue;
             DateTime latestEndDate = DateTime.MinValue;
             DateTime nowDate = DateTime.MaxValue;
@@ -81,13 +79,14 @@ namespace APSIM.Cloud.Shared.AusFarm
             FMetFile = Path.Combine(workingFolder, stationNumber.ToString()) + ".met";
 
             // Create a weather file.
-            weatherData.CreateSimplePeriod(FMetFile, stationNumber,
-                            earliestStartDate, nowDate,
-                            observedData);
+            Weather.Data weatherFile = Weather.ExtractDataFromSILO(stationNumber, earliestStartDate, nowDate);
+            Weather.OverlayData(observedData, weatherFile.Table);
+            Weather.WriteWeatherFile(weatherFile.Table, FMetFile, weatherFile.Latitude, weatherFile.Longitude,
+                                         weatherFile.TAV, weatherFile.AMP);
 
             // ensure that the run period doesn't exceed the data retrieved
-            if (simulation.EndDate > weatherData.LastSILODateFound)
-                simulation.EndDate = weatherData.LastSILODateFound;
+            if (simulation.EndDate > weatherFile.LastDate)
+                simulation.EndDate = weatherFile.LastDate;
 
             // calculate the rain deciles from April from the year of the start of the simulation. 
             // this could be improved to use more than a few decades of weather.
@@ -95,7 +94,7 @@ namespace APSIM.Cloud.Shared.AusFarm
             DateTime accumStartDate = new DateTime(simulation.StartDate.Year, 4, 1);
             if (simulation.StartDate > accumStartDate)              // ensure that the start date for decile accum exists in the weather
                 accumStartDate.AddYears(1);
-            simulation.RainDeciles = weatherData.CalculateRainDeciles(stationNumber, accumStartDate, simulation.EndDate);
+            simulation.RainDeciles = Weather.CalculateRainDeciles(stationNumber, accumStartDate, simulation.EndDate);
         }
 
         /// <summary>Create a .sdml file for the job</summary>
