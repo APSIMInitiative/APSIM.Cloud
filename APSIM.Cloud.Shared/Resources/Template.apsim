@@ -706,7 +706,7 @@
       
       // Send out a CurrentDay event if today is the DateReportWasGenerated.
       // This is used by tracker.
-      if (Today.DayOfYear &gt;= DateReportWasGenerated.DayOfYear)
+      if (Today.DayOfYear == DateReportWasGenerated.DayOfYear)
          Paddock.Publish("CurrentDay");
       
       // Send out a Next10Days event so that 'Daily' can pick it up.

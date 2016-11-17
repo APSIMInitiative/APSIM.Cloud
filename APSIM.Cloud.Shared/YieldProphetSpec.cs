@@ -96,7 +96,10 @@ namespace APSIM.Cloud.Shared
             LongTermPatched,
 
             /// <summary>A single season, validation run.</summary>
-            Validation
+            Validation,
+
+            /// <summary>Run a POAMA simulation, patched with data from this year.</summary>
+            POAMA
         }
 
         /// <summary>Type of run to perform.</summary>

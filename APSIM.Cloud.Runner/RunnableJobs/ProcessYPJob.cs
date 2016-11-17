@@ -76,7 +76,11 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             simJobs.Jobs = new List<JobManager.IRunnable>();
             string[] simFileNames = CreateSimFiles(apsimFileName, workingDirectory);
             foreach (string simFileName in simFileNames)
+            {
+                if (simFileName == null || simFileName.Trim() == string.Empty)
+                    throw new Exception("Blank .sim file names found for apsim file: " + apsimFileName);
                 simJobs.Jobs.Add(new RunnableJobs.APSIMJob(simFileName, workingDirectory, ApsimExecutable, true));
+            }
             completeJob.Jobs.Add(simJobs);
             completeJob.Jobs.Add(new RunnableJobs.APSIMPostSimulationJob(workingDirectory));
             if (spec.Paddock.Count > 0 && spec.Paddock[0].RunType != Paddock.RunTypeEnum.Validation)

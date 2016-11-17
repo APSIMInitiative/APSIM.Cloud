@@ -25,6 +25,8 @@ namespace APSIM.Cloud.Runner
     /// </summary>
     public class RunJobsInDB : JobManager.IRunnable
     {
+        private JobManager.IRunnable runningJob = null;
+
         /// <summary>Called to start the job.</summary>
         /// <param name="jobManager">Job manager</param>
         /// <param name="worker">Background worker</param>
@@ -53,11 +55,12 @@ namespace APSIM.Cloud.Runner
             JobsService.Job runningJobDescription = null;
 
             //If there is no YP job running, then add a new job.  Once a YP job is running don't add any more jobs (regardless of type).
-            if (jobManager.IsJobTypeInQueue<RunnableJobs.ProcessYPJob>() == false)
+            if (runningJob == null || jobManager.IsJobCompleted(runningJob))
             {
                 // Remove completed jobs if nothing is running. Otherwise, completedjobs will
                 // grow and grow.
                 jobManager.ClearCompletedJobs();
+                runningJob = null;
 
                 using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
                 {
@@ -67,13 +70,11 @@ namespace APSIM.Cloud.Runner
                 if (runningJobDescription != null)
                 {
                     if (RunnableJobs.ProcessYPJob.IsF4PJob(runningJobDescription.Name) == true)
-                    {
-                        jobManager.AddJob(new RunnableJobs.ProcessF4PJob(true) { JobName = runningJobDescription.Name });
-                    }
+                        runningJob = new RunnableJobs.ProcessF4PJob(true) { JobName = runningJobDescription.Name };
                     else
-                    {
-                        jobManager.AddJob(new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name });
-                    }
+                        runningJob = new RunnableJobs.ProcessYPJob(true) { JobName = runningJobDescription.Name };
+                    if (runningJob != null)
+                        jobManager.AddJob(runningJob);
                 }
                 else
                 {

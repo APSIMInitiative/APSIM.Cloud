@@ -33,9 +33,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         public void Run(JobManager jobManager, BackgroundWorker worker)
         {
             // Delete the .sim files.
-            string[] simFiles = Directory.GetFiles(workingFolder, "*.sim");
-            foreach (string simFile in simFiles)
-                File.Delete(simFile);
+            //string[] simFiles = Directory.GetFiles(workingFolder, "*.sim");
+            //foreach (string simFile in simFiles)
+            //    File.Delete(simFile);
 
             bool longtermOutputsFound = false;
 
@@ -165,7 +165,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     string singleOutputFileName = Path.Combine(workingFolder, fileName);
                     StreamWriter outWriter = new StreamWriter(singleOutputFileName);
 
-                    outWriter.Write(DataTableUtilities.DataTableToText(allData, 0, ",  ", true));
+                    DataTableUtilities.DataTableToText(allData, 0, ",  ", true, outWriter);
 
                     outWriter.Close();
                 }
