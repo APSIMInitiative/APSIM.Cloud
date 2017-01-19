@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2016/05/23 13:57:26</lastsaved>
+  <lastsaved>2017/01/19 11:41:07</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -8403,8 +8403,8 @@
               <val></val>
               <val>   set winter_start_month                   = constants.winter_start_month</val>
               <val>   set winter_end_month                     = constants.winter_end_month</val>
-              <val>   set max_summer_crop_area                 = constants.farm_area * constants.max_summer_crop_propn !+ 0.001</val>
-              <val>   set max_winter_crop_area                 = constants.farm_area * constants.max_winter_crop_propn !+ 0.001</val>
+              <val>   set max_summer_crop_area                 = constants.farm_area * constants.max_summer_crop_propn !</val>
+              <val>   set max_winter_crop_area                 = constants.farm_area * constants.max_winter_crop_propn</val>
               <val></val>
               <val>   set crop_sown                            = constants.paddock_text_template</val>
               <val>   set cultivar_sown                        = constants.paddock_text_template</val>
@@ -8561,29 +8561,7 @@
               <val>      }</val>
               <val>   }</val>
               <val></val>
-              <val>   ! Rank paddocks in order of decreasing available SW</val>
               <val>   set crop_sown_flag = all_paddocks_false</val>
-              <val>   set paddock_ranked = all_paddocks_false</val>
-              <val>   set paddock_order = all_paddock_values_0</val>
-              <val></val>
-              <val>   for rank = 1 to no_paddocks</val>
-              <val>   {</val>
-              <val>      set best_padd = -1</val>
-              <val>      set best_avail_water = -9999.9</val>
-              <val>      for padd = 1 to no_paddocks</val>
-              <val>      {</val>
-              <val>         if (not crop_in[padd]) and (not paddock_ranked[padd]) and (avail_soil_water[padd] &gt; best_avail_water) and (padd_area[padd] &gt; 0)</val>
-              <val>         {</val>
-              <val>            set best_padd = padd</val>
-              <val>            set best_avail_water = avail_soil_water[padd]</val>
-              <val>         }</val>
-              <val>      }</val>
-              <val>      if best_padd /= -1</val>
-              <val>      {</val>
-              <val>         set paddock_order[ rank     ] = best_padd</val>
-              <val>         set paddock_ranked[best_padd] = TRUE</val>
-              <val>      }</val>
-              <val>   }</val>
               <val></val>
               <val>   ! check that at least one sowing rule is current - allow for period 1 Jan</val>
               <val>   set in_period = FALSE</val>
@@ -8597,9 +8575,32 @@
               <val>         set rule = rule + 1</val>
               <val>   }</val>
               <val></val>
-              <val>   ! attempt the sowing if at least one rule is current</val>
               <val>   if in_period</val>
               <val>   {</val>
+              <val>      ! Rank paddocks in order of decreasing available SW</val>
+              <val>      set paddock_ranked = all_paddocks_false</val>
+              <val>      set paddock_order = all_paddock_values_0</val>
+              <val></val>
+              <val>      for rank = 1 to no_paddocks</val>
+              <val>      {</val>
+              <val>         set best_padd = -1</val>
+              <val>         set best_avail_water = -9999.9</val>
+              <val>         for padd = 1 to no_paddocks</val>
+              <val>         {</val>
+              <val>            if (not crop_in[padd]) and (not paddock_ranked[padd]) and (avail_soil_water[padd] &gt; best_avail_water) and (padd_area[padd] &gt; 0)</val>
+              <val>            {</val>
+              <val>               set best_padd = padd</val>
+              <val>               set best_avail_water = avail_soil_water[padd]</val>
+              <val>            }</val>
+              <val>         }</val>
+              <val>         if best_padd /= -1</val>
+              <val>         {</val>
+              <val>            set paddock_order[ rank     ] = best_padd</val>
+              <val>            set paddock_ranked[best_padd] = TRUE</val>
+              <val>         }</val>
+              <val>      }</val>
+              <val></val>
+              <val>      ! attempt the sowing if at least one rule is current</val>
               <val>      for rank = 1 to no_paddocks</val>
               <val>      {</val>
               <val>         set padd = paddock_order[rank]</val>
@@ -8634,7 +8635,7 @@
               <val>            {</val>
               <val>               if (month &gt;= winter_start_month) and (month &lt;= winter_end_month)</val>
               <val>               {</val>
-              <val>                  if winter_crop_area + padd_area[padd] &lt;= (max_winter_crop_area + 0.001)</val>
+              <val>                  if winter_crop_area + padd_area[padd] &lt;= (max_winter_crop_area + (0.001 * max_winter_crop_area))</val>
               <val>                  {</val>
               <val>                     set winter_crop_area = winter_crop_area + padd_area[padd]</val>
               <val>                  }</val>
@@ -8645,7 +8646,7 @@
               <val>               }</val>
               <val>               else</val>
               <val>               {</val>
-              <val>                  if summer_crop_area + padd_area[padd] &lt;= (max_summer_crop_area + 0.001)</val>
+              <val>                  if summer_crop_area + padd_area[padd] &lt;= (max_summer_crop_area + (0.001 * max_summer_crop_area))</val>
               <val>                  {</val>
               <val>                     set summer_crop_area = summer_crop_area + padd_area[padd]</val>
               <val>                  }</val>
@@ -8710,15 +8711,9 @@
               <val>from start</val>
               <val>{</val>
               <val>   set crop_cut = all_paddocks_crops_false  ! init to all false</val>
-              <val></val>
-              <val>   ! init some debug vars</val>
-              <val>   set cutting_biomass = all_paddock_values_zero</val>
-              <val>   set crop_stage = all_paddock_values_zero</val>
-              <val>   set biomass_avail = all_paddock_values_zero</val>
-              <val>   set biomass_remain = all_paddock_values_zero</val>
               <val>   set hay_harvested_today = all_paddock_values_zero</val>
-              <val></val>
               <val>   set hay_date = all_paddock_values_null</val>
+              <val></val>
               <val>   for padd = 1 to no_paddocks</val>
               <val>   {</val>
               <val>      set crop_no = crop_sown_no[padd]</val>
@@ -8738,22 +8733,20 @@
               <val>            if (@(crop_model &amp; '.stagename') /= 'out')</val>
               <val>            {</val>
               <val>               set crop_stage[padd] = @(crop_model &amp; '.stage')                   ! get stage</val>
-              <val>               if (crop_stage[padd] &gt;= 6.5) and (crop_stage[padd] &lt; 7)</val>
+              <val>               set cutting_biomass[padd] = @(crop_model &amp; '.biomass')        ! get biomass amount</val>
+              <val>               ! cut the crop at &gt; 500kg/ha for stage 6.5-7 and after that cut anyway</val>
+              <val>               if ((crop_stage[padd] &gt;= 6.5) and (crop_stage[padd] &lt; 7) and (cutting_biomass[padd] &gt; 500.0)) or ((crop_stage[padd] &gt;= 7) and (crop_stage[padd] &lt; 8))</val>
               <val>               {</val>
-              <val>                  set cutting_biomass[padd] = @(crop_model &amp; '.biomass')        ! get biomass amount</val>
-              <val>                  if cutting_biomass[padd] &gt; 500.0                              ! this can be used to ensure there is enough to cut</val>
-              <val>                  {</val>
-              <val>                     set crop_cut[padd,crop_no] = TRUE</val>
-              <val>                     set hay_date[padd] = dd_mm_yyyy</val>
-              <val>                     set biomass_avail[padd] = @(crop_model &amp; '.biomass')</val>
-              <val>                     @(crop_model).harvest Plants=0 , Remove=crop_cut_amount , Height=crop_cut_height , Report=''</val>
-              <val>                     set biomass_remain[padd] = @(crop_model &amp; '.biomass')</val>
-              <val>                     set hay_harvested_today[padd] = biomass_avail[padd] - biomass_remain[padd]</val>
-              <val>                     @(crop_model).kill_crop KillFraction=1.0                    ! not sure if this is required</val>
-              <val>                     @(crop_model).end_crop</val>
-              <val>                     set crop_in[padd]          = FALSE                          ! not treated as a crop paddock any longer</val>
-              <val>                     set crop_sown_no[padd]     = 0</val>
-              <val>                  }</val>
+              <val>                  set crop_cut[padd,crop_no] = TRUE</val>
+              <val>                  set hay_date[padd] = dd_mm_yyyy</val>
+              <val>                  set biomass_avail[padd] = cutting_biomass[padd]</val>
+              <val>                  @(crop_model).harvest Plants=0 , Remove=crop_cut_amount , Height=crop_cut_height , Report=''</val>
+              <val>                  set biomass_remain[padd] = @(crop_model &amp; '.biomass')</val>
+              <val>                  set hay_harvested_today[padd] = biomass_avail[padd] - biomass_remain[padd]</val>
+              <val>                  @(crop_model).kill_crop KillFraction=1.0                    ! not sure if this is required</val>
+              <val>                  @(crop_model).end_crop</val>
+              <val>                  set crop_in[padd]          = FALSE                          ! not treated as a crop paddock any longer</val>
+              <val>                  set crop_sown_no[padd]     = 0</val>
               <val>               } ! endif suitable cutting growth stage</val>
               <val>            }  ! endif not out</val>
               <val>         } ! endif oats</val>
@@ -13468,7 +13461,7 @@
                   <val>Soil3_hay_yield_vetchhay</val>
                 </field>
                 <field name="aggreg" kind="string">
-                  <val>min</val>
+                  <val>max</val>
                 </field>
                 <field name="decplaces" kind="integer4">
                   <val>5</val>
@@ -14845,7 +14838,6 @@
 <xf>1.000 1.000 1.000 1.000 1.000 0.400</xf>
 <ModifyKL></ModifyKL>
 </initdata>
-
         </component>
 
 
@@ -15524,12 +15516,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -16861,12 +16853,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -18106,12 +18098,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -19443,12 +19435,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -20780,12 +20772,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -22117,12 +22109,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -23454,12 +23446,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -24791,12 +24783,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -26128,12 +26120,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -27465,12 +27457,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -28802,12 +28794,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -30139,12 +30131,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -31476,12 +31468,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -32905,12 +32897,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
@@ -34150,12 +34142,12 @@
                   <val>0</val>
                 </init>
                 <init name="kl" kind="single" array="T" unit="/d">
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.60</val>
-                  <val>0.40</val>
-                  <val>0.30</val>
-                  <val>0.20</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.600000023841858</val>
+                  <val>0.400000005960464</val>
+                  <val>0.300000011920929</val>
+                  <val>0.200000002980232</val>
                 </init>
                 <init name="ll" kind="single" array="T" unit="mm/mm">
                 </init>
