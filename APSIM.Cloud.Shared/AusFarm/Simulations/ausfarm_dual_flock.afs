@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fwsimulation name="sim">
   <fwsversion>1.0</fwsversion>
-  <lastsaved>2017/01/19 11:43:23</lastsaved>
+  <lastsaved>2017/01/30 09:58:50</lastsaved>
   <component name="time_server" active="T" class="Time Server">
     <executable name="C:\Program Files (x86)\AusFarm\timesvr.dll" version="1.1"/>
     <initdata>
@@ -8399,7 +8399,7 @@
               <val>      set fert_pool_limit[i] = resize(fert_pool_limit[i], CROP_COUNT)</val>
               <val></val>
               <val>   ! kg urea fertiliser to be applied to crop x soil type</val>
-              <val>   for i = 1 to 4       ! just fertilise the first 4 crops - wheat barley canola oats</val>
+              <val>   for i = 1 to 10      ! fertilise the first 10 crops - wheat barley canola oats + oatshay</val>
               <val>   {</val>
               <val>      set fert_pool_limit[1, i] = fert_soil1  ! soil1</val>
               <val>      set fert_pool_limit[2, i] = fert_soil2  ! soil2</val>
@@ -10547,6 +10547,8 @@
               <val>   set crop_cut_amount                      = constants.crop_cut_amount</val>
               <val>   set crop_cut_height                      = constants.crop_cut_height</val>
               <val></val>
+              <val>   set fert_pool_limit                      = constants.fert_pool_limit</val>
+              <val></val>
               <val>   for padd = 1 to no_paddocks</val>
               <val>   {</val>
               <val>      if paddock_has_translators[padd]</val>
@@ -11172,7 +11174,9 @@
               <val>      {</val>
               <val>         if crop_das &lt;= 1         ! sowing</val>
               <val>         {</val>
-              <val>            set fert_rate = crop_fert_info[fert_rule]:base_rate + crop_fert_info[fert_rule]:slope * max( 0.0, crop_fert_info[fert_rule]:base_day - day )</val>
+              <val>            !set fert_rate = crop_fert_info[fert_rule]:base_rate + crop_fert_info[fert_rule]:slope * max( 0.0, crop_fert_info[fert_rule]:base_day - day )</val>
+              <val>            set fert_pool = fert_pool_limit[padd_to_system[padd], crop_no]</val>
+              <val>            set fert_rate = min(fert_pool, (crop_fert_info[fert_rule]:base_rate + crop_fert_info[fert_rule]:slope * max( 0.0, crop_fert_info[fert_rule]:base_day - day )))</val>
               <val>         }</val>
               <val>         else</val>
               <val>         {  ! top dressing</val>
@@ -11467,6 +11471,7 @@
               <val>      }</val>
               <val>   }</val>
               <val>}</val>
+              <val></val>
             </init>
             <init name="logfile" kind="string">
               <val></val>
