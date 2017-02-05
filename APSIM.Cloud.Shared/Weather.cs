@@ -58,7 +58,7 @@ namespace APSIM.Cloud.Shared
             OverlayDataAllYears(patchData, weatherFileData.Table);
 
             List<string> filesCreated = new List<string>();
-            for (DateTime date = weatherFileData.FirstDate; date.Year < weatherFileData.LastDate.Year; date = date.AddYears(1))
+            for (DateTime date = weatherFileData.FirstDate; date.Year < startDate.Year; date = date.AddYears(1))
             {
                 // Get a view of the data for this year up until the NaN data starts.
                 DataTable yearlyData = CreateView(weatherFileData.Table, date, date.AddYears(1).AddDays(-1)).ToTable();
