@@ -505,12 +505,12 @@ namespace APSIM.Cloud.Shared
             writer.WriteLine("TAV = " + tav.ToString());
             writer.WriteLine("AMP = " + amp.ToString());
             writer.WriteLine("! Codes:");
-            writer.WriteLine("  S    SILO");
-            writer.WriteLine("  O    Observed");
-            writer.WriteLine("  P    POAMA");
-            writer.WriteLine("  s    SILO (patched)");
-            writer.WriteLine("  o    Observed (patched)");
-            writer.WriteLine("  p    POAMA (patched)");
+            writer.WriteLine("!  S    SILO");
+            writer.WriteLine("!  O    Observed");
+            writer.WriteLine("!  P    POAMA");
+            writer.WriteLine("!  s    SILO (patched)");
+            writer.WriteLine("!  o    Observed (patched)");
+            writer.WriteLine("!  p    POAMA (patched)");
 
             // Work out column formats and widths.
             string formatString = string.Empty;
