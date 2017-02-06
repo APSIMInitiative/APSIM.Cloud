@@ -42,7 +42,10 @@ namespace APSIM.Cloud.Shared
             Data  weatherFileData = ExtractDataFromSILO(stationNumber, startDate.AddYears(-numYears), DateTime.Now);
 
             if (decileDate != DateTime.MinValue)
-                CreateDecileWeather(weatherFileData.Table, startDate);
+            {
+                DataTable decileData = CreateDecileWeather(weatherFileData.Table, startDate);
+                WriteDecileFile(decileData, decileDate, Path.Combine(Path.GetDirectoryName(fileName), "Decile.out"));
+            }
 
             // Duplicate the maxt and mint columns to origmaxt and origmint columns. 
             // This is so that we have both the patched and unpatched data.
@@ -271,13 +274,12 @@ namespace APSIM.Cloud.Shared
         }
 
         /// <summary>Creates a monthly decile weather file</summary>
-        /// <param name="weatherData">The weather data.</param>
+        /// <param name="decileRain">The decile data to write.</param>
         /// <param name="startDate">First date for decile table.</param>
         /// <param name="fileName">The file name to write.</param>
         /// <results>Montly decile data.</results>
-        private static void WriteDecileFile(DataTable weatherData, DateTime startDate, string fileName)
+        private static void WriteDecileFile(DataTable decileRain, DateTime startDate, string fileName)
         {
-            DataTable decileRain = CreateDecileWeather(weatherData, startDate);
             StreamWriter decileWriter = new StreamWriter(fileName);
 
             decileWriter.WriteLine("      Date RainDecile1 RainDecile5 RainDecile9");
@@ -500,6 +502,7 @@ namespace APSIM.Cloud.Shared
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             StreamWriter writer = new StreamWriter(fileName);
+            writer.WriteLine("[weather.met.weather]");
             writer.WriteLine("Latitude = " + latitude.ToString());
             writer.WriteLine("Longitude = " + longitude.ToString());
             writer.WriteLine("TAV = " + tav.ToString());
