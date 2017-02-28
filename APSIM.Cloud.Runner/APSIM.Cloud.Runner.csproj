@@ -67,8 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RunnableJobs\ProcessF4PJob.cs" />
-    <Compile Include="RunnableJobs\ProcessJob.cs" />
+    <Compile Include="RunnableJobs\IJob.cs" />
+    <Compile Include="RunnableJobs\RunF4PJob.cs" />
     <Compile Include="RunnerServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -85,10 +85,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunnableJobs\APSIMJob.cs" />
-    <Compile Include="RunnableJobs\APSIMPostSimulationJob.cs" />
+    <Compile Include="RunnableJobs\APSIMPostSimulation.cs" />
     <Compile Include="RunnableJobs\AusFarmJob.cs" />
-    <Compile Include="RunnableJobs\ProcessYPJob.cs" />
-    <Compile Include="RunnableJobs\YPPostSimulationJob.cs" />
+    <Compile Include="RunnableJobs\RunYPJob.cs" />
     <Compile Include="Service References\F4P\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

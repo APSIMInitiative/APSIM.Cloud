@@ -77,13 +77,24 @@ namespace APSIM.Cloud.Runner
             {
                 bool runAPSIM = !(commandLineArguments.Length == 2 &&
                                   commandLineArguments[1] == "/DontRunAPSIM");
-                RunnableJobs.ProcessYPJob job = new RunnableJobs.ProcessYPJob(runAPSIM);
-                job.JobFileName = commandLineArguments[0];
-                if (commandLineArguments.Length > 1)
-                    job.ApsimExecutable = commandLineArguments[1];
+                string jobFileName = commandLineArguments[0];
+
+                string jobXML = File.ReadAllText(jobFileName);
+                string jobName = Path.GetFileNameWithoutExtension(jobFileName);
+
+                RunnableJobs.RunYPJob job = new RunnableJobs.RunYPJob(jobXML);
+
                 JobManager jobManager = new JobManager();
                 jobManager.AddJob(job);
                 jobManager.Start(waitUntilFinished: true);
+
+                string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
+                using (Stream s = File.Create(destZipFileName))
+                {
+                    job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                    job.AllFilesZipped.CopyTo(s);
+                }
+
                 List<Exception> errors = jobManager.Errors(job);
                 if (errors != null || errors.Count > 0)
                 {
@@ -91,6 +102,7 @@ namespace APSIM.Cloud.Runner
                     foreach (Exception error in errors)
                         Console.Write(error.ToString());
                 }
+
                 return true;
             }
             return false;

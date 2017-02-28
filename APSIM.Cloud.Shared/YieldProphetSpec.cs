@@ -25,27 +25,6 @@ namespace APSIM.Cloud.Shared
         [XmlElement("Paddock")]
         public List<Paddock> Paddock { get; set; }
 
-        /// <summary>
-        /// Report type enumeration
-        /// </summary>
-        public enum ReportTypeEnum
-        {
-            /// <summary>No report needed.</summary>
-            None,
-
-            /// <summary>User has requested a crop report</summary>
-            Crop,
-
-            /// <summary>User has requested a sowing opportunity report</summary>
-            SowingOpportunity,
-
-            /// <summary>The Farm4Prophet report type</summary>
-            F4P
-        }
-
-        /// <summary>Gets or sets the type of the report the user has requested.</summary>
-        public ReportTypeEnum ReportType { get; set; }
-
         /// <summary>Gets or sets the name of the report.</summary>
         public string ReportName { get; set; }
 
@@ -54,6 +33,11 @@ namespace APSIM.Cloud.Shared
 
         /// <summary>Gets or sets the name of the person generating the report.</summary>
         public string ReportGeneratedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether the YP server StoreReport method will be called on completion.
+        /// </summary>
+        public bool CallYPServerOnComplete { get; set; }
     }
 
     /// <summary>
@@ -94,9 +78,6 @@ namespace APSIM.Cloud.Shared
 
             /// <summary>Run a longterm simulation, patched with data from this year.</summary>
             LongTermPatched,
-
-            /// <summary>A single season, validation run.</summary>
-            Validation,
 
             /// <summary>Run a POAMA simulation, patched with data from this year.</summary>
             POAMA
@@ -152,6 +133,26 @@ namespace APSIM.Cloud.Shared
 
         /// <summary>Gets or sets whether the paddock is N unlimited from today.</summary>
         public bool NUnlimitedFromToday { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether daily output is required.</summary>
+        public bool DailyOutput { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether monthly output is required.</summary>
+        public bool MonthlyOutput { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether yearly output is required.</summary>
+        public bool YearlyOutput { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a depth.out file should be created at
+        /// the end of the simulation run.
+        /// </summary>
+        public bool WriteDepthFile { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a 'next 10 days' output file should be created.
+        /// </summary>
+        public bool Next10DaysDry { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="Paddock"/> class.</summary>
         public Paddock()

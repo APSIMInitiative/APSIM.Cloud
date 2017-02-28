@@ -49,10 +49,8 @@ namespace APSIM.Cloud.Shared
             if (reportDescription != "")
                 simulationsSpec.ReportName = reportDescription;
             string reportType = XmlUtilities.Value(node, "ReportType");
-            if (reportType == "Crop Report (Complete)")
-                simulationsSpec.ReportType = YieldProphet.ReportTypeEnum.Crop;
-            else if (reportType == "Sowing Opportunity Report")
-                simulationsSpec.ReportType = YieldProphet.ReportTypeEnum.SowingOpportunity;
+            if (reportType != string.Empty)
+                throw new Exception("Not sure what to do with a ReportType of " + reportType);
             simulationsSpec.ClientName = XmlUtilities.Value(node, "GrowerName");
             simulationsSpec.ReportGeneratedBy = XmlUtilities.Value(node, "LoginName");
 

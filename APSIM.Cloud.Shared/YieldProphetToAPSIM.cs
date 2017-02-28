@@ -19,21 +19,6 @@ namespace APSIM.Cloud.Shared
         /// <returns>The list of APSIM simulations that will need to be run.</returns>
         public static List<APSIMSpec> ToAPSIM(YieldProphet yieldProphet)
         {
-            if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.Crop)
-                return CropReport(yieldProphet);
-            else if (yieldProphet.ReportType == YieldProphet.ReportTypeEnum.SowingOpportunity)
-                throw new Exception("Don't use the sowing opportunity report type.");
-            else
-                return OtherRuns(yieldProphet);
-        }
-
-        /// <summary>
-        /// Create validation specs.
-        /// </summary>
-        /// <param name="yieldProphet">The yield prophet specification</param>
-        /// <returns>A list of APSIM specs. </returns>
-        private static List<APSIMSpec> OtherRuns(YieldProphet yieldProphet)
-        {
             List<APSIMSpec> apsimSpecs = new List<APSIMSpec>();
 
             foreach (Paddock paddock in yieldProphet.Paddock)
@@ -42,12 +27,6 @@ namespace APSIM.Cloud.Shared
                 try
                 {
                     simulation = CreateBaseSimulation(paddock);
-                    if (paddock.RunType == Paddock.RunTypeEnum.Validation)
-                    {
-                        simulation.EndDate = simulation.StartDate.AddDays(360);
-                        simulation.DailyOutput = false;
-                        simulation.YearlyOutput = true;
-                    }
                 }
                 catch (Exception err)
                 {
@@ -111,8 +90,9 @@ namespace APSIM.Cloud.Shared
             shortSimulation.NowDate = copyOfPaddock.NowDate.AddDays(-1);
             if (shortSimulation.NowDate == DateTime.MinValue)
                 shortSimulation.NowDate = DateTime.Now;
-            shortSimulation.DailyOutput = paddock.RunType == Paddock.RunTypeEnum.SingleSeason;
-            shortSimulation.YearlyOutput = !shortSimulation.DailyOutput;
+            shortSimulation.DailyOutput = paddock.DailyOutput;
+            shortSimulation.MonthlyOutput = paddock.MonthlyOutput;
+            shortSimulation.YearlyOutput = paddock.YearlyOutput;
             shortSimulation.ObservedData = copyOfPaddock.ObservedData;
             shortSimulation.Soil = copyOfPaddock.Soil;
             shortSimulation.SoilPath = copyOfPaddock.SoilPath;
@@ -131,63 +111,14 @@ namespace APSIM.Cloud.Shared
             shortSimulation.DecileDate = paddock.StartSeasonDate;
             shortSimulation.NUnlimited = paddock.NUnlimited;
             shortSimulation.NUnlimitedFromToday = paddock.NUnlimitedFromToday;
+            shortSimulation.WriteDepthFile = paddock.WriteDepthFile;
+            shortSimulation.Next10DaysDry = paddock.Next10DaysDry;
             AddResetDatesToManagement(copyOfPaddock, shortSimulation);
 
             // Do a stable sort on management actions.
             shortSimulation.Management = shortSimulation.Management.OrderBy(m => m.Date).ToList();
 
             return shortSimulation;
-        }
-
-        /// <summary>Create a series of APSIM simulation specifications for a YP crop report.</summary>
-        /// <param name="yieldProphet">The yield prophet specification.</param>
-        /// <returns>The created APSIM simulation specs.</returns>
-        private static List<APSIMSpec> CropReport(YieldProphet yieldProphet)
-        {
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
-            Paddock paddock = yieldProphet.Paddock[0];
-
-            APSIMSpec thisYear = CreateBaseSimulation(paddock);
-            thisYear.Name = "ThisYear";
-            thisYear.WriteDepthFile = true;
-            thisYear.TypeOfRun = Paddock.RunTypeEnum.SingleSeason;
-            simulations.Add(thisYear);
-
-            APSIMSpec seasonSimulation = CreateBaseSimulation(paddock);
-            seasonSimulation.Name = "Base";
-            seasonSimulation.DailyOutput = false;
-            seasonSimulation.YearlyOutput = true;
-            seasonSimulation.EndDate = seasonSimulation.StartDate.AddDays(360);
-            seasonSimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
-            simulations.Add(seasonSimulation);
-
-            APSIMSpec NUnlimitedSimulation = CreateBaseSimulation(paddock);
-            NUnlimitedSimulation.Name = "NUnlimited";
-            NUnlimitedSimulation.DailyOutput = false;
-            NUnlimitedSimulation.YearlyOutput = true;
-            NUnlimitedSimulation.EndDate = NUnlimitedSimulation.StartDate.AddDays(360);
-            NUnlimitedSimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
-            NUnlimitedSimulation.NUnlimited = true;
-            simulations.Add(NUnlimitedSimulation);
-
-            APSIMSpec NUnlimitedFromTodaySimulation = CreateBaseSimulation(paddock);
-            NUnlimitedFromTodaySimulation.Name = "NUnlimitedFromToday";
-            NUnlimitedFromTodaySimulation.DailyOutput = false;
-            NUnlimitedFromTodaySimulation.YearlyOutput = true;
-            NUnlimitedFromTodaySimulation.EndDate = NUnlimitedFromTodaySimulation.StartDate.AddDays(360);
-            NUnlimitedFromTodaySimulation.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
-            NUnlimitedFromTodaySimulation.NUnlimitedFromToday = true;
-            simulations.Add(NUnlimitedFromTodaySimulation);
-
-            APSIMSpec Next10DaysDry = CreateBaseSimulation(paddock);
-            Next10DaysDry.Name = "Next10DaysDry";
-            Next10DaysDry.DailyOutput = false;
-            Next10DaysDry.YearlyOutput = true;
-            Next10DaysDry.EndDate = Next10DaysDry.StartDate.AddDays(360);
-            Next10DaysDry.TypeOfRun = Paddock.RunTypeEnum.LongTermPatched;
-            Next10DaysDry.Next10DaysDry = true;
-            simulations.Add(Next10DaysDry);
-            return simulations;
         }
 
         /// <summary>Add in reset management events to the APSIM spec for the specified paddock.</summary>

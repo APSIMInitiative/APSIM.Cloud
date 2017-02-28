@@ -36,16 +36,8 @@ namespace APSIM.Cloud.Shared
             XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
             foreach (APSIMSpec simulation in simulations)
             {
-                try
-                {
-                    CreateWeatherFilesForSimulations(simulation, workingFolder);
-
-                    CreateApsimFile(simulation, doc.DocumentElement);
-                }
-                catch (Exception err)
-                {
-                    simulation.ErrorMessage += err.ToString();
-                }
+                CreateWeatherFilesForSimulations(simulation, workingFolder);
+                CreateApsimFile(simulation, doc.DocumentElement);
             }
 
             // Apply factors.
@@ -64,19 +56,6 @@ namespace APSIM.Cloud.Shared
             string apsimRunFileName = Path.Combine(workingFolder, Path.ChangeExtension(fileNameToWrite, ".spec"));
             string xml = XmlUtilities.Serialise(simulations, false);
             File.WriteAllText(apsimRunFileName, xml);
-
-            // If this isn't a validation run (i.e. a YP run) then look for errors and throw if found.
-            if (simulations.Count > 0 && simulations[0].TypeOfRun != Paddock.RunTypeEnum.Validation)
-            {
-                string errors = null;
-                foreach (APSIMSpec simulation in simulations)
-                {
-                    if (simulation.ErrorMessage != null)
-                        errors += simulation.ErrorMessage + Environment.NewLine;
-                }
-                if (errors != null)
-                    throw new Exception(errors);
-            }
 
             return apsimFileName;
         }
@@ -115,7 +94,7 @@ namespace APSIM.Cloud.Shared
                 }
                 else if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTerm)
                 {
-                    // Currently no patching is performed - bug?
+                    // Simple long term run with no patching
                     Weather.Data weatherFile = Weather.ExtractDataFromSILO(simulation.StationNumber, longTermStartDate, DateTime.Now);
                     Weather.WriteWeatherFile(weatherFile.Table, rainFileName, weatherFile.Latitude, weatherFile.Longitude,
                                                  weatherFile.TAV, weatherFile.AMP);
@@ -124,8 +103,7 @@ namespace APSIM.Cloud.Shared
                     simulation.EndDate = weatherFile.LastDate;
                     simulation.WeatherFileName = rainFileName;
                 }
-                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason ||
-                         simulation.TypeOfRun == Paddock.RunTypeEnum.Validation)
+                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason)
                 {
                     // short term.
                     // Create a short term weather file.
@@ -137,7 +115,7 @@ namespace APSIM.Cloud.Shared
                     filesCreated = new string[] { rainFileName };
                 }
 
-                if (simulation.TypeOfRun != Paddock.RunTypeEnum.Validation)
+                if (filesCreated.Length > 1)
                 {
                     APSIMSpec.Factor factor = new APSIMSpec.Factor();
                     factor.Name = "Met";
@@ -252,7 +230,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="paddock">The paddock.</param>
         /// <param name="apsoilService">The apsoil service.</param>
         /// <exception cref="System.Exception">Cannot find soil:  + paddock.SoilName</exception>
-        public static Soil DoSoil(APSIMSpec simulation)
+        private static Soil DoSoil(APSIMSpec simulation)
         {
             Soil soil;
             if (simulation.Soil == null)
@@ -421,8 +399,6 @@ namespace APSIM.Cloud.Shared
             CheckMissingValuesAreNaN(sample.PH);
         }
 
-
-
         /// <summary>
         /// Make sure that the values passed in don't have -999999. Throw exception
         /// when that happens
@@ -434,7 +410,5 @@ namespace APSIM.Cloud.Shared
             if (values != null && values.FirstOrDefault(v => v == MathUtilities.MissingValue) != 0)
                 throw new Exception("Use NaN for missing values in soil array values");
         }
-
-
     }
 }

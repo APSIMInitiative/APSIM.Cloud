@@ -44,7 +44,7 @@ namespace UnitTestProject1
             Assert.AreEqual(weatherFile.Table.Columns[4].ColumnName, "rain");
             Assert.AreEqual(weatherFile.Table.Columns[5].ColumnName, "codes");
             Assert.AreEqual(weatherFile.Table.Rows.Count, 31);
-            Assert.AreEqual(weatherFile.Table.Rows[0]["codes"], "----");
+            Assert.AreEqual(weatherFile.Table.Rows[0]["codes"], "SSSS");
         }
 
         [TestMethod]
@@ -62,12 +62,12 @@ namespace UnitTestProject1
             Weather.Data weatherFile = Weather.ExtractDataFromSILO(77008, new DateTime(2016, 5, 1), new DateTime(2016, 6, 1));
             Weather.OverlayData(observedData, weatherFile.Table);
 
-            Assert.AreEqual(weatherFile.Table.Rows[0]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[1]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[2]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[3]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[4]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[5]["codes"], "---O");
+            Assert.AreEqual(weatherFile.Table.Rows[0]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[1]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[2]["codes"], "SSSO");
+            Assert.AreEqual(weatherFile.Table.Rows[3]["codes"], "SSSO");
+            Assert.AreEqual(weatherFile.Table.Rows[4]["codes"], "SSSO");
+            Assert.AreEqual(weatherFile.Table.Rows[5]["codes"], "SSSO");
 
             Assert.AreEqual(weatherFile.Table.Rows[0]["rain"], 13.0f);  // original SILO rainfall
             Assert.AreEqual(weatherFile.Table.Rows[1]["rain"], 0.0f);
@@ -121,12 +121,12 @@ namespace UnitTestProject1
             Weather.OverlayDataAllYears(observedData, weatherFile.Table);
 
             // Check 2014
-            Assert.AreEqual(weatherFile.Table.Rows[0]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[1]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[2]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[3]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[4]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[5]["codes"], "---O");
+            Assert.AreEqual(weatherFile.Table.Rows[0]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[1]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[2]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[3]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[4]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[5]["codes"], "SSSo");
             Assert.AreEqual(weatherFile.Table.Rows[0]["rain"], 0.4f);  // original SILO rainfall
             Assert.AreEqual(weatherFile.Table.Rows[1]["rain"], 0.0f);
             Assert.AreEqual(weatherFile.Table.Rows[2]["rain"], 20.0f);
@@ -135,12 +135,12 @@ namespace UnitTestProject1
             Assert.AreEqual(weatherFile.Table.Rows[5]["rain"], 0.0f);
 
             // Check 2015
-            Assert.AreEqual(weatherFile.Table.Rows[0+365]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[1+365]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[2+365]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[3+365]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[4+365]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[5+365]["codes"], "---O");
+            Assert.AreEqual(weatherFile.Table.Rows[0+365]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[1+365]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[2+365]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[3+365]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[4+365]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[5+365]["codes"], "SSSo");
             Assert.AreEqual(weatherFile.Table.Rows[0+365]["rain"], 0.0f);   // original SILO rainfall
             Assert.AreEqual(weatherFile.Table.Rows[1+365]["rain"], 0.0f);
             Assert.AreEqual(weatherFile.Table.Rows[2+365]["rain"], 20.0f);
@@ -149,12 +149,12 @@ namespace UnitTestProject1
             Assert.AreEqual(weatherFile.Table.Rows[5+365]["rain"], 0.0f);
 
             // Check 2016
-            Assert.AreEqual(weatherFile.Table.Rows[0 + 365*2+1]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[1 + 365*2+1]["codes"], "----");
-            Assert.AreEqual(weatherFile.Table.Rows[2 + 365*2+1]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[3 + 365*2+1]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[4 + 365*2+1]["codes"], "---O");
-            Assert.AreEqual(weatherFile.Table.Rows[5 + 365*2+1]["codes"], "---O");
+            Assert.AreEqual(weatherFile.Table.Rows[0 + 365*2+1]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[1 + 365*2+1]["codes"], "SSSS");
+            Assert.AreEqual(weatherFile.Table.Rows[2 + 365*2+1]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[3 + 365*2+1]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[4 + 365*2+1]["codes"], "SSSo");
+            Assert.AreEqual(weatherFile.Table.Rows[5 + 365*2+1]["codes"], "SSSo");
 
             Assert.AreEqual(weatherFile.Table.Rows[0 + 365*2+1]["rain"], 13.0f);  // original SILO rainfall
             Assert.AreEqual(weatherFile.Table.Rows[1 + 365*2+1]["rain"], 0.0f);
