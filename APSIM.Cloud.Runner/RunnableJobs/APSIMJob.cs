@@ -29,23 +29,21 @@ namespace APSIM.Cloud.Runner.RunnableJobs
         /// <summary>Create a summary file?</summary>
         private bool createSumFile;
 
+        /// <summary>Arguments for job</summary>
+        private string arguments;
+
         /// <summary>Initializes a new instance of the <see cref="APSIMJob"/> class.</summary>
         /// <param name="apsimFileName">Name of the apsim file.</param>
         /// <param name="arguments">The arguments.</param>
         /// <param name="workingDirectory">The working directory.</param>
         /// <param name="createSumFile">Create a summary file?</param>
-        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable, bool createSumFile = false)
+        public APSIMJob(string fileName, string workingDirectory, string apsimExecutable, bool createSumFile = false, string arguments = null)
         {
             this.fileName = fileName;
             this.workingDirectory = workingDirectory;
             this.createSumFile = createSumFile;
-            if (apsimExecutable == null)
-            {
-                string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                this.ApsimExecutable = Path.Combine(binDirectory, @"APSIM\Model\ApsimModel.exe");
-            }
-            else
-                this.ApsimExecutable = apsimExecutable;
+            this.ApsimExecutable = apsimExecutable;
+            this.arguments = arguments;
         }
 
         /// <summary>Called to start the job.</summary>
@@ -60,7 +58,7 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             p.StartInfo.FileName = ApsimExecutable;
             if (!File.Exists(p.StartInfo.FileName))
                 throw new Exception("Cannot find executable: " + p.StartInfo.FileName);
-            p.StartInfo.Arguments = StringUtilities.DQuote(fileName);
+            p.StartInfo.Arguments = StringUtilities.DQuote(fileName) + " " + arguments;
             p.StartInfo.WorkingDirectory = workingDirectory;
             p.StartInfo.CreateNoWindow = true;
             if (createSumFile)
@@ -78,5 +76,6 @@ namespace APSIM.Cloud.Runner.RunnableJobs
 
             p.WaitForExit();
         }
+
     }
 }

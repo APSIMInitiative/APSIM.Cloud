@@ -61,12 +61,6 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the observed data. Can be null if no data.</summary>
         public DataTable ObservedData { get; set; }
 
-        /// <summary>Gets or sets the rainfall source name that appears on Crop Report</summary>
-        public string RainfallSource { get; set; }
-
-        /// <summary>Gets or sets the temperature source name that appears on Crop Report</summary>
-        public string TemperatureSource { get; set; }
-
         /// <summary>Type of APSIM run to create.</summary>
         public enum RunTypeEnum
         {

@@ -34,9 +34,10 @@ namespace APSIM.Cloud.Shared
             doc.AppendChild(doc.CreateElement("folder"));
             XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
             XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
+            WeatherFileCache weatherCache = new WeatherFileCache();
             foreach (APSIMSpec simulation in simulations)
             {
-                CreateWeatherFilesForSimulations(simulation, workingFolder);
+                CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache);
                 CreateApsimFile(simulation, doc.DocumentElement);
             }
 
@@ -63,7 +64,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
-        private static void CreateWeatherFilesForSimulations(APSIMSpec simulation, string workingFolder)
+        private static void CreateWeatherFilesForSimulations(APSIMSpec simulation, string workingFolder, WeatherFileCache weatherCache)
         {
             if (simulation.ErrorMessage == null)
             {
@@ -72,6 +73,9 @@ namespace APSIM.Cloud.Shared
                 DateTime longTermStartDate = new DateTime(simulation.LongtermStartYear, 1, 1);
                 string[] filesCreated = null;
 
+                if (simulation.ObservedData.TableName == null || simulation.ObservedData.TableName == "rainfall")
+                    throw new Exception("Cannot find a table name in observed data");
+
                 // Make sure the observed data has a codes column.
                 if (simulation.ObservedData != null)
                     Weather.AddCodesColumn(simulation.ObservedData, 'O');
@@ -79,11 +83,22 @@ namespace APSIM.Cloud.Shared
                 if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTermPatched)
                 {
                     // long term.
-                    // Create a long term weather file.
                     int numYears = simulation.StartDate.Year - longTermStartDate.Year + 1;
-                    filesCreated = Weather.CreateLongTerm(rainFileName, simulation.StationNumber,
-                                                            simulation.StartDate, simulation.NowDate,
-                                                            simulation.ObservedData, simulation.DecileDate, numYears);
+
+                    // Check to see if in cache.
+                    filesCreated = weatherCache.GetWeatherFiles(simulation.StationNumber,
+                                                                simulation.StartDate, simulation.NowDate,
+                                                                simulation.ObservedData.TableName, numYears);
+                    if (filesCreated == null)
+                    {
+                        // Create a long term weather file.
+                        filesCreated = Weather.CreateLongTerm(rainFileName, simulation.StationNumber,
+                                                              simulation.StartDate, simulation.NowDate,
+                                                              simulation.ObservedData, simulation.DecileDate, numYears);
+                        weatherCache.AddWeatherFiles(simulation.StationNumber,
+                                                     simulation.StartDate, simulation.NowDate,
+                                                     simulation.ObservedData.TableName, numYears, filesCreated);
+                    }
                 }
                 else if (simulation.TypeOfRun == Paddock.RunTypeEnum.POAMA)
                 {
@@ -409,6 +424,31 @@ namespace APSIM.Cloud.Shared
         {
             if (values != null && values.FirstOrDefault(v => v == MathUtilities.MissingValue) != 0)
                 throw new Exception("Use NaN for missing values in soil array values");
+        }
+
+        private class WeatherFileCache
+        {
+            Dictionary<string, string[]> cache = new Dictionary<string, string[]>();
+
+            public string[] GetWeatherFiles(int stationNumber, DateTime startDate, DateTime NowDate,
+                                            string observedDataName, int numYears)
+            {
+                string key = stationNumber.ToString() + startDate + NowDate + observedDataName + numYears;
+                if (cache.ContainsKey(key))
+                    return cache[key];
+                else
+                    return null;
+            }
+
+            public void AddWeatherFiles(int stationNumber, DateTime startDate, DateTime NowDate,
+                                        string observedDataName, int numYears, string[] fileNames)
+            {
+                string key = stationNumber.ToString() + startDate + NowDate + observedDataName + numYears;
+                if (cache.ContainsKey(key))
+                    cache[key] = fileNames;
+                else
+                    cache.Add(key, fileNames);
+            }
         }
     }
 }

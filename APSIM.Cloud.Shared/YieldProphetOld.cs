@@ -94,8 +94,8 @@ namespace APSIM.Cloud.Shared
                 simulation.NowDate = DateTime.Now;
 
             // Store any rainfall data in the simulation.
-            simulation.RainfallSource = GetString(paddock, "RainfallSource");
-            if (simulation.RainfallSource != "Weather station")
+            string rainfallSource = GetString(paddock, "RainfallSource");
+            if (rainfallSource != "Weather station")
             {
                 string rainFileName = GetString(paddock, "RainfallFilename");
                 if (rainFileName != string.Empty)
@@ -104,6 +104,7 @@ namespace APSIM.Cloud.Shared
                     if (!File.Exists(fullFileName))
                         throw new Exception("Cannot find file: " + fullFileName);
                     simulation.ObservedData = ApsimTextFile.ToTable(fullFileName);
+                    simulation.ObservedData.TableName = rainfallSource;
                     if (simulation.ObservedData.Rows.Count == 0)
                         simulation.ObservedData = null;
                 }

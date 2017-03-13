@@ -84,7 +84,7 @@ namespace APSIM.Cloud.Runner
                     else
                     {
                         // No jobs to run so wait a bit.
-                        Thread.Sleep(15 * 1000); // 15 sec.
+                        Thread.Sleep(5 * 1000); // 5 sec.
                     }
                 }
             }
@@ -101,43 +101,54 @@ namespace APSIM.Cloud.Runner
         /// <param name="jobManager"></param>
         private void UpdateServerForCompletedJob(JobManager jobManager, IJob job)
         {
-            string pwdFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ftpuserpwd.txt");
-            if (!File.Exists(pwdFile))
-                throw new Exception("Cannot find file: " + pwdFile);
+            string errorMessage = null;
 
-            string[] usernamepwd = File.ReadAllText(pwdFile).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            string zipFileName = Path.GetTempFileName();
-            using (var s = File.Create(zipFileName))
+            try
             {
-                s.Seek(0, SeekOrigin.Begin);
-                job.AllFilesZipped.CopyTo(s);
-            }
+                string pwdFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ftpuserpwd.txt");
+                if (!File.Exists(pwdFile))
+                    throw new Exception("Cannot find file: " + pwdFile);
 
-            string archiveLocation = @"ftp://bob.apsim.info/APSIM.Cloud.Archive";
-            FTPClient.Upload(zipFileName, archiveLocation + "/" + runningJobDescription.Name + ".zip", usernamepwd[0], usernamepwd[1]);
-            File.Delete(zipFileName);
-
-            if (runningJobDescription.Name != null && runningJobDescription.Name.Length > 4)
-            {
-                // YieldProphet - StoreReport
-                // validation runs have a report name of the year e.g. 2015. 
-                // Don't need to call StoreReport for them.
-                using (YPReporting.ReportingClient ypClient = new YPReporting.ReportingClient())
+                string[] usernamepwd = File.ReadAllText(pwdFile).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                string zipFileName = Path.GetTempFileName();
+                using (var s = File.Create(zipFileName))
                 {
-                    try
+                    job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                    job.AllFilesZipped.CopyTo(s);
+                }
+
+                string archiveLocation = @"ftp://bob.apsim.info/APSIM.Cloud.Archive";
+                FTPClient.Upload(zipFileName, archiveLocation + "/" + runningJobDescription.Name + ".zip", usernamepwd[0], usernamepwd[1]);
+                File.Delete(zipFileName);
+
+                bool callStoreReport = runningJob is RunF4PJob ||
+                    (runningJob is RunYPJob && (runningJob as RunYPJob).Spec.CallYPServerOnComplete);
+
+                if (callStoreReport)
+                {
+                    // YieldProphet - StoreReport
+                    // validation runs have a report name of the year e.g. 2015. 
+                    // Don't need to call StoreReport for them.
+                    using (YPReporting.ReportingClient ypClient = new YPReporting.ReportingClient())
                     {
-                        ypClient.StoreReport(runningJobDescription.Name, job.Outputs);
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("Cannot call YP StoreReport web service method");
+                        try
+                        {
+                            ypClient.StoreReport(runningJobDescription.Name, job.Outputs);
+                        }
+                        catch (Exception)
+                        {
+                            throw new Exception("Cannot call YP StoreReport web service method");
+                        }
                     }
                 }
+            }
+            catch (Exception err)
+            {
+                errorMessage = err.ToString();
             }
 
             using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
             {
-                string errorMessage = null;
                 foreach (Exception err in jobManager.Errors(runningJob))
                     errorMessage += err.ToString();
                 if (errorMessage != null)
