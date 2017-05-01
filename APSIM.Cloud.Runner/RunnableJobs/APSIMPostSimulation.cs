@@ -82,7 +82,10 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 // By now the longterm .out and .sum files have been concatenated. Assume
                 // all simulations are the same; get the different types of reports for each simulation
                 // and concatenate.
-                string apsimFileName1 = Directory.GetFiles(workingFolder, "*.apsim")[0];
+                string[] apsimFiles = Directory.GetFiles(workingFolder, "*.apsim");
+                if (apsimFiles.Length == 0)
+                    apsimFiles = Directory.GetFiles(workingFolder, "*.apsimx");
+                string apsimFileName1 = apsimFiles[0];
                 string[] allSumFiles = Directory.GetFiles(workingFolder, "*.sum");
                 ConcatenateSummaryFiles(allSumFiles, Path.ChangeExtension(apsimFileName1, ".sum"));
 

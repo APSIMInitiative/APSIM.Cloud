@@ -29,25 +29,51 @@ namespace APSIM.Cloud.Shared
         /// <returns>The name of the created .apsim file.</returns>
         public static string Create(List<APSIMSpec> simulations, string workingFolder, string fileNameToWrite)
         {
+            bool usingAPSIMx = Path.GetExtension(fileNameToWrite) == ".apsimx";
+
             // Create the .apsim XML
             XmlDocument doc = new XmlDocument();
-            doc.AppendChild(doc.CreateElement("folder"));
-            XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
-            XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
+            if (usingAPSIMx)
+            {
+                doc.AppendChild(doc.CreateElement("Simulations"));
+                XmlUtilities.SetValue(doc.DocumentElement, "Name", "Simulations");
+                XmlUtilities.SetValue(doc.DocumentElement, "DataStore/Name", "DataStore");
+            }
+            else
+            {
+                doc.AppendChild(doc.CreateElement("folder"));
+                XmlUtilities.SetNameAttr(doc.DocumentElement, "Simulations");
+                XmlUtilities.SetAttribute(doc.DocumentElement, "version", APSIMVerionNumber.ToString());
+            }
+
+            // Determine whether all simulations are single season.
+            bool allSimulationsAreSingleSeason = true;
+            foreach (APSIMSpec simulation in simulations)
+                if (simulation.TypeOfRun != Paddock.RunTypeEnum.SingleSeason)
+                    allSimulationsAreSingleSeason = false;
+
             WeatherFileCache weatherCache = new WeatherFileCache();
             foreach (APSIMSpec simulation in simulations)
             {
-                CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache);
-                CreateApsimFile(simulation, doc.DocumentElement);
+                try
+                {
+                    CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache, allSimulationsAreSingleSeason);
+                    CreateApsimFile(simulation, doc.DocumentElement, usingAPSIMx);
+                }
+                catch (Exception err)
+                {
+                    simulation.ErrorMessage = err.ToString();
+                }
             }
 
             // Apply factors.
-            foreach (APSIMSpec simulation in simulations)
-            {
-                if (simulation.ErrorMessage == null && simulation.Factors != null)
-                    foreach (APSIMSpec.Factor factor in simulation.Factors)
-                        APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
-            }
+            if (!usingAPSIMx)
+                foreach (APSIMSpec simulation in simulations)
+                {
+                    if (simulation.ErrorMessage == null && simulation.Factors != null)
+                        foreach (APSIMSpec.Factor factor in simulation.Factors)
+                            APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
+                }
 
             // Write the .apsim file.
             string apsimFileName = Path.Combine(workingFolder, fileNameToWrite);
@@ -64,7 +90,8 @@ namespace APSIM.Cloud.Shared
         /// <summary>Creates the weather files for all simulations.</summary>
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
-        private static void CreateWeatherFilesForSimulations(APSIMSpec simulation, string workingFolder, WeatherFileCache weatherCache)
+        /// <param name="allSimulationsAreSingleSeason">All simulations are short season?</param>
+        private static void CreateWeatherFilesForSimulations(APSIMSpec simulation, string workingFolder, WeatherFileCache weatherCache, bool allSimulationsAreSingleSeason)
         {
             if (simulation.ErrorMessage == null)
             {
@@ -73,8 +100,8 @@ namespace APSIM.Cloud.Shared
                 DateTime longTermStartDate = new DateTime(simulation.LongtermStartYear, 1, 1);
                 string[] filesCreated = null;
 
-                if (simulation.ObservedData.TableName == null || simulation.ObservedData.TableName == "rainfall")
-                    throw new Exception("Cannot find a table name in observed data");
+                //if (simulation.ObservedData.TableName == null || simulation.ObservedData.TableName == "rainfall")
+                //    throw new Exception("Cannot find a table name in observed data");
 
                 // Make sure the observed data has a codes column.
                 if (simulation.ObservedData != null)
@@ -130,7 +157,7 @@ namespace APSIM.Cloud.Shared
                     filesCreated = new string[] { rainFileName };
                 }
 
-                if (filesCreated.Length > 1)
+                if (!allSimulationsAreSingleSeason)
                 {
                     APSIMSpec.Factor factor = new APSIMSpec.Factor();
                     factor.Name = "Met";
@@ -147,11 +174,12 @@ namespace APSIM.Cloud.Shared
         /// <summary>Create a .apsim file node for the job and append it to the parentNode</summary>
         /// <param name="simulation">The specification to use</param>
         /// <param name="parentNode">Parent XmlNode to append the simulation to.</param>
-        private static void CreateApsimFile(APSIMSpec simulation, XmlNode parentNode)
+        /// <param name="usingAPSIMx">Write APSIMx files?</param>
+        private static void CreateApsimFile(APSIMSpec simulation, XmlNode parentNode, bool usingAPSIMx)
         {
             if (simulation.ErrorMessage == null)
             {
-                XmlNode simulationXML = CreateSimulationXML(simulation);
+                XmlNode simulationXML = CreateSimulationXML(simulation, usingAPSIMx);
                 if (simulationXML != null)
                     parentNode.AppendChild(parentNode.OwnerDocument.ImportNode(simulationXML, true));
             }
@@ -164,10 +192,15 @@ namespace APSIM.Cloud.Shared
         /// <param name="paddock">The paddock.</param>
         /// <param name="todayDate">The today date.</param>
         /// <param name="apsoilService">The apsoil service.</param>
+        /// <param name="usingAPSIMx">Write APSIMx files?</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(APSIMSpec simulation)
+        private static XmlNode CreateSimulationXML(APSIMSpec simulation, bool usingAPSIMx)
         {
-            APSIMFileWriter apsimWriter = new APSIMFileWriter();
+            IAPSIMFileWriter apsimWriter;
+            if (usingAPSIMx)
+                apsimWriter = new APSIMxFileWriter();
+            else
+                apsimWriter = new APSIMFileWriter();
 
             // Name the paddock.
             apsimWriter.NameSimulation(simulation.Name);
@@ -191,18 +224,6 @@ namespace APSIM.Cloud.Shared
             // Set NUnlimited from today
             if (simulation.NUnlimitedFromToday)
                 apsimWriter.SetNUnlimitedFromToday();
-
-            // Set Daily output
-            if (simulation.DailyOutput)
-                apsimWriter.SetDailyOutput();
-
-            // Set Monthly output
-            if (simulation.MonthlyOutput)
-                apsimWriter.SetMonthlyOutput();
-
-            // Set Yearly output
-            if (simulation.YearlyOutput)
-                apsimWriter.SetYearlyOutput();
 
             if (simulation.WriteDepthFile)
                 apsimWriter.WriteDepthFile();
@@ -237,6 +258,18 @@ namespace APSIM.Cloud.Shared
                 else if (management is ResetSurfaceOrganicMatter)
                     apsimWriter.AddSurfaceOrganicMatterOperation(management as ResetSurfaceOrganicMatter);
             }
+
+            // Set Daily output
+            if (simulation.DailyOutput)
+                apsimWriter.SetDailyOutput();
+
+            // Set Monthly output
+            if (simulation.MonthlyOutput)
+                apsimWriter.SetMonthlyOutput();
+
+            // Set Yearly output
+            if (simulation.YearlyOutput)
+                apsimWriter.SetYearlyOutput();
 
             return apsimWriter.ToXML();
         }

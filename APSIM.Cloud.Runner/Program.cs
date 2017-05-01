@@ -38,7 +38,7 @@ namespace APSIM.Cloud.Runner
             }
             else
             {
-                if (!RunJobFromCommandLine(args))
+                if (!RunJobFromCommandLine(arguments))
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
@@ -71,39 +71,44 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Runs the job (.xml file) specified on the command line.</summary>
         /// <returns>True if something was run.</returns>
-        private static bool RunJobFromCommandLine(string[] commandLineArguments)
+        private static bool RunJobFromCommandLine(Dictionary<string, string> commandLineArguments)
         {
-            if (commandLineArguments.Length > 0 && File.Exists(commandLineArguments[0]))
+            if (commandLineArguments.ContainsKey("Filename"))
             {
-                bool runAPSIM = !(commandLineArguments.Length == 2 &&
-                                  commandLineArguments[1] == "/DontRunAPSIM");
-                string jobFileName = commandLineArguments[0];
+                string jobFileName = commandLineArguments["Filename"];
 
-                string jobXML = File.ReadAllText(jobFileName);
-                string jobName = Path.GetFileNameWithoutExtension(jobFileName);
-
-                RunnableJobs.RunYPJob job = new RunnableJobs.RunYPJob(jobXML);
-
-                JobManager jobManager = new JobManager();
-                jobManager.AddJob(job);
-                jobManager.Start(waitUntilFinished: true);
-
-                string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
-                using (Stream s = File.Create(destZipFileName))
+                if (File.Exists(jobFileName))
                 {
-                    job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
-                    job.AllFilesZipped.CopyTo(s);
-                }
+                    bool runAPSIMx = (commandLineArguments.ContainsKey("RunAPSIMX"));
+                    string executable = null;
+                    commandLineArguments.TryGetValue("APSIMXExecutable", out executable);
 
-                List<Exception> errors = jobManager.Errors(job);
-                if (errors != null || errors.Count > 0)
-                {
-                    AttachConsole(-1);
-                    foreach (Exception error in errors)
-                        Console.Write(error.ToString());
-                }
+                    string jobXML = File.ReadAllText(jobFileName);
+                    string jobName = Path.GetFileNameWithoutExtension(jobFileName);
 
-                return true;
+                    RunnableJobs.RunYPJob job = new RunnableJobs.RunYPJob(jobXML, runAPSIMx);
+                    job.apsimXExecutable = executable;
+
+                    JobManager jobManager = new JobManager();
+                    jobManager.AddJob(job);
+                    jobManager.Start(waitUntilFinished: true);
+
+                    string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
+                    using (Stream s = File.Create(destZipFileName))
+                    {
+                        job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                        job.AllFilesZipped.CopyTo(s);
+                    }
+
+                    List<Exception> errors = jobManager.Errors(job);
+                    if (errors != null && errors.Count > 0)
+                    {
+                        AttachConsole(-1);
+                        foreach (Exception error in errors)
+                            Console.Write(error.ToString());
+                    }
+                    return true;
+                }
             }
             return false;
         }

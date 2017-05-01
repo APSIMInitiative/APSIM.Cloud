@@ -127,13 +127,14 @@ namespace APSIM.Cloud.Shared
             StringWriter writer = new StringWriter();
             serial.Serialize(writer, yieldProphet, ns);
             string xml = writer.ToString();
-            if (xml.Length > 5 && xml.Substring(0, 5) == "<?xml")
-            {
-                // remove the first line: <?xml version="1.0"?>/n
-                int posEol = xml.IndexOf("\n");
-                if (posEol != -1)
-                    return xml.Substring(posEol + 1);
-            }
+            // The code below can cause out of memory error with very large number of simulations
+            //if (xml.Length > 5 && xml.Substring(0, 5) == "<?xml")
+            //{
+            //    // remove the first line: <?xml version="1.0"?>/n
+            //    int posEol = xml.IndexOf("\n");
+            //    if (posEol != -1)
+            //        return xml.Substring(posEol + 1);
+            //}
             return xml;
         }
 

@@ -273,6 +273,38 @@ namespace APSIM.Cloud.Shared
                 amp: Convert.ToDouble(weatherFile.Constant("amp").Value));
         }
 
+        /// <summary>
+        /// Extracts radiation data from BOM for the specified station number, between the 
+        /// specified dates.
+        /// </summary>
+        /// <param name="stationNumber">The station number.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        public static Data ExtractRadiationDataFromBOM(int stationNumber, DateTime startDate, DateTime endDate)
+        {
+            string url = "http://www.bom.gov.au/jsp/ncc/cdio/weatherData/av?p_display_type=dailyZippedDataFile&p_stn_num=" +
+                        stationNumber.ToString() +
+                        "&ddStart=" + startDate.Day.ToString() +
+                        "&mmStart=" + startDate.Month.ToString() +
+                        "&yyyyStart=" + startDate.Year.ToString() +
+                        "&ddFinish=" + endDate.Day.ToString() +
+                        "&mmFinish=" + endDate.Month.ToString() +
+                        "&yyyyFinish=" + endDate.Year.ToString();
+            ApsimTextFile weatherFile = ExtractDataFromURL(url);
+
+            // Add a codes and date column to weatherdata
+            DataTable weatherData = weatherFile.ToTable();
+            AddCodesColumn(weatherData, 'S');
+            AddDateToTable(weatherData);
+
+            // Return the info object.
+            return new Data(weatherData,
+                latitude: Convert.ToDouble(weatherFile.Constant("Latitude").Value),
+                longitude: Convert.ToDouble(weatherFile.Constant("Longitude").Value),
+                tav: Convert.ToDouble(weatherFile.Constant("tav").Value),
+                amp: Convert.ToDouble(weatherFile.Constant("amp").Value));
+        }
+
         /// <summary>Creates a monthly decile weather file</summary>
         /// <param name="decileRain">The decile data to write.</param>
         /// <param name="startDate">First date for decile table.</param>

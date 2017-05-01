@@ -14,7 +14,7 @@ namespace APSIM.Cloud.Shared
     using APSIM.Shared.Utilities;
 
     /// <summary>Writes a .apsim file</summary>
-    class APSIMFileWriter
+    class APSIMFileWriter : IAPSIMFileWriter
     {
         /// <summary>The simulation XML</summary>
         private XmlNode simulationXML;
