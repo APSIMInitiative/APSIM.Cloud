@@ -157,6 +157,16 @@ namespace APSIM.Cloud.Shared
                     filesCreated = new string[] { rainFileName };
                 }
 
+                if (filesCreated.Length > 0)
+                {
+                    // Set the simulation end date to the end date of the weather file. This will avoid
+                    // problems where SILO hasn't been updated for a while.
+                    ApsimTextFile weatherFile = new ApsimTextFile();
+                    weatherFile.Open(filesCreated[0]);
+                    simulation.EndDate = weatherFile.LastDate;
+                    weatherFile.Close();
+                }
+
                 if (!allSimulationsAreSingleSeason)
                 {
                     APSIMSpec.Factor factor = new APSIMSpec.Factor();
