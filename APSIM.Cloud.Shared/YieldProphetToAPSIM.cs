@@ -37,7 +37,6 @@ namespace APSIM.Cloud.Shared
                 }
 
                 simulation.Name = paddock.Name;
-                simulation.WriteDepthFile = false;
                 apsimSpecs.Add(simulation);
             }
             return apsimSpecs;
