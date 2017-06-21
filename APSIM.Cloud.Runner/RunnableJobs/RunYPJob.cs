@@ -176,9 +176,16 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             string executable = Path.Combine(binDirectory, "ApsimToSim.exe");
 
             RunnableJobs.APSIMJob job = new RunnableJobs.APSIMJob(apsimFileName, workingDirectory, executable, 
-                                                                  false, null);
+                                                                  true, null);
             job.Run(null, null);
 
+            string sumFileName = Path.ChangeExtension(apsimFileName, ".sum");
+            if (File.Exists(sumFileName))
+            {
+                string msg = File.ReadAllText(sumFileName);
+                if (msg != null && msg != string.Empty)
+                    throw new Exception("ApsimToSim Error:\r\n" + msg);
+            }
             return Directory.GetFiles(workingDirectory, "*.sim");
         }
 
