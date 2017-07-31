@@ -740,7 +740,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="endDate">The end date.</param>
         /// <exception cref="System.Exception">Cannot find SILO!</exception>
         /// <returns>The APSIM text file from SILO</returns>
-        private static ApsimTextFile ExtractMetFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
+        public static ApsimTextFile ExtractMetFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
         {
             if (startDate < DateTime.Now)
             {
@@ -753,6 +753,29 @@ namespace APSIM.Cloud.Shared
                                         "&mmFinish=" + endDate.Month.ToString() +
                                         "&yyyyFinish=" + endDate.Year.ToString();
                 return ExtractDataFromURL(url);
+            }
+            return null;
+        }
+
+        /// <summary>Extracts weather data from silo.</summary>
+        /// <param name="stationNumber">The station number.</param>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <exception cref="System.Exception">Cannot find SILO!</exception>
+        /// <returns>The APSIM text file from SILO</returns>
+        public static MemoryStream ExtractMetStreamFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
+        {
+            if (startDate < DateTime.Now)
+            {
+                string url = "http://apsrunet.apsim.info/cgi-bin/getData.tcl?format=apsim&station=" +
+                                        stationNumber.ToString() +
+                                        "&ddStart=" + startDate.Day.ToString() +
+                                        "&mmStart=" + startDate.Month.ToString() +
+                                        "&yyyyStart=" + startDate.Year.ToString() +
+                                        "&ddFinish=" + endDate.Day.ToString() +
+                                        "&mmFinish=" + endDate.Month.ToString() +
+                                        "&yyyyFinish=" + endDate.Year.ToString();
+                return WebUtilities.ExtractDataFromURL(url);
             }
             return null;
         }

@@ -158,15 +158,22 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 DataTable allData = null;
                 foreach (string outputFileName in outFiles)
                 {
+                    DataTable data = null;
                     ApsimTextFile reader = new ApsimTextFile();
-                    reader.Open(outputFileName);
+                    try
+                    {
+                        reader.Open(outputFileName);
 
-                    List<string> constantsToAdd = new List<string>();
-                    constantsToAdd.Add("Title");
-                    DataTable data = reader.ToTable(constantsToAdd);
-                    reader.Close();
+                        List<string> constantsToAdd = new List<string>();
+                        constantsToAdd.Add("Title");
+                        data = reader.ToTable(constantsToAdd);
+                    }
+                    finally
+                    {
+                        reader.Close();
+                    }
 
-                    if (data.Columns.Count > 0 && data.Rows.Count > 0)
+                    if (data != null && data.Columns.Count > 0 && data.Rows.Count > 0)
                     {
                         if (allData == null)
                             allData = data;
@@ -187,11 +194,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                     // Write data.
                     string workingFolder = Path.GetDirectoryName(outFiles[0]);
                     string singleOutputFileName = Path.Combine(workingFolder, fileName);
-                    StreamWriter outWriter = new StreamWriter(singleOutputFileName);
-
-                    DataTableUtilities.DataTableToText(allData, 0, ",  ", true, outWriter);
-
-                    outWriter.Close();
+                    using (StreamWriter outWriter = new StreamWriter(singleOutputFileName))
+                        DataTableUtilities.DataTableToText(allData, 0, ",  ", true, outWriter);
                 }
 
                 // Delete the .out files.
@@ -208,16 +212,14 @@ namespace APSIM.Cloud.Runner.RunnableJobs
             {
                 string workingFolder = Path.GetDirectoryName(sumFiles[0]);
                 string singleSummaryFileName = Path.Combine(workingFolder, fileName);
-                StreamWriter sumWriter = new StreamWriter(singleSummaryFileName);
-
-                foreach (string summaryFileName in sumFiles)
+                using (StreamWriter sumWriter = new StreamWriter(singleSummaryFileName))
                 {
-                    StreamReader sumReader = new StreamReader(summaryFileName);
-                    sumWriter.Write(sumReader.ReadToEnd());
-                    sumReader.Close();
+                    foreach (string summaryFileName in sumFiles)
+                    {
+                        using (StreamReader sumReader = new StreamReader(summaryFileName))
+                            sumWriter.Write(sumReader.ReadToEnd());
+                    }
                 }
-
-                sumWriter.Close();
 
                 SummaryFileParser summaryFile = new SummaryFileParser();
                 summaryFile.Open(singleSummaryFileName);

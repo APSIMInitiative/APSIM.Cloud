@@ -25,9 +25,8 @@ namespace APSIM.Cloud.Shared
         public void Open(string fileName)
         {
             // Open the summary file and read entire contents.
-            StreamReader reader = new StreamReader(fileName);
-            contents = reader.ReadToEnd();
-            reader.Close();
+            using (StreamReader reader = new StreamReader(fileName))
+                contents = reader.ReadToEnd();
 
             // Loop through each summary section and store the start index for each.
             string banner = "     ###     ######     #####   #   #     #";
