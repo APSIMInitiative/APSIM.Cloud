@@ -216,8 +216,9 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 {
                     foreach (string summaryFileName in sumFiles)
                     {
-                        using (StreamReader sumReader = new StreamReader(summaryFileName))
-                            sumWriter.Write(sumReader.ReadToEnd());
+                        if (summaryFileName != singleSummaryFileName)
+                            using (StreamReader sumReader = new StreamReader(summaryFileName))
+                                sumWriter.Write(sumReader.ReadToEnd());
                     }
                 }
 

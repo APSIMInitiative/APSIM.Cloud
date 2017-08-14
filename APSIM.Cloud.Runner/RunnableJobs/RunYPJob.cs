@@ -185,6 +185,8 @@ namespace APSIM.Cloud.Runner.RunnableJobs
                 string msg = File.ReadAllText(sumFileName);
                 if (msg != null && msg != string.Empty)
                     throw new Exception("ApsimToSim Error:\r\n" + msg);
+                else
+                    File.Delete(sumFileName);
             }
             return Directory.GetFiles(workingDirectory, "*.sim");
         }
