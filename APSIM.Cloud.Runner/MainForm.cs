@@ -18,8 +18,8 @@ namespace APSIM.Cloud.Runner
     /// </summary>
     public partial class MainForm : Form
     {
-        /// <summary>The job manager to send our jobs to</summary>
-        private JobManager jobManager = null;
+        private IJobRunner jobRunner = null;
+        private RunJobsInDB jobManager = null;
 
         /// <summary>Command line arguments</summary>
         private Dictionary<string, string> arguments;
@@ -40,9 +40,9 @@ namespace APSIM.Cloud.Runner
             if (arguments.ContainsKey("-MaximumNumberOfCores"))
                 maximumNumberOfCores = Convert.ToInt32(arguments["-MaximumNumberOfCores"]);
 
-            jobManager = new JobManager(maximumNumberOfCores);
-            jobManager.AddJob(new RunJobsInDB());
-            jobManager.Start(waitUntilFinished: false);
+            jobRunner = new JobRunnerAsync();
+            IJobManager jobManager = new RunJobsInDB(jobRunner);
+            jobRunner.Run(jobManager, wait: false, numberOfProcessors: maximumNumberOfCores);
         }
 
         /// <summary>Called when form is closed</summary>
@@ -50,6 +50,7 @@ namespace APSIM.Cloud.Runner
         /// <param name="e">The <see cref="FormClosingEventArgs"/> instance containing the event data.</param>
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
+            jobRunner.Stop();
             jobManager.Stop();
         }
 

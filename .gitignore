@@ -35,3 +35,6 @@ APSIM.Cloud.Service/obj/
 APSIM.Cloud.Portal/Properties/PublishProfiles/
 APSIM.Cloud.Service/Properties/PublishProfiles/
 APSIM.Cloud.Shared/obj/
+UnitTestProject1/bin/
+UnitTestProject1/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+UnitTestProject1/obj/

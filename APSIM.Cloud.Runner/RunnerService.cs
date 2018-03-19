@@ -13,8 +13,8 @@ namespace APSIM.Cloud.Runner
 {
     partial class RunnerService : ServiceBase
     {
-        /// <summary>The job manager to send our jobs to</summary>
-        private JobManager jobManager;
+        private IJobRunner jobRunner = null;
+        private RunJobsInDB jobManager = null;
 
         /// <summary>The maximum number of CPU cores to use.</summary>
         private int maximumNumberOfProcessors;
@@ -34,10 +34,10 @@ namespace APSIM.Cloud.Runner
         {
             if (jobManager == null)
             {
-                jobManager = new JobManager(maximumNumberOfProcessors);
-                jobManager.AddJob(new RunJobsInDB());
+                jobRunner = new JobRunnerAsync();
+                IJobManager jobManager = new RunJobsInDB(jobRunner);
+                jobRunner.Run(jobManager, wait: false, numberOfProcessors: maximumNumberOfProcessors);
             }
-            jobManager.Start(waitUntilFinished: false);
         }
 
         protected override void OnStop()

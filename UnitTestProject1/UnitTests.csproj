@@ -61,10 +61,6 @@
       <Project>{e243ae8d-35e3-4397-b180-ef1e8a91ae8c}</Project>
       <Name>APSIM.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\APSIM.Cloud.Runner\APSIM.Cloud.Runner.csproj">
-      <Project>{c3ec5998-e242-4209-8d48-46772f4629f4}</Project>
-      <Name>APSIM.Cloud.Runner</Name>
-    </ProjectReference>
     <ProjectReference Include="..\APSIM.Cloud.Shared\APSIM.Cloud.Shared.csproj">
       <Project>{38151154-60d4-47bd-bcc2-679ba8bf144e}</Project>
       <Name>APSIM.Cloud.Shared</Name>

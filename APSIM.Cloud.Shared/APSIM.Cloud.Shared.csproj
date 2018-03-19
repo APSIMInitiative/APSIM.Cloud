@@ -76,6 +76,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RunF4PJob.cs" />
+    <Compile Include="RunnableJobs\APSIMJob.cs" />
+    <Compile Include="RunnableJobs\IJob.cs" />
+    <Compile Include="RuntimeEnvironment.cs" />
+    <Compile Include="RunYPJob.cs" />
     <Compile Include="SummaryFileParser.cs" />
     <Compile Include="Web References\APSOIL\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -104,6 +109,15 @@
     <EmbeddedResource Include="Resources\Template.apsimx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="RuntimePackages\AusFarm-1.4.12.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="RuntimePackages\Testing.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="RuntimePackages\YP20170816.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Web References\APSOIL\PAWCByCrop.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>

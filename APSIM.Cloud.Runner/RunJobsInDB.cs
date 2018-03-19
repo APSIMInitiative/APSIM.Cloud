@@ -18,76 +18,113 @@ namespace APSIM.Cloud.Runner
     using System.Diagnostics;
     using APSIM.Shared.Utilities;
     using System.ComponentModel;
-    using RunnableJobs;
+    using APSIM.Cloud.Shared;
 
     /// <summary>
     /// This runnable job will periodically check the DB for new jobs that
     /// have been added. When found, they are added to the job manager queue.
     /// </summary>
-    public class RunJobsInDB : JobManager.IRunnable
+    public class RunJobsInDB : IJobManager
     {
-        private JobManager.IRunnable runningJob = null;
-        JobsService.Job runningJobDescription = null;
+        private IJobManager runningJob = null;
+        private JobsService.Job runningJobDescription = null;
+        private IJobRunner runner;
+        private List<Exception> errors = new List<Exception>();
+        private bool cancel = false;
 
-        /// <summary>Called to start the job.</summary>
-        /// <param name="jobManager">Job manager</param>
-        /// <param name="worker">Background worker</param>
-        public void Run(JobManager jobManager, BackgroundWorker worker)
+        /// <summary>Constructor</summary>
+        /// <param name="runner"></param>
+        public RunJobsInDB(IJobRunner jobRunner)
         {
-            while (!worker.CancellationPending)
+            runner = jobRunner;
+            runner.JobCompleted += OnJobCompleted;
+        }
+
+        /// <summary>Stop running jobs</summary>
+        public void Stop()
+        {
+            cancel = true;
+        }
+
+        /// <summary>Called to get the next job</summary>
+        public IRunnable GetNextJobToRun()
+        {
+            IRunnable nextJob = null;
+            while (nextJob == null && !cancel)
             {
                 try
                 {
-                    // Process that have been added.
-                    ProcessAddedJobs(jobManager);
+                    // Has the previous job completed? If so, signal back to server.
+                    if (runningJob != null)
+                    {
+                        nextJob = runningJob.GetNextJobToRun();
+                        if (nextJob == null)
+                        {
+                            // Current job has finished.
+                            UpdateServerForCompletedJob();
+                            errors.Clear();
+                            runningJob = null;
+                        }
+                    }
 
-                    Thread.Sleep(1000); // 1 seconds
+                    // If there is no YP job running, then add a new job.  Once a YP job is running don't add any more jobs (regardless of type).
+                    if (runningJob == null)
+                    {
+                        using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
+                        {
+                            runningJobDescription = jobsClient.GetNextToRun();
+
+                            if (runningJobDescription != null)
+                            {
+                                string jobXML = jobsClient.GetJobXML(runningJobDescription.Name);
+
+                                if (IsF4PJob(runningJobDescription.Name) == true)
+                                {
+                                    RuntimeEnvironment environment = new RuntimeEnvironment
+                                    {
+                                        AusfarmRevision = "AusFarm-1.4.12",
+                                    };
+                                    runningJob = new RunF4PJob(jobXML, environment);
+                                }
+                                else
+                                {
+                                    RuntimeEnvironment environment = new RuntimeEnvironment
+                                    {
+                                        APSIMRevision = "Apsim7.8-R4000",
+                                    };
+                                    runningJob = new RunYPJob(jobXML, environment);
+                                }
+
+                                nextJob = runningJob.GetNextJobToRun();
+                            }
+                        }
+                    }
+
+                    if (nextJob == null)
+                    {
+                        // No jobs to run so wait a bit.
+                        Thread.Sleep(5 * 1000); // 5 sec.
+                    }
                 }
                 catch (Exception err)
                 {
                     WriteToLog(err.Message);
                 }
             }
+
+            return nextJob;
         }
 
-        /// <summary>Processes any jobs that have been added.</summary>
-        /// <param name="jobManager">The job manager.</param>
-        private void ProcessAddedJobs(JobManager jobManager)
+        private void OnJobCompleted(object sender, JobCompleteArgs e)
         {
-            // Has the previous job completed? If so, signal back to server.
-            if (runningJob != null && jobManager.IsJobCompleted(runningJob))
-                UpdateServerForCompletedJob(jobManager, runningJob as IJob);
+            if (e.exceptionThrowByJob != null)
+                errors.Add(e.exceptionThrowByJob);
+        }
 
-            //If there is no YP job running, then add a new job.  Once a YP job is running don't add any more jobs (regardless of type).
-            if (runningJob == null || jobManager.IsJobCompleted(runningJob))
-            {
-                // Remove completed jobs if nothing is running. Otherwise, completedjobs will
-                // grow and grow.
-                jobManager.ClearCompletedJobs();
-                runningJob = null;
-
-                using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
-                {
-                    runningJobDescription = jobsClient.GetNextToRun();
-
-                    if (runningJobDescription != null)
-                    {
-                        string jobXML = jobsClient.GetJobXML(runningJobDescription.Name);
-
-                        if (IsF4PJob(runningJobDescription.Name) == true)
-                            runningJob = new RunnableJobs.RunF4PJob(jobXML, runningJobDescription.Name);
-                        else
-                            runningJob = new RunnableJobs.RunYPJob(jobXML);
-                        if (runningJob != null)
-                            jobManager.AddJob(runningJob);
-                    }
-                    else
-                    {
-                        // No jobs to run so wait a bit.
-                        Thread.Sleep(5 * 1000); // 5 sec.
-                    }
-                }
-            }
+        /// <summary>Called when all jobs completed</summary>
+        public void Completed()
+        {
+            throw new NotImplementedException();
         }
 
         private static bool IsF4PJob(string jobName)
@@ -99,7 +136,7 @@ namespace APSIM.Cloud.Runner
         /// The current job has completed - update server.
         /// </summary>
         /// <param name="jobManager"></param>
-        private void UpdateServerForCompletedJob(JobManager jobManager, IJob job)
+        private void UpdateServerForCompletedJob()
         {
             string errorMessage = null;
 
@@ -111,20 +148,28 @@ namespace APSIM.Cloud.Runner
 
                 string[] usernamepwd = File.ReadAllText(pwdFile).Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 string zipFileName = Path.GetTempFileName();
+                DataSet outputs;
                 using (var s = File.Create(zipFileName))
                 {
-                    job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
-                    job.AllFilesZipped.CopyTo(s);
+                    if (runningJob is RunYPJob)
+                    {
+                        (runningJob as RunYPJob).AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                        (runningJob as RunYPJob).AllFilesZipped.CopyTo(s);
+                        outputs = (runningJob as RunYPJob).Outputs;
+                    }
+                    else
+                    {
+                        (runningJob as RunF4PJob).AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                        (runningJob as RunF4PJob).AllFilesZipped.CopyTo(s);
+                        outputs = (runningJob as RunF4PJob).Outputs;
+                    }
                 }
 
                 string archiveLocation = @"ftp://bob.apsim.info/APSIM.Cloud.Archive";
                 FTPClient.Upload(zipFileName, archiveLocation + "/" + runningJobDescription.Name + ".zip", usernamepwd[0], usernamepwd[1]);
                 File.Delete(zipFileName);
 
-                bool callStoreReport = runningJob is RunF4PJob ||
-                    (runningJob is RunYPJob && (runningJob as RunYPJob).Spec.CallYPServerOnComplete);
-
-                if (callStoreReport)
+                if (runningJob is RunYPJob)
                 {
                     // YieldProphet - StoreReport
                     // validation runs have a report name of the year e.g. 2015. 
@@ -133,11 +178,37 @@ namespace APSIM.Cloud.Runner
                     {
                         try
                         {
-                            ypClient.StoreReport(runningJobDescription.Name, job.Outputs);
+                            ypClient.StoreReport(runningJobDescription.Name, outputs);
                         }
-                        catch (Exception)
+                        catch (Exception err)
                         {
-                            throw new Exception("Cannot call YP StoreReport web service method");
+                            throw new Exception("Cannot call YP StoreReport web service method: " + err.Message);
+                        }
+                    }
+                }
+                else if (runningJob is RunF4PJob)
+                { 
+                    RunF4PJob f4pJob = runningJob as RunF4PJob;
+
+                    DataSet dataSet = new DataSet();
+                    foreach (DataTable table in f4pJob.Outputs.Tables)
+                    {
+                        // Don't send the cropping daily and monthly files
+                        if (table.TableName.EndsWith("_daily.txt") == false && 
+                            table.TableName.EndsWith("_monthly.txt") == false)
+                            dataSet.Tables.Add(table);
+                    }
+
+                        // Call Farm4Prophet web service.
+                    using (F4P.F4PClient f4pClient = new F4P.F4PClient())
+                    {
+                        try
+                        {
+                            f4pClient.StoreReport(runningJobDescription.Name, dataSet);
+                        }
+                        catch (Exception err)
+                        {
+                            throw new Exception("Cannot call F4P StoreReport web service method: " + err.Message);
                         }
                     }
                 }
@@ -149,7 +220,7 @@ namespace APSIM.Cloud.Runner
 
             using (JobsService.JobsClient jobsClient = new JobsService.JobsClient())
             {
-                foreach (Exception err in jobManager.Errors(runningJob))
+                foreach (Exception err in errors)
                     errorMessage += err.ToString();
                 if (errorMessage != null)
                     errorMessage = errorMessage.Replace("'", "");

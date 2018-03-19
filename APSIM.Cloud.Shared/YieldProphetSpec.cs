@@ -27,17 +27,6 @@ namespace APSIM.Cloud.Shared
 
         /// <summary>Gets or sets the name of the report.</summary>
         public string ReportName { get; set; }
-
-        /// <summary>Gets or sets the name of the client.</summary>
-        public string ClientName { get; set; }
-
-        /// <summary>Gets or sets the name of the person generating the report.</summary>
-        public string ReportGeneratedBy { get; set; }
-
-        /// <summary>
-        /// Gets or sets whether the YP server StoreReport method will be called on completion.
-        /// </summary>
-        public bool CallYPServerOnComplete { get; set; }
     }
 
     /// <summary>

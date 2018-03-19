@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Simulations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="6">
+  <Name>Simulations</Name>
+  <Simulation>
+    <Name>Base</Name>
+    <Clock>
+      <Name>Clock</Name>
+      <StartDate>0001-01-01T00:00:00</StartDate>
+      <EndDate>0001-01-01T00:00:00</EndDate>
+    </Clock>
+    <Weather>
+      <Name>Weather</Name>
+      <FileName>\Examples\MetFiles\dalby.met</FileName>
+    </Weather>
+    <Summary>
+      <Name>SummaryFile</Name>
+    </Summary>
+    <SoilArbitrator>
+      <Name>SoilArbitrator</Name>
+    </SoilArbitrator>
+    <Zone>
+      <Name>Paddock</Name>
+      <Manager xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Name>Management</Name>
+        <Script>
+          <CropName>Wheat</CropName>
+        </Script>
+        <Code>
+          <![CDATA[using Models.Core;
+using System.Collections.Generic;
+using System.Text;
+using Models.Soils;
+using Models.PMF;
+using Models;
+using System.Xml.Serialization;
+using APSIM.Shared.Utilities;
+using System;
+namespace Models
+{
+	[Serializable] 
+	public class Script : Model
+	{
+		private Plant crop = null;
+		
+		[Description("Crop name")]
+		public string CropName { get; set; }
+		
+		[EventSubscribe("Commencing")]
+		private void OnSimulationCommencing(object sender, EventArgs e)
+		{	
+			crop = Apsim.Find(this, CropName) as Plant;
+			if (crop == null)
+				throw new Exception("Cannot find crop: " + CropName);
+		}
+		
+		[EventSubscribe("DoManagement")]
+		private void OnDoManagement(object sender, EventArgs e)
+		{
+			if (crop.Phenology.CurrentPhaseName == "Maturing")
+			{
+				crop.Harvest();
+				crop.EndCrop();
+			}
+		}
+	}
+}]]>
+        </Code>
+      </Manager>
+      <Operations>
+        <Name>Operations</Name>
+      </Operations>
+      <SurfaceOrganicMatter>
+        <Name>SurfaceOrganicMatter</Name>
+        <ResidueTypes>
+          <Name>ResidueTypesList</Name>
+          <LoadFromResource>ResidueTypes</LoadFromResource>
+        </ResidueTypes>
+        <Pools>
+          <Pool>
+            <PoolName>wheat</PoolName>
+            <ResidueType>wheat</ResidueType>
+            <Mass>1000</Mass>
+            <CNRatio>80</CNRatio>
+            <CPRatio>NaN</CPRatio>
+            <StandingFraction>0</StandingFraction>
+          </Pool>
+        </Pools>
+        <PoolName>wheat</PoolName>
+        <type>wheat</type>
+        <mass>1000</mass>
+        <standing_fraction>0</standing_fraction>
+        <cpr />
+        <cnr>80</cnr>
+        <CriticalResidueWeight>2000</CriticalResidueWeight>
+        <OptimumDecompTemp>20</OptimumDecompTemp>
+        <MaxCumulativeEOS>20</MaxCumulativeEOS>
+        <CNRatioDecompCoeff>0.277</CNRatioDecompCoeff>
+        <CNRatioDecompThreshold>25</CNRatioDecompThreshold>
+        <TotalLeachRain>25</TotalLeachRain>
+        <MinRainToLeach>10</MinRainToLeach>
+        <CriticalMinimumOrganicC>0.004</CriticalMinimumOrganicC>
+        <DefaultCPRatio>0</DefaultCPRatio>
+        <DefaultStandingFraction>0</DefaultStandingFraction>
+        <StandingExtinctCoeff>0.5</StandingExtinctCoeff>
+        <FractionFaecesAdded>0.5</FractionFaecesAdded>
+      </SurfaceOrganicMatter>
+      <Report>
+        <Name>Yearly</Name>
+        <ExperimentFactorNames />
+        <ExperimentFactorValues />
+        <VariableNames>
+          <string>[Clock].Today</string>
+          <string>Wheat.Zadok.Stage</string>
+          <string>Wheat.Phenology.CurrentStageName</string>
+          <string>Wheat.AboveGroundLive.Wt</string>
+          <string>Wheat.AboveGroundDead.Wt</string>
+          <string>Wheat.AboveGround.Wt</string>
+          <string>Wheat.AboveGround.N</string>
+          <string>Wheat.Grain.Yield</string>
+          <string>Wheat.Grain.Protein</string>
+          <string>Wheat.Grain.Size</string>
+          <string>Wheat.Grain.GrainNo</string>
+          <string>Wheat.Grain.Wt</string>
+          <string>Wheat.Grain.N</string>
+          <string>Wheat.Leaf.LAI</string>
+          <string>Wheat.Leaf.Live.Wt</string>
+          <string>Wheat.Leaf.Live.N</string>
+          <string>Wheat.Head.Wt</string>
+          <string>Wheat.Head.N</string>
+          <string>Wheat.Stem.Live.Wt</string>
+          <string>Wheat.Stem.Live.N</string>
+          <string>Wheat.Root.RootDepth</string>
+          <string>Wheat.EP</string>
+          <string>Wheat.SWStress.Photo</string>
+          <string>Wheat.SWStress.Expansion</string>
+          <string>Wheat.NStress.Photo</string>
+          <string>Wheat.NStress.Expansion</string>
+          <string>Wheat.Total.Wt</string>
+        </VariableNames>
+        <EventNames>
+          <string></string>
+        </EventNames>
+      </Report>
+      <Report>
+        <Name>Monthly</Name>
+        <ExperimentFactorNames />
+        <ExperimentFactorValues />
+        <VariableNames>
+          <string>[Clock].Today</string>
+          <string></string>
+        </VariableNames>
+        <EventNames>
+          <string></string>
+        </EventNames>
+      </Report>
+      <Report>
+        <Name>Daily</Name>
+        <ExperimentFactorNames />
+        <ExperimentFactorValues />
+        <VariableNames>
+          <string>[Clock].Today</string>
+          <string>Wheat.Zadok.Stage</string>
+          <string>Wheat.Phenology.CurrentStageName</string>
+          <string>Wheat.AboveGroundLive.Wt</string>
+          <string>Wheat.AboveGroundDead.Wt</string>
+          <string>Wheat.AboveGround.Wt</string>
+          <string>Wheat.AboveGround.N</string>
+          <string>Wheat.Grain.Yield</string>
+          <string>Wheat.Grain.Protein</string>
+          <string>Wheat.Grain.Size</string>
+          <string>Wheat.Grain.GrainNo</string>
+          <string>Wheat.Grain.Wt</string>
+          <string>Wheat.Grain.N</string>
+          <string>Wheat.Leaf.LAI</string>
+          <string>Wheat.Leaf.Live.Wt</string>
+          <string>Wheat.Leaf.Live.N</string>
+          <string>Wheat.Head.Wt</string>
+          <string>Wheat.Head.N</string>
+          <string>Wheat.Stem.Live.Wt</string>
+          <string>Wheat.Stem.Live.N</string>
+          <string>Wheat.Root.RootDepth</string>
+          <string>Wheat.EP</string>
+          <string>Wheat.SWStress.Photo</string>
+          <string>Wheat.SWStress.Expansion</string>
+          <string>Wheat.NStress.Photo</string>
+          <string>Wheat.NStress.Expansion</string>
+          <string>Wheat.Total.Wt</string>
+        </VariableNames>
+        <EventNames>
+          <string></string>
+        </EventNames>
+      </Report>
+      <Report>
+        <Name>Next10Days</Name>
+        <ExperimentFactorNames />
+        <ExperimentFactorValues />
+        <VariableNames>
+        </VariableNames>
+        <EventNames>
+          <string></string>
+        </EventNames>
+      </Report>
+      <MicroClimate>
+        <Name>MicroClimate</Name>
+        <a_interception>0</a_interception>
+        <b_interception>1</b_interception>
+        <c_interception>0</c_interception>
+        <d_interception>0</d_interception>
+        <soil_albedo>0.23</soil_albedo>
+        <sun_angle>15</sun_angle>
+        <soil_heat_flux_fraction>0.4</soil_heat_flux_fraction>
+        <night_interception_fraction>0.5</night_interception_fraction>
+        <refheight>2</refheight>
+        <albedo>0.15</albedo>
+        <emissivity>0.96</emissivity>
+        <RadIntTotal>0</RadIntTotal>
+      </MicroClimate>
+      <SoluteManager>
+        <Name>SoluteManager</Name>
+      </SoluteManager>
+      <Irrigation>
+        <Name>Irrigation</Name>
+      </Irrigation>
+      <Fertiliser>
+        <Name>Fertiliser</Name>
+      </Fertiliser>
+      <Area>1</Area>
+      <Slope>0</Slope>
+    </Zone>
+  </Simulation>
+  <DataStore>
+    <Name>DataStore</Name>
+    <AutoExport>false</AutoExport>
+    <MaximumResultsPerPage>0</MaximumResultsPerPage>
+  </DataStore>
+  <ExplorerWidth>0</ExplorerWidth>
+</Simulations>

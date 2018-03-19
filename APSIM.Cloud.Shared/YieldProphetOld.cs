@@ -41,8 +41,10 @@ namespace APSIM.Cloud.Shared
                 }
             }
 
-            YieldProphet simulationsSpec = new YieldProphet();
-            simulationsSpec.Paddock = simulations;
+            YieldProphet simulationsSpec = new YieldProphet
+            {
+                Paddock = simulations
+            };
 
             // Some top level simulation metadata.
             string reportDescription = XmlUtilities.Value(node, "ReportDescription");
@@ -51,8 +53,6 @@ namespace APSIM.Cloud.Shared
             string reportType = XmlUtilities.Value(node, "ReportType");
             if (reportType != string.Empty)
                 throw new Exception("Not sure what to do with a ReportType of " + reportType);
-            simulationsSpec.ClientName = XmlUtilities.Value(node, "GrowerName");
-            simulationsSpec.ReportGeneratedBy = XmlUtilities.Value(node, "LoginName");
 
             return simulationsSpec;
         }
@@ -201,10 +201,12 @@ namespace APSIM.Cloud.Shared
             }
 
             // Fix up soil sample variables.
-            Sample sample1 = new Sample();
-            sample1.Name = "Sample1";
-            sample1.Thickness = GetArray(paddock, "Sample1Thickness");
-            sample1.SW = GetArray(paddock, "SW");
+            Sample sample1 = new Sample
+            {
+                Name = "Sample1",
+                Thickness = GetArray(paddock, "Sample1Thickness"),
+                SW = GetArray(paddock, "SW")
+            };
             if (sample1.SW == null)
             {
                 // Really old way of doing samples - they are stored under soil.
@@ -232,8 +234,10 @@ namespace APSIM.Cloud.Shared
                 sample2 = sample1;
                 if (!MathUtilities.AreEqual(sample2Thickness, sample1.Thickness))
                 {
-                    sample2 = new Sample();
-                    sample2.Name = "Sample2";
+                    sample2 = new Sample
+                    {
+                        Name = "Sample2"
+                    };
                 }
                 sample2.OC = GetArray(paddock, "OC");
                 sample2.EC = GetArray(paddock, "EC");

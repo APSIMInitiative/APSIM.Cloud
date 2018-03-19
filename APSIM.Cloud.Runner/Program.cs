@@ -8,11 +8,20 @@ using APSIM.Shared.Utilities;
 using System.Runtime.InteropServices;
 using System.Xml;
 using System.Reflection;
+using APSIM.Cloud.Shared;
 
 namespace APSIM.Cloud.Runner
 {
     static class Program
     {
+        private static List<Exception> errors = new List<Exception>();
+
+        private static void OnJobCompleted(object sender, JobCompleteArgs e)
+        {
+            if (e.exceptionThrowByJob != null)
+                errors.Add(e.exceptionThrowByJob);
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -80,18 +89,20 @@ namespace APSIM.Cloud.Runner
                 if (File.Exists(jobFileName))
                 {
                     bool runAPSIMx = (commandLineArguments.ContainsKey("RunAPSIMX"));
-                    string executable = null;
-                    commandLineArguments.TryGetValue("APSIMXExecutable", out executable);
+                    commandLineArguments.TryGetValue("APSIMXExecutable", out string executable);
 
                     string jobXML = File.ReadAllText(jobFileName);
                     string jobName = Path.GetFileNameWithoutExtension(jobFileName);
 
-                    RunnableJobs.RunYPJob job = new RunnableJobs.RunYPJob(jobXML, runAPSIMx);
-                    job.apsimXExecutable = executable;
+                    RunYPJob job = new RunYPJob(jobXML, null)
+                    {
+                        ApsimXExecutable = executable
+                    };
 
-                    JobManager jobManager = new JobManager();
-                    jobManager.AddJob(job);
-                    jobManager.Start(waitUntilFinished: true);
+                    errors.Clear();
+                    IJobRunner runner = new JobRunnerAsync();
+                    runner.JobCompleted += OnJobCompleted;
+                    runner.Run(job, wait: true);
 
                     string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
                     using (Stream s = File.Create(destZipFileName))
@@ -100,7 +111,6 @@ namespace APSIM.Cloud.Runner
                         job.AllFilesZipped.CopyTo(s);
                     }
 
-                    List<Exception> errors = jobManager.Errors(job);
                     if (errors != null && errors.Count > 0)
                     {
                         AttachConsole(-1);
