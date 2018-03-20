@@ -58,7 +58,7 @@ namespace APSIM.Cloud.Shared
                 try
                 {
                     CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache, allSimulationsAreSingleSeason);
-                    CreateApsimFile(simulation, doc.DocumentElement, usingAPSIMx);
+                    CreateApsimFile(simulation, workingFolder, doc.DocumentElement, usingAPSIMx);
                 }
                 catch (Exception err)
                 {
@@ -183,13 +183,14 @@ namespace APSIM.Cloud.Shared
 
         /// <summary>Create a .apsim file node for the job and append it to the parentNode</summary>
         /// <param name="simulation">The specification to use</param>
+        /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="parentNode">Parent XmlNode to append the simulation to.</param>
         /// <param name="usingAPSIMx">Write APSIMx files?</param>
-        private static void CreateApsimFile(APSIMSpec simulation, XmlNode parentNode, bool usingAPSIMx)
+        private static void CreateApsimFile(APSIMSpec simulation, string workingFolder, XmlNode parentNode, bool usingAPSIMx)
         {
             if (simulation.ErrorMessage == null)
             {
-                XmlNode simulationXML = CreateSimulationXML(simulation, usingAPSIMx);
+                XmlNode simulationXML = CreateSimulationXML(simulation, workingFolder, usingAPSIMx);
                 if (simulationXML != null)
                     parentNode.AppendChild(parentNode.OwnerDocument.ImportNode(simulationXML, true));
             }
@@ -199,12 +200,11 @@ namespace APSIM.Cloud.Shared
         /// Create a one year APSIM simulation for the specified yield prophet specification
         /// and paddock
         /// </summary>
-        /// <param name="paddock">The paddock.</param>
-        /// <param name="todayDate">The today date.</param>
-        /// <param name="apsoilService">The apsoil service.</param>
+        /// <param name="simulation">The specification to use</param>
+        /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="usingAPSIMx">Write APSIMx files?</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(APSIMSpec simulation, bool usingAPSIMx)
+        private static XmlNode CreateSimulationXML(APSIMSpec simulation, string workingFolder, bool usingAPSIMx)
         {
             IAPSIMFileWriter apsimWriter;
             if (usingAPSIMx)
@@ -244,9 +244,8 @@ namespace APSIM.Cloud.Shared
             apsimWriter.SetErosion(simulation.Slope, simulation.SlopeLength);
 
             // Do soil stuff.
-            Soil soil = DoSoil(simulation);
-
-            apsimWriter.SetSoil(soil);
+            DoSoil(simulation, workingFolder);
+            apsimWriter.SetSoil(simulation.Soil);
 
             // Loop through all management actions and create an operations list
             foreach (Management management in simulation.Management)
@@ -285,10 +284,9 @@ namespace APSIM.Cloud.Shared
         }
 
         /// <summary>Do all soil related settings.</summary>
-        /// <param name="paddock">The paddock.</param>
-        /// <param name="apsoilService">The apsoil service.</param>
-        /// <exception cref="System.Exception">Cannot find soil:  + paddock.SoilName</exception>
-        private static Soil DoSoil(APSIMSpec simulation)
+        /// <param name="simulation">The specification to use</param>
+        /// <param name="workingFolder">The folder where files shoud be created.</param>
+        private static void DoSoil(APSIMSpec simulation, string workingFolder)
         {
             Soil soil;
             if (simulation.Soil == null)
@@ -405,9 +403,12 @@ namespace APSIM.Cloud.Shared
             InFillMissingValues(soil.Analysis.ParticleSizeClay);
 
             foreach (Sample sample in soil.Samples)
-                CheckSample(soil, sample);
+                CheckSample(soil, sample, sowing);
 
             Defaults.FillInMissingValues(soil);
+
+            // Correct the CONA / U parameters depending on LAT/LONG
+            CorrectCONAU(simulation, soil, workingFolder);
 
             // get rid of <soiltype> from the soil
             // this is necessary because NPD uses this field and puts in really long
@@ -417,8 +418,41 @@ namespace APSIM.Cloud.Shared
             // Set the soil name to 'soil'
             soil.Name = "Soil";
 
-            // Make sure soil is apsim ready ie. convert units, infill missing values etc.
-            return soil;
+            simulation.Soil = soil;
+        }
+
+        /// <summary>
+        /// Correct the CONA / U parameters depending on LAT/LONG
+        /// </summary>
+        /// <param name="simulation"></param>
+        /// <param name="soil"></param>
+        /// <param name="workingFolder">The folder where files shoud be created.</param>
+        private static void CorrectCONAU(APSIMSpec simulation, Soil soil, string workingFolder)
+        {
+            // Get lat/long from weather file.
+            ApsimTextFile weather = new ApsimTextFile();
+            weather.Open(Path.Combine(workingFolder, simulation.WeatherFileName));
+            double latitude = Convert.ToDouble(weather.Constant("Latitude").Value);
+            double longitude = Convert.ToDouble(weather.Constant("Longitude").Value);
+
+            // Dubbo latitude = -32.24
+            // NSW western border longitude = 141.0
+            if (longitude >= 141.0 && latitude > -32.24)
+            {
+                // Northern values.
+                soil.SoilWater.SummerU = 6.0;
+                soil.SoilWater.SummerCona = 3.5;
+                soil.SoilWater.WinterU = 4.0;
+                soil.SoilWater.WinterCona = 2.5;
+            }
+            else
+            {
+                // Southern values.
+                soil.SoilWater.SummerU = 6.0;
+                soil.SoilWater.SummerCona = 3.5;
+                soil.SoilWater.WinterU = 2.0;
+                soil.SoilWater.WinterCona = 2.0;
+            }
         }
 
         /// <summary>
@@ -447,7 +481,8 @@ namespace APSIM.Cloud.Shared
         /// <summary>Checks the soil sample.</summary>
         /// <param name="parentSoil">The parent soil.</param>
         /// <param name="sample">The sample.</param>
-        private static void CheckSample(Soil parentSoil, Sample sample)
+        /// <param name="sowing">The sowing rule</param>
+        private static void CheckSample(Soil parentSoil, Sample sample, Sow sowing)
         {
             // Do some checking of NO3 / NH4
             CheckMissingValuesAreNaN(sample.NO3);
@@ -455,6 +490,41 @@ namespace APSIM.Cloud.Shared
             CheckMissingValuesAreNaN(sample.OC);
             CheckMissingValuesAreNaN(sample.EC);
             CheckMissingValuesAreNaN(sample.PH);
+
+            if (sample.SW != null && sample.SW.Length > 0)
+            {
+                // Check to make sure SW is >= CLL for layers below top layer
+                int cropIndex = parentSoil.Water.Crops.FindIndex(crop => crop.Name.Equals(sowing.Crop, StringComparison.CurrentCultureIgnoreCase));
+                if (cropIndex != -1)
+                {
+                    double[] CLLVol = parentSoil.Water.Crops[cropIndex].LL;
+                    double[] CLLVolMapped = LayerStructure.MapConcentration(CLLVol, parentSoil.Water.Thickness,
+                                                                         sample.Thickness, 0);
+
+                    if (sample.SWUnits == Sample.SWUnitsEnum.Gravimetric)
+                    {
+                        // Sample SW is in gravimetric
+                        double[] BDMapped = LayerStructure.MapConcentration(parentSoil.Water.BD, parentSoil.Water.Thickness,
+                                                                            sample.Thickness, parentSoil.Water.BD.Last());
+                        double[] CLLGrav = MathUtilities.Divide(CLLVolMapped, BDMapped); // vol to grav
+                        double[] SWVol = MathUtilities.Multiply(sample.SW, BDMapped); // grav to vol
+                        for (int i = 1; i < sample.Thickness.Length; i++)
+                        {
+                            if (SWVol[i] < CLLVolMapped[i])
+                                sample.SW[i] = CLLGrav[i];
+                        }
+                    }
+                    else
+                    {
+                        // Sample SW is in volumetric
+                        for (int i = 1; i < sample.Thickness.Length; i++)
+                        {
+                            if (sample.SW[i] < CLLVolMapped[i])
+                                sample.SW[i] = CLLVolMapped[i];
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
