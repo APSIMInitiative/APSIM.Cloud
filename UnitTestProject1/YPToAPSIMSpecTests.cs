@@ -155,6 +155,45 @@ namespace UnitTestProject1
             Assert.AreEqual(simulations[0].Soil.SoilWater.WinterCona, 2.0);
         }
 
+        [TestMethod]
+        public void YPToAPSIMSpecTests_SoilLandscapeGrid()
+        {
+            // Make sure we can reference a soil and landscape grid soil.
+
+            Sow sow = new Sow();
+            sow.Crop = "Wheat";
+            sow.Date = new DateTime(2016, 5, 1);
+
+            Paddock paddock = new Paddock();
+            paddock.Name = "NameOfPaddock";
+            paddock.StartSeasonDate = new DateTime(2016, 4, 1);
+            paddock.NowDate = new DateTime(2016, 7, 1);
+            paddock.SoilWaterSampleDate = new DateTime(2016, 3, 1);
+            paddock.SoilNitrogenSampleDate = new DateTime(2016, 6, 1);
+            paddock.StationNumber = 77007;   // Birchip post office - victoria.
+            paddock.StationName = "Toowoomba";
+            paddock.RunType = Paddock.RunTypeEnum.SingleSeason;
+            paddock.StubbleMass = 100;
+            paddock.StubbleType = "Wheat";
+            paddock.SoilPath = "http://ternsoils.nexus.csiro.au:8080/ASRISApi/api/APSIM/getApsoilTypeMap?longitude=147&latitude=-29.5&numToReturn=0";
+            paddock.Management = new List<Management>();
+            paddock.Management.Add(sow);
+
+            YieldProphet yp = new YieldProphet();
+            yp.Paddock = new List<Paddock>();
+            yp.Paddock.Add(paddock);
+
+            string workingDirectory = Path.GetTempFileName();
+            File.Delete(workingDirectory);
+            Directory.CreateDirectory(workingDirectory);
+            List<APSIMSpec> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
+            string apsimFileName = APSIMFiles.Create(simulations, workingDirectory, "test.apsim");
+
+            Assert.IsNotNull(simulations[0].Soil);
+            Assert.AreEqual(simulations[0].Soil.NearestTown, "Walgett, NSW 2400");
+        }
+
+
 
     }
 }

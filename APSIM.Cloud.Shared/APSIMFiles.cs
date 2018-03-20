@@ -16,6 +16,7 @@ namespace APSIM.Cloud.Shared
     using System.Data;
     using APSIM.Shared.Soils;
     using APSIM.Shared.Utilities;
+    using System.Net;
 
     /// <summary>TODO: Update summary.</summary>
     public class APSIMFiles
@@ -291,34 +292,35 @@ namespace APSIM.Cloud.Shared
             Soil soil;
             if (simulation.Soil == null)
             {
-                // Look for a <SoilName> and if found go get the soil from the Apsoil web service.
-                APSOIL.Service apsoilService = new APSOIL.Service();
-                string soilXml = apsoilService.SoilXML(simulation.SoilPath);
-                if (soilXml == string.Empty)
-                    throw new Exception("Cannot find soil: " + simulation.SoilPath);
-
-                soil = SoilUtilities.FromXML(soilXml);
+                if (simulation.SoilPath.StartsWith("http"))
+                {
+                    // Soil and Landscape grid
+                    string xml;
+                    using (var client = new WebClient())
+                    {
+                        xml = client.DownloadString(simulation.SoilPath);
+                    }
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(xml);
+                    List<XmlNode> soils = XmlUtilities.ChildNodes(doc.DocumentElement, "Soil");
+                    if (soils.Count == 0)
+                        throw new Exception("Cannot find soil in Soil and Landscape Grid");
+                    soil = XmlUtilities.Deserialise(soils[0], typeof(Soil)) as Soil;
+                }
+                else
+                {
+                    // Apsoil web service.
+                    APSOIL.Service apsoilService = new APSOIL.Service();
+                    string soilXml = apsoilService.SoilXML(simulation.SoilPath);
+                    if (soilXml == string.Empty)
+                        throw new Exception("Cannot find soil: " + simulation.SoilPath);
+                    soil = SoilUtilities.FromXML(soilXml);
+                }
             }
             else
             {
-                // Convert webservice proxy soil to a real soil.
-                //XmlDocument soilDoc = new XmlDocument();
-                //soilDoc.LoadXml(XmlUtilities.Serialise(simulation.Soil, false));
-                soil = simulation.Soil; // XmlUtilities.Deserialise(soilDoc.DocumentElement, typeof(Soil)) as Soil;
-
-                // The crops aren't being Serialised correctly. They are put under a <Crops> node
-                // which isn't right. Do them manually.
-                //foreach (SoilCrop oldCrop in simulation.Soil.Water.Crops)
-                //{
-                //    soil.Water.Crops.Add(new SoilCrop()
-                //    {
-                //        Name = oldCrop.Name,
-                //        Thickness = oldCrop.Thickness,
-                //        LL = oldCrop.LL,
-                //        KL = oldCrop.KL,
-                //        XF = oldCrop.XF
-                //    });
-                //}
+                // Just use the soil we already have
+                soil = simulation.Soil; 
             }
 
             // Make sure we have a soil crop parameterisation. If not then try creating one
