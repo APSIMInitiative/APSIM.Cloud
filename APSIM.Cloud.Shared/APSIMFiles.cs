@@ -5,18 +5,15 @@
 // -----------------------------------------------------------------------
 namespace APSIM.Cloud.Shared
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Xml;
-    using System.IO;
-    using System.Reflection;
-    using System.Xml.Serialization;
-    using System.Data;
     using APSIM.Shared.Soils;
     using APSIM.Shared.Utilities;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.IO;
+    using System.Linq;
     using System.Net;
+    using System.Xml;
 
     /// <summary>TODO: Update summary.</summary>
     public class APSIMFiles
@@ -24,11 +21,21 @@ namespace APSIM.Cloud.Shared
         public static int APSIMVerionNumber = 36;
 
         /// <summary>Create all necessary YP files (.apsim and .met) from a YieldProphet spec.</summary>
+        /// <param name="simulation">The simulation to write.</param>
+        /// <param name="workingFolder">The folder where files shoud be created.</param>
+        /// <param name="fileNameToWrite">The name of a file to write.</param>
+        /// <returns>The name of the created .apsim file.</returns>
+        public static string Create(APSIMSpecification simulation, string workingFolder, string fileNameToWrite)
+        {
+            return Create(new List<APSIMSpecification>() { simulation }, workingFolder, fileNameToWrite);
+        }
+
+        /// <summary>Create all necessary YP files (.apsim and .met) from a YieldProphet spec.</summary>
         /// <param name="simulations">The simulations to write.</param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="fileNameToWrite">The name of a file to write.</param>
         /// <returns>The name of the created .apsim file.</returns>
-        public static string Create(List<APSIMSpec> simulations, string workingFolder, string fileNameToWrite)
+        public static string Create(List<APSIMSpecification> simulations, string workingFolder, string fileNameToWrite)
         {
             bool usingAPSIMx = Path.GetExtension(fileNameToWrite) == ".apsimx";
 
@@ -49,30 +56,23 @@ namespace APSIM.Cloud.Shared
 
             // Determine whether all simulations are single season.
             bool allSimulationsAreSingleSeason = true;
-            foreach (APSIMSpec simulation in simulations)
-                if (simulation.TypeOfRun != Paddock.RunTypeEnum.SingleSeason)
+            foreach (APSIMSpecification simulation in simulations)
+                if (simulation.RunType != APSIMSpecification.RunTypeEnum.Normal)
                     allSimulationsAreSingleSeason = false;
 
             WeatherFileCache weatherCache = new WeatherFileCache();
-            foreach (APSIMSpec simulation in simulations)
+            foreach (APSIMSpecification simulation in simulations)
             {
-                try
-                {
-                    CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache, allSimulationsAreSingleSeason);
-                    CreateApsimFile(simulation, workingFolder, doc.DocumentElement, usingAPSIMx);
-                }
-                catch (Exception err)
-                {
-                    simulation.ErrorMessage = err.ToString();
-                }
+                CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache, allSimulationsAreSingleSeason);
+                CreateApsimFile(simulation, workingFolder, doc.DocumentElement, usingAPSIMx);
             }
 
             // Apply factors.
             if (!usingAPSIMx)
-                foreach (APSIMSpec simulation in simulations)
+                foreach (APSIMSpecification simulation in simulations)
                 {
                     if (simulation.ErrorMessage == null && simulation.Factors != null)
-                        foreach (APSIMSpec.Factor factor in simulation.Factors)
+                        foreach (APSIMSpecification.Factor factor in simulation.Factors)
                             APSIMFileWriter.ApplyFactor(doc.DocumentElement, factor);
                 }
 
@@ -92,25 +92,22 @@ namespace APSIM.Cloud.Shared
         /// <param name="simulations">The simulations.</param>
         /// <param name="workingFolder">The working folder to create the files in.</param>
         /// <param name="allSimulationsAreSingleSeason">All simulations are short season?</param>
-        private static void CreateWeatherFilesForSimulations(APSIMSpec simulation, string workingFolder, WeatherFileCache weatherCache, bool allSimulationsAreSingleSeason)
+        private static void CreateWeatherFilesForSimulations(APSIMSpecification simulation, string workingFolder, WeatherFileCache weatherCache, bool allSimulationsAreSingleSeason)
         {
             if (simulation.ErrorMessage == null)
             {
                 string rainFileName = Path.Combine(workingFolder, simulation.Name + ".met");
 
-                DateTime longTermStartDate = new DateTime(simulation.LongtermStartYear, 1, 1);
                 string[] filesCreated = null;
-
-                //if (simulation.ObservedData.TableName == null || simulation.ObservedData.TableName == "rainfall")
-                //    throw new Exception("Cannot find a table name in observed data");
 
                 // Make sure the observed data has a codes column.
                 if (simulation.ObservedData != null)
                     Weather.AddCodesColumn(simulation.ObservedData, 'O');
 
-                if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTermPatched)
+                if (simulation.RunType == APSIMSpecification.RunTypeEnum.LongTermPatched )
                 {
                     // long term.
+                    DateTime longTermStartDate = new DateTime(simulation.LongtermStartYear, 1, 1);
                     int numYears = simulation.StartDate.Year - longTermStartDate.Year + 1;
 
                     // Check to see if in cache.
@@ -128,55 +125,44 @@ namespace APSIM.Cloud.Shared
                                                      simulation.ObservedData.TableName, numYears, filesCreated);
                     }
                 }
-                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.POAMA)
-                {
-                    // Create a long term POAMA weather file.
-                    Weather.CreatePOAMA(rainFileName, simulation.StationNumber,
-                                        simulation.StartDate, simulation.NowDate,
-                                        simulation.ObservedData);
-                }
-                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.LongTerm)
-                {
-                    // Simple long term run with no patching
-                    Weather.Data weatherFile = Weather.ExtractDataFromSILO(simulation.StationNumber, longTermStartDate, DateTime.Now);
-                    Weather.WriteWeatherFile(weatherFile.Table, rainFileName, weatherFile.Latitude, weatherFile.Longitude,
-                                                 weatherFile.TAV, weatherFile.AMP);
-                    filesCreated = new string[] { rainFileName };
-                    simulation.StartDate = weatherFile.FirstDate;
-                    simulation.EndDate = weatherFile.LastDate;
-                    simulation.WeatherFileName = rainFileName;
-                }
-                else if (simulation.TypeOfRun == Paddock.RunTypeEnum.SingleSeason)
+                else
                 {
                     // short term.
                     // Create a short term weather file.
-                    Weather.Data weatherFile = Weather.ExtractDataFromSILO(simulation.StationNumber, simulation.StartDate, simulation.NowDate);
+                    Weather.Data weatherFile = Weather.ExtractDataFromSILO(simulation.StationNumber, simulation.StartDate, simulation.EndDate);
                     Weather.OverlayData(simulation.ObservedData, weatherFile.Table);
                     Weather.WriteWeatherFile(weatherFile.Table, rainFileName, weatherFile.Latitude, weatherFile.Longitude,
                                                  weatherFile.TAV, weatherFile.AMP);
-                    simulation.WeatherFileName = Path.GetFileName(rainFileName);
                     filesCreated = new string[] { rainFileName };
                 }
 
                 if (filesCreated.Length > 0)
                 {
+                    simulation.WeatherFileName = Path.GetFileName(filesCreated[0]);
+
                     // Set the simulation end date to the end date of the weather file. This will avoid
                     // problems where SILO hasn't been updated for a while.
                     ApsimTextFile weatherFile = new ApsimTextFile();
-                    weatherFile.Open(filesCreated[0]);
-                    simulation.EndDate = weatherFile.LastDate;
-                    weatherFile.Close();
+                    try
+                    {
+                        weatherFile.Open(filesCreated[0]);
+                        simulation.EndDate = weatherFile.LastDate;
+                    }
+                    finally
+                    {
+                        weatherFile.Close();
+                    }
                 }
 
-                if (!allSimulationsAreSingleSeason)
+                if (simulation.RunType == APSIMSpecification.RunTypeEnum.LongTermPatched)
                 {
-                    APSIMSpec.Factor factor = new APSIMSpec.Factor();
+                    APSIMSpecification.Factor factor = new APSIMSpecification.Factor();
                     factor.Name = "Met";
                     factor.ComponentPath = "/Simulations/" + simulation.Name + "/Met";
                     factor.ComponentVariableName = "filename";
                     factor.ComponentVariableValues = filesCreated;
                     if (simulation.Factors == null)
-                        simulation.Factors = new List<APSIMSpec.Factor>();
+                        simulation.Factors = new List<APSIMSpecification.Factor>();
                     simulation.Factors.Add(factor);
                 }
             }
@@ -187,7 +173,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="parentNode">Parent XmlNode to append the simulation to.</param>
         /// <param name="usingAPSIMx">Write APSIMx files?</param>
-        private static void CreateApsimFile(APSIMSpec simulation, string workingFolder, XmlNode parentNode, bool usingAPSIMx)
+        private static void CreateApsimFile(APSIMSpecification simulation, string workingFolder, XmlNode parentNode, bool usingAPSIMx)
         {
             if (simulation.ErrorMessage == null)
             {
@@ -205,7 +191,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="workingFolder">The folder where files shoud be created.</param>
         /// <param name="usingAPSIMx">Write APSIMx files?</param>
         /// <returns>The XML node of the APSIM simulation.</returns>
-        private static XmlNode CreateSimulationXML(APSIMSpec simulation, string workingFolder, bool usingAPSIMx)
+        private static XmlNode CreateSimulationXML(APSIMSpecification simulation, string workingFolder, bool usingAPSIMx)
         {
             IAPSIMFileWriter apsimWriter;
             if (usingAPSIMx)
@@ -287,7 +273,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>Do all soil related settings.</summary>
         /// <param name="simulation">The specification to use</param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
-        private static void DoSoil(APSIMSpec simulation, string workingFolder)
+        private static void DoSoil(APSIMSpecification simulation, string workingFolder)
         {
             Soil soil;
             if (simulation.Soil == null)
@@ -429,31 +415,38 @@ namespace APSIM.Cloud.Shared
         /// <param name="simulation"></param>
         /// <param name="soil"></param>
         /// <param name="workingFolder">The folder where files shoud be created.</param>
-        private static void CorrectCONAU(APSIMSpec simulation, Soil soil, string workingFolder)
+        private static void CorrectCONAU(APSIMSpecification simulation, Soil soil, string workingFolder)
         {
             // Get lat/long from weather file.
             ApsimTextFile weather = new ApsimTextFile();
-            weather.Open(Path.Combine(workingFolder, simulation.WeatherFileName));
-            double latitude = Convert.ToDouble(weather.Constant("Latitude").Value);
-            double longitude = Convert.ToDouble(weather.Constant("Longitude").Value);
+            try
+            {
+                weather.Open(Path.Combine(workingFolder, simulation.WeatherFileName));
+                double latitude = Convert.ToDouble(weather.Constant("Latitude").Value);
+                double longitude = Convert.ToDouble(weather.Constant("Longitude").Value);
 
-            // Dubbo latitude = -32.24
-            // NSW western border longitude = 141.0
-            if (longitude >= 141.0 && latitude > -32.24)
-            {
-                // Northern values.
-                soil.SoilWater.SummerU = 6.0;
-                soil.SoilWater.SummerCona = 3.5;
-                soil.SoilWater.WinterU = 4.0;
-                soil.SoilWater.WinterCona = 2.5;
+                // Dubbo latitude = -32.24
+                // NSW western border longitude = 141.0
+                if (longitude >= 141.0 && latitude > -32.24)
+                {
+                    // Northern values.
+                    soil.SoilWater.SummerU = 6.0;
+                    soil.SoilWater.SummerCona = 3.5;
+                    soil.SoilWater.WinterU = 4.0;
+                    soil.SoilWater.WinterCona = 2.5;
+                }
+                else
+                {
+                    // Southern values.
+                    soil.SoilWater.SummerU = 6.0;
+                    soil.SoilWater.SummerCona = 3.5;
+                    soil.SoilWater.WinterU = 2.0;
+                    soil.SoilWater.WinterCona = 2.0;
+                }
             }
-            else
+            finally
             {
-                // Southern values.
-                soil.SoilWater.SummerU = 6.0;
-                soil.SoilWater.SummerCona = 3.5;
-                soil.SoilWater.WinterU = 2.0;
-                soil.SoilWater.WinterCona = 2.0;
+                weather.Close();
             }
         }
 

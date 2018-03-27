@@ -188,37 +188,6 @@ namespace APSIM.Cloud.Shared
             return sum / tillages.Count();
         }
 
-        /// <summary>Fills the auto-calculated fields.</summary>
-        /// <param name="paddock">The paddock.</param>
-        /// <param name="observedData">The observed data.</param>
-        /// <param name="weatherData">The weather data.</param>
-        public static void FillInCalculatedFields(Paddock paddock, DataTable observedData, string workingFolder)
-        {
-            IEnumerable<Tillage> tillages = paddock.Management.OfType<Tillage>();
-            if (tillages.Count() > 0)
-                paddock.StubbleIncorporatedPercent = YieldProphetUtility.CalculateAverageTillagePercent(tillages);
-
-            DateTime lastRainfallDate = GetLastRainfallDate(observedData);
-            if (lastRainfallDate != DateTime.MinValue)
-                paddock.DateOfLastRainfallEntry = lastRainfallDate.ToString("dd/MM/yyyy");
-
-            string[] metFiles = Directory.GetFiles(workingFolder, "*.met");
-            if (metFiles.Length > 0)
-            {
-                string firstMetFile = Path.Combine(workingFolder, metFiles[0]);
-                ApsimTextFile textFile = new ApsimTextFile();
-                textFile.Open(firstMetFile);
-                DataTable data = textFile.ToTable();
-                textFile.Close();
-                paddock.RainfallSinceSoilWaterSampleDate = SumTableAfterDate(data, "Rain", paddock.SoilWaterSampleDate);
-                if (data.Rows.Count > 0)
-                {
-                    DataRow lastweatherRow = data.Rows[data.Rows.Count - 1];
-                    paddock.LastClimateDate = DataTableUtilities.GetDateFromRow(lastweatherRow);
-                }
-            }
-        }
-
         /// <summary>Gets the last rainfall date in the observed data.</summary>
         /// <param name="observedData">The observed data.</param>
         /// <returns>The date of the last rainfall row or DateTime.MinValue if no data.</returns>

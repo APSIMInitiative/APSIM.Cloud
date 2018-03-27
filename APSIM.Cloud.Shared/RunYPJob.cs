@@ -15,6 +15,7 @@ namespace APSIM.Cloud.Shared
     using System.IO;
     using System.Net;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Threading;
     using System.Xml;
 
@@ -25,7 +26,7 @@ namespace APSIM.Cloud.Shared
     {
         private YieldProphet specToRun;
         private string specXMLToRun;
-        private List<APSIMSpec> simulationsToRun;
+        private List<APSIMSpecification> simulationsToRun;
         private RuntimeEnvironment environment;
         private string workingDirectory;
         private List<IRunnable> jobsToRun = null;
@@ -57,7 +58,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>Constructor</summary>
         /// <param name="sims">The list of APSIM simulations to run</param>
         /// <param name="environment">The runtime environment to use for the run</param>
-        public RunYPJob(List<APSIMSpec> sims, RuntimeEnvironment environment)
+        public RunYPJob(List<APSIMSpecification> sims, RuntimeEnvironment environment)
         {
             simulationsToRun = sims;
             this.environment = environment;
@@ -67,50 +68,63 @@ namespace APSIM.Cloud.Shared
         /// <summary>Initialise job manager</summary>
         private void Initialise()
         {
-            // Create a working directory.
-            workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(workingDirectory);
-
-            // Create a YieldProphet object if xml was provided
-            string fileBaseToWrite = "YieldProphet";
-            if (specXMLToRun != null)
+            Errors = new List<string>();
+            try
             {
-                specToRun = YieldProphetUtility.YieldProphetFromXML(specXMLToRun, workingDirectory);
-                simulationsToRun = YieldProphetToAPSIM.ToAPSIM(specToRun);
-                if (specToRun.ReportName != null)
-                    fileBaseToWrite = specToRun.ReportName;
+                // Create a working directory.
+                workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                Directory.CreateDirectory(workingDirectory);
 
-                // Fill in calculated fields.
-                foreach (Paddock paddock in specToRun.Paddock)
-                    YieldProphetUtility.FillInCalculatedFields(paddock, paddock.ObservedData, workingDirectory);
+                // Create a YieldProphet object if xml was provided
+                string fileBaseToWrite = "YieldProphet";
+                if (specXMLToRun != null)
+                {
+                    if (specXMLToRun.Contains("<YieldProphet>"))
+                    {
+                        specToRun = YieldProphetUtility.YieldProphetFromXML(specXMLToRun, workingDirectory);
+                        simulationsToRun = YieldProphetToAPSIM.ToAPSIM(specToRun);
+                        if (specToRun.ReportName != null)
+                            fileBaseToWrite = specToRun.ReportName;
+                    }
+                    else
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(specXMLToRun);
+                        simulationsToRun = XmlUtilities.Deserialise(doc.DocumentElement, typeof(List<APSIMSpecification>)) as List<APSIMSpecification>;
+                    }
+                }
+                else if (specToRun != null)
+                    simulationsToRun = YieldProphetToAPSIM.ToAPSIM(specToRun);
+
+                // Create all the files needed to run APSIM.
+                string fileToWrite;
+                if (environment.APSIMxBuildNumber > 0)
+                    fileToWrite = fileBaseToWrite + ".apsimx";
+                else
+                    fileToWrite = fileBaseToWrite + ".apsim";
+                string apsimFileName = APSIMFiles.Create(simulationsToRun, workingDirectory, fileToWrite);
+
+                // Save YieldProphet.xml to working folder.
+                if (specToRun != null)
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(YieldProphetUtility.YieldProphetToXML(specToRun));
+                    doc.Save(Path.Combine(workingDirectory, fileBaseToWrite + ".xml"));
+                }
+
+                // Setup the runtime environment.
+                binFolder = SetupRunTimeEnvironment(environment);
+
+                // Go find APSIM executable
+                if (environment.APSIMxBuildNumber > 0)
+                    jobsToRun = GetJobToRunAPSIMX(apsimFileName, binFolder);
+                else
+                    jobsToRun = GetJobToRunAPSIMClassic(apsimFileName, binFolder);
             }
-            else if (specToRun != null)
-                simulationsToRun = YieldProphetToAPSIM.ToAPSIM(specToRun);
-
-            // Create all the files needed to run APSIM.
-            string fileToWrite;
-            if (environment.APSIMxBuildNumber > 0)
-                fileToWrite = fileBaseToWrite + ".apsimx";
-            else
-                fileToWrite = fileBaseToWrite + ".apsim";
-            string apsimFileName = APSIMFiles.Create(simulationsToRun, workingDirectory, fileToWrite);
-
-            // Save YieldProphet.xml to working folder.
-            if (specToRun != null)
+            catch (Exception err)
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(YieldProphetUtility.YieldProphetToXML(specToRun));
-                doc.Save(Path.Combine(workingDirectory, fileBaseToWrite + ".xml"));
+                Errors.Add(err.ToString());
             }
-
-            // Setup the runtime environment.
-            binFolder = SetupRunTimeEnvironment(environment);
-
-            // Go find APSIM executable
-            if (environment.APSIMxBuildNumber > 0)
-                jobsToRun = GetJobToRunAPSIMX(apsimFileName, binFolder);
-            else
-                jobsToRun = GetJobToRunAPSIMClassic(apsimFileName, binFolder);
         }
 
         /// <summary>Get all errors encountered</summary>
@@ -128,7 +142,7 @@ namespace APSIM.Cloud.Shared
         /// <summary>Called to get the next job</summary>
         public IRunnable GetNextJobToRun()
         {
-            if (jobsToRun.Count == 0)
+            if (jobsToRun == null || jobsToRun.Count == 0)
                 return null;
 
             IRunnable jobToRun = jobsToRun[0];
@@ -187,11 +201,10 @@ namespace APSIM.Cloud.Shared
             if (environment.APSIMRevision != null)
             {
                 environmentFolder = environment.APSIMRevision;
-                if (environment.RuntimePackages != null)
+                if (environment.RuntimePackage != null)
                 {
                     environmentFolder += "-";
-                    foreach (string runtimePackage in environment.RuntimePackages)
-                        environmentFolder += runtimePackage;
+                    environmentFolder += environment.RuntimePackage;
                 }
                 url = @"http://bob.apsim.info/files/" + environment.APSIMRevision + ".binaries.WINDOWS.INTEL.exe";
                 binFolder = Path.Combine(environmentFolder, "Temp", "Model");
@@ -201,11 +214,10 @@ namespace APSIM.Cloud.Shared
                 url = WebUtilities.CallRESTService<string>("http://www.apsim.info/APSIM.Builds.Service/Builds.svc/GetURLOfVersionForIssue?issueid=" +
                                                            environment.APSIMxBuildNumber);
                 environmentFolder = "ApsimX-" + environment.APSIMxBuildNumber;
-                if (environment.RuntimePackages != null)
+                if (environment.RuntimePackage != null)
                 {
                     environmentFolder += "-";
-                    foreach (string runtimePackage in environment.RuntimePackages)
-                        environmentFolder += runtimePackage;
+                    environmentFolder += environment.RuntimePackage;
                 }
                 commandLineArguments = "/SILENT /NOICONS /DIR=\".\"";
                 binFolder = Path.Combine(environmentFolder, "Bin");
@@ -213,32 +225,30 @@ namespace APSIM.Cloud.Shared
             else if (environment.AusfarmRevision != null)
             {
                 environmentFolder = environment.AusfarmRevision;
-                if (environment.RuntimePackages != null)
+                if (environment.RuntimePackage != null)
                 {
                     environmentFolder += "-";
-                    foreach (string runtimePackage in environment.RuntimePackages)
-                        environmentFolder += runtimePackage;
+                    environmentFolder += environment.RuntimePackage;
                 }
                 string packageFileName = Path.Combine("RuntimePackages", environment.AusfarmRevision + ".zip");
                 ZipUtilities.UnZipFiles(packageFileName, environmentFolder, null);
                 binFolder = Path.Combine(environmentFolder, "Ausfarm");
             }
 
+            environmentFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), environmentFolder);
             if (!Directory.Exists(environmentFolder))
             {
-                environmentFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), environmentFolder);
                 string downloadedFileName = Path.Combine(environmentFolder, "Temp.exe");
 
                 // Download the file
                 DownloadAndExecuteFile(environmentFolder, url, commandLineArguments, downloadedFileName);
 
                 // Copy in the extra runtime packages.
-                if (environment.RuntimePackages != null)
-                    foreach (string package in environment.RuntimePackages)
-                    {
-                        string packageFileName = Path.Combine("RuntimePackages", package + ".zip");
-                        ZipUtilities.UnZipFiles(packageFileName, environmentFolder, null);
-                    }
+                if (environment.RuntimePackage != null)
+                {
+                    string packageFileName = Path.Combine("RuntimePackages", environment.RuntimePackage + ".zip");
+                    ZipUtilities.UnZipFiles(packageFileName, environmentFolder, null);
+                }
             }
 
             return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), binFolder);
@@ -265,7 +275,6 @@ namespace APSIM.Cloud.Shared
 
             if (Path.GetExtension(downloadedFileName) == ".exe")
             {
-                // Execute the file. NB Files from BOB seem to need elevation (UAC kicks in).
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = downloadedFileName,
@@ -306,9 +315,11 @@ namespace APSIM.Cloud.Shared
             {
                 if (simFileName == null || simFileName.Trim() == string.Empty)
                     throw new Exception("Blank .sim file names found for apsim file: " + apsimFileName);
-                jobs.Add(new RunExternalProcess(apsimExecutable, simFileName, workingDirectory, 
-                                      Path.ChangeExtension(simFileName, ".sum"), 
-                                      Path.ChangeExtension(simFileName, ".sum")));
+                jobs.Add(new RunExternalProcess(apsimExecutable, 
+                                                StringUtilities.DQuote(simFileName), 
+                                                workingDirectory, 
+                                                Path.ChangeExtension(simFileName, ".sum"), 
+                                                Path.ChangeExtension(simFileName, ".sum")));
             }
 
             return jobs;
@@ -324,14 +335,16 @@ namespace APSIM.Cloud.Shared
             string executable = Path.Combine(binDirectory, "ApsimToSim.exe");
             string sumFileName = Path.ChangeExtension(apsimFileName, ".sum");
 
-            RunExternalProcess job = new RunExternalProcess(executable, apsimFileName, workingDirectory,
+            RunExternalProcess job = new RunExternalProcess(executable, 
+                                                            StringUtilities.DQuote(apsimFileName),
+                                                            workingDirectory,
                                         sumFileName, sumFileName);
             job.Run(null);
 
             if (File.Exists(sumFileName))
             {
                 string msg = File.ReadAllText(sumFileName);
-                if (msg != null && msg != string.Empty)
+                if (msg != null && msg != string.Empty && !msg.StartsWith("Written "))
                     throw new Exception("ApsimToSim Error:\r\n" + msg);
                 else
                     File.Delete(sumFileName);
@@ -572,8 +585,14 @@ namespace APSIM.Cloud.Shared
                 }
 
                 // add a summary table to the dataset.
-                DataTable summaryTable = dataset.Tables.Add("Summary");
-                summaryTable.Columns.Add("Text", typeof(string));
+                DataTable summaryTable;
+                if (dataset.Tables.Contains("Summary"))
+                    summaryTable = dataset.Tables["Summary"];
+                else
+                {
+                    summaryTable = dataset.Tables.Add("Summary");
+                    summaryTable.Columns.Add("Text", typeof(string));
+                }
                 DataRow summaryRow = summaryTable.NewRow();
                 summaryRow["Text"] = File.ReadAllText(singleSummaryFileName);
 

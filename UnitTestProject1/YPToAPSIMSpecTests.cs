@@ -1,57 +1,65 @@
 ﻿using APSIM.Cloud.Shared;
 using APSIM.Shared.Soils;
+using APSIM.Shared.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace UnitTestProject1
 {
     [TestClass]
     public class YPToAPSIMSpecTests
     {
-
         [TestMethod]
-        public void YPToAPSIMSpecTests_EnsureYPToAPSIMWorks()
+        public void YPToAPSIMSpecTests_EnsureSingleSeasonWorks()
         {
-            Sample sample = new Sample();
-            sample.Thickness = new double[] { 100, 300, 300, 300 };
-            sample.NO3 = new double[] { 34, 6.9, 3.1, 1.8 };
-            sample.NH4 = new double[] { 5.5, 1.8, 1.8, 1.5 };
-            sample.SW = new double[] { 0.13, 0.18, 0.20, 0.24 };
-            sample.SWUnits = Sample.SWUnitsEnum.Gravimetric;
+            YieldProphet yp = new YieldProphet()
+            {
+                Paddock = new List<Paddock>()
+                {
+                    new Paddock()
+                    {
+                        Name = "NameOfPaddock",
+                        StartSeasonDate = new DateTime(2016, 4, 1),
+                        NowDate = new DateTime(2016, 7, 1),
+                        SoilWaterSampleDate = new DateTime(2016, 3, 1),
+                        SoilNitrogenSampleDate = new DateTime(2016, 6, 1),
+                        StationNumber = 41023,
+                        StationName = "Toowoomba",
+                        RunType = Paddock.RunTypeEnum.SingleSeason,
+                        StubbleMass = 100,
+                        StubbleType = "Wheat",
+                        Samples = new List<Sample>()
+                        {
+                            new Sample()
+                            {
+                                Thickness = new double[] { 100, 300, 300, 300 },
+                                NO3 = new double[] { 34, 6.9, 3.1, 1.8 },
+                                NH4 = new double[] { 5.5, 1.8, 1.8, 1.5 },
+                                SW = new double[] { 0.13, 0.18, 0.20, 0.24 },
+                                SWUnits = Sample.SWUnitsEnum.Gravimetric
+                            }
+                        },
+                        SoilPath = "Soils/Australia/Victoria/Wimmera/Clay (Rupanyup North No742)",
+                        Management = new List<Management>()
+                        {
+                            new Sow()
+                            {
+                                Crop = "Wheat",
+                                Date = new DateTime(2016, 5, 1)
+                            }
+                        }
+                    }
+                }
+            };
 
-            Sow sow = new Sow();
-            sow.Crop = "Wheat";
-            sow.Date = new DateTime(2016, 5, 1);
-
-            Paddock paddock = new Paddock();
-            paddock.Name = "NameOfPaddock";
-            paddock.StartSeasonDate = new DateTime(2016, 4, 1);
-            paddock.NowDate = new DateTime(2016, 7, 1);
-            paddock.SoilWaterSampleDate = new DateTime(2016, 3, 1);
-            paddock.SoilNitrogenSampleDate = new DateTime(2016, 6, 1);
-            paddock.StationNumber = 41023;
-            paddock.StationName = "Toowoomba";
-            paddock.RunType = Paddock.RunTypeEnum.SingleSeason;
-            paddock.StubbleMass = 100;
-            paddock.StubbleType = "Wheat";
-            paddock.Samples = new List<Sample>();
-            paddock.Samples.Add(sample);
-            paddock.SoilPath = "Soils/Australia/Victoria/Wimmera/Clay (Rupanyup North No742)";
-            paddock.Management = new List<Management>();
-            paddock.Management.Add(sow);
-
-            YieldProphet yp = new YieldProphet();
-            yp.Paddock = new List<Paddock>();
-            yp.Paddock.Add(paddock);
-
-            List<APSIMSpec> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
+            List<APSIMSpecification> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
 
             Assert.AreEqual(simulations.Count, 1);
             Assert.AreEqual(simulations[0].Name, "NameOfPaddock");
             Assert.AreEqual(simulations[0].StartDate, new DateTime(2016, 3, 1));
-            Assert.AreEqual(simulations[0].EndDate, paddock.NowDate.AddDays(-1));
+            Assert.AreEqual(simulations[0].EndDate, new DateTime(2016, 6, 30));
+            Assert.AreEqual(simulations[0].RunType, APSIMSpecification.RunTypeEnum.Normal);
             Assert.AreEqual(simulations[0].Management.Count, 5);
             Assert.IsTrue(simulations[0].Management[0] is ResetWater);
             Assert.AreEqual(simulations[0].Management[0].Date, new DateTime(2016, 3, 1));
@@ -63,137 +71,140 @@ namespace UnitTestProject1
             Assert.AreEqual(simulations[0].Management[3].Date, new DateTime(2016, 5, 1));
             Assert.IsTrue(simulations[0].Management[4] is ResetNitrogen);
             Assert.AreEqual(simulations[0].Management[4].Date, new DateTime(2016, 6, 1));
+
+            Assert.IsNotNull(simulations[0].SoilPath);
+            Assert.AreEqual(simulations[0].Samples.Count, 1);
+            Assert.AreEqual(simulations[0].Samples[0].Thickness, yp.Paddock[0].Samples[0].Thickness);
+            Assert.AreEqual(simulations[0].Samples[0].NO3, yp.Paddock[0].Samples[0].NO3);
+            Assert.AreEqual(simulations[0].Samples[0].NH4, yp.Paddock[0].Samples[0].NH4);
+            Assert.AreEqual(simulations[0].Samples[0].SW, yp.Paddock[0].Samples[0].SW);
+            Assert.AreEqual(simulations[0].Samples[0].SWUnits, Sample.SWUnitsEnum.Gravimetric);
         }
 
         [TestMethod]
-        public void YPToAPSIMSpecTests_SWBoundedtoCLL()
+        public void YPToAPSIMSpecTests_EnsureLongtermWorks()
         {
-            Sample sample = new Sample();
-            sample.Thickness = new double[] { 100, 300, 300, 300 };
-            sample.NO3 = new double[] { 34, 6.9, 3.1, 1.8 };
-            sample.NH4 = new double[] { 5.5, 1.8, 1.8, 1.5 };
-            sample.SW = new double[] { 0.13, 0.18, 0.20, 0.24 };
-            sample.SWUnits = Sample.SWUnitsEnum.Gravimetric;
+            YieldProphet yp = new YieldProphet()
+            {
+                Paddock = new List<Paddock>()
+                {
+                    new Paddock()
+                    {
+                        Name = "NameOfPaddock",
+                        StartSeasonDate = new DateTime(2016, 4, 1),
+                        NowDate = new DateTime(2016, 7, 1),
+                        SoilWaterSampleDate = new DateTime(2016, 3, 1),
+                        SoilNitrogenSampleDate = new DateTime(2016, 6, 1),
+                        StationNumber = 41023,
+                        StationName = "Toowoomba",
+                        RunType = Paddock.RunTypeEnum.LongTerm,
+                        StubbleMass = 100,
+                        StubbleType = "Wheat",
+                        Samples = new List<Sample>()
+                        {
+                            new Sample()
+                            {
+                                Thickness = new double[] { 100, 300, 300, 300 },
+                                NO3 = new double[] { 34, 6.9, 3.1, 1.8 },
+                                NH4 = new double[] { 5.5, 1.8, 1.8, 1.5 },
+                                SW = new double[] { 0.13, 0.18, 0.20, 0.24 },
+                                SWUnits = Sample.SWUnitsEnum.Gravimetric
+                            }
+                        },
+                        SoilPath = "Soils/Australia/Victoria/Wimmera/Clay (Rupanyup North No742)",
+                        Management = new List<Management>()
+                        {
+                            new Sow()
+                            {
+                                Crop = "Wheat",
+                                Date = new DateTime(2016, 5, 1)
+                            }
+                        }
+                    }
+                }
+            };
 
-            Sow sow = new Sow();
-            sow.Crop = "Wheat";
-            sow.Date = new DateTime(2016, 5, 1);
+            List<APSIMSpecification> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
 
-            Paddock paddock = new Paddock();
-            paddock.Name = "NameOfPaddock";
-            paddock.StartSeasonDate = new DateTime(2016, 4, 1);
-            paddock.NowDate = new DateTime(2016, 7, 1);
-            paddock.SoilWaterSampleDate = new DateTime(2016, 3, 1);
-            paddock.SoilNitrogenSampleDate = new DateTime(2016, 6, 1);
-            paddock.StationNumber = 41023;
-            paddock.StationName = "Toowoomba";
-            paddock.RunType = Paddock.RunTypeEnum.SingleSeason;
-            paddock.StubbleMass = 100;
-            paddock.StubbleType = "Wheat";
-            paddock.Samples = new List<Sample>();
-            paddock.Samples.Add(sample);
-            paddock.SoilPath = "Soils/Australia/Victoria/Wimmera/Clay (Rupanyup North No742)";
-            paddock.Management = new List<Management>();
-            paddock.Management.Add(sow);
+            Assert.AreEqual(simulations.Count, 1);
+            Assert.AreEqual(simulations[0].Name, "NameOfPaddock");
+            Assert.AreEqual(simulations[0].StartDate, new DateTime(1957, 1, 1));
+            Assert.AreEqual(simulations[0].EndDate, new DateTime(2016, 6, 30));
+            Assert.AreEqual(simulations[0].RunType, APSIMSpecification.RunTypeEnum.Normal);
+            Assert.AreEqual(simulations[0].Management.Count, 5);
+            Assert.IsTrue(simulations[0].Management[0] is ResetWater);
+            Assert.AreEqual(simulations[0].Management[0].Date, new DateTime(2016, 3, 1));
+            Assert.IsTrue(simulations[0].Management[0].IsEveryYear);
+            Assert.IsTrue(simulations[0].Management[1] is ResetSurfaceOrganicMatter);
+            Assert.AreEqual(simulations[0].Management[1].Date, new DateTime(2016, 3, 1));
+            Assert.IsTrue(simulations[0].Management[1].IsEveryYear);
+            Assert.IsTrue(simulations[0].Management[2] is ResetNitrogen);
+            Assert.AreEqual(simulations[0].Management[2].Date, new DateTime(2016, 5, 1));
+            Assert.IsTrue(simulations[0].Management[2].IsEveryYear);
+            Assert.IsTrue(simulations[0].Management[3] is Sow);
+            Assert.AreEqual(simulations[0].Management[3].Date, new DateTime(2016, 5, 1));
+            Assert.IsTrue(simulations[0].Management[3].IsEveryYear);
+            Assert.IsTrue(simulations[0].Management[4] is ResetNitrogen);
+            Assert.AreEqual(simulations[0].Management[4].Date, new DateTime(2016, 6, 1));
+            Assert.IsTrue(simulations[0].Management[4].IsEveryYear);
 
-            YieldProphet yp = new YieldProphet();
-            yp.Paddock = new List<Paddock>();
-            yp.Paddock.Add(paddock);
-
-            string workingDirectory = Path.GetTempFileName();
-            File.Delete(workingDirectory);
-            Directory.CreateDirectory(workingDirectory);
-            List<APSIMSpec> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
-            string apsimFileName = APSIMFiles.Create(simulations, workingDirectory, "test.apsim");
-
-            // The third layer SW should be changed.
-            Assert.AreEqual(simulations[0].Samples[0].SW[0], 0.13, 0.0001);
-            Assert.AreEqual(simulations[0].Samples[0].SW[1], 0.18, 0.0001);
-            Assert.AreEqual(simulations[0].Samples[0].SW[2], 0.21880064829821716, 0.0001); // bounded to CLL
-            Assert.AreEqual(simulations[0].Samples[0].SW[3], 0.24, 0.0001);
+            Assert.IsNotNull(simulations[0].SoilPath);
+            Assert.AreEqual(simulations[0].Samples.Count, 1);
+            Assert.AreEqual(simulations[0].Samples[0].Thickness, yp.Paddock[0].Samples[0].Thickness);
+            Assert.AreEqual(simulations[0].Samples[0].NO3, yp.Paddock[0].Samples[0].NO3);
+            Assert.AreEqual(simulations[0].Samples[0].NH4, yp.Paddock[0].Samples[0].NH4);
+            Assert.AreEqual(simulations[0].Samples[0].SW, yp.Paddock[0].Samples[0].SW);
+            Assert.AreEqual(simulations[0].Samples[0].SWUnits, Sample.SWUnitsEnum.Gravimetric);
         }
 
         [TestMethod]
-        public void YPToAPSIMSpecTests_ConaUCorrected()
+        public void APSIMSpecificationTests_CreateJobFromApsimSpecXML()
         {
-            // Using a northern soil in southern australia should change the 
-            // CONA and U values to southern australian ones.
+            APSIMSpecification spec = new APSIMSpecification()
+            {
+                Name = "NameOfPaddock",
+                StartDate = new DateTime(2016, 4, 1),
+                EndDate = new DateTime(2016, 12, 1),
+                NowDate = new DateTime(2016, 7, 1),
+                StationNumber = 41023,
+                RunType = APSIMSpecification.RunTypeEnum.Normal,
+                StubbleMass = 100,
+                StubbleType = "Wheat",
+                Samples = new List<Sample>()
+                {
+                    new Sample()
+                    {
+                        Thickness = new double[] { 100, 300, 300, 300 },
+                        NO3 = new double[] { 34, 6.9, 3.1, 1.8 },
+                        NH4 = new double[] { 5.5, 1.8, 1.8, 1.5 },
+                        SW = new double[] { 0.13, 0.18, 0.20, 0.24 },
+                        SWUnits = Sample.SWUnitsEnum.Gravimetric,
+                    }
+                },
+                SoilPath = "Soils/Australia/Victoria/Wimmera/Clay (Rupanyup North No742)",
+                Management = new List<Management>()
+                {
+                    new Sow()
+                    {
+                    Crop = "Wheat",
+                    Date = new DateTime(2016, 5, 1),
+                    }
+                }
+            };
 
-            Sow sow = new Sow();
-            sow.Crop = "Wheat";
-            sow.Date = new DateTime(2016, 5, 1);
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>()
+            {
+                spec
+            };
+            RuntimeEnvironment environment = new RuntimeEnvironment
+            {
+                APSIMRevision = "Apsim7.8-R4013"
+            };
 
-            Paddock paddock = new Paddock();
-            paddock.Name = "NameOfPaddock";
-            paddock.StartSeasonDate = new DateTime(2016, 4, 1);
-            paddock.NowDate = new DateTime(2016, 7, 1);
-            paddock.SoilWaterSampleDate = new DateTime(2016, 3, 1);
-            paddock.SoilNitrogenSampleDate = new DateTime(2016, 6, 1);
-            paddock.StationNumber = 77007;   // Birchip post office - victoria.
-            paddock.StationName = "Toowoomba";
-            paddock.RunType = Paddock.RunTypeEnum.SingleSeason;
-            paddock.StubbleMass = 100;
-            paddock.StubbleType = "Wheat";
-            paddock.SoilPath = "Soils/Australia/Queensland/Darling Downs and Granite Belt/Black Vertosol (Formartin No622-YP)";
-            paddock.Management = new List<Management>();
-            paddock.Management.Add(sow);
-
-            YieldProphet yp = new YieldProphet();
-            yp.Paddock = new List<Paddock>();
-            yp.Paddock.Add(paddock);
-
-            string workingDirectory = Path.GetTempFileName();
-            File.Delete(workingDirectory);
-            Directory.CreateDirectory(workingDirectory);
-            List<APSIMSpec> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
-            string apsimFileName = APSIMFiles.Create(simulations, workingDirectory, "test.apsim");
-
-            // CONA and U should be for southern australia
-            Assert.AreEqual(simulations[0].Soil.SoilWater.SummerU, 6.0);
-            Assert.AreEqual(simulations[0].Soil.SoilWater.SummerCona, 3.5);
-            Assert.AreEqual(simulations[0].Soil.SoilWater.WinterU, 2.0);
-            Assert.AreEqual(simulations[0].Soil.SoilWater.WinterCona, 2.0);
+            string xml = XmlUtilities.Serialise(simulations, true);
+            RunYPJob job = new RunYPJob(xml, environment);
+            Assert.IsNotNull(job.GetNextJobToRun());
         }
-
-        [TestMethod]
-        public void YPToAPSIMSpecTests_SoilLandscapeGrid()
-        {
-            // Make sure we can reference a soil and landscape grid soil.
-
-            Sow sow = new Sow();
-            sow.Crop = "Wheat";
-            sow.Date = new DateTime(2016, 5, 1);
-
-            Paddock paddock = new Paddock();
-            paddock.Name = "NameOfPaddock";
-            paddock.StartSeasonDate = new DateTime(2016, 4, 1);
-            paddock.NowDate = new DateTime(2016, 7, 1);
-            paddock.SoilWaterSampleDate = new DateTime(2016, 3, 1);
-            paddock.SoilNitrogenSampleDate = new DateTime(2016, 6, 1);
-            paddock.StationNumber = 77007;   // Birchip post office - victoria.
-            paddock.StationName = "Toowoomba";
-            paddock.RunType = Paddock.RunTypeEnum.SingleSeason;
-            paddock.StubbleMass = 100;
-            paddock.StubbleType = "Wheat";
-            paddock.SoilPath = "http://ternsoils.nexus.csiro.au:8080/ASRISApi/api/APSIM/getApsoilTypeMap?longitude=147&latitude=-29.5&numToReturn=0";
-            paddock.Management = new List<Management>();
-            paddock.Management.Add(sow);
-
-            YieldProphet yp = new YieldProphet();
-            yp.Paddock = new List<Paddock>();
-            yp.Paddock.Add(paddock);
-
-            string workingDirectory = Path.GetTempFileName();
-            File.Delete(workingDirectory);
-            Directory.CreateDirectory(workingDirectory);
-            List<APSIMSpec> simulations = YieldProphetToAPSIM.ToAPSIM(yp);
-            string apsimFileName = APSIMFiles.Create(simulations, workingDirectory, "test.apsim");
-
-            Assert.IsNotNull(simulations[0].Soil);
-            Assert.AreEqual(simulations[0].Soil.NearestTown, "Walgett, NSW 2400");
-        }
-
-
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="APSIMSpec.cs" company="APSIM Initiative">
+// <copyright file="APSIMSpecification.cs" company="APSIM Initiative">
 //     Copyright (c) APSIM Initiative
 // </copyright>
 // -----------------------------------------------------------------------
@@ -7,15 +7,13 @@ namespace APSIM.Cloud.Shared
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Data;
     using System.Xml.Serialization;
 
     /// <summary>
     /// A specification for an APSIM simulation.
     /// </summary>
-    public class APSIMSpec
+    public class APSIMSpecification
     {
         /// <summary>Gets or sets the name of the simulation</summary>
         public string Name { get; set; }
@@ -45,8 +43,19 @@ namespace APSIM.Cloud.Shared
         /// <summary>Gets or sets the name of the weather file.</summary>
         public string WeatherFileName { get; set; }
 
+
+        /// <summary>Type of APSIM run to create.</summary>
+        public enum RunTypeEnum
+        {
+            /// <summary>Run just this season.</summary>
+            Normal,
+
+            /// <summary>Run a series of longterm simulations, patched with data from this year. Results will be combined.</summary>
+            LongTermPatched,
+        }
+
         /// <summary>Type of run to perform.</summary>
-        public Paddock.RunTypeEnum TypeOfRun { get; set; }
+        public RunTypeEnum RunType { get; set; }
 
         /// <summary>Gets or sets the stubble mass (kg/ha)</summary>
         public double StubbleMass { get; set; }
@@ -119,11 +128,13 @@ namespace APSIM.Cloud.Shared
         /// </summary>
         public bool Next10DaysDry { get; set; }
 
-        /// <summary>Gets or sets the factors for factorial runs.</summary>
-        public List<Factor> Factors { get; set; }
-
         /// <summary>Gets or sets the date where the decile file starts from.</summary>
         public DateTime DecileDate { get; set; }
+
+        ////////////// The below fields are auto-generated //////////////
+
+        /// <summary>Gets or sets the factors for factorial runs.</summary>
+        public List<Factor> Factors { get; set; }
 
         /// <summary>Errors that occurred during creation of the simulation. Null if no error.</summary>
         public string ErrorMessage { get; set; }

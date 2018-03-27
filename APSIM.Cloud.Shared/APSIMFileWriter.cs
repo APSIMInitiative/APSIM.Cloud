@@ -160,11 +160,11 @@ namespace APSIM.Cloud.Shared
                     sowAction += ", skiprow = " + skiprow.ToString();
                 }
 
-                AddOperation(sowing.Date, sowAction);
+                AddOperation(sowing.Date, sowAction, sowing.IsEveryYear);
 
                 // Add a sowing tillage operation
                 string tillageAction = "SurfaceOM tillage type = planter, f_incorp = 0.1, tillage_depth = 50";
-                AddOperation(sowing.Date, tillageAction);
+                AddOperation(sowing.Date, tillageAction, sowing.IsEveryYear);
 
                 // see if an emergence date was specified. If so then write some operations to 
                 // specify it and the germination date.
@@ -179,12 +179,12 @@ namespace APSIM.Cloud.Shared
                         sowing.EmergenceDate = GerminationDate + OneDay;
                     int DaysToGermination = (GerminationDate - sowing.Date).Days;
                     int DaysToEmergence = (sowing.EmergenceDate - sowing.Date).Days;
-                    AddOperation(sowing.Date, sowing.Crop + " set DaysToGermination = " + DaysToGermination.ToString());
-                    AddOperation(sowing.Date, sowing.Crop + " set DaysToEmergence = " + DaysToEmergence.ToString());
+                    AddOperation(sowing.Date, sowing.Crop + " set DaysToGermination = " + DaysToGermination.ToString(), sowing.IsEveryYear);
+                    AddOperation(sowing.Date, sowing.Crop + " set DaysToEmergence = " + DaysToEmergence.ToString(), sowing.IsEveryYear);
                 }
 
                 if (sowing.IrrigationAmount > 0)
-                    AddOperation(sowing.Date, "Irrigation apply amount = " + sowing.IrrigationAmount.ToString());
+                    AddOperation(sowing.Date, "Irrigation apply amount = " + sowing.IrrigationAmount.ToString(), sowing.IsEveryYear);
 
                 if (sowing.Crop == "Wheat")
                     XmlUtilities.SetAttribute(simulationXML, "Paddock/WheatFrostHeat/enabled", "yes");
@@ -198,36 +198,38 @@ namespace APSIM.Cloud.Shared
         /// <summary>Add a new operation to the specified operations node.</summary>
         /// <param name="date">The date.</param>
         /// <param name="action">The action.</param>
-        private void AddOperation(DateTime date, string action)
+        /// <param name="isEveryYear">Management action every year?</param>
+        private void AddOperation(DateTime date, string action, bool isEveryYear)
         {
-            operations.Add("<operation condition=\"start_of_day\">\r\n" +
-                           "   <date>" + date.ToString("dd-MMM") + "</date>\r\n" +
-                           "   <action>" + action + "</action>\r\n" +
-                           "</operation>\r\n");
+            string dateString;
+            if (isEveryYear)
+                dateString = date.ToString("dd-MMM");
+            else
+                dateString = date.ToString("dd-MMM-yyyy");
+
+            string xml = "<operation condition=\"start_of_day\">\r\n" +
+                         "   <date>" + dateString + "</date>\r\n" +
+                         "   <action>" + action + "</action>\r\n" +
+                         "</operation>\r\n";
+            operations.Add(xml);
         }
 
         /// <summary>Adds a fertilse operation.</summary>
         /// <param name="application">The application.</param>
         public void AddFertilseOperation(Fertilise application)
         {
-            if (application.Scenario)
-                AddOperation(application.Date, "act_mods ScenarioOperation");
-
             string action = "Fertiliser apply amount = " + application.Amount.ToString("F0") + " (kg/ha)" +
                                            ", depth = 20 (mm), type = no3_n";
-            AddOperation(application.Date, action);
+            AddOperation(application.Date, action, application.IsEveryYear);
         }
 
         /// <summary>Adds a irrigation operation.</summary>
         /// <param name="application">The application.</param>
         public void AddIrrigateOperation(Irrigate application)
         {
-            if (application.Scenario)
-                AddOperation(application.Date, "act_mods ScenarioOperation");
-
             string action = "Irrigation apply amount = " + application.Amount.ToString("F0") + " (mm)" +
                                          "efficiency = " + application.Efficiency.ToString("F2") + "(0-1)";
-            AddOperation(application.Date, action);
+            AddOperation(application.Date, action, application.IsEveryYear);
         }
 
         /// <summary>Adds a tillage operation.</summary>
@@ -244,7 +246,7 @@ namespace APSIM.Cloud.Shared
             string action = "SurfaceOM tillage type = user_defined" +
                             ", f_incorp = " + incorpFOM.ToString("F1") +
                             ", tillage_depth = 100";
-            AddOperation(application.Date, action);
+            AddOperation(application.Date, action, application.IsEveryYear);
         }
         /// <summary>Adds a stubble removed operation.</summary>
         /// <param name="application">The application.</param>
@@ -256,34 +258,34 @@ namespace APSIM.Cloud.Shared
                             ", f_incorp = " + incorpFOM.ToString("F1") +
                             ", tillage_depth = 0";
 
-            AddOperation(application.Date, action);
+            AddOperation(application.Date, action, application.IsEveryYear);
         }
 
         /// <summary>Adds the reset water operation.</summary>
         /// <param name="reset">The reset.</param>
         public void AddResetWaterOperation(ResetWater reset)
         {
-            AddOperation(reset.Date, "'Soil Water' reset");
-            AddOperation(reset.Date, "act_mods reseting");
+            AddOperation(reset.Date, "'Soil Water' reset", reset.IsEveryYear);
+            AddOperation(reset.Date, "act_mods reseting", reset.IsEveryYear);
         }
 
         /// <summary>Adds the reset nitrogen operation.</summary>
         /// <param name="reset">The reset.</param>
         public void AddResetNitrogenOperation(ResetNitrogen reset)
         {
-            AddOperation(reset.Date, "'Soil Nitrogen' reset");
+            AddOperation(reset.Date, "'Soil Nitrogen' reset", reset.IsEveryYear);
         }
 
         /// <summary>Adds the surface organic matter operation.</summary>
         /// <param name="reset">The reset.</param>
         public void AddSurfaceOrganicMatterOperation(ResetSurfaceOrganicMatter reset)
         {
-            AddOperation(reset.Date, "SurfaceOM reset");
+            AddOperation(reset.Date, "SurfaceOM reset", reset.IsEveryYear);
         }
 
         /// <summary>Creates a met factorial.</summary>
         /// <param name="factor">The factor</param>
-        public static void ApplyFactor(XmlNode simulationXML, APSIMSpec.Factor factor)
+        public static void ApplyFactor(XmlNode simulationXML, APSIMSpecification.Factor factor)
         {
             // Make sure <factorial> exists.
             XmlNode factorial = XmlUtilities.Find(simulationXML, "Factorials");

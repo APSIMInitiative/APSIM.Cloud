@@ -217,9 +217,6 @@ namespace APSIM.Cloud.Shared
         /// <param name="application">The application.</param>
         public void AddFertilseOperation(Fertilise application)
         {
-            if (application.Scenario)
-                AddOperation(application.Date, "act_mods ScenarioOperation");
-
             string action = "[Fertiliser].Apply(Amount: " + application.Amount.ToString("F0") +
                                                 ", Depth: 20, Type: Fertiliser.Types.NO3N)";
             AddOperation(application.Date, action);
@@ -282,7 +279,7 @@ namespace APSIM.Cloud.Shared
 
         /// <summary>Creates a met factorial.</summary>
         /// <param name="factor">The factor</param>
-        public static void ApplyFactor(XmlNode simulationXML, APSIMSpec.Factor factor)
+        public static void ApplyFactor(XmlNode simulationXML, APSIMSpecification.Factor factor)
         {
             
         }

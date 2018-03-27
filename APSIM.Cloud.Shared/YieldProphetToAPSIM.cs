@@ -17,23 +17,21 @@ namespace APSIM.Cloud.Shared
         /// <summary>Converts a Yield Prophet specification to an APSIM one.</summary>
         /// <param name="yieldProphet">The yield prophet spec.</param>
         /// <returns>The list of APSIM simulations that will need to be run.</returns>
-        public static List<APSIMSpec> ToAPSIM(YieldProphet yieldProphet)
+        public static List<APSIMSpecification> ToAPSIM(YieldProphet yieldProphet)
         {
-            List<APSIMSpec> apsimSpecs = new List<APSIMSpec>();
+            List<APSIMSpecification> apsimSpecs = new List<APSIMSpecification>();
 
             foreach (Paddock paddock in yieldProphet.Paddock)
             {
-                APSIMSpec simulation;
+                APSIMSpecification simulation;
                 try
                 {
                     simulation = CreateBaseSimulation(paddock);
                 }
                 catch (Exception err)
                 {
-                    simulation = new APSIMSpec();
-                    simulation.TypeOfRun = paddock.RunType;
+                    simulation = new APSIMSpecification();
                     simulation.ErrorMessage = err.Message;
-
                 }
 
                 simulation.Name = paddock.Name;
@@ -45,12 +43,12 @@ namespace APSIM.Cloud.Shared
         /// <summary>Creates a base APSIM simulation spec for the Yield Prophet spec.</summary>
         /// <param name="yieldProphet">The yield prophet specification.</param>
         /// <returns>The created APSIM simulation spec.</returns>
-        private static APSIMSpec CreateBaseSimulation(Paddock paddock)
+        private static APSIMSpecification CreateBaseSimulation(Paddock paddock)
         {
             Paddock copyOfPaddock = paddock; // XmlUtilities.Clone(paddock) as JobsService.Paddock;
             copyOfPaddock.ObservedData = paddock.ObservedData;
 
-            APSIMSpec shortSimulation = new APSIMSpec();
+            APSIMSpecification shortSimulation = new APSIMSpecification();
             shortSimulation.Name = "Base";
             shortSimulation.WeatherFileName = shortSimulation.Name + ".met";
 
@@ -90,6 +88,12 @@ namespace APSIM.Cloud.Shared
             }
             else if (paddock.RunType == Paddock.RunTypeEnum.LongTermPatched)
                 shortSimulation.EndDate = shortSimulation.StartDate.AddDays(360);
+            else if (paddock.RunType == Paddock.RunTypeEnum.LongTerm)
+            {
+                // Sow opp reports.
+                shortSimulation.StartDate = new DateTime(shortSimulation.LongtermStartYear, 1, 1);
+                shortSimulation.EndDate = copyOfPaddock.NowDate.AddDays(-1);
+            }
             shortSimulation.NowDate = copyOfPaddock.NowDate.AddDays(-1);
             if (shortSimulation.NowDate == DateTime.MinValue)
                 shortSimulation.NowDate = DateTime.Now;
@@ -110,7 +114,10 @@ namespace APSIM.Cloud.Shared
             shortSimulation.Management.AddRange(copyOfPaddock.Management);
             shortSimulation.UseEC = paddock.UseEC;
             shortSimulation.WriteDepthFile = false;
-            shortSimulation.TypeOfRun = paddock.RunType;
+            if (paddock.RunType == Paddock.RunTypeEnum.LongTermPatched)
+                shortSimulation.RunType = APSIMSpecification.RunTypeEnum.LongTermPatched;
+            else
+                shortSimulation.RunType = APSIMSpecification.RunTypeEnum.Normal;
             shortSimulation.DecileDate = paddock.StartSeasonDate;
             shortSimulation.NUnlimited = paddock.NUnlimited;
             shortSimulation.NUnlimitedFromToday = paddock.NUnlimitedFromToday;
@@ -121,6 +128,11 @@ namespace APSIM.Cloud.Shared
             // Do a stable sort on management actions.
             shortSimulation.Management = shortSimulation.Management.OrderBy(m => m.Date).ToList();
 
+            if (paddock.RunType == Paddock.RunTypeEnum.LongTerm)
+            {
+                foreach (Management man in shortSimulation.Management)
+                    man.IsEveryYear = true;
+            }
             return shortSimulation;
         }
 
@@ -129,7 +141,7 @@ namespace APSIM.Cloud.Shared
         /// <param name="simulation">The simulation to add the management operations to.</param>
         /// <exception cref="System.Exception">Cannot find soil water reset date</exception>
         /// <exception cref="Exception">Cannot find soil water reset date</exception>
-        private static void AddResetDatesToManagement(Paddock paddock, APSIMSpec simulation)
+        private static void AddResetDatesToManagement(Paddock paddock, APSIMSpecification simulation)
         {
             // Reset
             if (paddock.SoilWaterSampleDate != DateTime.MinValue)

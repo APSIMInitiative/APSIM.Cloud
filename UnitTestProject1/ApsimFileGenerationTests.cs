@@ -15,7 +15,7 @@ namespace UnitTestProject1
         [TestMethod]
         public void EnsureApsimFileGenerationWorks()
         {
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>();
             simulations.Add(GetDefaultSimulationSpec());
 
             // Create a working directory.
@@ -45,12 +45,12 @@ namespace UnitTestProject1
                 Directory.Delete(runtimeDirectory, true);
 
             // Build the new runtime environment.
-            APSIMSpec simulation = GetDefaultSimulationSpec();
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
+            APSIMSpecification simulation = GetDefaultSimulationSpec();
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>();
             RuntimeEnvironment environment = new RuntimeEnvironment
             {
                 APSIMRevision = "Apsim7.8-R4000",
-                RuntimePackages = new string[] { "Testing" }
+                RuntimePackage = "Testing"
             };
             simulations.Add(simulation);
             RunYPJob job = new RunYPJob(simulations, environment);
@@ -78,8 +78,8 @@ namespace UnitTestProject1
                 Directory.Delete(runtimeDirectory, true);
 
             // Build the new runtime environment.
-            APSIMSpec simulation = GetDefaultSimulationSpec();
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
+            APSIMSpecification simulation = GetDefaultSimulationSpec();
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>();
             RuntimeEnvironment environment = new RuntimeEnvironment
             {
                 APSIMxBuildNumber = 2473 // issue number that was resovled.
@@ -126,9 +126,9 @@ namespace UnitTestProject1
         [TestMethod]
         public void RunAPSIMGetOutputs()
         {
-            APSIMSpec simulation = GetDefaultSimulationSpec();
+            APSIMSpecification simulation = GetDefaultSimulationSpec();
 
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>();
             simulations.Add(simulation);
 
             RuntimeEnvironment environment = new RuntimeEnvironment
@@ -162,9 +162,9 @@ namespace UnitTestProject1
         [TestMethod]
         public void RunAPSIMXGetOutputs()
         {
-            APSIMSpec simulation = GetDefaultSimulationSpec();
+            APSIMSpecification simulation = GetDefaultSimulationSpec();
 
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>();
             simulations.Add(simulation);
 
             RuntimeEnvironment environment = new RuntimeEnvironment
@@ -190,10 +190,10 @@ namespace UnitTestProject1
         [TestMethod]
         public void RunAPSIMGetError()
         {
-            APSIMSpec simulation = GetDefaultSimulationSpec();
+            APSIMSpecification simulation = GetDefaultSimulationSpec();
             (simulation.Management[0] as Sow).Cultivar = string.Empty;
 
-            List<APSIMSpec> simulations = new List<APSIMSpec>();
+            List<APSIMSpecification> simulations = new List<APSIMSpecification>();
             simulations.Add(simulation);
 
             RuntimeEnvironment environment = new RuntimeEnvironment
@@ -242,14 +242,14 @@ namespace UnitTestProject1
         }
 
 
-        private static APSIMSpec GetDefaultSimulationSpec()
+        private static APSIMSpecification GetDefaultSimulationSpec()
         {
             Sample sample = new Sample
             {
                 Thickness = new double[] { 100, 300, 300, 300 },
                 NO3 = new double[] { 34, 6.9, 3.1, 1.8 },
                 NH4 = new double[] { 5.5, 1.8, 1.8, 1.5 },
-                SW = new double[] { 0.13, 0.18, 0.20, 0.24 },
+                SW = new double[] { 0.3, 0.3, 0.30, 0.24 },
                 SWUnits = Sample.SWUnitsEnum.Gravimetric
             };
 
@@ -263,13 +263,13 @@ namespace UnitTestProject1
                 Date = new DateTime(2016, 5, 1)
             };
 
-            APSIMSpec simulation = new APSIMSpec
+            APSIMSpecification simulation = new APSIMSpecification
             {
                 Name = "NameOfPaddock",
                 StartDate = new DateTime(2016, 4, 1),
                 EndDate = new DateTime(2016, 7, 1),
                 NowDate = new DateTime(2016, 7, 1),
-                TypeOfRun = Paddock.RunTypeEnum.SingleSeason,
+                RunType = APSIMSpecification.RunTypeEnum.Normal,
                 LongtermStartYear = 2000,
                 DailyOutput = true,
                 StationNumber = 41023,

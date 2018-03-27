@@ -533,95 +533,95 @@ namespace APSIM.Cloud.Shared
                                             double tav, double amp)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-            StreamWriter writer = new StreamWriter(fileName);
-            writer.WriteLine("[weather.met.weather]");
-            writer.WriteLine("Latitude = " + latitude.ToString());
-            writer.WriteLine("Longitude = " + longitude.ToString());
-            writer.WriteLine("TAV = " + tav.ToString());
-            writer.WriteLine("AMP = " + amp.ToString());
-            writer.WriteLine("! Codes:");
-            writer.WriteLine("!  S    SILO");
-            writer.WriteLine("!  O    Observed");
-            writer.WriteLine("!  P    POAMA");
-            writer.WriteLine("!  s    SILO (patched)");
-            writer.WriteLine("!  o    Observed (patched)");
-            writer.WriteLine("!  p    POAMA (patched)");
-
-            // Work out column formats and widths.
-            string formatString = string.Empty;
-            string headings = string.Empty;
-            string units = string.Empty;
-            int i = 0;
-            foreach (DataColumn column in weatherData.Table.Columns)
+            using (StreamWriter writer = new StreamWriter(fileName))
             {
-                int columnWidth = 0;
-                string columnFormat = string.Empty;
-                string columnUnits = string.Empty;
-                if (column.DataType == typeof(DateTime))
+                writer.WriteLine("[weather.met.weather]");
+                writer.WriteLine("Latitude = " + latitude.ToString());
+                writer.WriteLine("Longitude = " + longitude.ToString());
+                writer.WriteLine("TAV = " + tav.ToString());
+                writer.WriteLine("AMP = " + amp.ToString());
+                writer.WriteLine("! Codes:");
+                writer.WriteLine("!  S    SILO");
+                writer.WriteLine("!  O    Observed");
+                writer.WriteLine("!  P    POAMA");
+                writer.WriteLine("!  s    SILO (patched)");
+                writer.WriteLine("!  o    Observed (patched)");
+                writer.WriteLine("!  p    POAMA (patched)");
+
+                // Work out column formats and widths.
+                string formatString = string.Empty;
+                string headings = string.Empty;
+                string units = string.Empty;
+                int i = 0;
+                foreach (DataColumn column in weatherData.Table.Columns)
                 {
-                    columnFormat += "yyyy-MM-dd";
-                    columnWidth = 12;
-                    columnUnits = "(yyyy-mm-dd)";
-                }
-                else if (column.ColumnName.Contains("radn"))
-                {
-                    columnFormat += "F1";
-                    columnWidth = 9;
-                    columnUnits = "(MJ/m^2)";
-                }
-                else if (column.ColumnName.Contains("maxt"))
-                {
-                    columnFormat += "F1";
-                    columnWidth = 9;
-                    columnUnits = "(oC)";
-                }
-                else if (column.ColumnName.Contains("mint"))
-                {
-                    columnFormat += "F1";
-                    columnWidth = 9;
-                    columnUnits = "(oC)";
-                }
-                else if (column.ColumnName.Contains("rain"))
-                {
-                    columnFormat += "F1";
-                    columnWidth = 7;
-                    columnUnits = "(mm)";
-                }
-                else
-                {
-                    columnFormat += string.Empty;
-                    columnWidth = 9;
-                    columnUnits = "()";
+                    int columnWidth = 0;
+                    string columnFormat = string.Empty;
+                    string columnUnits = string.Empty;
+                    if (column.DataType == typeof(DateTime))
+                    {
+                        columnFormat += "yyyy-MM-dd";
+                        columnWidth = 12;
+                        columnUnits = "(yyyy-mm-dd)";
+                    }
+                    else if (column.ColumnName.Contains("radn"))
+                    {
+                        columnFormat += "F1";
+                        columnWidth = 9;
+                        columnUnits = "(MJ/m^2)";
+                    }
+                    else if (column.ColumnName.Contains("maxt"))
+                    {
+                        columnFormat += "F1";
+                        columnWidth = 9;
+                        columnUnits = "(oC)";
+                    }
+                    else if (column.ColumnName.Contains("mint"))
+                    {
+                        columnFormat += "F1";
+                        columnWidth = 9;
+                        columnUnits = "(oC)";
+                    }
+                    else if (column.ColumnName.Contains("rain"))
+                    {
+                        columnFormat += "F1";
+                        columnWidth = 7;
+                        columnUnits = "(mm)";
+                    }
+                    else
+                    {
+                        columnFormat += string.Empty;
+                        columnWidth = 9;
+                        columnUnits = "()";
+                    }
+
+                    if (columnWidth > 0)
+                    {
+                        headings += string.Format("{0," + columnWidth.ToString() + "}", column.ColumnName);
+                        units += string.Format("{0," + columnWidth.ToString() + "}", columnUnits);
+                        formatString += "{" + i + "," + columnWidth;
+                        if (columnFormat != string.Empty)
+                            formatString += ":" + columnFormat;
+                        formatString += "}";
+                        i++;
+                    }
                 }
 
-                if (columnWidth > 0)
+                // Write headings and units
+                writer.WriteLine(headings);
+                writer.WriteLine(units);
+
+                // Write data.
+                object[] values = new object[weatherData.Table.Columns.Count];
+                foreach (DataRowView row in weatherData)
                 {
-                    headings += string.Format("{0," + columnWidth.ToString() + "}", column.ColumnName);
-                    units += string.Format("{0," + columnWidth.ToString() + "}", columnUnits);
-                    formatString += "{" + i + "," + columnWidth;
-                    if (columnFormat != string.Empty)
-                        formatString += ":" + columnFormat;
-                    formatString += "}";
-                    i++;
+                    // Create an object array to pass to writeline.
+                    for (int c = 0; c < weatherData.Table.Columns.Count; c++)
+                        values[c] = row[c];
+
+                    writer.WriteLine(formatString, values);
                 }
             }
-
-            // Write headings and units
-            writer.WriteLine(headings);
-            writer.WriteLine(units);
-
-            // Write data.
-            object[] values = new object[weatherData.Table.Columns.Count];
-            foreach (DataRowView row in weatherData)
-            {
-                // Create an object array to pass to writeline.
-                for (int c = 0; c < weatherData.Table.Columns.Count; c++)
-                    values[c] = row[c];
-
-                writer.WriteLine(formatString, values);
-            }
-            
-            writer.Close();
         }
 
         /// <summary>

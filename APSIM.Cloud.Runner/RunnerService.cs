@@ -1,42 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using APSIM.Cloud.Shared;
-using APSIM.Shared.Utilities;
-
-namespace APSIM.Cloud.Runner
+﻿namespace APSIM.Cloud.Runner
 {
+    using APSIM.Shared.Utilities;
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceProcess;
+
     partial class RunnerService : ServiceBase
     {
-        private IJobRunner jobRunner = null;
         private RunJobsInDB jobManager = null;
-
-        /// <summary>The maximum number of CPU cores to use.</summary>
-        private int maximumNumberOfProcessors;
+        private Dictionary<string, string> appSettings;
 
         /// <summary>Constructor</summary>
         /// <param name="maximumNumberOfProcessors">The maximum number of CPU cores to use.</param>
-        public RunnerService(int maximumNumberOfProcessors = -1)
+        public RunnerService(Dictionary<string, string> appSettings)
         {
             InitializeComponent();
             jobManager = null;
-            this.maximumNumberOfProcessors = maximumNumberOfProcessors;
+            this.appSettings = appSettings;
         }
-
-        
 
         protected override void OnStart(string[] args)
         {
             if (jobManager == null)
             {
-                jobRunner = new JobRunnerAsync();
-                IJobManager jobManager = new RunJobsInDB(jobRunner);
-                jobRunner.Run(jobManager, wait: false, numberOfProcessors: maximumNumberOfProcessors);
+                jobManager = new RunJobsInDB(appSettings);
+                jobManager.Start();
             }
         }
 

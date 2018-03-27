@@ -82,10 +82,8 @@ namespace APSIM.Cloud.Shared
             else
                 growerName = remainder;
 
-            simulation.StartSeasonDate = GetDate(paddock, "StartSeasonDateFull");
-
             // Give the paddock a name.
-            string fullName = string.Format("{0}^{1}^{2}", simulation.StartSeasonDate.Year, growerName, paddockName);
+            string fullName = string.Format("{0}^{1}^{2}", GetDate(paddock, "SowDateFull").Year, growerName, paddockName);
             simulation.Name = fullName;
 
             // Set the report date.
@@ -146,7 +144,6 @@ namespace APSIM.Cloud.Shared
                 simulation.Management.Add(fertilise);
                 fertilise.Date = GetDate(fertiliserNodes[f], "FertDateFull");
                 fertilise.Amount = GetDouble(fertiliserNodes[f], "FertAmount");
-                fertilise.Scenario = GetBoolean(fertiliserNodes[f], "Scenario");
             }
 
             // Irrigate nodes.
@@ -158,7 +155,6 @@ namespace APSIM.Cloud.Shared
                 irrigate.Date = GetDate(irrigateNodes[i], "IrrigateDateFull");
                 irrigate.Amount = GetDouble(irrigateNodes[i], "IrrigateAmount");
                 irrigate.Efficiency = GetDouble(irrigateNodes[i], "IrrigateEfficiency");
-                irrigate.Scenario = GetBoolean(irrigateNodes[i], "Scenario");
             }
 
             // Tillage nodes.
@@ -174,7 +170,6 @@ namespace APSIM.Cloud.Shared
                     tillage.Disturbance = Tillage.DisturbanceEnum.Medium;
                 else
                     tillage.Disturbance = Tillage.DisturbanceEnum.High;
-                tillage.Scenario = GetBoolean(tillageNode, "Scenario");
             }
 
             // Stubble removed nodes.

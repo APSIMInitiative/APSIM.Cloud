@@ -28,6 +28,6 @@
         /// Gets or sets the optional, additional runtime packages to use. These are extra or 
         /// replacement files that will be added to the specified APSIM build. Can be null.
         /// </summary>
-        public string[] RuntimePackages { get; set; }
+        public string RuntimePackage { get; set; }
     }
 }

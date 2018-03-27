@@ -56,7 +56,7 @@
     <Compile Include="APSIMFiles.cs" />
     <Compile Include="APSIMxFileWriter.cs" />
     <Compile Include="APSIMFileWriter.cs" />
-    <Compile Include="APSIMSpec.cs" />
+    <Compile Include="APSIMSpecification.cs" />
     <Compile Include="AusFarm\AusFarmFiles.cs" />
     <Compile Include="AusFarm\AusFarmFileWriter.cs" />
     <Compile Include="AusFarm\AusFarmSpec.cs" />

@@ -1,59 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.ServiceProcess;
-using System.IO;
-using APSIM.Shared.Utilities;
-using System.Runtime.InteropServices;
-using System.Xml;
-using System.Reflection;
-using APSIM.Cloud.Shared;
-
-namespace APSIM.Cloud.Runner
+﻿namespace APSIM.Cloud.Runner
 {
+    using APSIM.Cloud.Shared;
+    using APSIM.Shared.Utilities;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.IO;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.ServiceProcess;
+    using System.Windows.Forms;
+    using System.Xml;
+
     static class Program
     {
-        private static List<Exception> errors = new List<Exception>();
-
-        private static void OnJobCompleted(object sender, JobCompleteArgs e)
-        {
-            if (e.exceptionThrowByJob != null)
-                errors.Add(e.exceptionThrowByJob);
-        }
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            EnsureBuildNumberIsPutIntoSummaryFile();
-
-            Dictionary<string,string> arguments = StringUtilities.ParseCommandLine(args);
-            // If there is a -Service switch then start as a service otherwise start as a regular application
-            if (arguments.ContainsKey("-Service"))
+            try
             {
-                int maximumNumberOfCores = -1;
-                if (arguments.ContainsKey("-MaximumNumberOfCores"))
-                    maximumNumberOfCores = Convert.ToInt32(arguments["-MaximumNumberOfCores"]);
+                EnsureBuildNumberIsPutIntoSummaryFile();
 
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[]
+                Dictionary<string, string> appSettings = StringUtilities.ParseCommandLine(args);
+
+                // Add app settings into command line arguments.
+                foreach (string setting in ConfigurationManager.AppSettings)
                 {
-                    new RunnerService(maximumNumberOfCores)
-                };
-                ServiceBase.Run(ServicesToRun);
-            }
-            else
-            {
-                if (!RunJobFromCommandLine(arguments))
+                    if (!appSettings.ContainsKey(setting))
+                        appSettings.Add(setting, ConfigurationManager.AppSettings[setting]);
+                }
+
+                // If there is a -Service switch then start as a service otherwise start as a regular application
+                if (appSettings["RunAsService"] == "true")
                 {
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new MainForm(args));
+                    ServiceBase[] ServicesToRun;
+                    ServicesToRun = new ServiceBase[]
+                    {
+                        new RunnerService(appSettings)
+                    };
+                    ServiceBase.Run(ServicesToRun);
+                }
+                else
+                {
+                    if (!RunJobFromCommandLine(appSettings))
+                    {
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                        Application.Run(new MainForm(appSettings));
+                    }
                 }
             }
+            catch (Exception err)
+            {
+                AttachConsole(-1);
+                Console.WriteLine(err.ToString());
+                return 1;
+            }
+            return 0;
         }
 
         /// <summary>Modify the apsim settings file to ensure summary file contains the apsim revision number.</summary>
@@ -80,42 +86,51 @@ namespace APSIM.Cloud.Runner
 
         /// <summary>Runs the job (.xml file) specified on the command line.</summary>
         /// <returns>True if something was run.</returns>
-        private static bool RunJobFromCommandLine(Dictionary<string, string> commandLineArguments)
+        private static bool RunJobFromCommandLine(Dictionary<string, string> appSettings)
         {
-            if (commandLineArguments.ContainsKey("Filename"))
+            if (appSettings.ContainsKey("FileName"))
             {
-                string jobFileName = commandLineArguments["Filename"];
+                string jobFileName = appSettings["FileName"];
 
                 if (File.Exists(jobFileName))
                 {
-                    bool runAPSIMx = (commandLineArguments.ContainsKey("RunAPSIMX"));
-                    commandLineArguments.TryGetValue("APSIMXExecutable", out string executable);
+                    appSettings.TryGetValue("APSIMXExecutable", out string executable);
 
                     string jobXML = File.ReadAllText(jobFileName);
                     string jobName = Path.GetFileNameWithoutExtension(jobFileName);
 
-                    RunYPJob job = new RunYPJob(jobXML, null)
+                    var environment = new APSIM.Cloud.Shared.RuntimeEnvironment
+                    {
+                        APSIMRevision = appSettings["APSIMRevision"],
+                        RuntimePackage = appSettings["RuntimePackage"],
+                    };
+
+                    RunYPJob job = new RunYPJob(jobXML, environment)
                     {
                         ApsimXExecutable = executable
                     };
-
-                    errors.Clear();
-                    IJobRunner runner = new JobRunnerAsync();
-                    runner.JobCompleted += OnJobCompleted;
-                    runner.Run(job, wait: true);
-
-                    string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
-                    using (Stream s = File.Create(destZipFileName))
+                    if (job.Errors.Count == 0)
                     {
-                        job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
-                        job.AllFilesZipped.CopyTo(s);
+                        IJobRunner runner = new JobRunnerAsync();
+                        runner.Run(job, wait: true);
                     }
 
-                    if (errors != null && errors.Count > 0)
+                    if (job.AllFilesZipped != null)
                     {
-                        AttachConsole(-1);
-                        foreach (Exception error in errors)
-                            Console.Write(error.ToString());
+                        string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
+                        using (Stream s = File.Create(destZipFileName))
+                        {
+                            job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                            job.AllFilesZipped.CopyTo(s);
+                        }
+                    }
+
+                    if (job.Errors.Count > 0)
+                    {
+                        string msg = string.Empty;
+                        foreach (string error in job.Errors)
+                            msg += error + Environment.NewLine;
+                        throw new Exception(msg);
                     }
                     return true;
                 }
