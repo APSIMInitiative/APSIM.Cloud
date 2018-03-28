@@ -22,8 +22,6 @@
         {
             try
             {
-                EnsureBuildNumberIsPutIntoSummaryFile();
-
                 Dictionary<string, string> appSettings = StringUtilities.ParseCommandLine(args);
 
                 // Add app settings into command line arguments.
@@ -60,24 +58,6 @@
                 return 1;
             }
             return 0;
-        }
-
-        /// <summary>Modify the apsim settings file to ensure summary file contains the apsim revision number.</summary>
-        private static void EnsureBuildNumberIsPutIntoSummaryFile()
-        {
-            string settingsFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                                                   "APSIM",
-                                                   "Apsim.xml");
-            XmlDocument doc = new XmlDocument();
-            doc.Load(settingsFileName);
-            XmlUtilities.SetValue(doc.DocumentElement, "ApsimUI/IncludeBuildNumberInOutSumFile", "Yes");
-            doc.Save(settingsFileName);
-
-            // Delete the cached version of the file we modified above.
-            string cacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                             "APSIM");
-            if (Directory.Exists(cacheFolder))
-                Directory.Delete(cacheFolder, true); 
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
