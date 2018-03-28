@@ -235,10 +235,14 @@ namespace APSIM.Cloud.Shared
         /// <returns>The data returned will have year, month, day, date and code columns.</returns>
         public static Data ExtractDataFromSILO(int stationNumber, DateTime startDate, DateTime endDate)
         {
+            if (startDate.Date == endDate.Date)
+                throw new Exception("The start date and end date for extracting data from SILO are both: " + startDate.Date.ToString());
             ApsimTextFile weatherFile = ExtractMetFromSILO(stationNumber, startDate, endDate);
 
             // Add a codes and date column to weatherdata
             DataTable weatherData = weatherFile.ToTable();
+            if (weatherData.Rows.Count == 0)
+                throw new Exception("No weather data found for station " + stationNumber);
             AddCodesColumn(weatherData, 'S');
             AddDateToTable(weatherData);
 

@@ -111,6 +111,11 @@ namespace APSIM.Cloud.Runner
                                 RuntimePackage = appSettings["RuntimePackage"],
                             };
                             nextJob = new RunYPJob(jobXML, environment);
+                            if ((nextJob as RunYPJob).Errors.Count > 0)
+                            {
+                                UpdateServerForCompletedJob(nextJob);
+                                nextJob = null;
+                            }
                         }
                     }
                     else
@@ -150,16 +155,22 @@ namespace APSIM.Cloud.Runner
                 {
                     if (runningJob is RunYPJob)
                     {
-                        (runningJob as RunYPJob).AllFilesZipped.Seek(0, SeekOrigin.Begin);
-                        (runningJob as RunYPJob).AllFilesZipped.CopyTo(s);
+                        if ((runningJob as RunYPJob).AllFilesZipped != null)
+                        {
+                            (runningJob as RunYPJob).AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                            (runningJob as RunYPJob).AllFilesZipped.CopyTo(s);
+                        }
                         outputs = (runningJob as RunYPJob).Outputs;
                         foreach (string err in (runningJob as RunYPJob).Errors)
                             errorMessage += err;
                     }
                     else
                     {
-                        (runningJob as RunF4PJob).AllFilesZipped.Seek(0, SeekOrigin.Begin);
-                        (runningJob as RunF4PJob).AllFilesZipped.CopyTo(s);
+                        if ((runningJob as RunYPJob).AllFilesZipped != null)
+                        {
+                            (runningJob as RunF4PJob).AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                            (runningJob as RunF4PJob).AllFilesZipped.CopyTo(s);
+                        }
                         outputs = (runningJob as RunF4PJob).Outputs;
                         foreach (string err in (runningJob as RunF4PJob).Errors)
                             errorMessage += err;

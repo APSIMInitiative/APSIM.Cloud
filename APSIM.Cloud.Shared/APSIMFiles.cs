@@ -154,7 +154,7 @@ namespace APSIM.Cloud.Shared
                     }
                 }
 
-                if (simulation.RunType == APSIMSpecification.RunTypeEnum.LongTermPatched)
+                if (!allSimulationsAreSingleSeason)
                 {
                     APSIMSpecification.Factor factor = new APSIMSpecification.Factor();
                     factor.Name = "Met";
