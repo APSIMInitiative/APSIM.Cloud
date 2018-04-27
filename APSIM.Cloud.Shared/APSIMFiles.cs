@@ -297,7 +297,7 @@ namespace APSIM.Cloud.Shared
                 {
                     // Apsoil web service.
                     APSOIL.Service apsoilService = new APSOIL.Service();
-                    string soilXml = apsoilService.SoilXML(simulation.SoilPath);
+                    string soilXml = apsoilService.SoilXML(simulation.SoilPath.Replace("\r\n", ""));
                     if (soilXml == string.Empty)
                         throw new Exception("Cannot find soil: " + simulation.SoilPath);
                     soil = SoilUtilities.FromXML(soilXml);

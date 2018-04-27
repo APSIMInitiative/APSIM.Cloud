@@ -9,6 +9,7 @@ using APSIM.Cloud.Shared;
 using APSIM.Shared.Soils;
 using APSIM.Shared.Utilities;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace APSIM.Cloud.Portal
 {
@@ -36,11 +37,17 @@ namespace APSIM.Cloud.Portal
             }
 
             bool ypJob = true;
+            bool apsimJob = false;
             if (Path.GetExtension(FileUpload.FileName) == ".xml")
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(tempFile);
                 ypJob = doc.DocumentElement.Name != "Farm4Prophet";
+                apsimJob = doc.DocumentElement.Name == "ArrayOfAPSIMSpecification";
+            }
+            if (apsimJob)
+            {
+                UploadAPSIM(tempFile);
             }
             if (!ypJob)
             {
@@ -86,6 +93,24 @@ namespace APSIM.Cloud.Portal
                 jobsService.AddFarm4Prophet(farm4Prophet);
             }
         }
+
+        /// <summary>Uploads a job specified by the the yield prophet.</summary>
+        /// <param name="fileName">The name of the file.</param>
+        private void UploadAPSIM(string fileName)
+        {
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load(fileName);
+            XmlReader reader = new XmlNodeReader(doc.DocumentElement);
+            reader.Read();
+            XmlSerializer serial = new XmlSerializer(typeof(List<APSIMSpecification>));
+            List<APSIMSpecification> apsim = (List<APSIMSpecification>)serial.Deserialize(reader);
+            using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
+            {
+                jobsService.AddAPSIM(apsim.ToArray());
+            }
+        }
+
 
 
     }

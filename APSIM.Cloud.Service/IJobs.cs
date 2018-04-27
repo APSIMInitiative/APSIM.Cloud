@@ -37,6 +37,14 @@ namespace APSIM.Cloud.Service
         string AddFarm4Prophet(Farm4Prophet f4p);
 
         /// <summary>
+        /// Adds a list of APSIM simulations as a job.
+        /// </summary>
+        /// <param name="simulations">A list of APSIM simulations</param>
+        /// <returns>The unique job name.</returns>
+        [OperationContract]
+        string AddSimulations(List<APSIMSpecification> simulations, string reportName);
+
+        /// <summary>
         /// Adds an older yield prophet job to the APSIM cloud.
         /// </summary>
         /// <param name="yieldProphet">The job specification.</param>

@@ -133,11 +133,17 @@ namespace APSIM.Cloud.Portal.JobsService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddFarm4Prophet", ReplyAction="http://tempuri.org/IJobs/AddFarm4ProphetResponse")]
         string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAPSIM", ReplyAction="http://tempuri.org/IJobs/AddAPSIMResponse")]
+        string AddAPSIM(APSIM.Cloud.Shared.APSIMSpecification[] apsimSimulations);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddYP", ReplyAction="http://tempuri.org/IJobs/AddYPResponse")]
         void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsXML", ReplyAction="http://tempuri.org/IJobs/AddAsXMLResponse")]
         void AddAsXML(string name, string jobXML);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsZIP", ReplyAction="http://tempuri.org/IJobs/AddAsZIPResponse")]
+        string AddAsZIP(byte[] job);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Delete", ReplyAction="http://tempuri.org/IJobs/DeleteResponse")]
         void Delete(string name);
@@ -202,12 +208,20 @@ namespace APSIM.Cloud.Portal.JobsService {
             return base.Channel.AddFarm4Prophet(f4p);
         }
         
+        public string AddAPSIM(APSIM.Cloud.Shared.APSIMSpecification[] apsimSimulations) {
+            return base.Channel.AddAPSIM(apsimSimulations);
+        }
+        
         public void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData) {
             base.Channel.AddYP(yieldProphetXML, weatherData, soilProbeData);
         }
         
         public void AddAsXML(string name, string jobXML) {
             base.Channel.AddAsXML(name, jobXML);
+        }
+        
+        public string AddAsZIP(byte[] job) {
+            return base.Channel.AddAsZIP(job);
         }
         
         public void Delete(string name) {

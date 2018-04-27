@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Xml;
 using APSIM.Shared.Utilities;
 using System.Net.Mail;
+using System.Xml.Serialization;
 
 namespace APSIM.Cloud.Service
 {
@@ -66,6 +67,22 @@ namespace APSIM.Cloud.Service
             AddAsXML(newJobName, xml);
             return newJobName;
         }
+
+        /// <summary>
+        /// Adds a list of APSIM simulations as a job.
+        /// </summary>
+        /// <param name="simulations">A list of APSIM simulations</param>
+        /// <param name="reportName">Name of report</param>
+        /// <returns>The unique job name.</returns>
+        public string AddSimulations(List<APSIMSpecification> simulations, string reportName)
+        {
+            string xml = XmlUtilities.SerialiseUnicode(simulations, false);
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (HH-mm-ss) ") + reportName;
+            AddAsXML(newJobName, xml);
+
+            return newJobName;
+        }
+
 
         /// <summary>
         /// Adds an older yield prophet job to the APSIM cloud.

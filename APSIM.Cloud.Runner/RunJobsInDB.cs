@@ -181,7 +181,7 @@ namespace APSIM.Cloud.Runner
                 if (archiveLocation.StartsWith("ftp://"))
                     FTPClient.Upload(zipFileName, archiveLocation + "/" + nameOfCurrentJob + ".zip", usernamepwd[0], usernamepwd[1]);
                 else
-                    File.Copy(zipFileName, archiveLocation);
+                    File.Copy(zipFileName, Path.Combine(archiveLocation, nameOfCurrentJob + ".zip"), true);
                 File.Delete(zipFileName);
 
                 if (appSettings["CallStoreReport"] == "true")

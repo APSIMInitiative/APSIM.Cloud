@@ -92,10 +92,29 @@
     <None Include="Service References\JobsService\configuration91.svcinfo" />
     <None Include="Service References\JobsService\configuration.svcinfo" />
     <None Include="Service References\JobsService\Jobs.wsdl" />
+    <None Include="Service References\JobsService\Jobs2.wsdl" />
     <None Include="Service References\JobsService\Jobs8.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\JobsService\Jobs81.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs810.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs811.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs812.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs813.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs814.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs815.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\JobsService\Jobs82.xsd">
@@ -116,11 +135,18 @@
     <None Include="Service References\JobsService\Jobs87.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\JobsService\Jobs88.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\JobsService\Jobs89.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\JobsService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <None Include="Service References\JobsService\Jobs.disco" />
+    <None Include="Service References\JobsService\Jobs2.disco" />
     <Content Include="ShowJobDetail.aspx" />
     <Content Include="AddJob.aspx" />
     <Content Include="Web.config">

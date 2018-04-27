@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Portal", "APSIM.Cloud.Portal\APSIM.Cloud.Portal.csproj", "{00DAF19F-0146-4C49-A614-5785D585383D}"
 EndProject
@@ -14,6 +14,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APSIM.Cloud.Service", "APSIM.Cloud.Service\APSIM.Cloud.Service.csproj", "{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTestProject1\UnitTests.csproj", "{B7E1F3B1-BB51-46C1-81EE-5C805B580622}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{33CE84AA-665F-43AF-A852-DD94C3969A68}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD} = {6D29B067-0D08-4CE6-92AB-BA8C11A0FDBD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,8 +162,35 @@ Global
 		{B7E1F3B1-BB51-46C1-81EE-5C805B580622}.Release|x64.Build.0 = Release|Any CPU
 		{B7E1F3B1-BB51-46C1-81EE-5C805B580622}.Release|x86.ActiveCfg = Release|Any CPU
 		{B7E1F3B1-BB51-46C1-81EE-5C805B580622}.Release|x86.Build.0 = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|ARM.Build.0 = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|Win32.Build.0 = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|x64.Build.0 = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Debug|x86.Build.0 = Debug|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|ARM.ActiveCfg = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|ARM.Build.0 = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|Win32.ActiveCfg = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|Win32.Build.0 = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|x64.ActiveCfg = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|x64.Build.0 = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|x86.ActiveCfg = Release|Any CPU
+		{33CE84AA-665F-43AF-A852-DD94C3969A68}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61835D50-C6FC-4780-B4CE-5965F612E75B}
 	EndGlobalSection
 EndGlobal
