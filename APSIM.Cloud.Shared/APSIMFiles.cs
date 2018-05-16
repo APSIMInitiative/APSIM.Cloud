@@ -278,7 +278,14 @@ namespace APSIM.Cloud.Shared
             Soil soil;
             if (simulation.Soil == null)
             {
-                if (simulation.SoilPath.StartsWith("http"))
+                if (simulation.SoilPath.StartsWith("<Soil"))
+                {
+                    // Soil and Landscape grid
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(simulation.SoilPath);
+                    soil = XmlUtilities.Deserialise(doc.DocumentElement, typeof(Soil)) as Soil;
+                }
+                else if (simulation.SoilPath.StartsWith("http"))
                 {
                     // Soil and Landscape grid
                     string xml;
@@ -292,7 +299,7 @@ namespace APSIM.Cloud.Shared
                     if (soils.Count == 0)
                         throw new Exception("Cannot find soil in Soil and Landscape Grid");
                     soil = XmlUtilities.Deserialise(soils[0], typeof(Soil)) as Soil;
-                }
+                }				
                 else
                 {
                     // Apsoil web service.

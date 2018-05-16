@@ -177,6 +177,7 @@ namespace APSIM.Cloud.Shared
         public DateTime Date { get; set; }
 
         /// <summary>Gets or sets whether the management operation should happen every year of the simulation</summary>
+        [DataMember]
         public bool IsEveryYear { get; set; }
     }
 
