@@ -1428,7 +1428,10 @@
           <variable>PercentCover</variable>
           <variable>FASW</variable>
           <variable>ave_soil_temp(1) as SoilTemp</variable>
+          <variable>dlayer</variable>
           <variable>sw</variable>
+          <variable>no3</variable>
+          <variable>nh4</variable>
         </variables>
         <events name="Reporting Frequency">
           <event>post</event>
