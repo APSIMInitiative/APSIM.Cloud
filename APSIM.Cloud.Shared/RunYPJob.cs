@@ -608,8 +608,17 @@ namespace APSIM.Cloud.Shared
                 if (error != null)
                 {
                     // add an error table to the dataset.
-                    DataTable errorTable = dataset.Tables.Add("Error");
-                    errorTable.Columns.Add("Text", typeof(string));
+                    DataTable errorTable;
+                    if (dataset.Tables.Contains("Error"))
+                    {
+                        errorTable = dataset.Tables["Error"];
+                    }
+                    else
+                    {
+                        errorTable = dataset.Tables.Add("Error");
+                        errorTable.Columns.Add("Text", typeof(string));
+                    }
+
                     DataRow errorRow = errorTable.NewRow();
                     errorRow["Text"] = error;
                     errorTable.Rows.Add(errorRow);
