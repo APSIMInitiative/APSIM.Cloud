@@ -82,6 +82,7 @@
     <Compile Include="RunExternalProcess.cs" />
     <Compile Include="IJob.cs" />
     <Compile Include="RuntimeEnvironment.cs" />
+    <Compile Include="IYPJob.cs" />
     <Compile Include="RunYPJob.cs" />
     <Compile Include="SummaryFileParser.cs" />
     <Compile Include="Web References\APSOIL\Reference.cs">

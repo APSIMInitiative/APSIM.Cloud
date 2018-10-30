@@ -78,12 +78,11 @@
 
                 if (File.Exists(jobFileName))
                 {
-                    var environment = new APSIM.Cloud.Shared.RuntimeEnvironment
+                    var ypEnvironment = new APSIM.Cloud.Shared.RuntimeEnvironment
                     {
                         APSIMRevision = appSettings["APSIMRevision"],
                         RuntimePackage = appSettings["RuntimePackage"],
                     };
-
 
                     if (appSettings.ContainsKey("UpdateFile"))
                     {
@@ -93,7 +92,7 @@
                     else if (appSettings.ContainsKey("ConvertToAPSIM"))
                     {
                         string jobXML = File.ReadAllText(jobFileName);
-                        RunYPJob job = new RunYPJob(jobXML, environment, createSims:false);
+                        RunYPJob job = new RunYPJob(jobXML, ypEnvironment, createSims:false);
                         AllocConsole();
                         Console.WriteLine(job.WorkingDirectory);
                         Console.WriteLine();
@@ -113,15 +112,26 @@
                         string jobXML = File.ReadAllText(jobFileName);
                         string jobName = Path.GetFileNameWithoutExtension(jobFileName);
 
-
-                        RunYPJob job = new RunYPJob(jobXML, environment)
+                        IYPJob job = null;
+                        if (jobXML.Contains("Farm4Prophet"))
                         {
-                            ApsimXExecutable = executable
-                        };
-                        if (job.Errors.Count == 0)
+                            var environment = new APSIM.Cloud.Shared.RuntimeEnvironment
+                            {
+                                AusfarmRevision = appSettings["AusfarmRevision"],
+                            };
+                            job = new RunF4PJob(jobXML, environment);
+                        }
+                        else
                         {
+                            job = new RunYPJob(jobXML, ypEnvironment)
+                            {
+                                ApsimXExecutable = executable
+                            };
+                        }
+                        if (job.Errors == null || job.Errors.Count == 0)
+                        { 
                             IJobRunner runner = new JobRunnerAsync();
-                            runner.Run(job, wait: true);
+                            runner.Run(job as IJobManager, wait: true);
                         }
 
                         if (job.AllFilesZipped != null)
@@ -134,7 +144,7 @@
                             }
                         }
 
-                        if (job.Errors.Count > 0)
+                        if (job.Errors != null && job.Errors.Count > 0)
                         {
                             string msg = string.Empty;
                             foreach (string error in job.Errors)

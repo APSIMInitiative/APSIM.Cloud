@@ -16,7 +16,7 @@ namespace APSIM.Cloud.Shared
     /// <summary>
     /// Run a Farm4Prophet job
     /// </summary>
-    public class RunF4PJob : IJobManager
+    public class RunF4PJob : IJobManager, IYPJob
     {
         private List<string> files;
         private string workingDirectory;
@@ -27,6 +27,9 @@ namespace APSIM.Cloud.Shared
         /// <param name="environment">The runtime environment to use for the run</param>
         public RunF4PJob(string xml, RuntimeEnvironment environment)
         {
+            workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(workingDirectory);
+
             // Save f4p.xml to working folder.
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
@@ -41,6 +44,8 @@ namespace APSIM.Cloud.Shared
         /// <param name="environment">The runtime environment to use for the run</param>
         public RunF4PJob(Farm4Prophet f4p, RuntimeEnvironment environment)
         {
+            workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(workingDirectory);
             Initialise(f4p, environment);
         }
 
@@ -51,10 +56,6 @@ namespace APSIM.Cloud.Shared
         {
             List<AusFarmSpec> simulations = Farm4ProphetToAusFarm.ToAusFarm(f4p);
 
-            // Create a working directory.
-            workingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(workingDirectory);
-
             // Writes the sdml files to the workingDirectory and returns a list of names
             files = AusFarmFiles.Create(simulations, workingDirectory).ToList();
             
@@ -64,7 +65,6 @@ namespace APSIM.Cloud.Shared
             // Copy in the .prm files.
             foreach (string prmFileName in Directory.GetFiles(binFolder, "*.prm"))
                 File.Copy(prmFileName, Path.Combine(workingDirectory, Path.GetFileName(prmFileName)));
-            
         }
 
         /// <summary>Get all errors encountered</summary>

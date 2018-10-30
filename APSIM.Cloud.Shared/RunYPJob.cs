@@ -22,7 +22,7 @@ namespace APSIM.Cloud.Shared
     /// <summary>
     /// A job manager for a running a specific YieldProphet job.
     /// </summary>
-    public class RunYPJob : IJobManager
+    public class RunYPJob : IJobManager, IYPJob
     {
         private YieldProphet specToRun;
         private string specXMLToRun;
