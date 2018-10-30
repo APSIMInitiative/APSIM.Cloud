@@ -74,10 +74,10 @@ namespace APSIM.Cloud.Service
         /// <param name="simulations">A list of APSIM simulations</param>
         /// <param name="reportName">Name of report</param>
         /// <returns>The unique job name.</returns>
-        public string AddSimulations(List<APSIMSpecification> simulations, string reportName)
+        public string AddSimulations(List<APSIMSpecification> simulations)
         {
             string xml = XmlUtilities.SerialiseUnicode(simulations, false);
-            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (HH-mm-ss) ") + reportName;
+            string newJobName = DateTime.Now.ToString("yyyy-MM-dd (HH-mm-ss) ");
             AddAsXML(newJobName, xml);
 
             return newJobName;

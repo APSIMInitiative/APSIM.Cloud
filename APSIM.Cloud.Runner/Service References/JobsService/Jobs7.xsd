@@ -1,212 +1,403 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" />
-  <xs:import schemaLocation="http://bob.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" />
-  <xs:element name="Add">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" minOccurs="0" name="yieldProphet" nillable="true" type="q1:YieldProphet" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="AddResult" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddFarm4Prophet">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" minOccurs="0" name="f4p" nillable="true" type="q2:Farm4Prophet" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddFarm4ProphetResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="AddFarm4ProphetResult" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddYP">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="yieldProphetXML" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="weatherData" nillable="true">
-          <xs:complexType>
-            <xs:annotation>
-              <xs:appinfo>
-                <ActualType Name="DataTable" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
-              </xs:appinfo>
-            </xs:annotation>
-            <xs:sequence>
-              <xs:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
-              <xs:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-        <xs:element minOccurs="0" name="soilProbeData" nillable="true">
-          <xs:complexType>
-            <xs:annotation>
-              <xs:appinfo>
-                <ActualType Name="DataTable" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
-              </xs:appinfo>
-            </xs:annotation>
-            <xs:sequence>
-              <xs:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
-              <xs:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddYPResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddAsXML">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="jobXML" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddAsXMLResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="Delete">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="DeleteResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="Get">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" minOccurs="0" name="GetResult" nillable="true" type="q3:Job" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetNextToRun">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetNextToRunResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" minOccurs="0" name="GetNextToRunResult" nillable="true" type="q4:Job" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetMany">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="maxNum" type="xs:int" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetManyResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Service" minOccurs="0" name="GetManyResult" nillable="true" type="q5:ArrayOfJob" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetJobXML">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetJobXMLResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="GetJobXMLResult" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddLogMessage">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="isError" type="xs:boolean" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="AddLogMessageResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetLogMessages">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetLogMessagesResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="GetLogMessagesResult" nillable="true">
-          <xs:complexType>
-            <xs:annotation>
-              <xs:appinfo>
-                <ActualType Name="DataSet" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
-              </xs:appinfo>
-            </xs:annotation>
-            <xs:sequence>
-              <xs:element ref="xs:schema" />
-              <xs:any />
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="SetCompleted">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="jobName" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="errorMessage" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="SetCompletedResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ReRun">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="jobName" nillable="true" type="xs:string" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ReRunResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/APSIM.Cloud.Shared" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" />
+  <xs:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="YieldProphet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Paddock" nillable="true" type="tns:ArrayOfPaddock" />
+      <xs:element minOccurs="0" name="ReportName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Version" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="YieldProphet" nillable="true" type="tns:YieldProphet" />
+  <xs:complexType name="ArrayOfPaddock">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Paddock" nillable="true" type="tns:Paddock" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPaddock" nillable="true" type="tns:ArrayOfPaddock" />
+  <xs:complexType name="Paddock">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DailyOutput" type="xs:boolean" />
+      <xs:element minOccurs="0" name="InitTotalNitrogen" type="xs:double" />
+      <xs:element minOccurs="0" name="InitTotalWater" type="xs:double" />
+      <xs:element minOccurs="0" name="LongtermStartYear" type="xs:int" />
+      <xs:element minOccurs="0" name="Management" nillable="true" type="tns:ArrayOfManagement" />
+      <xs:element minOccurs="0" name="MonthlyOutput" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NUnlimited" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NUnlimitedFromToday" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Next10DaysDry" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NowDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ObservedData" nillable="true">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:appinfo>
+              <ActualType Name="DataTable" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+            </xs:appinfo>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+            <xs:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="RunType" type="tns:Paddock.RunTypeEnum" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Samples" nillable="true" type="q1:ArrayOfSample" />
+      <xs:element minOccurs="0" name="Slope" type="xs:double" />
+      <xs:element minOccurs="0" name="SlopeLength" type="xs:double" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Soil" nillable="true" type="q2:Soil" />
+      <xs:element minOccurs="0" name="SoilNitrogenSampleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SoilPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SoilWaterSampleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="StartSeasonDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="StationName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StationNumber" type="xs:int" />
+      <xs:element minOccurs="0" name="StubbleMass" type="xs:double" />
+      <xs:element minOccurs="0" name="StubbleType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UseEC" type="xs:boolean" />
+      <xs:element minOccurs="0" name="WriteDepthFile" type="xs:boolean" />
+      <xs:element minOccurs="0" name="YearlyOutput" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Paddock" nillable="true" type="tns:Paddock" />
+  <xs:complexType name="ArrayOfManagement">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Management" nillable="true" type="tns:Management" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfManagement" nillable="true" type="tns:ArrayOfManagement" />
+  <xs:complexType name="Management">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IsEveryYear" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Management" nillable="true" type="tns:Management" />
+  <xs:complexType name="Sow">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="BedRowSpacing" type="xs:double" />
+          <xs:element minOccurs="0" name="BedWidth" type="xs:int" />
+          <xs:element minOccurs="0" name="Crop" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Cultivar" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="EmergenceDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="IrrigationAmount" type="xs:double" />
+          <xs:element minOccurs="0" name="MaxRootDepth" type="xs:int" />
+          <xs:element minOccurs="0" name="RowSpacing" type="xs:int" />
+          <xs:element minOccurs="0" name="SeedDepth" type="xs:int" />
+          <xs:element minOccurs="0" name="SkipRow" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SowingDensity" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Sow" nillable="true" type="tns:Sow" />
+  <xs:complexType name="Fertilise">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Amount" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Fertilise" nillable="true" type="tns:Fertilise" />
+  <xs:complexType name="Irrigate">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Amount" type="xs:double" />
+          <xs:element minOccurs="0" name="Efficiency" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Irrigate" nillable="true" type="tns:Irrigate" />
+  <xs:complexType name="Tillage">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Disturbance" type="tns:Tillage.DisturbanceEnum" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Tillage" nillable="true" type="tns:Tillage" />
+  <xs:simpleType name="Tillage.DisturbanceEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Low" />
+      <xs:enumeration value="Medium" />
+      <xs:enumeration value="High" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Tillage.DisturbanceEnum" nillable="true" type="tns:Tillage.DisturbanceEnum" />
+  <xs:complexType name="StubbleRemoved">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Percent" type="xs:double" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="StubbleRemoved" nillable="true" type="tns:StubbleRemoved" />
+  <xs:complexType name="ResetWater">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetWater" nillable="true" type="tns:ResetWater" />
+  <xs:complexType name="ResetNitrogen">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetNitrogen" nillable="true" type="tns:ResetNitrogen" />
+  <xs:complexType name="ResetSurfaceOrganicMatter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Management">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ResetSurfaceOrganicMatter" nillable="true" type="tns:ResetSurfaceOrganicMatter" />
+  <xs:simpleType name="Paddock.RunTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SingleSeason" />
+      <xs:enumeration value="LongTerm" />
+      <xs:enumeration value="LongTermPatched" />
+      <xs:enumeration value="POAMA" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Paddock.RunTypeEnum" nillable="true" type="tns:Paddock.RunTypeEnum" />
+  <xs:complexType name="Farm4Prophet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ClientName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FarmList" nillable="true" type="tns:ArrayOfFarmSystem" />
+      <xs:element minOccurs="0" name="ReportGeneratedBy" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ReturnResults" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TaskName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Version" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Farm4Prophet" nillable="true" type="tns:Farm4Prophet" />
+  <xs:complexType name="ArrayOfFarmSystem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FarmSystem" nillable="true" type="tns:FarmSystem" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFarmSystem" nillable="true" type="tns:ArrayOfFarmSystem" />
+  <xs:complexType name="FarmSystem">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Area" type="xs:double" />
+      <xs:element minOccurs="0" name="CroppingRegion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LiveStock" nillable="true" type="tns:FarmLivestock" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OnFarmPaddocks" nillable="true" type="tns:ArrayOfFarmPaddockType" />
+      <xs:element minOccurs="0" name="OnFarmSoilTypes" nillable="true" type="tns:ArrayOfFarmSoilType" />
+      <xs:element minOccurs="0" name="ReportName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RunLength" type="xs:int" />
+      <xs:element minOccurs="0" name="SimTemplateType" type="tns:SimulationType" />
+      <xs:element minOccurs="0" name="StartSeasonDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="StationName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StationNumber" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FarmSystem" nillable="true" type="tns:FarmSystem" />
+  <xs:complexType name="FarmLivestock">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Flocks" nillable="true" type="tns:ArrayOfFlockDescr" />
+      <xs:element minOccurs="0" name="ShearingDay" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Supp1Propn" type="xs:double" />
+      <xs:element minOccurs="0" name="Supp2Propn" type="xs:double" />
+      <xs:element minOccurs="0" name="Supplement1" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Supplement2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TradeLambBreed" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TradeLambBuyDay" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TradeLambCount" type="xs:int" />
+      <xs:element minOccurs="0" name="TradeLambSaleWt" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FarmLivestock" nillable="true" type="tns:FarmLivestock" />
+  <xs:complexType name="ArrayOfFlockDescr">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FlockDescr" nillable="true" type="tns:FlockDescr" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFlockDescr" nillable="true" type="tns:ArrayOfFlockDescr" />
+  <xs:complexType name="FlockDescr">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BreedParams" nillable="true" type="tns:BreedParameters" />
+      <xs:element minOccurs="0" name="BreedingEweCount" type="xs:int" />
+      <xs:element minOccurs="0" name="CastForAgeYears" type="xs:double" />
+      <xs:element minOccurs="0" name="Dam" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EweJoinDay" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LambSaleWt" type="xs:double" />
+      <xs:element minOccurs="0" name="SelfReplacing" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Sire" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FlockDescr" nillable="true" type="tns:FlockDescr" />
+  <xs:complexType name="BreedParameters">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ConceptSingle" type="xs:double" />
+      <xs:element minOccurs="0" name="ConceptTwin" type="xs:double" />
+      <xs:element minOccurs="0" name="FleeceYield" type="xs:double" />
+      <xs:element minOccurs="0" name="MaxFibre" type="xs:double" />
+      <xs:element minOccurs="0" name="PotFleece" type="xs:double" />
+      <xs:element minOccurs="0" name="SRW" type="xs:double" />
+      <xs:element minOccurs="0" name="UseParams" type="xs:boolean" />
+      <xs:element minOccurs="0" name="WeanerMortality" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="BreedParameters" nillable="true" type="tns:BreedParameters" />
+  <xs:complexType name="ArrayOfFarmPaddockType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FarmPaddockType" nillable="true" type="tns:FarmPaddockType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFarmPaddockType" nillable="true" type="tns:ArrayOfFarmPaddockType" />
+  <xs:complexType name="FarmPaddockType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Area" type="xs:double" />
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Sample" nillable="true" type="q3:Sample" />
+      <xs:element minOccurs="0" name="SoilNitrogenSampleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SoilType" nillable="true" type="tns:FarmSoilType" />
+      <xs:element minOccurs="0" name="SoilWaterSampleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="StubbleMass" type="xs:double" />
+      <xs:element minOccurs="0" name="StubbleType" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FarmPaddockType" nillable="true" type="tns:FarmPaddockType" />
+  <xs:complexType name="FarmSoilType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AreaProportion" type="xs:double" />
+      <xs:element minOccurs="0" name="CropRotationList" nillable="true" type="tns:ArrayOfCropSpec" />
+      <xs:element minOccurs="0" name="SeasonFertiliser" type="xs:double" />
+      <xs:element minOccurs="0" name="Slope" type="xs:double" />
+      <xs:element minOccurs="0" name="SlopeLength" type="xs:double" />
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="SoilDescr" nillable="true" type="q4:Soil" />
+      <xs:element minOccurs="0" name="SoilPath" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FarmSoilType" nillable="true" type="tns:FarmSoilType" />
+  <xs:complexType name="ArrayOfCropSpec">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CropSpec" type="tns:CropSpec" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCropSpec" nillable="true" type="tns:ArrayOfCropSpec" />
+  <xs:complexType name="CropSpec">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MaxRootDepth" type="xs:double" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CropSpec" nillable="true" type="tns:CropSpec" />
+  <xs:complexType name="ArrayOfFarmSoilType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FarmSoilType" nillable="true" type="tns:FarmSoilType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFarmSoilType" nillable="true" type="tns:ArrayOfFarmSoilType" />
+  <xs:simpleType name="SimulationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="stCropOnly" />
+      <xs:enumeration value="stSingleFlock" />
+      <xs:enumeration value="stDualFlock" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SimulationType" nillable="true" type="tns:SimulationType" />
+  <xs:complexType name="ArrayOfAPSIMSpecification">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="APSIMSpecification" nillable="true" type="tns:APSIMSpecification" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAPSIMSpecification" nillable="true" type="tns:ArrayOfAPSIMSpecification" />
+  <xs:complexType name="APSIMSpecification">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DailyOutput" type="xs:boolean" />
+      <xs:element minOccurs="0" name="DecileDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="EndDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Factors" nillable="true" type="tns:ArrayOfAPSIMSpecification.Factor" />
+      <xs:element minOccurs="0" name="InitTotalNitrogen" type="xs:double" />
+      <xs:element minOccurs="0" name="InitTotalWater" type="xs:double" />
+      <xs:element minOccurs="0" name="LongtermStartYear" type="xs:int" />
+      <xs:element minOccurs="0" name="Management" nillable="true" type="tns:ArrayOfManagement" />
+      <xs:element minOccurs="0" name="MonthlyOutput" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NUnlimited" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NUnlimitedFromToday" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Next10DaysDry" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NowDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ObservedData" nillable="true">
+        <xs:complexType>
+          <xs:annotation>
+            <xs:appinfo>
+              <ActualType Name="DataTable" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+            </xs:appinfo>
+          </xs:annotation>
+          <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+            <xs:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="RunType" type="tns:APSIMSpecification.RunTypeEnum" />
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Samples" nillable="true" type="q5:ArrayOfSample" />
+      <xs:element minOccurs="0" name="Slope" type="xs:double" />
+      <xs:element minOccurs="0" name="SlopeLength" type="xs:double" />
+      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" minOccurs="0" name="Soil" nillable="true" type="q6:Soil" />
+      <xs:element minOccurs="0" name="SoilPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StartDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="StationNumber" type="xs:int" />
+      <xs:element minOccurs="0" name="StubbleMass" type="xs:double" />
+      <xs:element minOccurs="0" name="StubbleType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UseEC" type="xs:boolean" />
+      <xs:element minOccurs="0" name="WeatherFileName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="WriteDepthFile" type="xs:boolean" />
+      <xs:element minOccurs="0" name="YearlyOutput" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="APSIMSpecification" nillable="true" type="tns:APSIMSpecification" />
+  <xs:complexType name="ArrayOfAPSIMSpecification.Factor">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="APSIMSpecification.Factor" type="tns:APSIMSpecification.Factor" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAPSIMSpecification.Factor" nillable="true" type="tns:ArrayOfAPSIMSpecification.Factor" />
+  <xs:complexType name="APSIMSpecification.Factor">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ComponentPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ComponentVariableName" nillable="true" type="xs:string" />
+      <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ComponentVariableValues" nillable="true" type="q7:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="APSIMSpecification.Factor" nillable="true" type="tns:APSIMSpecification.Factor" />
+  <xs:simpleType name="APSIMSpecification.RunTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="LongTermPatched" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="APSIMSpecification.RunTypeEnum" nillable="true" type="tns:APSIMSpecification.RunTypeEnum" />
 </xs:schema>

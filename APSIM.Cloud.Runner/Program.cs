@@ -53,7 +53,7 @@
             }
             catch (Exception err)
             {
-                AttachConsole(-1);
+                AllocConsole();
                 Console.WriteLine(err.ToString());
                 return 1;
             }
@@ -63,6 +63,10 @@
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AttachConsole(Int32 processId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
 
         /// <summary>Runs the job (.xml file) specified on the command line.</summary>
         /// <returns>True if something was run.</returns>
@@ -74,45 +78,71 @@
 
                 if (File.Exists(jobFileName))
                 {
-                    appSettings.TryGetValue("APSIMXExecutable", out string executable);
-
-                    string jobXML = File.ReadAllText(jobFileName);
-                    string jobName = Path.GetFileNameWithoutExtension(jobFileName);
-
                     var environment = new APSIM.Cloud.Shared.RuntimeEnvironment
                     {
                         APSIMRevision = appSettings["APSIMRevision"],
                         RuntimePackage = appSettings["RuntimePackage"],
                     };
 
-                    RunYPJob job = new RunYPJob(jobXML, environment)
-                    {
-                        ApsimXExecutable = executable
-                    };
-                    if (job.Errors.Count == 0)
-                    {
-                        IJobRunner runner = new JobRunnerAsync();
-                        runner.Run(job, wait: true);
-                    }
 
-                    if (job.AllFilesZipped != null)
+                    if (appSettings.ContainsKey("UpdateFile"))
                     {
-                        string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
-                        using (Stream s = File.Create(destZipFileName))
+                        YieldProphetOld.UpdateFile(jobFileName);
+                        return true;
+                    }
+                    else if (appSettings.ContainsKey("ConvertToAPSIM"))
+                    {
+                        string jobXML = File.ReadAllText(jobFileName);
+                        RunYPJob job = new RunYPJob(jobXML, environment, createSims:false);
+                        AllocConsole();
+                        Console.WriteLine(job.WorkingDirectory);
+                        Console.WriteLine();
+                        if (job.Errors != null)
                         {
-                            job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
-                            job.AllFilesZipped.CopyTo(s);
+                            string msg = null;
+                            foreach (string error in job.Errors)
+                                msg += error + Environment.NewLine;
+                            throw new Exception(msg);
                         }
+                        return true;
                     }
-
-                    if (job.Errors.Count > 0)
+                    else
                     {
-                        string msg = string.Empty;
-                        foreach (string error in job.Errors)
-                            msg += error + Environment.NewLine;
-                        throw new Exception(msg);
+                        appSettings.TryGetValue("APSIMXExecutable", out string executable);
+
+                        string jobXML = File.ReadAllText(jobFileName);
+                        string jobName = Path.GetFileNameWithoutExtension(jobFileName);
+
+
+                        RunYPJob job = new RunYPJob(jobXML, environment)
+                        {
+                            ApsimXExecutable = executable
+                        };
+                        if (job.Errors.Count == 0)
+                        {
+                            IJobRunner runner = new JobRunnerAsync();
+                            runner.Run(job, wait: true);
+                        }
+
+                        if (job.AllFilesZipped != null)
+                        {
+                            string destZipFileName = Path.ChangeExtension(jobFileName, ".out.zip");
+                            using (Stream s = File.Create(destZipFileName))
+                            {
+                                job.AllFilesZipped.Seek(0, SeekOrigin.Begin);
+                                job.AllFilesZipped.CopyTo(s);
+                            }
+                        }
+
+                        if (job.Errors.Count > 0)
+                        {
+                            string msg = string.Empty;
+                            foreach (string error in job.Errors)
+                                msg += error + Environment.NewLine;
+                            throw new Exception(msg);
+                        }
+                        return true;
                     }
-                    return true;
                 }
             }
             return false;

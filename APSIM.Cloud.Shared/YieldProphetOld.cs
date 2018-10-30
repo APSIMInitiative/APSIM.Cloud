@@ -19,6 +19,24 @@ namespace APSIM.Cloud.Shared
 
     public class YieldProphetOld
     {
+
+        /// <summary>
+        /// Update the version of the specified file.
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void UpdateFile(string fileName)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(fileName);
+            string version = XmlUtilities.Value(doc.DocumentElement, "Version");
+            if (version != new YieldProphet().Version.ToString())
+            {
+                YieldProphet ypSpec = YieldProphetOld.YieldProphetFromXML(doc.DocumentElement, Path.GetDirectoryName(fileName));
+                string xml = XmlUtilities.Serialise(ypSpec, false, null);
+                File.WriteAllText(fileName, xml);
+            }
+        }
+
         /// <summary>Converts the old Yield Prophet XML to new XML format capable of deserialisation</summary>
         /// <param name="yieldProphetXML">The old Yield Prophet XML</param>
         /// <returns>The new Yield Prophet XML</returns>
@@ -107,6 +125,9 @@ namespace APSIM.Cloud.Shared
                         simulation.ObservedData = null;
                 }
             }
+
+            simulation.StartSeasonDate = GetDate(paddock, "StartSeasonDateFull");
+
             // Set the reset dates
             simulation.SoilWaterSampleDate = GetDate(paddock, "ResetDateFull");
             simulation.SoilNitrogenSampleDate = GetDate(paddock, "SoilNitrogenSampleDateFull");
@@ -384,8 +405,6 @@ namespace APSIM.Cloud.Shared
             XmlNode dateNode = XmlUtilities.Find(node, dateNodeName);
             if (dateNode != null)
             {
-                string newName = dateNode.Name.Replace("Full", "");
-                dateNode = XmlUtilities.ChangeType(dateNode, newName);
                 DateTime d;
                 if (dateNode.InnerText.Contains('/'))
                     d = DateTime.ParseExact(dateNode.InnerText, "d/M/yyyy", CultureInfo.InvariantCulture);

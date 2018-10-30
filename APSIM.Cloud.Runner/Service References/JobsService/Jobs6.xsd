@@ -1,16 +1,373 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/System.Data" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="DataTable" nillable="true">
-    <xs:complexType>
-      <xs:annotation>
-        <xs:appinfo>
-          <ActualType Name="DataTable" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
-        </xs:appinfo>
-      </xs:annotation>
-      <xs:sequence>
-        <xs:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
-        <xs:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/APSIM.Shared.Soils" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://www.apsim.info/APSIM.Cloud.Service/Jobs.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="ArrayOfSample">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Sample" nillable="true" type="tns:Sample" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSample" nillable="true" type="tns:ArrayOfSample" />
+  <xs:complexType name="Sample">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_CL_x003E_k__BackingField" nillable="true" type="q1:ArrayOfdouble" />
+      <xs:element name="_x003C_Date_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_EC_x003E_k__BackingField" nillable="true" type="q2:ArrayOfdouble" />
+      <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ESP_x003E_k__BackingField" nillable="true" type="q3:ArrayOfdouble" />
+      <xs:element name="_x003C_NH4Units_x003E_k__BackingField" type="tns:Nitrogen.NUnitsEnum" />
+      <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NH4_x003E_k__BackingField" nillable="true" type="q4:ArrayOfdouble" />
+      <xs:element name="_x003C_NO3Units_x003E_k__BackingField" type="tns:Nitrogen.NUnitsEnum" />
+      <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NO3_x003E_k__BackingField" nillable="true" type="q5:ArrayOfdouble" />
+      <xs:element name="_x003C_Name_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_OCUnits_x003E_k__BackingField" type="tns:SoilOrganicMatter.OCUnitsEnum" />
+      <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_OC_x003E_k__BackingField" nillable="true" type="q6:ArrayOfdouble" />
+      <xs:element name="_x003C_PHUnits_x003E_k__BackingField" type="tns:Analysis.PHUnitsEnum" />
+      <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_PH_x003E_k__BackingField" nillable="true" type="q7:ArrayOfdouble" />
+      <xs:element name="_x003C_SWUnits_x003E_k__BackingField" type="tns:Sample.SWUnitsEnum" />
+      <xs:element xmlns:q8="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_SW_x003E_k__BackingField" nillable="true" type="q8:ArrayOfdouble" />
+      <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q9:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Sample" nillable="true" type="tns:Sample" />
+  <xs:simpleType name="Nitrogen.NUnitsEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ppm" />
+      <xs:enumeration value="kgha" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Nitrogen.NUnitsEnum" nillable="true" type="tns:Nitrogen.NUnitsEnum" />
+  <xs:simpleType name="SoilOrganicMatter.OCUnitsEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Total" />
+      <xs:enumeration value="WalkleyBlack" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SoilOrganicMatter.OCUnitsEnum" nillable="true" type="tns:SoilOrganicMatter.OCUnitsEnum" />
+  <xs:simpleType name="Analysis.PHUnitsEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Water" />
+      <xs:enumeration value="CaCl2" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Analysis.PHUnitsEnum" nillable="true" type="tns:Analysis.PHUnitsEnum" />
+  <xs:simpleType name="Sample.SWUnitsEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Volumetric" />
+      <xs:enumeration value="Gravimetric" />
+      <xs:enumeration value="mm" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Sample.SWUnitsEnum" nillable="true" type="tns:Sample.SWUnitsEnum" />
+  <xs:complexType name="Soil">
+    <xs:sequence>
+      <xs:element name="_x003C_ASCOrder_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_ASCSubOrder_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Analysis_x003E_k__BackingField" nillable="true" type="tns:Analysis" />
+      <xs:element name="_x003C_ApsoilNumber_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Comments_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Country_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_DataSource_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_InitialWater_x003E_k__BackingField" nillable="true" type="tns:InitialWater" />
+      <xs:element name="_x003C_Latitude_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_LayerStructure_x003E_k__BackingField" nillable="true" type="tns:LayerStructure" />
+      <xs:element name="_x003C_LocalName_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_LocationAccuracy_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Longitude_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Name_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_NaturalVegetation_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_NearestTown_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Nitrogen_x003E_k__BackingField" nillable="true" type="tns:Nitrogen" />
+      <xs:element name="_x003C_Phosphorus_x003E_k__BackingField" nillable="true" type="tns:Phosphorus" />
+      <xs:element name="_x003C_RecordNumber_x003E_k__BackingField" type="xs:int" />
+      <xs:element name="_x003C_Region_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Samples_x003E_k__BackingField" nillable="true" type="tns:ArrayOfSample" />
+      <xs:element name="_x003C_Site_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_SoilOrganicMatter_x003E_k__BackingField" nillable="true" type="tns:SoilOrganicMatter" />
+      <xs:element name="_x003C_SoilTemperature2_x003E_k__BackingField" nillable="true" type="tns:SoilTemperature2" />
+      <xs:element name="_x003C_SoilTemperature_x003E_k__BackingField" nillable="true" type="tns:SoilTemperature" />
+      <xs:element name="_x003C_SoilType_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_SoilWater_x003E_k__BackingField" nillable="true" type="tns:SoilWater" />
+      <xs:element name="_x003C_State_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Swim_x003E_k__BackingField" nillable="true" type="tns:Swim" />
+      <xs:element name="_x003C_Water_x003E_k__BackingField" nillable="true" type="tns:Water" />
+      <xs:element name="_x003C_YearOfSampling_x003E_k__BackingField" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Soil" nillable="true" type="tns:Soil" />
+  <xs:complexType name="Analysis">
+    <xs:sequence>
+      <xs:element xmlns:q10="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_AlMetadata_x003E_k__BackingField" nillable="true" type="q10:ArrayOfstring" />
+      <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Al_x003E_k__BackingField" nillable="true" type="q11:ArrayOfdouble" />
+      <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_BoronMetadata_x003E_k__BackingField" nillable="true" type="q12:ArrayOfstring" />
+      <xs:element name="_x003C_BoronUnits_x003E_k__BackingField" type="tns:Analysis.BoronUnitsEnum" />
+      <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Boron_x003E_k__BackingField" nillable="true" type="q13:ArrayOfdouble" />
+      <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_CECMetadata_x003E_k__BackingField" nillable="true" type="q14:ArrayOfstring" />
+      <xs:element xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_CEC_x003E_k__BackingField" nillable="true" type="q15:ArrayOfdouble" />
+      <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_CLMetadata_x003E_k__BackingField" nillable="true" type="q16:ArrayOfstring" />
+      <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_CL_x003E_k__BackingField" nillable="true" type="q17:ArrayOfdouble" />
+      <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_CaMetadata_x003E_k__BackingField" nillable="true" type="q18:ArrayOfstring" />
+      <xs:element xmlns:q19="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Ca_x003E_k__BackingField" nillable="true" type="q19:ArrayOfdouble" />
+      <xs:element xmlns:q20="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ECMetadata_x003E_k__BackingField" nillable="true" type="q20:ArrayOfstring" />
+      <xs:element xmlns:q21="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_EC_x003E_k__BackingField" nillable="true" type="q21:ArrayOfdouble" />
+      <xs:element xmlns:q22="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ESPMetadata_x003E_k__BackingField" nillable="true" type="q22:ArrayOfstring" />
+      <xs:element xmlns:q23="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ESP_x003E_k__BackingField" nillable="true" type="q23:ArrayOfdouble" />
+      <xs:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_KMetadata_x003E_k__BackingField" nillable="true" type="q24:ArrayOfstring" />
+      <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_K_x003E_k__BackingField" nillable="true" type="q25:ArrayOfdouble" />
+      <xs:element xmlns:q26="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MgMetadata_x003E_k__BackingField" nillable="true" type="q26:ArrayOfstring" />
+      <xs:element xmlns:q27="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Mg_x003E_k__BackingField" nillable="true" type="q27:ArrayOfdouble" />
+      <xs:element xmlns:q28="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MnMetadata_x003E_k__BackingField" nillable="true" type="q28:ArrayOfstring" />
+      <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Mn_x003E_k__BackingField" nillable="true" type="q29:ArrayOfdouble" />
+      <xs:element xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MunsellColour_x003E_k__BackingField" nillable="true" type="q30:ArrayOfstring" />
+      <xs:element xmlns:q31="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MunsellMetadata_x003E_k__BackingField" nillable="true" type="q31:ArrayOfstring" />
+      <xs:element xmlns:q32="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NaMetadata_x003E_k__BackingField" nillable="true" type="q32:ArrayOfstring" />
+      <xs:element xmlns:q33="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Na_x003E_k__BackingField" nillable="true" type="q33:ArrayOfdouble" />
+      <xs:element xmlns:q34="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_PHMetadata_x003E_k__BackingField" nillable="true" type="q34:ArrayOfstring" />
+      <xs:element name="_x003C_PHUnits_x003E_k__BackingField" type="tns:Analysis.PHUnitsEnum" />
+      <xs:element xmlns:q35="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_PH_x003E_k__BackingField" nillable="true" type="q35:ArrayOfdouble" />
+      <xs:element xmlns:q36="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ParticleSizeClayMetadata_x003E_k__BackingField" nillable="true" type="q36:ArrayOfstring" />
+      <xs:element xmlns:q37="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ParticleSizeClay_x003E_k__BackingField" nillable="true" type="q37:ArrayOfdouble" />
+      <xs:element xmlns:q38="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ParticleSizeSandMetadata_x003E_k__BackingField" nillable="true" type="q38:ArrayOfstring" />
+      <xs:element xmlns:q39="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ParticleSizeSand_x003E_k__BackingField" nillable="true" type="q39:ArrayOfdouble" />
+      <xs:element xmlns:q40="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ParticleSizeSiltMetadata_x003E_k__BackingField" nillable="true" type="q40:ArrayOfstring" />
+      <xs:element xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ParticleSizeSilt_x003E_k__BackingField" nillable="true" type="q41:ArrayOfdouble" />
+      <xs:element xmlns:q42="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_RocksMetadata_x003E_k__BackingField" nillable="true" type="q42:ArrayOfstring" />
+      <xs:element xmlns:q43="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Rocks_x003E_k__BackingField" nillable="true" type="q43:ArrayOfdouble" />
+      <xs:element xmlns:q44="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_TextureMetadata_x003E_k__BackingField" nillable="true" type="q44:ArrayOfstring" />
+      <xs:element xmlns:q45="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Texture_x003E_k__BackingField" nillable="true" type="q45:ArrayOfstring" />
+      <xs:element xmlns:q46="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q46:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Analysis" nillable="true" type="tns:Analysis" />
+  <xs:simpleType name="Analysis.BoronUnitsEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="HotWater" />
+      <xs:enumeration value="HotCaCl2" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Analysis.BoronUnitsEnum" nillable="true" type="tns:Analysis.BoronUnitsEnum" />
+  <xs:complexType name="InitialWater">
+    <xs:sequence>
+      <xs:element name="DepthWetSoil" type="xs:double" />
+      <xs:element name="FractionFull" type="xs:double" />
+      <xs:element name="_x003C_Name_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_PercentMethod_x003E_k__BackingField" type="tns:InitialWater.PercentMethodEnum" />
+      <xs:element name="_x003C_RelativeTo_x003E_k__BackingField" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="InitialWater" nillable="true" type="tns:InitialWater" />
+  <xs:simpleType name="InitialWater.PercentMethodEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FilledFromTop" />
+      <xs:enumeration value="EvenlyDistributed" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="InitialWater.PercentMethodEnum" nillable="true" type="tns:InitialWater.PercentMethodEnum" />
+  <xs:complexType name="LayerStructure">
+    <xs:sequence>
+      <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q47:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LayerStructure" nillable="true" type="tns:LayerStructure" />
+  <xs:complexType name="Nitrogen">
+    <xs:sequence>
+      <xs:element name="_x003C_NH4Units_x003E_k__BackingField" type="tns:Nitrogen.NUnitsEnum" />
+      <xs:element xmlns:q48="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NH4_x003E_k__BackingField" nillable="true" type="q48:ArrayOfdouble" />
+      <xs:element name="_x003C_NO3Units_x003E_k__BackingField" type="tns:Nitrogen.NUnitsEnum" />
+      <xs:element xmlns:q49="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NO3_x003E_k__BackingField" nillable="true" type="q49:ArrayOfdouble" />
+      <xs:element xmlns:q50="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q50:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Nitrogen" nillable="true" type="tns:Nitrogen" />
+  <xs:complexType name="Phosphorus">
+    <xs:sequence>
+      <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_BandedP_x003E_k__BackingField" nillable="true" type="q51:ArrayOfdouble" />
+      <xs:element xmlns:q52="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_LabileP_x003E_k__BackingField" nillable="true" type="q52:ArrayOfdouble" />
+      <xs:element name="_x003C_Name_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_RateDissolRock_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_RateLossAvail_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_RockP_x003E_k__BackingField" nillable="true" type="q53:ArrayOfdouble" />
+      <xs:element name="_x003C_RootCP_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SorptionCoeff_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Sorption_x003E_k__BackingField" nillable="true" type="q54:ArrayOfdouble" />
+      <xs:element xmlns:q55="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q55:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Phosphorus" nillable="true" type="tns:Phosphorus" />
+  <xs:complexType name="SoilOrganicMatter">
+    <xs:sequence>
+      <xs:element name="_x003C_EnrACoeff_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_EnrBCoeff_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_FBiom_x003E_k__BackingField" nillable="true" type="q56:ArrayOfdouble" />
+      <xs:element xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_FInert_x003E_k__BackingField" nillable="true" type="q57:ArrayOfdouble" />
+      <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_OCMetadata_x003E_k__BackingField" nillable="true" type="q58:ArrayOfstring" />
+      <xs:element name="_x003C_OCUnits_x003E_k__BackingField" type="tns:SoilOrganicMatter.OCUnitsEnum" />
+      <xs:element xmlns:q59="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_OC_x003E_k__BackingField" nillable="true" type="q59:ArrayOfdouble" />
+      <xs:element name="_x003C_RootCN_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_RootWt_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SoilCN_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q60="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q60:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilOrganicMatter" nillable="true" type="tns:SoilOrganicMatter" />
+  <xs:complexType name="SoilTemperature2">
+    <xs:sequence>
+      <xs:element name="_x003C_BareSoilHeight_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_BoundaryLayerConductanceIterations_x003E_k__BackingField" type="xs:int" />
+      <xs:element name="_x003C_BoundaryLayerConductanceSource_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_BoundaryLayerConductance_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DefaultAltitude_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DefaultInstrumentHeight_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DefaultWindSpeed_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_MaxTTimeDefault_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_NetRadiationSource_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_Note_x003E_k__BackingField" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilTemperature2" nillable="true" type="tns:SoilTemperature2" />
+  <xs:complexType name="SoilTemperature">
+    <xs:sequence>
+      <xs:element name="_x003C_BoundaryLayerConductance_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q61="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_InitialSoilTemperature_x003E_k__BackingField" nillable="true" type="q61:ArrayOfdouble" />
+      <xs:element xmlns:q62="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q62:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilTemperature" nillable="true" type="tns:SoilTemperature" />
+  <xs:complexType name="SoilWater">
+    <xs:sequence>
+      <xs:element name="_x003C_CN2Bare_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_CNCov_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_CNRed_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_CatchmentArea_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DiffusConst_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DiffusSlope_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DischargeWidth_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q63="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_KLAT_x003E_k__BackingField" nillable="true" type="q63:ArrayOfdouble" />
+      <xs:element xmlns:q64="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MWCON_x003E_k__BackingField" nillable="true" type="q64:ArrayOfdouble" />
+      <xs:element name="_x003C_MaxPond_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q65="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_SWCON_x003E_k__BackingField" nillable="true" type="q65:ArrayOfdouble" />
+      <xs:element name="_x003C_Salb_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Slope_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SummerCona_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SummerDate_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_SummerU_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q66:ArrayOfdouble" />
+      <xs:element name="_x003C_WinterCona_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WinterDate_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element name="_x003C_WinterU_x003E_k__BackingField" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilWater" nillable="true" type="tns:SoilWater" />
+  <xs:complexType name="Swim">
+    <xs:sequence>
+      <xs:element name="_x003C_CN2Bare_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_CNCov_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_CNRed_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DTmax_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DTmin_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Diagnostics_x003E_k__BackingField" type="xs:boolean" />
+      <xs:element name="_x003C_KDul_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_MaxWaterIncrement_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_PSIDul_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Salb_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SoluteSpaceWeightingFactor_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SpaceWeightingFactor_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_SwimSoluteParameters_x003E_k__BackingField" nillable="true" type="tns:SwimSoluteParameters" />
+      <xs:element name="_x003C_SwimSubsurfaceDrain_x003E_k__BackingField" nillable="true" type="tns:SwimSubsurfaceDrain" />
+      <xs:element name="_x003C_SwimWaterTable_x003E_k__BackingField" nillable="true" type="tns:SwimWaterTable" />
+      <xs:element name="_x003C_VC_x003E_k__BackingField" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Swim" nillable="true" type="tns:Swim" />
+  <xs:complexType name="SwimSoluteParameters">
+    <xs:sequence>
+      <xs:element name="_x003C_A_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q67="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ClExco_x003E_k__BackingField" nillable="true" type="q67:ArrayOfdouble" />
+      <xs:element xmlns:q68="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_ClFIP_x003E_k__BackingField" nillable="true" type="q68:ArrayOfdouble" />
+      <xs:element name="_x003C_DTHC_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DTHP_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_DenitrificationInhibitorExco_x003E_k__BackingField" nillable="true" type="q69:ArrayOfdouble" />
+      <xs:element xmlns:q70="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_DenitrificationInhibitorFIP_x003E_k__BackingField" nillable="true" type="q70:ArrayOfdouble" />
+      <xs:element name="_x003C_Dis_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Disp_x003E_k__BackingField" type="xs:double" />
+      <xs:element xmlns:q71="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MineralisationInhibitorExco_x003E_k__BackingField" nillable="true" type="q71:ArrayOfdouble" />
+      <xs:element xmlns:q72="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_MineralisationInhibitorFIP_x003E_k__BackingField" nillable="true" type="q72:ArrayOfdouble" />
+      <xs:element xmlns:q73="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NH4Exco_x003E_k__BackingField" nillable="true" type="q73:ArrayOfdouble" />
+      <xs:element xmlns:q74="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NH4FIP_x003E_k__BackingField" nillable="true" type="q74:ArrayOfdouble" />
+      <xs:element xmlns:q75="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NO3Exco_x003E_k__BackingField" nillable="true" type="q75:ArrayOfdouble" />
+      <xs:element xmlns:q76="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NO3FIP_x003E_k__BackingField" nillable="true" type="q76:ArrayOfdouble" />
+      <xs:element xmlns:q77="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NitrificationInhibitorExco_x003E_k__BackingField" nillable="true" type="q77:ArrayOfdouble" />
+      <xs:element xmlns:q78="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_NitrificationInhibitorFIP_x003E_k__BackingField" nillable="true" type="q78:ArrayOfdouble" />
+      <xs:element xmlns:q79="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q79:ArrayOfdouble" />
+      <xs:element xmlns:q80="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_TracerExco_x003E_k__BackingField" nillable="true" type="q80:ArrayOfdouble" />
+      <xs:element xmlns:q81="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_TracerFIP_x003E_k__BackingField" nillable="true" type="q81:ArrayOfdouble" />
+      <xs:element xmlns:q82="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_UreaExco_x003E_k__BackingField" nillable="true" type="q82:ArrayOfdouble" />
+      <xs:element xmlns:q83="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_UreaFIP_x003E_k__BackingField" nillable="true" type="q83:ArrayOfdouble" />
+      <xs:element xmlns:q84="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_UreaseInhibitorExco_x003E_k__BackingField" nillable="true" type="q84:ArrayOfdouble" />
+      <xs:element xmlns:q85="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_UreaseInhibitorFIP_x003E_k__BackingField" nillable="true" type="q85:ArrayOfdouble" />
+      <xs:element name="_x003C_WaterTableCl_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableDenitrificationInhibitor_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableMineralisationInhibitor_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableNH4_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableNO3_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableNitrificationInhibitor_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableTracer_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableUrea_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_WaterTableUreaseInhibitor_x003E_k__BackingField" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SwimSoluteParameters" nillable="true" type="tns:SwimSoluteParameters" />
+  <xs:complexType name="SwimSubsurfaceDrain">
+    <xs:sequence>
+      <xs:element name="_x003C_DrainDepth_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DrainRadius_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_DrainSpacing_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_ImpermDepth_x003E_k__BackingField" type="xs:double" />
+      <xs:element name="_x003C_Klat_x003E_k__BackingField" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SwimSubsurfaceDrain" nillable="true" type="tns:SwimSubsurfaceDrain" />
+  <xs:complexType name="SwimWaterTable">
+    <xs:sequence>
+      <xs:element name="_x003C_WaterTableDepth_x003E_k__BackingField" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SwimWaterTable" nillable="true" type="tns:SwimWaterTable" />
+  <xs:complexType name="Water">
+    <xs:sequence>
+      <xs:element xmlns:q86="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_AirDryMetadata_x003E_k__BackingField" nillable="true" type="q86:ArrayOfstring" />
+      <xs:element xmlns:q87="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_AirDry_x003E_k__BackingField" nillable="true" type="q87:ArrayOfdouble" />
+      <xs:element xmlns:q88="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_BDMetadata_x003E_k__BackingField" nillable="true" type="q88:ArrayOfstring" />
+      <xs:element xmlns:q89="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_BD_x003E_k__BackingField" nillable="true" type="q89:ArrayOfdouble" />
+      <xs:element name="_x003C_Crops_x003E_k__BackingField" nillable="true" type="tns:ArrayOfSoilCrop" />
+      <xs:element xmlns:q90="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_DULMetadata_x003E_k__BackingField" nillable="true" type="q90:ArrayOfstring" />
+      <xs:element xmlns:q91="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_DUL_x003E_k__BackingField" nillable="true" type="q91:ArrayOfdouble" />
+      <xs:element xmlns:q92="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_KSMetadata_x003E_k__BackingField" nillable="true" type="q92:ArrayOfstring" />
+      <xs:element xmlns:q93="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_KS_x003E_k__BackingField" nillable="true" type="q93:ArrayOfdouble" />
+      <xs:element xmlns:q94="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_LL15Metadata_x003E_k__BackingField" nillable="true" type="q94:ArrayOfstring" />
+      <xs:element xmlns:q95="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_LL15_x003E_k__BackingField" nillable="true" type="q95:ArrayOfdouble" />
+      <xs:element xmlns:q96="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_SATMetadata_x003E_k__BackingField" nillable="true" type="q96:ArrayOfstring" />
+      <xs:element xmlns:q97="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_SAT_x003E_k__BackingField" nillable="true" type="q97:ArrayOfdouble" />
+      <xs:element xmlns:q98="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_SW_x003E_k__BackingField" nillable="true" type="q98:ArrayOfdouble" />
+      <xs:element xmlns:q99="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q99:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Water" nillable="true" type="tns:Water" />
+  <xs:complexType name="ArrayOfSoilCrop">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SoilCrop" nillable="true" type="tns:SoilCrop" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSoilCrop" nillable="true" type="tns:ArrayOfSoilCrop" />
+  <xs:complexType name="SoilCrop">
+    <xs:sequence>
+      <xs:element xmlns:q100="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_KLMetadata_x003E_k__BackingField" nillable="true" type="q100:ArrayOfstring" />
+      <xs:element xmlns:q101="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_KL_x003E_k__BackingField" nillable="true" type="q101:ArrayOfdouble" />
+      <xs:element xmlns:q102="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_LLMetadata_x003E_k__BackingField" nillable="true" type="q102:ArrayOfstring" />
+      <xs:element xmlns:q103="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_LL_x003E_k__BackingField" nillable="true" type="q103:ArrayOfdouble" />
+      <xs:element name="_x003C_Name_x003E_k__BackingField" nillable="true" type="xs:string" />
+      <xs:element xmlns:q104="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_Thickness_x003E_k__BackingField" nillable="true" type="q104:ArrayOfdouble" />
+      <xs:element xmlns:q105="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_XFMetadata_x003E_k__BackingField" nillable="true" type="q105:ArrayOfstring" />
+      <xs:element xmlns:q106="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_x003C_XF_x003E_k__BackingField" nillable="true" type="q106:ArrayOfdouble" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SoilCrop" nillable="true" type="tns:SoilCrop" />
 </xs:schema>

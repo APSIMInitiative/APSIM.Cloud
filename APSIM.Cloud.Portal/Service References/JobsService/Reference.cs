@@ -133,8 +133,8 @@ namespace APSIM.Cloud.Portal.JobsService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddFarm4Prophet", ReplyAction="http://tempuri.org/IJobs/AddFarm4ProphetResponse")]
         string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAPSIM", ReplyAction="http://tempuri.org/IJobs/AddAPSIMResponse")]
-        string AddAPSIM(APSIM.Cloud.Shared.APSIMSpecification[] apsimSimulations);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddSimulations", ReplyAction="http://tempuri.org/IJobs/AddSimulationsResponse")]
+        string AddSimulations(APSIM.Cloud.Shared.APSIMSpecification[] simulations);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddYP", ReplyAction="http://tempuri.org/IJobs/AddYPResponse")]
         void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData);
@@ -208,8 +208,8 @@ namespace APSIM.Cloud.Portal.JobsService {
             return base.Channel.AddFarm4Prophet(f4p);
         }
         
-        public string AddAPSIM(APSIM.Cloud.Shared.APSIMSpecification[] apsimSimulations) {
-            return base.Channel.AddAPSIM(apsimSimulations);
+        public string AddSimulations(APSIM.Cloud.Shared.APSIMSpecification[] simulations) {
+            return base.Channel.AddSimulations(simulations);
         }
         
         public void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData) {

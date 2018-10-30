@@ -107,7 +107,7 @@ namespace APSIM.Cloud.Portal
             List<APSIMSpecification> apsim = (List<APSIMSpecification>)serial.Deserialize(reader);
             using (JobsService.JobsClient jobsService = new JobsService.JobsClient())
             {
-                jobsService.AddAPSIM(apsim.ToArray());
+                jobsService.AddSimulations(apsim.ToArray());
             }
         }
 

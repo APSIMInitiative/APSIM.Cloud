@@ -61,10 +61,17 @@ namespace APSIM.Cloud.Shared
                     allSimulationsAreSingleSeason = false;
 
             WeatherFileCache weatherCache = new WeatherFileCache();
-            foreach (APSIMSpecification simulation in simulations)
+            foreach (APSIMSpecification simulation in simulations.FindAll(sim=>sim.ErrorMessage == null))
             {
-                CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache, allSimulationsAreSingleSeason);
-                CreateApsimFile(simulation, workingFolder, doc.DocumentElement, usingAPSIMx);
+                try
+                {
+                    CreateWeatherFilesForSimulations(simulation, workingFolder, weatherCache, allSimulationsAreSingleSeason);
+                    CreateApsimFile(simulation, workingFolder, doc.DocumentElement, usingAPSIMx);
+                }
+                catch (Exception err)
+                {
+                    simulation.ErrorMessage = simulation.Name + ": " + err.Message;
+                }
             }
 
             // Apply factors.
@@ -80,7 +87,7 @@ namespace APSIM.Cloud.Shared
             string apsimFileName = Path.Combine(workingFolder, fileNameToWrite);
             File.WriteAllText(apsimFileName, XmlUtilities.FormattedXML(doc.DocumentElement.OuterXml));
 
-            // Write a .apsimrun file.
+            // Write a .spec file.
             string apsimRunFileName = Path.Combine(workingFolder, Path.ChangeExtension(fileNameToWrite, ".spec"));
             string xml = XmlUtilities.Serialise(simulations, false);
             File.WriteAllText(apsimRunFileName, xml);
@@ -450,6 +457,8 @@ namespace APSIM.Cloud.Shared
                     soil.SoilWater.WinterU = 2.0;
                     soil.SoilWater.WinterCona = 2.0;
                 }
+                soil.SoilWater.SummerDate = "1-Nov";
+                soil.SoilWater.WinterDate = "1-Apr";
             }
             finally
             {

@@ -748,7 +748,7 @@ namespace APSIM.Cloud.Shared
         {
             if (startDate < DateTime.Now)
             {
-                string url = "http://apsrunet.apsim.info/cgi-bin/getData.tcl?format=apsim&station=" +
+                string url = "http://apsrunet.apsim.info/cgi-bin/getData.met?format=apsim&station=" +
                                         stationNumber.ToString() +
                                         "&ddStart=" + startDate.Day.ToString() +
                                         "&mmStart=" + startDate.Month.ToString() +

@@ -130,41 +130,92 @@ namespace APSIM.Cloud.Runner.JobsService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Add", ReplyAction="http://tempuri.org/IJobs/AddResponse")]
         string Add(APSIM.Cloud.Shared.YieldProphet yieldProphet);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Add", ReplyAction="http://tempuri.org/IJobs/AddResponse")]
+        System.Threading.Tasks.Task<string> AddAsync(APSIM.Cloud.Shared.YieldProphet yieldProphet);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddFarm4Prophet", ReplyAction="http://tempuri.org/IJobs/AddFarm4ProphetResponse")]
         string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddFarm4Prophet", ReplyAction="http://tempuri.org/IJobs/AddFarm4ProphetResponse")]
+        System.Threading.Tasks.Task<string> AddFarm4ProphetAsync(APSIM.Cloud.Shared.Farm4Prophet f4p);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddSimulations", ReplyAction="http://tempuri.org/IJobs/AddSimulationsResponse")]
+        string AddSimulations(APSIM.Cloud.Shared.APSIMSpecification[] simulations, string reportName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddSimulations", ReplyAction="http://tempuri.org/IJobs/AddSimulationsResponse")]
+        System.Threading.Tasks.Task<string> AddSimulationsAsync(APSIM.Cloud.Shared.APSIMSpecification[] simulations, string reportName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddYP", ReplyAction="http://tempuri.org/IJobs/AddYPResponse")]
         void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddYP", ReplyAction="http://tempuri.org/IJobs/AddYPResponse")]
+        System.Threading.Tasks.Task AddYPAsync(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsXML", ReplyAction="http://tempuri.org/IJobs/AddAsXMLResponse")]
         void AddAsXML(string name, string jobXML);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsXML", ReplyAction="http://tempuri.org/IJobs/AddAsXMLResponse")]
+        System.Threading.Tasks.Task AddAsXMLAsync(string name, string jobXML);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsZIP", ReplyAction="http://tempuri.org/IJobs/AddAsZIPResponse")]
+        string AddAsZIP(byte[] job);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddAsZIP", ReplyAction="http://tempuri.org/IJobs/AddAsZIPResponse")]
+        System.Threading.Tasks.Task<string> AddAsZIPAsync(byte[] job);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Delete", ReplyAction="http://tempuri.org/IJobs/DeleteResponse")]
         void Delete(string name);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Delete", ReplyAction="http://tempuri.org/IJobs/DeleteResponse")]
+        System.Threading.Tasks.Task DeleteAsync(string name);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Get", ReplyAction="http://tempuri.org/IJobs/GetResponse")]
         APSIM.Cloud.Runner.JobsService.Job Get(string name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/Get", ReplyAction="http://tempuri.org/IJobs/GetResponse")]
+        System.Threading.Tasks.Task<APSIM.Cloud.Runner.JobsService.Job> GetAsync(string name);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetNextToRun", ReplyAction="http://tempuri.org/IJobs/GetNextToRunResponse")]
         APSIM.Cloud.Runner.JobsService.Job GetNextToRun();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetNextToRun", ReplyAction="http://tempuri.org/IJobs/GetNextToRunResponse")]
+        System.Threading.Tasks.Task<APSIM.Cloud.Runner.JobsService.Job> GetNextToRunAsync();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetMany", ReplyAction="http://tempuri.org/IJobs/GetManyResponse")]
         APSIM.Cloud.Runner.JobsService.Job[] GetMany(int maxNum);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetMany", ReplyAction="http://tempuri.org/IJobs/GetManyResponse")]
+        System.Threading.Tasks.Task<APSIM.Cloud.Runner.JobsService.Job[]> GetManyAsync(int maxNum);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetJobXML", ReplyAction="http://tempuri.org/IJobs/GetJobXMLResponse")]
         string GetJobXML(string name);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetJobXML", ReplyAction="http://tempuri.org/IJobs/GetJobXMLResponse")]
+        System.Threading.Tasks.Task<string> GetJobXMLAsync(string name);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddLogMessage", ReplyAction="http://tempuri.org/IJobs/AddLogMessageResponse")]
         void AddLogMessage(string message, bool isError);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/AddLogMessage", ReplyAction="http://tempuri.org/IJobs/AddLogMessageResponse")]
+        System.Threading.Tasks.Task AddLogMessageAsync(string message, bool isError);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetLogMessages", ReplyAction="http://tempuri.org/IJobs/GetLogMessagesResponse")]
         System.Data.DataSet GetLogMessages();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/GetLogMessages", ReplyAction="http://tempuri.org/IJobs/GetLogMessagesResponse")]
+        System.Threading.Tasks.Task<System.Data.DataSet> GetLogMessagesAsync();
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/SetCompleted", ReplyAction="http://tempuri.org/IJobs/SetCompletedResponse")]
         void SetCompleted(string jobName, string errorMessage);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/SetCompleted", ReplyAction="http://tempuri.org/IJobs/SetCompletedResponse")]
+        System.Threading.Tasks.Task SetCompletedAsync(string jobName, string errorMessage);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/ReRun", ReplyAction="http://tempuri.org/IJobs/ReRunResponse")]
         void ReRun(string jobName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJobs/ReRun", ReplyAction="http://tempuri.org/IJobs/ReRunResponse")]
+        System.Threading.Tasks.Task ReRunAsync(string jobName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -198,52 +249,120 @@ namespace APSIM.Cloud.Runner.JobsService {
             return base.Channel.Add(yieldProphet);
         }
         
+        public System.Threading.Tasks.Task<string> AddAsync(APSIM.Cloud.Shared.YieldProphet yieldProphet) {
+            return base.Channel.AddAsync(yieldProphet);
+        }
+        
         public string AddFarm4Prophet(APSIM.Cloud.Shared.Farm4Prophet f4p) {
             return base.Channel.AddFarm4Prophet(f4p);
+        }
+        
+        public System.Threading.Tasks.Task<string> AddFarm4ProphetAsync(APSIM.Cloud.Shared.Farm4Prophet f4p) {
+            return base.Channel.AddFarm4ProphetAsync(f4p);
+        }
+        
+        public string AddSimulations(APSIM.Cloud.Shared.APSIMSpecification[] simulations, string reportName) {
+            return base.Channel.AddSimulations(simulations, reportName);
+        }
+        
+        public System.Threading.Tasks.Task<string> AddSimulationsAsync(APSIM.Cloud.Shared.APSIMSpecification[] simulations, string reportName) {
+            return base.Channel.AddSimulationsAsync(simulations, reportName);
         }
         
         public void AddYP(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData) {
             base.Channel.AddYP(yieldProphetXML, weatherData, soilProbeData);
         }
         
+        public System.Threading.Tasks.Task AddYPAsync(string yieldProphetXML, System.Data.DataTable weatherData, System.Data.DataTable soilProbeData) {
+            return base.Channel.AddYPAsync(yieldProphetXML, weatherData, soilProbeData);
+        }
+        
         public void AddAsXML(string name, string jobXML) {
             base.Channel.AddAsXML(name, jobXML);
+        }
+        
+        public System.Threading.Tasks.Task AddAsXMLAsync(string name, string jobXML) {
+            return base.Channel.AddAsXMLAsync(name, jobXML);
+        }
+        
+        public string AddAsZIP(byte[] job) {
+            return base.Channel.AddAsZIP(job);
+        }
+        
+        public System.Threading.Tasks.Task<string> AddAsZIPAsync(byte[] job) {
+            return base.Channel.AddAsZIPAsync(job);
         }
         
         public void Delete(string name) {
             base.Channel.Delete(name);
         }
         
+        public System.Threading.Tasks.Task DeleteAsync(string name) {
+            return base.Channel.DeleteAsync(name);
+        }
+        
         public APSIM.Cloud.Runner.JobsService.Job Get(string name) {
             return base.Channel.Get(name);
+        }
+        
+        public System.Threading.Tasks.Task<APSIM.Cloud.Runner.JobsService.Job> GetAsync(string name) {
+            return base.Channel.GetAsync(name);
         }
         
         public APSIM.Cloud.Runner.JobsService.Job GetNextToRun() {
             return base.Channel.GetNextToRun();
         }
         
+        public System.Threading.Tasks.Task<APSIM.Cloud.Runner.JobsService.Job> GetNextToRunAsync() {
+            return base.Channel.GetNextToRunAsync();
+        }
+        
         public APSIM.Cloud.Runner.JobsService.Job[] GetMany(int maxNum) {
             return base.Channel.GetMany(maxNum);
+        }
+        
+        public System.Threading.Tasks.Task<APSIM.Cloud.Runner.JobsService.Job[]> GetManyAsync(int maxNum) {
+            return base.Channel.GetManyAsync(maxNum);
         }
         
         public string GetJobXML(string name) {
             return base.Channel.GetJobXML(name);
         }
         
+        public System.Threading.Tasks.Task<string> GetJobXMLAsync(string name) {
+            return base.Channel.GetJobXMLAsync(name);
+        }
+        
         public void AddLogMessage(string message, bool isError) {
             base.Channel.AddLogMessage(message, isError);
+        }
+        
+        public System.Threading.Tasks.Task AddLogMessageAsync(string message, bool isError) {
+            return base.Channel.AddLogMessageAsync(message, isError);
         }
         
         public System.Data.DataSet GetLogMessages() {
             return base.Channel.GetLogMessages();
         }
         
+        public System.Threading.Tasks.Task<System.Data.DataSet> GetLogMessagesAsync() {
+            return base.Channel.GetLogMessagesAsync();
+        }
+        
         public void SetCompleted(string jobName, string errorMessage) {
             base.Channel.SetCompleted(jobName, errorMessage);
         }
         
+        public System.Threading.Tasks.Task SetCompletedAsync(string jobName, string errorMessage) {
+            return base.Channel.SetCompletedAsync(jobName, errorMessage);
+        }
+        
         public void ReRun(string jobName) {
             base.Channel.ReRun(jobName);
+        }
+        
+        public System.Threading.Tasks.Task ReRunAsync(string jobName) {
+            return base.Channel.ReRunAsync(jobName);
         }
     }
 }
